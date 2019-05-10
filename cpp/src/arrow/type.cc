@@ -363,12 +363,6 @@ Schema::Schema(std::vector<std::shared_ptr<Field>> fields,
       name_to_index_(CreateNameToIndexMap(fields_)),
       metadata_(std::move(metadata)) {}
 
-Schema::Schema(std::vector<std::shared_ptr<Field>>&& fields,
-               std::shared_ptr<const KeyValueMetadata> metadata)
-    : fields_(std::move(fields)),
-      name_to_index_(CreateNameToIndexMap(fields_)),
-      metadata_(std::move(metadata)) {}
-
 bool Schema::Equals(const Schema& other, bool check_metadata) const {
   if (this == &other) {
     return true;
