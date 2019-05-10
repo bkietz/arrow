@@ -75,7 +75,6 @@ static struct {
     {"sse4_2", CpuInfo::SSE4_2},
     {"popcnt", CpuInfo::POPCNT},
 };
-static const int64_t num_flags = sizeof(flag_mappings) / sizeof(flag_mappings[0]);
 
 #ifndef _WIN32
 namespace {
