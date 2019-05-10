@@ -118,8 +118,8 @@ struct UnpackValues {
   Status Visit(const ValueType& /*unused*/) {
     using ValueArrayRef = const typename TypeTraits<ValueType>::ArrayType&;
     using OutBuilder = typename TypeTraits<ValueType>::BuilderType;
-    auto indices = static_cast<IndexArrayRef>(*params_.indices);
-    auto values = static_cast<ValueArrayRef>(*params_.values);
+    auto&& indices = static_cast<IndexArrayRef>(*params_.indices);
+    auto&& values = static_cast<ValueArrayRef>(*params_.values);
     std::unique_ptr<ArrayBuilder> builder;
     RETURN_NOT_OK(MakeBuilder(params_.context->memory_pool(), values.type(), &builder));
     RETURN_NOT_OK(builder->Reserve(indices.length()));
