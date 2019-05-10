@@ -382,7 +382,7 @@ Status Decimal128::FromBigEndian(const uint8_t* bytes, int32_t length, Decimal12
     // Avoid undefined shift by 64 below
     high = high_bits;
   } else {
-    high = -1 * (is_negative && length < kMaxDecimalBytes);
+    high = -1 * static_cast<int>(is_negative && length < kMaxDecimalBytes);
     // Shift left enough bits to make room for the incoming int64_t
     high = SafeLeftShift(high, high_bits_offset * CHAR_BIT);
     // Preserve the upper bits by inplace OR-ing the int64_t
@@ -400,7 +400,7 @@ Status Decimal128::FromBigEndian(const uint8_t* bytes, int32_t length, Decimal12
     low = low_bits;
   } else {
     // Sign extend the low bits if necessary
-    low = -1 * (is_negative && length < 8);
+    low = -1 * static_cast<int>(is_negative && length < 8);
     // Shift left enough bits to make room for the incoming int64_t
     low = SafeLeftShift(low, low_bits_offset * CHAR_BIT);
     // Preserve the upper bits by inplace OR-ing the int64_t

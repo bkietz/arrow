@@ -54,7 +54,8 @@ inline uint8_t ExpandedUIntWidth(uint64_t val, uint8_t current_width) {
   }
   if (current_width == 1 && val <= max_uint8) {
     return 1;
-  } else if (current_width <= 2 && val <= max_uint16) {
+  }
+  if (current_width <= 2 && val <= max_uint16) {
     return 2;
   } else if (current_width <= 4 && val <= max_uint32) {
     return 4;
@@ -182,9 +183,9 @@ uint8_t DetectIntWidth(const int64_t* values, int64_t length, uint8_t min_width)
     if (ARROW_PREDICT_FALSE(((v + addend) & test_mask) != 0)) {
       --p;
       return false;
-    } else {
+    } 
       return true;
-    }
+    
   };
 
   auto test_four_items = [&](uint64_t addend, uint64_t test_mask) -> bool {
@@ -193,9 +194,9 @@ uint8_t DetectIntWidth(const int64_t* values, int64_t length, uint8_t min_width)
     if (ARROW_PREDICT_FALSE((mask & test_mask) != 0)) {
       p -= 4;
       return false;
-    } else {
+    } 
       return true;
-    }
+    
   };
 
   if (width == 1) {
@@ -279,9 +280,9 @@ uint8_t DetectIntWidth(const int64_t* values, const uint8_t* valid_bytes, int64_
       --b;
       --p;
       return false;
-    } else {
+    } 
       return true;
-    }
+    
   };
 
   auto test_eight_items = [&](uint64_t addend, uint64_t test_mask) -> bool {
@@ -295,9 +296,9 @@ uint8_t DetectIntWidth(const int64_t* values, const uint8_t* valid_bytes, int64_
       b -= 8;
       p -= 8;
       return false;
-    } else {
+    } 
       return true;
-    }
+    
   };
 
 #undef MASK

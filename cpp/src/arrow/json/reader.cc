@@ -50,11 +50,11 @@ namespace json {
 class TableReaderImpl : public TableReader {
  public:
   TableReaderImpl(MemoryPool* pool, std::shared_ptr<io::InputStream> input,
-                  const ReadOptions& read_options, const ParseOptions& parse_options,
+                  const ReadOptions& read_options, ParseOptions parse_options,
                   std::shared_ptr<TaskGroup> task_group)
       : pool_(pool),
         read_options_(read_options),
-        parse_options_(parse_options),
+        parse_options_(std::move(parse_options)),
         chunker_(Chunker::Make(parse_options_)),
         task_group_(std::move(task_group)),
         readahead_(pool_, std::move(input), read_options_.block_size,

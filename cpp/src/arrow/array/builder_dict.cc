@@ -49,15 +49,16 @@ struct UnifyDictionaryValues {
   std::shared_ptr<Array>* out_values_;
   std::vector<std::vector<int32_t>>* out_transpose_maps_;
 
-  Status Visit(const DataType&, void* = nullptr) {
+  Status Visit(const DataType& /*unused*/, void* /*unused*/ = nullptr) {
     // Default implementation for non-dictionary-supported datatypes
     return Status::NotImplemented("Unification of ", value_type_,
                                   " dictionaries is not implemented");
   }
 
   template <typename T>
-  Status Visit(const T&,
-               typename internal::DictionaryTraits<T>::MemoTableType* = nullptr) {
+  Status Visit(
+      const T& /*unused*/,
+      typename internal::DictionaryTraits<T>::MemoTableType* /*unused*/ = nullptr) {
     using ArrayType = typename TypeTraits<T>::ArrayType;
     using DictTraits = typename internal::DictionaryTraits<T>;
     using MemoTableType = typename DictTraits::MemoTableType;
@@ -69,7 +70,7 @@ struct UnifyDictionaryValues {
     }
     // Build up the unified dictionary values and the transpose maps
     for (const auto& type : types_) {
-      const ArrayType& values = checked_cast<const ArrayType&>(*type->dictionary());
+      const auto& values = checked_cast<const ArrayType&>(*type->dictionary());
       if (out_transpose_maps_ != nullptr) {
         std::vector<int32_t> transpose_map;
         transpose_map.reserve(values.length());
@@ -96,7 +97,7 @@ struct UnifyDictionaryValues {
 Status DictionaryType::Unify(MemoryPool* pool, const std::vector<const DataType*>& types,
                              std::shared_ptr<DataType>* out_type,
                              std::vector<std::vector<int32_t>>* out_transpose_maps) {
-  if (types.size() == 0) {
+  if (types.empty()) {
     return Status::Invalid("need at least one input type");
   }
   std::vector<const DictionaryType*> dict_types;
@@ -152,7 +153,7 @@ class DictionaryBuilder<T>::MemoTableImpl
   using MemoTableType = typename internal::HashTraits<T>::MemoTableType;
   using MemoTableType::MemoTableType;
 
-  MemoTableImpl(const std::shared_ptr<Array>& dictionary)
+  explicit MemoTableImpl(const std::shared_ptr<Array>& dictionary)
       : MemoTableImpl(dictionary->length()) {
     const auto& values =
         static_cast<const typename TypeTraits<T>::ArrayType&>(*dictionary);
@@ -163,7 +164,7 @@ class DictionaryBuilder<T>::MemoTableImpl
 };
 
 template <typename T>
-DictionaryBuilder<T>::~DictionaryBuilder() {}
+DictionaryBuilder<T>::~DictionaryBuilder() = default;
 
 template <typename T>
 DictionaryBuilder<T>::DictionaryBuilder(const std::shared_ptr<Array>& dictionary,

@@ -162,7 +162,7 @@ class ARROW_EXPORT RecordBatch {
   virtual Status Validate() const;
 
  protected:
-  RecordBatch(const std::shared_ptr<Schema>& schema, int64_t num_rows);
+  RecordBatch(std::shared_ptr<Schema> schema, int64_t num_rows);
 
   std::shared_ptr<Schema> schema_;
   int64_t num_rows_;

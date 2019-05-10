@@ -172,9 +172,9 @@ class ARROW_EXPORT ArrowLog : public ArrowLogBase {
   /// \param appName The app name which starts the log.
   /// \param severity_threshold Logging threshold for the program.
   /// \param logDir Logging output file name. If empty, the log won't output to file.
-  static void StartArrowLog(const std::string& appName,
+  static void StartArrowLog(const std::string& app_name,
                             ArrowLogLevel severity_threshold = ArrowLogLevel::ARROW_INFO,
-                            const std::string& logDir = "");
+                            const std::string& log_dir = "");
 
   /// The shutdown function of arrow log, it should be used with StartArrowLog as a pair.
   static void ShutDownArrowLog();

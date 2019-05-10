@@ -24,7 +24,7 @@ namespace arrow {
 namespace internal {
 
 inline uint8_t* pointer_logical_and(const uint8_t* address, uintptr_t bits) {
-  uintptr_t value = reinterpret_cast<uintptr_t>(address);
+  auto value = reinterpret_cast<uintptr_t>(address);
   return reinterpret_cast<uint8_t*>(value & bits);
 }
 

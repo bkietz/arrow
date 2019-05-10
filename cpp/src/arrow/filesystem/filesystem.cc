@@ -47,7 +47,7 @@ std::string FileStats::base_name() const {
 //////////////////////////////////////////////////////////////////////////
 // FileSystem default method implementations
 
-FileSystem::~FileSystem() {}
+FileSystem::~FileSystem() = default;
 
 Status FileSystem::GetTargetStats(const std::vector<std::string>& paths,
                                   std::vector<FileStats>* out) {

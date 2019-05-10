@@ -74,7 +74,7 @@ class ReadaheadSpooler::Impl {
     std::unique_lock<std::mutex> lock(mutex_);
     while (true) {
       // Drain queue before querying other flags
-      if (buffer_queue_.size() > 0) {
+      if (!buffer_queue_.empty()) {
         *out = std::move(buffer_queue_.front());
         DCHECK_NE(out->buffer, nullptr);
         buffer_queue_.pop_front();
@@ -219,7 +219,7 @@ Status ReadaheadSpooler::Close() { return impl_->Close(); }
 
 Status ReadaheadSpooler::Read(ReadaheadBuffer* out) { return impl_->Read(out); }
 
-ReadaheadSpooler::~ReadaheadSpooler() {}
+ReadaheadSpooler::~ReadaheadSpooler() = default;
 
 }  // namespace internal
 }  // namespace io

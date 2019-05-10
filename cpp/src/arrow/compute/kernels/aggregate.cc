@@ -39,7 +39,9 @@ class ManagedAggregateState {
   static std::shared_ptr<ManagedAggregateState> Make(
       std::shared_ptr<AggregateFunction>& desc, MemoryPool* pool) {
     std::shared_ptr<Buffer> buf;
-    if (!AllocateBuffer(pool, desc->Size(), &buf).ok()) return nullptr;
+    if (!AllocateBuffer(pool, desc->Size(), &buf).ok()) {
+      return nullptr;
+    }
 
     return std::make_shared<ManagedAggregateState>(desc, std::move(buf));
   }
@@ -50,10 +52,14 @@ class ManagedAggregateState {
 };
 
 Status AggregateUnaryKernel::Call(FunctionContext* ctx, const Datum& input, Datum* out) {
-  if (!input.is_array()) return Status::Invalid("AggregateKernel expects Array datum");
+  if (!input.is_array()) {
+    return Status::Invalid("AggregateKernel expects Array datum");
+  }
 
   auto state = ManagedAggregateState::Make(aggregate_function_, ctx->memory_pool());
-  if (!state) return Status::OutOfMemory("AggregateState allocation failed");
+  if (!state) {
+    return Status::OutOfMemory("AggregateState allocation failed");
+  }
 
   auto array = input.make_array();
   RETURN_NOT_OK(aggregate_function_->Consume(*array, state->mutable_data()));

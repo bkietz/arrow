@@ -67,7 +67,7 @@ class ARROW_EXPORT BasicDecimal128 {
   BasicDecimal128& Abs();
 
   /// \brief Absolute value
-  static BasicDecimal128 Abs(const BasicDecimal128& left);
+  static BasicDecimal128 Abs(const BasicDecimal128& in);
 
   /// \brief Add a number to this one. The result is truncated to 128 bits.
   BasicDecimal128& operator+=(const BasicDecimal128& right);

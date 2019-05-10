@@ -77,7 +77,8 @@ bool Field::Equals(const Field& other, bool check_metadata) const {
       this->type_->Equals(*other.type_.get(), check_metadata)) {
     if (!check_metadata) {
       return true;
-    } else if (this->HasMetadata() && other.HasMetadata()) {
+    }
+    if (this->HasMetadata() && other.HasMetadata()) {
       return metadata_->Equals(*other.metadata_);
     } else if (!this->HasMetadata() && !other.HasMetadata()) {
       return true;
@@ -101,7 +102,7 @@ std::string Field::ToString() const {
   return ss.str();
 }
 
-DataType::~DataType() {}
+DataType::~DataType() = default;
 
 bool DataType::Equals(const DataType& other, bool check_metadata) const {
   return TypeEquals(*this, other, check_metadata);
@@ -187,7 +188,7 @@ std::string Time64Type::ToString() const {
 std::string TimestampType::ToString() const {
   std::stringstream ss;
   ss << "timestamp[" << this->unit_;
-  if (this->timezone_.size() > 0) {
+  if (!this->timezone_.empty()) {
     ss << ", tz=" << this->timezone_;
   }
   ss << "]";
@@ -198,8 +199,8 @@ std::string TimestampType::ToString() const {
 // Union type
 
 UnionType::UnionType(const std::vector<std::shared_ptr<Field>>& fields,
-                     const std::vector<uint8_t>& type_codes, UnionMode::type mode)
-    : NestedType(Type::UNION), mode_(mode), type_codes_(type_codes) {
+                     std::vector<uint8_t> type_codes, UnionMode::type mode)
+    : NestedType(Type::UNION), mode_(mode), type_codes_(std::move(type_codes)) {
   children_ = fields;
 }
 
@@ -213,7 +214,7 @@ std::string UnionType::ToString() const {
   }
 
   for (size_t i = 0; i < children_.size(); ++i) {
-    if (i) {
+    if (i != 0u) {
       s << ", ";
     }
     s << children_[i]->ToString() << "=" << static_cast<int>(type_codes_[i]);
@@ -323,11 +324,11 @@ Decimal128Type::Decimal128Type(int32_t precision, int32_t scale)
 // ----------------------------------------------------------------------
 // DictionaryType
 
-DictionaryType::DictionaryType(const std::shared_ptr<DataType>& index_type,
-                               const std::shared_ptr<Array>& dictionary, bool ordered)
+DictionaryType::DictionaryType(std::shared_ptr<DataType> index_type,
+                               std::shared_ptr<Array> dictionary, bool ordered)
     : FixedWidthType(Type::DICTIONARY),
-      index_type_(index_type),
-      dictionary_(dictionary),
+      index_type_(std::move(index_type)),
+      dictionary_(std::move(dictionary)),
       ordered_(ordered) {
 #ifndef NDEBUG
   const auto& int_type = checked_cast<const Integer&>(*index_type);
@@ -356,17 +357,17 @@ std::string NullType::ToString() const { return name(); }
 // ----------------------------------------------------------------------
 // Schema implementation
 
-Schema::Schema(const std::vector<std::shared_ptr<Field>>& fields,
-               const std::shared_ptr<const KeyValueMetadata>& metadata)
-    : fields_(fields),
-      name_to_index_(CreateNameToIndexMap(fields_)),
-      metadata_(metadata) {}
-
-Schema::Schema(std::vector<std::shared_ptr<Field>>&& fields,
-               const std::shared_ptr<const KeyValueMetadata>& metadata)
+Schema::Schema(std::vector<std::shared_ptr<Field>> fields,
+               std::shared_ptr<const KeyValueMetadata> metadata)
     : fields_(std::move(fields)),
       name_to_index_(CreateNameToIndexMap(fields_)),
-      metadata_(metadata) {}
+      metadata_(std::move(metadata)) {}
+
+Schema::Schema(std::vector<std::shared_ptr<Field>>&& fields,
+               std::shared_ptr<const KeyValueMetadata> metadata)
+    : fields_(std::move(fields)),
+      name_to_index_(CreateNameToIndexMap(fields_)),
+      metadata_(std::move(metadata)) {}
 
 bool Schema::Equals(const Schema& other, bool check_metadata) const {
   if (this == &other) {
@@ -386,7 +387,8 @@ bool Schema::Equals(const Schema& other, bool check_metadata) const {
   // check metadata equality
   if (!check_metadata) {
     return true;
-  } else if (this->HasMetadata() && other.HasMetadata()) {
+  }
+  if (this->HasMetadata() && other.HasMetadata()) {
     return metadata_->Equals(*other.metadata_);
   } else if (!this->HasMetadata() && !other.HasMetadata()) {
     return true;
@@ -583,12 +585,12 @@ std::shared_ptr<DataType> union_(const std::vector<std::shared_ptr<Array>>& chil
   std::vector<uint8_t> type_codes(given_type_codes);
   uint8_t counter = 0;
   for (const auto& child : children) {
-    if (field_names.size() == 0) {
+    if (field_names.empty()) {
       types.push_back(field(std::to_string(counter), child->type()));
     } else {
       types.push_back(field(field_names[counter], child->type()));
     }
-    if (given_type_codes.size() == 0) {
+    if (given_type_codes.empty()) {
       type_codes.push_back(counter);
     }
     counter++;

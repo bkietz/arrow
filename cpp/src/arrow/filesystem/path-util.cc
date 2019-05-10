@@ -21,7 +21,7 @@ namespace arrow {
 namespace fs {
 namespace internal {
 
-// TODO Add unit tests for these functions.
+// TODO(unknown): Add unit tests for these functions.
 
 std::vector<std::string> SplitAbstractPath(const std::string& s) {
   std::vector<std::string> parts;

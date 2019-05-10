@@ -61,7 +61,7 @@ Status SnappyCodec::Decompress(int64_t input_len, const uint8_t* input,
     return Status::Invalid("Output buffer size (", output_buffer_len, ") must be ",
                            decompressed_size, " or larger.");
   }
-  if (output_len) {
+  if (output_len != nullptr) {
     *output_len = static_cast<int64_t>(decompressed_size);
   }
   if (!snappy::RawUncompress(reinterpret_cast<const char*>(input),
@@ -73,14 +73,15 @@ Status SnappyCodec::Decompress(int64_t input_len, const uint8_t* input,
 }
 
 int64_t SnappyCodec::MaxCompressedLen(int64_t input_len,
-                                      const uint8_t* ARROW_ARG_UNUSED(input)) {
+                                      const uint8_t* ARROW_ARG_UNUSED(input) /*input*/) {
   DCHECK_GE(input_len, 0);
   return snappy::MaxCompressedLength(static_cast<size_t>(input_len));
 }
 
-Status SnappyCodec::Compress(int64_t input_len, const uint8_t* input,
-                             int64_t ARROW_ARG_UNUSED(output_buffer_len),
-                             uint8_t* output_buffer, int64_t* output_len) {
+Status SnappyCodec::Compress(
+    int64_t input_len, const uint8_t* input,
+    int64_t ARROW_ARG_UNUSED(output_buffer_len) /*output_buffer_len*/,
+    uint8_t* output_buffer, int64_t* output_len) {
   size_t output_size;
   snappy::RawCompress(reinterpret_cast<const char*>(input),
                       static_cast<size_t>(input_len),

@@ -51,11 +51,10 @@ class ZSTDDecompressor : public Decompressor {
   Status Init() {
     finished_ = false;
     size_t ret = ZSTD_initDStream(stream_);
-    if (ZSTD_isError(ret)) {
+    if (ZSTD_isError(ret) != 0u) {
       return ZSTDError(ret, "ZSTD init failed: ");
-    } else {
-      return Status::OK();
     }
+      return Status::OK();
   }
 
   Status Decompress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -73,7 +72,7 @@ class ZSTDDecompressor : public Decompressor {
 
     size_t ret;
     ret = ZSTD_decompressStream(stream_, &out_buf, &in_buf);
-    if (ZSTD_isError(ret)) {
+    if (ZSTD_isError(ret) != 0u) {
       return ZSTDError(ret, "ZSTD decompress failed: ");
     }
     *bytes_read = static_cast<int64_t>(in_buf.pos);
@@ -101,11 +100,10 @@ class ZSTDCompressor : public Compressor {
 
   Status Init() {
     size_t ret = ZSTD_initCStream(stream_, kZSTDDefaultCompressionLevel);
-    if (ZSTD_isError(ret)) {
+    if (ZSTD_isError(ret) != 0u) {
       return ZSTDError(ret, "ZSTD init failed: ");
-    } else {
-      return Status::OK();
     }
+      return Status::OK();
   }
 
   Status Compress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -136,7 +134,7 @@ Status ZSTDCompressor::Compress(int64_t input_len, const uint8_t* input,
 
   size_t ret;
   ret = ZSTD_compressStream(stream_, &out_buf, &in_buf);
-  if (ZSTD_isError(ret)) {
+  if (ZSTD_isError(ret) != 0u) {
     return ZSTDError(ret, "ZSTD compress failed: ");
   }
   *bytes_read = static_cast<int64_t>(in_buf.pos);
@@ -154,7 +152,7 @@ Status ZSTDCompressor::Flush(int64_t output_len, uint8_t* output, int64_t* bytes
 
   size_t ret;
   ret = ZSTD_flushStream(stream_, &out_buf);
-  if (ZSTD_isError(ret)) {
+  if (ZSTD_isError(ret) != 0u) {
     return ZSTDError(ret, "ZSTD flush failed: ");
   }
   *bytes_written = static_cast<int64_t>(out_buf.pos);
@@ -172,7 +170,7 @@ Status ZSTDCompressor::End(int64_t output_len, uint8_t* output, int64_t* bytes_w
 
   size_t ret;
   ret = ZSTD_endStream(stream_, &out_buf);
-  if (ZSTD_isError(ret)) {
+  if (ZSTD_isError(ret) != 0u) {
     return ZSTDError(ret, "ZSTD end failed: ");
   }
   *bytes_written = static_cast<int64_t>(out_buf.pos);
@@ -215,20 +213,20 @@ Status ZSTDCodec::Decompress(int64_t input_len, const uint8_t* input,
 
   size_t ret = ZSTD_decompress(output_buffer, static_cast<size_t>(output_buffer_len),
                                input, static_cast<size_t>(input_len));
-  if (ZSTD_isError(ret)) {
+  if (ZSTD_isError(ret) != 0u) {
     return ZSTDError(ret, "ZSTD decompression failed: ");
   }
   if (static_cast<int64_t>(ret) != output_buffer_len) {
     return Status::IOError("Corrupt ZSTD compressed data.");
   }
-  if (output_len) {
+  if (output_len != nullptr) {
     *output_len = static_cast<int64_t>(ret);
   }
   return Status::OK();
 }
 
 int64_t ZSTDCodec::MaxCompressedLen(int64_t input_len,
-                                    const uint8_t* ARROW_ARG_UNUSED(input)) {
+                                    const uint8_t* ARROW_ARG_UNUSED(input) /*input*/) {
   DCHECK_GE(input_len, 0);
   return ZSTD_compressBound(static_cast<size_t>(input_len));
 }
@@ -239,7 +237,7 @@ Status ZSTDCodec::Compress(int64_t input_len, const uint8_t* input,
   size_t ret =
       ZSTD_compress(output_buffer, static_cast<size_t>(output_buffer_len), input,
                     static_cast<size_t>(input_len), kZSTDDefaultCompressionLevel);
-  if (ZSTD_isError(ret)) {
+  if (ZSTD_isError(ret) != 0u) {
     return ZSTDError(ret, "ZSTD compression failed: ");
   }
   *output_len = static_cast<int64_t>(ret);

@@ -152,7 +152,7 @@ class ARROW_EXPORT BufferReader : public RandomAccessFile {
   bool supports_zero_copy() const override;
 
   Status ReadAt(int64_t position, int64_t nbytes, int64_t* bytes_read,
-                void* out) override;
+                void* buffer) override;
   Status ReadAt(int64_t position, int64_t nbytes, std::shared_ptr<Buffer>* out) override;
 
   Status GetSize(int64_t* size) override;

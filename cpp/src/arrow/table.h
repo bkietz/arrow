@@ -52,7 +52,7 @@ class ARROW_EXPORT ChunkedArray {
   /// \brief Construct a chunked array from a vector of arrays and a data type
   ///
   /// As the data type is passed explicitly, the vector may be empty.
-  ChunkedArray(const ArrayVector& chunks, const std::shared_ptr<DataType>& type);
+  ChunkedArray(const ArrayVector& chunks, std::shared_ptr<DataType> type);
 
   /// \return the total length of the chunked array; computed on construction
   int64_t length() const { return length_; }
@@ -120,7 +120,7 @@ class ARROW_EXPORT Column {
   /// \brief Construct a column from a chunked array
   ///
   /// The chunked array's datatype must match the field's datatype.
-  Column(const std::shared_ptr<Field>& field, const std::shared_ptr<ChunkedArray>& data);
+  Column(std::shared_ptr<Field> field, std::shared_ptr<ChunkedArray> data);
   /// \brief Construct a column from a single array
   ///
   /// The array's datatype must match the field's datatype.

@@ -24,11 +24,11 @@ namespace arrow {
 namespace compute {
 
 struct CountState {
-  CountState() : non_nulls(0), nulls(0) {}
+  CountState() {}
   CountState(int64_t non_nulls, int64_t nulls) : non_nulls(non_nulls), nulls(nulls) {}
 
   CountState operator+(const CountState& rhs) const {
-    return CountState(this->non_nulls + rhs.non_nulls, this->nulls + rhs.nulls);
+    return {this->non_nulls + rhs.non_nulls, this->nulls + rhs.nulls};
   }
 
   CountState& operator+=(const CountState& rhs) {
@@ -98,7 +98,9 @@ std::shared_ptr<AggregateFunction> MakeCountAggregateFunction(
 
 Status Count(FunctionContext* context, const CountOptions& options, const Datum& value,
              Datum* out) {
-  if (!value.is_array()) return Status::Invalid("Count is expecting an array datum.");
+  if (!value.is_array()) {
+    return Status::Invalid("Count is expecting an array datum.");
+  }
 
   auto aggregate = MakeCountAggregateFunction(context, options);
   auto kernel = std::make_shared<AggregateUnaryKernel>(aggregate);

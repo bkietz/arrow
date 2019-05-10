@@ -81,7 +81,7 @@ bool ARROW_EXPORT ArrayApproxEquals(const Array& left, const Array& right,
 /// Returns true if indicated equal-length segment of arrays is exactly equal
 bool ARROW_EXPORT ArrayRangeEquals(const Array& left, const Array& right,
                                    int64_t start_idx, int64_t end_idx,
-                                   int64_t other_start_idx);
+                                   int64_t right_start_idx);
 
 /// Returns true if the type metadata are exactly equal
 /// \param[in] left a DataType

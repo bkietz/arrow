@@ -24,6 +24,7 @@
 #include <numeric>
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "arrow/compare.h"
@@ -73,12 +74,16 @@ static void ComputeColumnMajorStrides(const FixedWidthType& type,
 }
 
 /// Constructor with strides and dimension names
-Tensor::Tensor(const std::shared_ptr<DataType>& type, const std::shared_ptr<Buffer>& data,
+Tensor::Tensor(const std::shared_ptr<DataType>& type, std::shared_ptr<Buffer> data,
                const std::vector<int64_t>& shape, const std::vector<int64_t>& strides,
-               const std::vector<std::string>& dim_names)
-    : type_(type), data_(data), shape_(shape), strides_(strides), dim_names_(dim_names) {
+               std::vector<std::string> dim_names)
+    : type_(type),
+      data_(std::move(data)),
+      shape_(shape),
+      strides_(strides),
+      dim_names_(std::move(dim_names)) {
   DCHECK(is_tensor_supported(type->id()));
-  if (shape.size() > 0 && strides.size() == 0) {
+  if (!shape.empty() && strides.empty()) {
     ComputeRowMajorStrides(checked_cast<const FixedWidthType&>(*type_), shape, &strides_);
   }
 }
@@ -92,13 +97,12 @@ Tensor::Tensor(const std::shared_ptr<DataType>& type, const std::shared_ptr<Buff
     : Tensor(type, data, shape, {}, {}) {}
 
 const std::string& Tensor::dim_name(int i) const {
-  static const std::string kEmpty = "";
-  if (dim_names_.size() == 0) {
+  static const std::string kEmpty;
+  if (dim_names_.empty()) {
     return kEmpty;
-  } else {
+  }
     DCHECK_LT(i, static_cast<int>(dim_names_.size()));
     return dim_names_[i];
-  }
 }
 
 int64_t Tensor::size() const {
@@ -130,13 +134,15 @@ namespace {
 template <typename TYPE>
 int64_t StridedTensorCountNonZero(int dim_index, int64_t offset, const Tensor& tensor) {
   using c_type = typename TYPE::c_type;
-  c_type const zero = c_type(0);
+  auto const zero = c_type(0);
   int64_t nnz = 0;
   if (dim_index == tensor.ndim() - 1) {
     for (int64_t i = 0; i < tensor.shape()[dim_index]; ++i) {
       auto const* ptr = tensor.raw_data() + offset + i * tensor.strides()[dim_index];
       auto& elem = *reinterpret_cast<c_type const*>(ptr);
-      if (elem != zero) ++nnz;
+      if (elem != zero) {
+        ++nnz;
+      }
     }
     return nnz;
   }
@@ -159,9 +165,8 @@ template <typename TYPE>
 inline int64_t TensorCountNonZero(const Tensor& tensor) {
   if (tensor.is_contiguous()) {
     return ContiguousTensorCountNonZero<TYPE>(tensor);
-  } else {
-    return StridedTensorCountNonZero<TYPE>(0, 0, tensor);
   }
+    return StridedTensorCountNonZero<TYPE>(0, 0, tensor);
 }
 
 struct NonZeroCounter {

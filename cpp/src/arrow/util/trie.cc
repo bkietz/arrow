@@ -149,7 +149,7 @@ Status TrieBuilder::Append(util::string_view s, bool allow_duplicate) {
   // Find or create node for string
   fast_index_type node_index = 0;
   fast_index_type pos = 0;
-  fast_index_type remaining = static_cast<fast_index_type>(s.length());
+  auto remaining = static_cast<fast_index_type>(s.length());
 
   while (true) {
     Trie::Node* node = &trie_.nodes_[node_index];
@@ -180,9 +180,8 @@ Status TrieBuilder::Append(util::string_view s, bool allow_duplicate) {
       if (node->found_index_ >= 0) {
         if (allow_duplicate) {
           return Status::OK();
-        } else {
-          return Status::Invalid("Duplicate entry in trie");
         }
+          return Status::Invalid("Duplicate entry in trie");
       }
       node->found_index_ = trie_.size_++;
       return Status::OK();

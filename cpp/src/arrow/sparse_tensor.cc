@@ -20,6 +20,7 @@
 #include <functional>
 #include <memory>
 #include <numeric>
+#include <utility>
 
 #include "arrow/compare.h"
 #include "arrow/util/logging.h"
@@ -34,7 +35,7 @@ namespace {
 template <typename TYPE, typename SparseIndexType>
 class SparseTensorConverter {
  public:
-  explicit SparseTensorConverter(const NumericTensor<TYPE>&) {}
+  explicit SparseTensorConverter(const NumericTensor<TYPE>& /*unused*/) {}
 
   Status Convert() { return Status::Invalid("Unsupported sparse index"); }
 };
@@ -70,14 +71,14 @@ class SparseTensorConverter<TYPE, SparseCOOIndex>
     std::shared_ptr<Buffer> indices_buffer;
     RETURN_NOT_OK(
         AllocateBuffer(sizeof(int64_t) * ndim * nonzero_count, &indices_buffer));
-    int64_t* indices = reinterpret_cast<int64_t*>(indices_buffer->mutable_data());
+    auto* indices = reinterpret_cast<int64_t*>(indices_buffer->mutable_data());
 
     std::shared_ptr<Buffer> values_buffer;
     RETURN_NOT_OK(AllocateBuffer(sizeof(value_type) * nonzero_count, &values_buffer));
-    value_type* values = reinterpret_cast<value_type*>(values_buffer->mutable_data());
+    auto* values = reinterpret_cast<value_type*>(values_buffer->mutable_data());
 
     if (ndim <= 1) {
-      const value_type* data = reinterpret_cast<const value_type*>(tensor_.raw_data());
+      const auto* data = reinterpret_cast<const value_type*>(tensor_.raw_data());
       const int64_t count = ndim == 0 ? 1 : tensor_.shape()[0];
       for (int64_t i = 0; i < count; ++i, ++data) {
         if (*data != 0) {
@@ -176,16 +177,16 @@ class SparseTensorConverter<TYPE, SparseCSRIndex>
 
     std::shared_ptr<Buffer> values_buffer;
     RETURN_NOT_OK(AllocateBuffer(sizeof(value_type) * nonzero_count, &values_buffer));
-    value_type* values = reinterpret_cast<value_type*>(values_buffer->mutable_data());
+    auto* values = reinterpret_cast<value_type*>(values_buffer->mutable_data());
 
     if (ndim <= 1) {
       return Status::NotImplemented("TODO for ndim <= 1");
-    } else {
+    }
       RETURN_NOT_OK(AllocateBuffer(sizeof(int64_t) * (nr + 1), &indptr_buffer));
-      int64_t* indptr = reinterpret_cast<int64_t*>(indptr_buffer->mutable_data());
+      auto* indptr = reinterpret_cast<int64_t*>(indptr_buffer->mutable_data());
 
       RETURN_NOT_OK(AllocateBuffer(sizeof(int64_t) * nonzero_count, &indices_buffer));
-      int64_t* indices = reinterpret_cast<int64_t*>(indices_buffer->mutable_data());
+      auto* indices = reinterpret_cast<int64_t*>(indices_buffer->mutable_data());
 
       int64_t k = 0;
       *indptr++ = 0;
@@ -200,7 +201,6 @@ class SparseTensorConverter<TYPE, SparseCSRIndex>
         }
         *indptr++ = k;
       }
-    }
 
     std::vector<int64_t> indptr_shape({nr + 1});
     std::shared_ptr<SparseCSRIndex::IndexTensor> indptr_tensor =
@@ -259,9 +259,11 @@ std::string SparseCOOIndex::ToString() const { return std::string("SparseCOOInde
 // SparseCSRIndex
 
 // Constructor with two index vectors
-SparseCSRIndex::SparseCSRIndex(const std::shared_ptr<IndexTensor>& indptr,
+SparseCSRIndex::SparseCSRIndex(std::shared_ptr<IndexTensor> indptr,
                                const std::shared_ptr<IndexTensor>& indices)
-    : SparseIndexBase(indices->shape()[0]), indptr_(indptr), indices_(indices) {
+    : SparseIndexBase(indices->shape()[0]),
+      indptr_(std::move(indptr)),
+      indices_(indices) {
   DCHECK_EQ(1, indptr_->ndim());
   DCHECK_EQ(1, indices_->ndim());
 }
@@ -273,26 +275,24 @@ std::string SparseCSRIndex::ToString() const { return std::string("SparseCSRInde
 
 // Constructor with all attributes
 SparseTensor::SparseTensor(const std::shared_ptr<DataType>& type,
-                           const std::shared_ptr<Buffer>& data,
-                           const std::vector<int64_t>& shape,
-                           const std::shared_ptr<SparseIndex>& sparse_index,
-                           const std::vector<std::string>& dim_names)
+                           std::shared_ptr<Buffer> data, std::vector<int64_t> shape,
+                           std::shared_ptr<SparseIndex> sparse_index,
+                           std::vector<std::string> dim_names)
     : type_(type),
-      data_(data),
-      shape_(shape),
-      sparse_index_(sparse_index),
-      dim_names_(dim_names) {
+      data_(std::move(data)),
+      shape_(std::move(shape)),
+      sparse_index_(std::move(sparse_index)),
+      dim_names_(std::move(dim_names)) {
   DCHECK(is_tensor_supported(type->id()));
 }
 
 const std::string& SparseTensor::dim_name(int i) const {
-  static const std::string kEmpty = "";
-  if (dim_names_.size() == 0) {
+  static const std::string kEmpty;
+  if (dim_names_.empty()) {
     return kEmpty;
-  } else {
+  }
     DCHECK_LT(i, static_cast<int>(dim_names_.size()));
     return dim_names_[i];
-  }
 }
 
 int64_t SparseTensor::size() const {

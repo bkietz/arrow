@@ -108,7 +108,9 @@ struct CastFunctor<T, BooleanType, enable_if_number<T>> {
     constexpr auto kOne = static_cast<c_type>(1);
     constexpr auto kZero = static_cast<c_type>(0);
 
-    if (input.length == 0) return;
+    if (input.length == 0) {
+      return;
+    }
 
     internal::BitmapReader bit_reader(input.buffers[1]->data(), input.offset,
                                       input.length);
@@ -277,7 +279,7 @@ struct CastFunctor<
 
     auto in_offset = input.offset;
 
-    const in_type* in_data = input.GetValues<in_type>(1);
+    const auto* in_data = input.GetValues<in_type>(1);
     auto out_data = output->GetMutableValues<out_type>(1);
 
     if (!options.allow_int_overflow) {
@@ -337,7 +339,7 @@ struct CastFunctor<O, I, typename std::enable_if<is_float_truncate<O, I>::value>
     using out_type = typename O::c_type;
 
     auto in_offset = input.offset;
-    const in_type* in_data = input.GetValues<in_type>(1);
+    const auto* in_data = input.GetValues<in_type>(1);
     auto out_data = output->GetMutableValues<out_type>(1);
 
     if (options.allow_float_truncate) {
@@ -404,7 +406,7 @@ struct CastFunctor<O, I,
     using in_type = typename I::c_type;
     using out_type = typename O::c_type;
 
-    const in_type* in_data = input.GetValues<in_type>(1);
+    const auto* in_data = input.GetValues<in_type>(1);
     auto out_data = output->GetMutableValues<out_type>(1);
     for (int64_t i = 0; i < input.length; ++i) {
       // Due to various checks done via type-trait, the cast is safe and bear
@@ -420,7 +422,7 @@ struct CastFunctor<O, I,
 template <typename in_type, typename out_type>
 void ShiftTime(FunctionContext* ctx, const CastOptions& options, const bool is_multiply,
                const int64_t factor, const ArrayData& input, ArrayData* output) {
-  const in_type* in_data = input.GetValues<in_type>(1);
+  const auto* in_data = input.GetValues<in_type>(1);
   auto out_data = output->GetMutableValues<out_type>(1);
 
   if (factor == 1) {
@@ -752,7 +754,7 @@ void UnpackFixedSizeBinaryDictionary(FunctionContext* ctx, const Array& indices,
                                      ArrayData* output) {
   using index_c_type = typename IndexType::c_type;
 
-  const index_c_type* in = indices.data()->GetValues<index_c_type>(1);
+  const auto* in = indices.data()->GetValues<index_c_type>(1);
   int32_t byte_width =
       checked_cast<const FixedSizeBinaryType&>(*output->type).byte_width();
 
@@ -785,9 +787,9 @@ struct CastFunctor<
                   const ArrayData& input, ArrayData* output) {
     DictionaryArray dict_array(input.Copy());
 
-    const DictionaryType& type = checked_cast<const DictionaryType&>(*input.type);
+    const auto& type = checked_cast<const DictionaryType&>(*input.type);
     const DataType& values_type = *type.dictionary()->type();
-    const FixedSizeBinaryArray& dictionary =
+    const auto& dictionary =
         checked_cast<const FixedSizeBinaryArray&>(*type.dictionary());
 
     // Check if values and output type match
@@ -822,9 +824,9 @@ Status UnpackBinaryDictionary(FunctionContext* ctx, const Array& indices,
   using index_c_type = typename IndexType::c_type;
   std::unique_ptr<ArrayBuilder> builder;
   RETURN_NOT_OK(MakeBuilder(ctx->memory_pool(), output->type, &builder));
-  BinaryBuilder* binary_builder = checked_cast<BinaryBuilder*>(builder.get());
+  auto* binary_builder = checked_cast<BinaryBuilder*>(builder.get());
 
-  const index_c_type* in = indices.data()->GetValues<index_c_type>(1);
+  const auto* in = indices.data()->GetValues<index_c_type>(1);
   if (indices.null_count() != 0) {
     internal::BitmapReader valid_bits_reader(indices.null_bitmap_data(), indices.offset(),
                                              indices.length());
@@ -860,9 +862,9 @@ struct CastFunctor<T, DictionaryType,
                   const ArrayData& input, ArrayData* output) {
     DictionaryArray dict_array(input.Copy());
 
-    const DictionaryType& type = checked_cast<const DictionaryType&>(*input.type);
+    const auto& type = checked_cast<const DictionaryType&>(*input.type);
     const DataType& values_type = *type.dictionary()->type();
-    const BinaryArray& dictionary = checked_cast<const BinaryArray&>(*type.dictionary());
+    const auto& dictionary = checked_cast<const BinaryArray&>(*type.dictionary());
 
     // Check if values and output type match
     DCHECK(values_type.Equals(*output->type))
@@ -926,14 +928,14 @@ struct CastFunctor<T, DictionaryType,
 
     DictionaryArray dict_array(input.Copy());
 
-    const DictionaryType& type = checked_cast<const DictionaryType&>(*input.type);
+    const auto& type = checked_cast<const DictionaryType&>(*input.type);
     const DataType& values_type = *type.dictionary()->type();
 
     // Check if values and output type match
     DCHECK(values_type.Equals(*output->type))
         << "Dictionary type: " << values_type << " target type: " << (*output->type);
 
-    const c_type* dictionary = type.dictionary()->data()->GetValues<c_type>(1);
+    const auto* dictionary = type.dictionary()->data()->GetValues<c_type>(1);
 
     auto out = output->GetMutableValues<c_type>(1);
     const Array& indices = *dict_array.indices();
@@ -1100,9 +1102,8 @@ struct CastFunctor<StringType, I,
 
 // ----------------------------------------------------------------------
 
-typedef std::function<void(FunctionContext*, const CastOptions& options, const ArrayData&,
-                           ArrayData*)>
-    CastFunction;
+using CastFunction = std::function<void(FunctionContext*, const CastOptions&,
+                                        const ArrayData&, ArrayData*)>;
 
 class IdentityCast : public CastKernelBase {
  public:
@@ -1130,9 +1131,9 @@ class ZeroCopyCast : public CastKernelBase {
 
 class CastKernel : public CastKernelBase {
  public:
-  CastKernel(const CastOptions& options, const CastFunction& func,
+  CastKernel(const CastOptions& options, CastFunction func,
              std::shared_ptr<DataType> out_type)
-      : CastKernelBase(std::move(out_type)), options_(options), func_(func) {}
+      : CastKernelBase(std::move(out_type)), options_(options), func_(std::move(func)) {}
 
   Status Call(FunctionContext* ctx, const Datum& input, Datum* out) override {
     DCHECK_EQ(input.kind(), Datum::ARRAY);

@@ -34,7 +34,7 @@ Status InputStream::Advance(int64_t nbytes) {
   return Read(nbytes, &temp);
 }
 
-util::string_view InputStream::Peek(int64_t ARROW_ARG_UNUSED(nbytes)) const {
+util::string_view InputStream::Peek(int64_t ARROW_ARG_UNUSED(nbytes) /*unused*/) const {
   return util::string_view(nullptr, 0);
 }
 

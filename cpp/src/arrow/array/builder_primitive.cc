@@ -93,7 +93,7 @@ Status BooleanBuilder::AppendValues(const uint8_t* values, int64_t length,
   DCHECK_EQ(length, static_cast<int64_t>(is_valid.size()));
   int64_t i = 0;
   data_builder_.UnsafeAppend<false>(length,
-                                    [values, &i]() -> bool { return values[i++]; });
+                                    [values, &i]() -> bool { return values[i++] != 0u; });
   ArrayBuilder::UnsafeAppendToBitmap(is_valid);
   return Status::OK();
 }
@@ -109,7 +109,7 @@ Status BooleanBuilder::AppendValues(const std::vector<uint8_t>& values) {
 
 Status BooleanBuilder::AppendValues(const std::vector<bool>& values,
                                     const std::vector<bool>& is_valid) {
-  const int64_t length = static_cast<int64_t>(values.size());
+  const auto length = static_cast<int64_t>(values.size());
   RETURN_NOT_OK(Reserve(length));
   DCHECK_EQ(length, static_cast<int64_t>(is_valid.size()));
   int64_t i = 0;
@@ -120,7 +120,7 @@ Status BooleanBuilder::AppendValues(const std::vector<bool>& values,
 }
 
 Status BooleanBuilder::AppendValues(const std::vector<bool>& values) {
-  const int64_t length = static_cast<int64_t>(values.size());
+  const auto length = static_cast<int64_t>(values.size());
   RETURN_NOT_OK(Reserve(length));
   int64_t i = 0;
   data_builder_.UnsafeAppend<false>(length,

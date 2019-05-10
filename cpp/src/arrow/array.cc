@@ -523,11 +523,11 @@ Status UnionArray::MakeDense(const Array& type_ids, const Array& value_offsets,
     return Status::Invalid("MakeDense does not allow NAs in value_offsets");
   }
 
-  if (field_names.size() > 0 && field_names.size() != children.size()) {
+  if (!field_names.empty() && field_names.size() != children.size()) {
     return Status::Invalid("field_names must have the same length as children");
   }
 
-  if (type_codes.size() > 0 && type_codes.size() != children.size()) {
+  if (!type_codes.empty() && type_codes.size() != children.size()) {
     return Status::Invalid("type_codes must have the same length as children");
   }
 
@@ -555,11 +555,11 @@ Status UnionArray::MakeSparse(const Array& type_ids,
     return Status::Invalid("UnionArray type_ids must be signed int8");
   }
 
-  if (field_names.size() > 0 && field_names.size() != children.size()) {
+  if (!field_names.empty() && field_names.size() != children.size()) {
     return Status::Invalid("field_names must have the same length as children");
   }
 
-  if (type_codes.size() > 0 && type_codes.size() != children.size()) {
+  if (!type_codes.empty() && type_codes.size() != children.size()) {
     return Status::Invalid("type_codes must have the same length as children");
   }
 
@@ -779,7 +779,7 @@ Status Array::Accept(ArrayVisitor* visitor) const {
 namespace internal {
 
 struct ValidateVisitor {
-  Status Visit(const NullArray&) { return Status::OK(); }
+  Status Visit(const NullArray& /*unused*/) { return Status::OK(); }
 
   Status Visit(const PrimitiveArray& array) {
     ARROW_RETURN_IF(array.data()->buffers.size() != 2,
@@ -813,7 +813,7 @@ struct ValidateVisitor {
     }
 
     auto value_offsets = array.value_offsets();
-    if (array.length() && !value_offsets) {
+    if ((array.length() != 0) && !value_offsets) {
       return Status::Invalid("value_offsets_ was null");
     }
     if (value_offsets->size() / static_cast<int>(sizeof(int32_t)) < array.length()) {
@@ -938,7 +938,7 @@ class ArrayDataWrapper {
       : data_(data), out_(out) {}
 
   template <typename T>
-  Status Visit(const T&) {
+  Status Visit(const T& /*unused*/) {
     using ArrayType = typename TypeTraits<T>::ArrayType;
     *out_ = std::make_shared<ArrayType>(data_);
     return Status::OK();

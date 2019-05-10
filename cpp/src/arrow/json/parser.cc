@@ -96,20 +96,20 @@ Kind::type Kind::FromTag(const std::shared_ptr<const KeyValueMetadata>& tag) {
   return static_cast<Kind::type>(name_to_kind.Find(name));
 }
 
-Status Kind::ForType(const DataType& type, Kind::type* kind) {
+Status Kind::ForType(const DataType& type, const Kind::type* kind) {
   struct {
-    Status Visit(const NullType&) { return SetKind(Kind::kNull); }
-    Status Visit(const BooleanType&) { return SetKind(Kind::kBoolean); }
-    Status Visit(const Number&) { return SetKind(Kind::kNumber); }
-    Status Visit(const TimeType&) { return SetKind(Kind::kNumber); }
-    Status Visit(const DateType&) { return SetKind(Kind::kNumber); }
-    Status Visit(const BinaryType&) { return SetKind(Kind::kString); }
-    Status Visit(const FixedSizeBinaryType&) { return SetKind(Kind::kString); }
+    Status Visit(const NullType& /*unused*/) { return SetKind(Kind::kNull); }
+    Status Visit(const BooleanType& /*unused*/) { return SetKind(Kind::kBoolean); }
+    Status Visit(const Number& /*unused*/) { return SetKind(Kind::kNumber); }
+    Status Visit(const TimeType& /*unused*/) { return SetKind(Kind::kNumber); }
+    Status Visit(const DateType& /*unused*/) { return SetKind(Kind::kNumber); }
+    Status Visit(const BinaryType& /*unused*/) { return SetKind(Kind::kString); }
+    Status Visit(const FixedSizeBinaryType& /*unused*/) { return SetKind(Kind::kString); }
     Status Visit(const DictionaryType& dict_type) {
       return Kind::ForType(*dict_type.dictionary()->type(), kind_);
     }
-    Status Visit(const ListType&) { return SetKind(Kind::kArray); }
-    Status Visit(const StructType&) { return SetKind(Kind::kObject); }
+    Status Visit(const ListType& /*unused*/) { return SetKind(Kind::kArray); }
+    Status Visit(const StructType& /*unused*/) { return SetKind(Kind::kObject); }
     Status Visit(const DataType& not_impl) {
       return Status::NotImplemented("JSON parsing of ", not_impl);
     }
@@ -154,7 +154,7 @@ struct BuilderPtr {
 
   bool operator!=(BuilderPtr other) const { return !(other == *this); }
 
-  operator bool() const { return *this != null; }
+  explicit operator bool() const { return *this != null; }
 
   bool operator!() const { return *this == null; }
 

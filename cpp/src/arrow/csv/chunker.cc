@@ -170,15 +170,14 @@ Status Chunker::Process(const char* start, uint32_t size, uint32_t* out_size) {
   if (options_.quoting) {
     if (options_.escaping) {
       return ProcessSpecialized<true, true>(start, size, out_size);
-    } else {
-      return ProcessSpecialized<true, false>(start, size, out_size);
     }
+      return ProcessSpecialized<true, false>(start, size, out_size);
+
   } else {
     if (options_.escaping) {
       return ProcessSpecialized<false, true>(start, size, out_size);
-    } else {
-      return ProcessSpecialized<false, false>(start, size, out_size);
     }
+      return ProcessSpecialized<false, false>(start, size, out_size);
   }
 }
 

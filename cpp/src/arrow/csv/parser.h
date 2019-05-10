@@ -99,9 +99,9 @@ class ARROW_EXPORT BlockParser {
  protected:
   ARROW_DISALLOW_COPY_AND_ASSIGN(BlockParser);
 
-  Status DoParse(const char* data, uint32_t size, bool is_final, uint32_t* out_size);
+  Status DoParse(const char* start, uint32_t size, bool is_final, uint32_t* out_size);
   template <typename SpecializedOptions>
-  Status DoParseSpecialized(const char* data, uint32_t size, bool is_final,
+  Status DoParseSpecialized(const char* start, uint32_t size, bool is_final,
                             uint32_t* out_size);
 
   template <typename SpecializedOptions, typename ValuesWriter, typename ParsedWriter>

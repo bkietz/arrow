@@ -56,9 +56,9 @@ namespace io {
 
 class OSFile {
  public:
-  OSFile() : fd_(-1), is_open_(false), size_(-1) {}
+  OSFile() {}
 
-  ~OSFile() {}
+  ~OSFile() = default;
 
   // Note: only one of the Open* methods below may be called on a given instance
 
@@ -174,12 +174,12 @@ class OSFile {
   std::mutex lock_;
 
   // File descriptor
-  int fd_;
+  int fd_{-1};
 
   FileMode::type mode_;
 
-  bool is_open_;
-  int64_t size_;
+  bool is_open_{false};
+  int64_t size_{-1};
 };
 
 // ----------------------------------------------------------------------
@@ -187,7 +187,7 @@ class OSFile {
 
 class ReadableFile::ReadableFileImpl : public OSFile {
  public:
-  explicit ReadableFileImpl(MemoryPool* pool) : OSFile(), pool_(pool) {}
+  explicit ReadableFileImpl(MemoryPool* pool) : pool_(pool) {}
 
   Status Open(const std::string& path) { return OpenReadable(path); }
   Status Open(int fd) { return OpenReadable(fd); }
@@ -354,7 +354,7 @@ class MemoryMappedFile::MemoryMap : public MutableBuffer {
  public:
   MemoryMap() : MutableBuffer(nullptr, 0) {}
 
-  ~MemoryMap() {
+  ~MemoryMap() override {
     DCHECK_OK(Close());
     if (mutable_data_ != nullptr) {
       int result = munmap(mutable_data_, static_cast<size_t>(size_));
@@ -368,9 +368,8 @@ class MemoryMappedFile::MemoryMap : public MutableBuffer {
       // NOTE: we don't unmap here, so that buffers exported through Read()
       // remain valid until the MemoryMap object is destroyed
       return file_->Close();
-    } else {
-      return Status::OK();
     }
+      return Status::OK();
   }
 
   bool closed() const { return !file_->is_open(); }
@@ -427,7 +426,7 @@ class MemoryMappedFile::MemoryMap : public MutableBuffer {
       return Status::OK();
     }
 
-    if (mutable_data_) {
+    if (mutable_data_ != nullptr) {
       void* result;
       RETURN_NOT_OK(
           internal::MemoryMapRemap(mutable_data_, size_, new_size, file_->fd(), &result));
@@ -495,8 +494,8 @@ class MemoryMappedFile::MemoryMap : public MutableBuffer {
   std::mutex resize_lock_;
 };
 
-MemoryMappedFile::MemoryMappedFile() {}
-MemoryMappedFile::~MemoryMappedFile() {}
+MemoryMappedFile::MemoryMappedFile() = default;
+MemoryMappedFile::~MemoryMappedFile() = default;
 
 Status MemoryMappedFile::Create(const std::string& path, int64_t size,
                                 std::shared_ptr<MemoryMappedFile>* out) {

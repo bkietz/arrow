@@ -125,7 +125,7 @@ class ARROW_EXPORT SparseCSRIndex : public internal::SparseIndexBase<SparseCSRIn
   static constexpr SparseTensorFormat::type format_id = SparseTensorFormat::CSR;
 
   // Constructor with two index vectors
-  explicit SparseCSRIndex(const std::shared_ptr<IndexTensor>& indptr,
+  explicit SparseCSRIndex(std::shared_ptr<IndexTensor> indptr,
                           const std::shared_ptr<IndexTensor>& indices);
 
   /// \brief Return a 1D tensor of indptr vector
@@ -200,10 +200,9 @@ class ARROW_EXPORT SparseTensor {
 
  protected:
   // Constructor with all attributes
-  SparseTensor(const std::shared_ptr<DataType>& type, const std::shared_ptr<Buffer>& data,
-               const std::vector<int64_t>& shape,
-               const std::shared_ptr<SparseIndex>& sparse_index,
-               const std::vector<std::string>& dim_names);
+  SparseTensor(const std::shared_ptr<DataType>& type, std::shared_ptr<Buffer> data,
+               std::vector<int64_t> shape, std::shared_ptr<SparseIndex> sparse_index,
+               std::vector<std::string> dim_names);
 
   std::shared_ptr<DataType> type_;
   std::shared_ptr<Buffer> data_;

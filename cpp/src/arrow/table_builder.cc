@@ -32,9 +32,9 @@ namespace arrow {
 // ----------------------------------------------------------------------
 // RecordBatchBuilder
 
-RecordBatchBuilder::RecordBatchBuilder(const std::shared_ptr<Schema>& schema,
-                                       MemoryPool* pool, int64_t initial_capacity)
-    : schema_(schema), initial_capacity_(initial_capacity), pool_(pool) {}
+RecordBatchBuilder::RecordBatchBuilder(std::shared_ptr<Schema> schema, MemoryPool* pool,
+                                       int64_t initial_capacity)
+    : schema_(std::move(schema)), initial_capacity_(initial_capacity), pool_(pool) {}
 
 Status RecordBatchBuilder::Make(const std::shared_ptr<Schema>& schema, MemoryPool* pool,
                                 std::unique_ptr<RecordBatchBuilder>* builder) {
@@ -65,9 +65,8 @@ Status RecordBatchBuilder::Flush(bool reset_builders,
   *batch = RecordBatch::Make(schema_, length, std::move(fields));
   if (reset_builders) {
     return InitBuilders();
-  } else {
-    return Status::OK();
   }
+    return Status::OK();
 }
 
 Status RecordBatchBuilder::Flush(std::shared_ptr<RecordBatch>* batch) {

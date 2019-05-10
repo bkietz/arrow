@@ -46,14 +46,14 @@ class ARROW_EXPORT Chunker {
   ///
   /// Process a block of CSV data, reading up to size bytes.
   /// The number of bytes in the chunk is returned in out_size.
-  Status Process(const char* data, uint32_t size, uint32_t* out_size);
+  Status Process(const char* start, uint32_t size, uint32_t* out_size);
 
  protected:
   ARROW_DISALLOW_COPY_AND_ASSIGN(Chunker);
 
   // Like Process(), but specialized for some parsing options
   template <bool quoting, bool escaping>
-  Status ProcessSpecialized(const char* data, uint32_t size, uint32_t* out_size);
+  Status ProcessSpecialized(const char* start, uint32_t size, uint32_t* out_size);
 
   // Detect a single line from the data pointer.  Return the line end,
   // or nullptr if the remaining line is truncated.

@@ -70,14 +70,13 @@ static int CompressionWindowBitsForFormat(GZipCodec::Format format) {
 static int DecompressionWindowBitsForFormat(GZipCodec::Format format) {
   if (format == GZipCodec::DEFLATE) {
     return -WINDOW_BITS;
-  } else {
+  }
     /* If not deflate, autodetect format from header */
     return WINDOW_BITS | DETECT_CODEC;
-  }
 }
 
 static Status ZlibErrorPrefix(const char* prefix_msg, const char* msg) {
-  return Status::IOError(prefix_msg, (msg) ? msg : "(unknown error)");
+  return Status::IOError(prefix_msg, (msg) != nullptr ? msg : "(unknown error)");
 }
 
 // ----------------------------------------------------------------------
@@ -85,7 +84,7 @@ static Status ZlibErrorPrefix(const char* prefix_msg, const char* msg) {
 
 class GZipDecompressor : public Decompressor {
  public:
-  GZipDecompressor() : initialized_(false), finished_(false) {}
+  GZipDecompressor() {}
 
   ~GZipDecompressor() override {
     if (initialized_) {
@@ -102,10 +101,9 @@ class GZipDecompressor : public Decompressor {
     int window_bits = DecompressionWindowBitsForFormat(format);
     if ((ret = inflateInit2(&stream_, window_bits)) != Z_OK) {
       return ZlibError("zlib inflateInit failed: ");
-    } else {
+    }
       initialized_ = true;
       return Status::OK();
-    }
   }
 
   Status Decompress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -150,8 +148,8 @@ class GZipDecompressor : public Decompressor {
   }
 
   z_stream stream_;
-  bool initialized_;
-  bool finished_;
+  bool initialized_{false};
+  bool finished_{false};
 };
 
 // ----------------------------------------------------------------------
@@ -159,7 +157,7 @@ class GZipDecompressor : public Decompressor {
 
 class GZipCompressor : public Compressor {
  public:
-  GZipCompressor() : initialized_(false) {}
+  GZipCompressor() {}
 
   ~GZipCompressor() override {
     if (initialized_) {
@@ -177,10 +175,9 @@ class GZipCompressor : public Compressor {
     if ((ret = deflateInit2(&stream_, Z_DEFAULT_COMPRESSION, Z_DEFLATED, window_bits,
                             kGZipDefaultCompressionLevel, Z_DEFAULT_STRATEGY)) != Z_OK) {
       return ZlibError("zlib deflateInit failed: ");
-    } else {
+    }
       initialized_ = true;
       return Status::OK();
-    }
   }
 
   Status Compress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -198,7 +195,7 @@ class GZipCompressor : public Compressor {
   }
 
   z_stream stream_;
-  bool initialized_;
+  bool initialized_{false};
 };
 
 Status GZipCompressor::Compress(int64_t input_len, const uint8_t* input,
@@ -286,9 +283,9 @@ Status GZipCompressor::End(int64_t output_len, uint8_t* output, int64_t* bytes_w
     ret = deflateEnd(&stream_);
     if (ret == Z_OK) {
       return Status::OK();
-    } else {
-      return ZlibError("zlib end failed: ");
     }
+      return ZlibError("zlib end failed: ");
+
   } else {
     // Not everything could be flushed,
     *should_retry = true;
@@ -379,7 +376,7 @@ class GZipCodec::GZipCodecImpl {
       // output_buffer_length is 0 (inflate() will return Z_STREAM_ERROR). We don't
       // consider this an error, so bail early if no output is expected. Note that we
       // don't signal an error if the input actually contains compressed data.
-      if (output_length) {
+      if (output_length != nullptr) {
         *output_length = 0;
       }
       return Status::OK();
@@ -406,7 +403,9 @@ class GZipCodec::GZipCodecImpl {
       // We know the output size.  In this case, we can use Z_FINISH
       // which is more efficient.
       ret = inflate(&stream_, Z_FINISH);
-      if (ret == Z_STREAM_END || ret != Z_OK) break;
+      if (ret == Z_STREAM_END || ret != Z_OK) {
+        break;
+      }
 
       // Failure, buffer was too small
       return Status::IOError("Too small a buffer passed to GZipCodec. InputLength=",
@@ -418,14 +417,15 @@ class GZipCodec::GZipCodecImpl {
       return ZlibErrorPrefix("GZipCodec failed: ", stream_.msg);
     }
 
-    if (output_length) {
+    if (output_length != nullptr) {
       *output_length = stream_.total_out;
     }
 
     return Status::OK();
   }
 
-  int64_t MaxCompressedLen(int64_t input_length, const uint8_t* ARROW_ARG_UNUSED(input)) {
+  int64_t MaxCompressedLen(int64_t input_length,
+                           const uint8_t* ARROW_ARG_UNUSED(input) /*unused*/) {
     // Must be in compression mode
     if (!compressor_initialized_) {
       Status s = InitCompressor();
@@ -489,7 +489,7 @@ class GZipCodec::GZipCodecImpl {
 
 GZipCodec::GZipCodec(Format format) { impl_.reset(new GZipCodecImpl(format)); }
 
-GZipCodec::~GZipCodec() {}
+GZipCodec::~GZipCodec() = default;
 
 Status GZipCodec::Decompress(int64_t input_length, const uint8_t* input,
                              int64_t output_buffer_len, uint8_t* output) {

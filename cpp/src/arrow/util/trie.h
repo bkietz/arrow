@@ -225,7 +225,7 @@ class ARROW_EXPORT TrieBuilder {
 
  protected:
   // Extend the lookup table by 256 entries, return the index of the new span
-  Status ExtendLookupTable(index_type* out_lookup_index);
+  Status ExtendLookupTable(index_type* out_index);
   // Split the node given by the index at the substring index `split_at`
   Status SplitNode(fast_index_type node_index, fast_index_type split_at);
   // Append an already constructed child node to the parent

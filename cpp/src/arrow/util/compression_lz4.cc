@@ -44,7 +44,7 @@ static Status LZ4Error(LZ4F_errorCode_t ret, const char* prefix_msg) {
 
 class LZ4Decompressor : public Decompressor {
  public:
-  LZ4Decompressor() {}
+  LZ4Decompressor() = default;
 
   ~LZ4Decompressor() override {
     if (ctx_ != nullptr) {
@@ -57,11 +57,10 @@ class LZ4Decompressor : public Decompressor {
     finished_ = false;
 
     ret = LZ4F_createDecompressionContext(&ctx_, LZ4F_VERSION);
-    if (LZ4F_isError(ret)) {
+    if (LZ4F_isError(ret) != 0u) {
       return LZ4Error(ret, "LZ4 init failed: ");
-    } else {
-      return Status::OK();
     }
+      return Status::OK();
   }
 
   Status Decompress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -74,7 +73,7 @@ class LZ4Decompressor : public Decompressor {
     size_t ret;
 
     ret = LZ4F_decompress(ctx_, dst, &dstCapacity, src, &srcSize, nullptr /* options */);
-    if (LZ4F_isError(ret)) {
+    if (LZ4F_isError(ret) != 0u) {
       return LZ4Error(ret, "LZ4 decompress failed: ");
     }
     *bytes_read = static_cast<int64_t>(srcSize);
@@ -96,7 +95,7 @@ class LZ4Decompressor : public Decompressor {
 
 class LZ4Compressor : public Compressor {
  public:
-  LZ4Compressor() {}
+  LZ4Compressor() = default;
 
   ~LZ4Compressor() override {
     if (ctx_ != nullptr) {
@@ -110,11 +109,10 @@ class LZ4Compressor : public Compressor {
     first_time_ = true;
 
     ret = LZ4F_createCompressionContext(&ctx_, LZ4F_VERSION);
-    if (LZ4F_isError(ret)) {
+    if (LZ4F_isError(ret) != 0u) {
       return LZ4Error(ret, "LZ4 init failed: ");
-    } else {
-      return Status::OK();
     }
+      return Status::OK();
   }
 
   Status Compress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -167,7 +165,7 @@ Status LZ4Compressor::Compress(int64_t input_len, const uint8_t* input,
     return Status::OK();
   }
   ret = LZ4F_compressUpdate(ctx_, dst, dstCapacity, src, srcSize, nullptr /* options */);
-  if (LZ4F_isError(ret)) {
+  if (LZ4F_isError(ret) != 0u) {
     return LZ4Error(ret, "LZ4 compress update failed: ");
   }
   *bytes_read = input_len;
@@ -193,7 +191,7 @@ Status LZ4Compressor::Flush(int64_t output_len, uint8_t* output, int64_t* bytes_
   }
 
   ret = LZ4F_flush(ctx_, dst, dstCapacity, nullptr /* options */);
-  if (LZ4F_isError(ret)) {
+  if (LZ4F_isError(ret) != 0u) {
     return LZ4Error(ret, "LZ4 flush failed: ");
   }
   *bytes_written += static_cast<int64_t>(ret);
@@ -219,7 +217,7 @@ Status LZ4Compressor::End(int64_t output_len, uint8_t* output, int64_t* bytes_wr
   }
 
   ret = LZ4F_compressEnd(ctx_, dst, dstCapacity, nullptr /* options */);
-  if (LZ4F_isError(ret)) {
+  if (LZ4F_isError(ret) != 0u) {
     return LZ4Error(ret, "LZ4 end failed: ");
   }
   *bytes_written += static_cast<int64_t>(ret);
@@ -261,14 +259,14 @@ Status Lz4Codec::Decompress(int64_t input_len, const uint8_t* input,
   if (decompressed_size < 0) {
     return Status::IOError("Corrupt Lz4 compressed data.");
   }
-  if (output_len) {
+  if (output_len != nullptr) {
     *output_len = decompressed_size;
   }
   return Status::OK();
 }
 
 int64_t Lz4Codec::MaxCompressedLen(int64_t input_len,
-                                   const uint8_t* ARROW_ARG_UNUSED(input)) {
+                                   const uint8_t* ARROW_ARG_UNUSED(input) /*input*/) {
   return LZ4_compressBound(static_cast<int>(input_len));
 }
 

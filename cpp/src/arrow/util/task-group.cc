@@ -48,7 +48,7 @@ class SerialTaskGroup : public TaskGroup {
   Status Finish() override {
     if (!finished_) {
       finished_ = true;
-      if (parent_) {
+      if (parent_ != nullptr) {
         parent_->status_ &= status_;
       }
     }
@@ -113,7 +113,7 @@ class ThreadedTaskGroup : public TaskGroup {
       cv_.wait(lock, [&]() { return nremaining_.load() == 0; });
       // Current tasks may start other tasks, so only set this when done
       finished_ = true;
-      if (parent_) {
+      if (parent_ != nullptr) {
         parent_->OneTaskDone();
       }
     }

@@ -158,8 +158,8 @@ class SimpleRecordBatch : public RecordBatch {
   mutable std::vector<std::shared_ptr<Array>> boxed_columns_;
 };
 
-RecordBatch::RecordBatch(const std::shared_ptr<Schema>& schema, int64_t num_rows)
-    : schema_(schema), num_rows_(num_rows) {}
+RecordBatch::RecordBatch(std::shared_ptr<Schema> schema, int64_t num_rows)
+    : schema_(std::move(schema)), num_rows_(num_rows) {}
 
 std::shared_ptr<RecordBatch> RecordBatch::Make(
     const std::shared_ptr<Schema>& schema, int64_t num_rows,
@@ -242,7 +242,7 @@ Status RecordBatch::Validate() const {
 // ----------------------------------------------------------------------
 // Base record batch reader
 
-RecordBatchReader::~RecordBatchReader() {}
+RecordBatchReader::~RecordBatchReader() = default;
 
 Status RecordBatchReader::ReadAll(std::vector<std::shared_ptr<RecordBatch>>* batches) {
   while (true) {

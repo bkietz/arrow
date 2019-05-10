@@ -22,6 +22,7 @@
 #include <sstream>  // IWYU pragma: keep
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "arrow/array.h"
@@ -114,10 +115,10 @@ void PrettyPrinter::Indent() {
 
 class ArrayPrinter : public PrettyPrinter {
  public:
-  ArrayPrinter(int indent, int indent_size, int window, const std::string& null_rep,
+  ArrayPrinter(int indent, int indent_size, int window, std::string null_rep,
                bool skip_new_lines, std::ostream* sink)
       : PrettyPrinter(indent, indent_size, window, skip_new_lines, sink),
-        null_rep_(null_rep) {}
+        null_rep_(std::move(null_rep)) {}
 
   template <typename FormatFunction>
   void WriteValues(const Array& array, FormatFunction&& func) {
@@ -244,7 +245,9 @@ class ArrayPrinter : public PrettyPrinter {
     return Status::OK();
   }
 
-  Status Visit(const IntervalArray&) { return Status::NotImplemented("interval"); }
+  Status Visit(const IntervalArray& /*unused*/) {
+    return Status::NotImplemented("interval");
+  }
 
   Status Visit(const ExtensionArray& array) { return Print(*array.storage()); }
 
@@ -332,10 +335,9 @@ Status ArrayPrinter::WriteValidityBitmap(const Array& array) {
     BooleanArray is_valid(array.length(), array.null_bitmap(), nullptr, 0,
                           array.offset());
     return PrettyPrint(is_valid, indent_ + indent_size_, sink_);
-  } else {
+  }
     Write(" all not null");
     return Status::OK();
-  }
 }
 
 Status PrettyPrint(const Array& arr, int indent, std::ostream* sink) {

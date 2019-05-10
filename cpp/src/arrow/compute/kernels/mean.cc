@@ -44,7 +44,7 @@ struct MeanState {
     using ScalarType = typename TypeTraits<DoubleType>::ScalarType;
 
     const bool is_valid = count > 0;
-    const double divisor = static_cast<double>(is_valid ? count : 1UL);
+    const auto divisor = static_cast<double>(is_valid ? count : 1UL);
     const double mean = static_cast<double>(sum) / divisor;
 
     return std::make_shared<ScalarType>(mean, is_valid);
@@ -86,7 +86,9 @@ std::shared_ptr<AggregateFunction> MakeMeanAggregateFunction(const DataType& typ
 static Status GetMeanKernel(FunctionContext* ctx, const DataType& type,
                             std::shared_ptr<AggregateUnaryKernel>& kernel) {
   std::shared_ptr<AggregateFunction> aggregate = MakeMeanAggregateFunction(type, ctx);
-  if (!aggregate) return Status::Invalid("No mean for type ", type);
+  if (!aggregate) {
+    return Status::Invalid("No mean for type ", type);
+  }
 
   kernel = std::make_shared<AggregateUnaryKernel>(aggregate);
 
@@ -97,10 +99,12 @@ Status Mean(FunctionContext* ctx, const Datum& value, Datum* out) {
   std::shared_ptr<AggregateUnaryKernel> kernel;
 
   auto data_type = value.type();
-  if (data_type == nullptr)
+  if (data_type == nullptr) {
     return Status::Invalid("Datum must be array-like");
-  else if (!is_integer(data_type->id()) && !is_floating(data_type->id()))
+  }
+  if (!is_integer(data_type->id()) && !is_floating(data_type->id())) {
     return Status::Invalid("Datum must contain a NumericType");
+  }
 
   RETURN_NOT_OK(GetMeanKernel(ctx, *data_type, kernel));
 

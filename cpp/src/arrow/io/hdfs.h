@@ -197,7 +197,7 @@ class ARROW_EXPORT HdfsReadableFile : public RandomAccessFile {
   // context, you may prefer to use ReadAt to avoid locking issues
   Status Read(int64_t nbytes, int64_t* bytes_read, void* buffer) override;
 
-  Status Read(int64_t nbytes, std::shared_ptr<Buffer>* out) override;
+  Status Read(int64_t nbytes, std::shared_ptr<Buffer>* buffer) override;
 
   Status ReadAt(int64_t position, int64_t nbytes, int64_t* bytes_read,
                 void* buffer) override;
@@ -232,7 +232,7 @@ class ARROW_EXPORT HdfsOutputStream : public OutputStream {
 
   Status Write(const void* buffer, int64_t nbytes) override;
 
-  Status Write(const void* buffer, int64_t nbytes, int64_t* bytes_written);
+  Status Write(const void* buffer, int64_t nbytes, int64_t* bytes_read);
 
   Status Flush() override;
 

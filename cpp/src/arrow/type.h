@@ -568,8 +568,7 @@ class ARROW_EXPORT UnionType : public NestedType {
   static constexpr Type::type type_id = Type::UNION;
 
   UnionType(const std::vector<std::shared_ptr<Field>>& fields,
-            const std::vector<uint8_t>& type_codes,
-            UnionMode::type mode = UnionMode::SPARSE);
+            std::vector<uint8_t> type_codes, UnionMode::type mode = UnionMode::SPARSE);
 
   std::string ToString() const override;
   std::string name() const override { return "union"; }
@@ -753,8 +752,8 @@ class ARROW_EXPORT DictionaryType : public FixedWidthType {
  public:
   static constexpr Type::type type_id = Type::DICTIONARY;
 
-  DictionaryType(const std::shared_ptr<DataType>& index_type,
-                 const std::shared_ptr<Array>& dictionary, bool ordered = false);
+  DictionaryType(std::shared_ptr<DataType> index_type, std::shared_ptr<Array> dictionary,
+                 bool ordered = false);
 
   int bit_width() const override;
 
@@ -799,11 +798,11 @@ class ARROW_EXPORT DictionaryType : public FixedWidthType {
 /// batch or table data structure
 class ARROW_EXPORT Schema {
  public:
-  explicit Schema(const std::vector<std::shared_ptr<Field>>& fields,
-                  const std::shared_ptr<const KeyValueMetadata>& metadata = NULLPTR);
+  explicit Schema(std::vector<std::shared_ptr<Field>> fields,
+                  std::shared_ptr<const KeyValueMetadata> metadata = NULLPTR);
 
   explicit Schema(std::vector<std::shared_ptr<Field>>&& fields,
-                  const std::shared_ptr<const KeyValueMetadata>& metadata = NULLPTR);
+                  std::shared_ptr<const KeyValueMetadata> metadata = NULLPTR);
 
   virtual ~Schema() = default;
 

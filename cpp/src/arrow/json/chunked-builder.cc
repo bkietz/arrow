@@ -64,7 +64,7 @@ class TypedChunkedArrayBuilder : public NonNestedChunkedArrayBuilder {
  public:
   using NonNestedChunkedArrayBuilder::NonNestedChunkedArrayBuilder;
 
-  void Insert(int64_t block_index, const std::shared_ptr<Field>&,
+  void Insert(int64_t block_index, const std::shared_ptr<Field>& /*unconverted_field*/,
               const std::shared_ptr<Array>& unconverted) override {
     std::unique_lock<std::mutex> lock(mutex_);
     if (chunks_.size() <= static_cast<size_t>(block_index)) {
@@ -174,11 +174,11 @@ class ChunkedListArrayBuilder : public ChunkedArrayBuilder {
  public:
   ChunkedListArrayBuilder(const std::shared_ptr<TaskGroup>& task_group, MemoryPool* pool,
                           std::unique_ptr<ChunkedArrayBuilder> value_builder,
-                          const std::shared_ptr<Field>& value_field)
+                          std::shared_ptr<Field> value_field)
       : ChunkedArrayBuilder(task_group),
         pool_(pool),
         value_builder_(std::move(value_builder)),
-        value_field_(value_field) {}
+        value_field_(std::move(value_field)) {}
 
   Status ReplaceTaskGroup(const std::shared_ptr<TaskGroup>& task_group) override {
     RETURN_NOT_OK(task_group_->Finish());
@@ -187,7 +187,7 @@ class ChunkedListArrayBuilder : public ChunkedArrayBuilder {
     return Status::OK();
   }
 
-  void Insert(int64_t block_index, const std::shared_ptr<Field>&,
+  void Insert(int64_t block_index, const std::shared_ptr<Field>& /*unconverted_field*/,
               const std::shared_ptr<Array>& unconverted) override {
     std::unique_lock<std::mutex> lock(mutex_);
 
@@ -270,7 +270,7 @@ class ChunkedStructArrayBuilder : public ChunkedArrayBuilder {
     }
   }
 
-  void Insert(int64_t block_index, const std::shared_ptr<Field>&,
+  void Insert(int64_t block_index, const std::shared_ptr<Field>& /*unconverted_field*/,
               const std::shared_ptr<Array>& unconverted) override {
     std::unique_lock<std::mutex> lock(mutex_);
 
@@ -445,7 +445,7 @@ Status MakeChunkedArrayBuilder(const std::shared_ptr<TaskGroup>& task_group,
   }
   std::shared_ptr<Converter> converter;
   RETURN_NOT_OK(MakeConverter(type, pool, &converter));
-  if (promotion_graph) {
+  if (promotion_graph != nullptr) {
     *out = internal::make_unique<InferringChunkedArrayBuilder>(
         task_group, promotion_graph, std::move(converter));
   } else {

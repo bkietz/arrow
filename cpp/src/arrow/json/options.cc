@@ -22,7 +22,7 @@ namespace json {
 
 ParseOptions ParseOptions::Defaults() { return ParseOptions(); }
 
-ReadOptions ReadOptions::Defaults() { return ReadOptions(); }
+ReadOptions ReadOptions::Defaults() { return {}; }
 
 }  // namespace json
 }  // namespace arrow

@@ -45,7 +45,7 @@ class ARROW_EXPORT FileOutputStream : public OutputStream {
   ///
   /// When opening a new file, any existing file with the indicated path is
   /// truncated to 0 bytes, deleting any existing data
-  static Status Open(const std::string& path, std::shared_ptr<OutputStream>* out);
+  static Status Open(const std::string& path, std::shared_ptr<OutputStream>* file);
 
   /// \brief Open a local file for writing
   /// \param[in] path with UTF8 encoding
@@ -85,7 +85,7 @@ class ARROW_EXPORT FileOutputStream : public OutputStream {
   ///
   /// The file descriptor becomes owned by the OutputStream, and will be closed
   /// on Close() or destruction.
-  static Status Open(int fd, std::shared_ptr<FileOutputStream>* out);
+  static Status Open(int fd, std::shared_ptr<FileOutputStream>* file);
 
   // OutputStream interface
   Status Close() override;
@@ -93,7 +93,7 @@ class ARROW_EXPORT FileOutputStream : public OutputStream {
   Status Tell(int64_t* position) const override;
 
   // Write bytes to the stream. Thread-safe
-  Status Write(const void* data, int64_t nbytes) override;
+  Status Write(const void* data, int64_t length) override;
 
   using Writable::Write;
 
@@ -149,7 +149,7 @@ class ARROW_EXPORT ReadableFile : public RandomAccessFile {
   Status Tell(int64_t* position) const override;
 
   // Read bytes from the file. Thread-safe
-  Status Read(int64_t nbytes, int64_t* bytes_read, void* buffer) override;
+  Status Read(int64_t nbytes, int64_t* bytes_read, void* out) override;
   Status Read(int64_t nbytes, std::shared_ptr<Buffer>* out) override;
 
   /// \brief Thread-safe implementation of ReadAt

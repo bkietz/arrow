@@ -17,7 +17,6 @@
 
 #include <hdfs.h>
 
-#include <errno.h>
 #include <algorithm>
 #include <cerrno>
 #include <cstdint>
@@ -261,7 +260,7 @@ Status HdfsReadableFile::Tell(int64_t* position) const { return impl_->Tell(posi
 // Private implementation for writable-only files
 class HdfsOutputStream::HdfsOutputStreamImpl : public HdfsAnyFileImpl {
  public:
-  HdfsOutputStreamImpl() {}
+  HdfsOutputStreamImpl() = default;
 
   Status Close() {
     if (is_open_) {
@@ -336,7 +335,7 @@ static void SetPathInfo(const hdfsFileInfo* input, HdfsPathInfo* out) {
 // Private implementation
 class HadoopFileSystem::HadoopFileSystemImpl {
  public:
-  HadoopFileSystemImpl() : driver_(NULLPTR), port_(0), fs_(NULLPTR) {}
+  HadoopFileSystemImpl() {}
 
   Status Connect(const HdfsConnectionConfig* config) {
     if (config->driver == HdfsDriver::LIBHDFS3) {
@@ -505,7 +504,9 @@ class HadoopFileSystem::HadoopFileSystemImpl {
                       int16_t replication, int64_t default_block_size,
                       std::shared_ptr<HdfsOutputStream>* file) {
     int flags = O_WRONLY;
-    if (append) flags |= O_APPEND;
+    if (append) {
+      flags |= O_APPEND;
+    }
 
     hdfsFile handle =
         driver_->OpenFile(fs_, path.c_str(), flags, buffer_size, replication,
@@ -541,14 +542,14 @@ class HadoopFileSystem::HadoopFileSystemImpl {
   }
 
  private:
-  internal::LibHdfsShim* driver_;
+  internal::LibHdfsShim* driver_{NULLPTR};
 
   std::string namenode_host_;
   std::string user_;
-  int port_;
+  int port_{0};
   std::string kerb_ticket_;
 
-  hdfsFS fs_;
+  hdfsFS fs_{NULLPTR};
 };
 
 // ----------------------------------------------------------------------
@@ -556,7 +557,7 @@ class HadoopFileSystem::HadoopFileSystemImpl {
 
 HadoopFileSystem::HadoopFileSystem() { impl_.reset(new HadoopFileSystemImpl()); }
 
-HadoopFileSystem::~HadoopFileSystem() {}
+HadoopFileSystem::~HadoopFileSystem() = default;
 
 Status HadoopFileSystem::Connect(const HdfsConnectionConfig* config,
                                  std::shared_ptr<HadoopFileSystem>* fs) {

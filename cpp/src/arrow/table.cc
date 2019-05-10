@@ -51,9 +51,8 @@ ChunkedArray::ChunkedArray(const ArrayVector& chunks) : chunks_(chunks) {
   }
 }
 
-ChunkedArray::ChunkedArray(const ArrayVector& chunks,
-                           const std::shared_ptr<DataType>& type)
-    : chunks_(chunks), type_(type) {
+ChunkedArray::ChunkedArray(const ArrayVector& chunks, std::shared_ptr<DataType> type)
+    : chunks_(chunks), type_(std::move(type)) {
   length_ = 0;
   null_count_ = 0;
   for (const std::shared_ptr<Array>& chunk : chunks) {
@@ -158,7 +157,7 @@ Status ChunkedArray::Flatten(MemoryPool* pool,
   for (const auto& chunk : chunks_) {
     ArrayVector res;
     RETURN_NOT_OK(checked_cast<const StructArray&>(*chunk).Flatten(pool, &res));
-    if (!flattened_chunks.size()) {
+    if (flattened_chunks.empty()) {
       // First chunk
       for (const auto& array : res) {
         flattened_chunks.push_back({array});
@@ -197,9 +196,8 @@ Column::Column(const std::string& name, const std::shared_ptr<Array>& data)
 Column::Column(const std::string& name, const std::shared_ptr<ChunkedArray>& data)
     : Column(::arrow::field(name, data->type()), data) {}
 
-Column::Column(const std::shared_ptr<Field>& field,
-               const std::shared_ptr<ChunkedArray>& data)
-    : field_(field), data_(data) {}
+Column::Column(std::shared_ptr<Field> field, std::shared_ptr<ChunkedArray> data)
+    : field_(std::move(field)), data_(std::move(data)) {}
 
 Status Column::Flatten(MemoryPool* pool,
                        std::vector<std::shared_ptr<Column>>* out) const {
@@ -256,7 +254,7 @@ class SimpleTable : public Table {
       : columns_(columns) {
     schema_ = schema;
     if (num_rows < 0) {
-      if (columns.size() == 0) {
+      if (columns.empty()) {
         num_rows_ = 0;
       } else {
         num_rows_ = columns[0]->length();
@@ -270,7 +268,7 @@ class SimpleTable : public Table {
               const std::vector<std::shared_ptr<Array>>& columns, int64_t num_rows = -1) {
     schema_ = schema;
     if (num_rows < 0) {
-      if (columns.size() == 0) {
+      if (columns.empty()) {
         num_rows_ = 0;
       } else {
         num_rows_ = columns[0]->length();
@@ -438,7 +436,7 @@ Status Table::FromRecordBatches(const std::shared_ptr<Schema>& schema,
 
 Status Table::FromRecordBatches(const std::vector<std::shared_ptr<RecordBatch>>& batches,
                                 std::shared_ptr<Table>* table) {
-  if (batches.size() == 0) {
+  if (batches.empty()) {
     return Status::Invalid("Must pass at least one record batch");
   }
 
@@ -471,7 +469,7 @@ Status Table::FromChunkedStructArray(const std::shared_ptr<ChunkedArray>& array,
 
 Status ConcatenateTables(const std::vector<std::shared_ptr<Table>>& tables,
                          std::shared_ptr<Table>* table) {
-  if (tables.size() == 0) {
+  if (tables.empty()) {
     return Status::Invalid("Must pass at least one table");
   }
 
@@ -608,7 +606,7 @@ TableBatchReader::TableBatchReader(const Table& table) {
   impl_.reset(new TableBatchReaderImpl(table));
 }
 
-TableBatchReader::~TableBatchReader() {}
+TableBatchReader::~TableBatchReader() = default;
 
 std::shared_ptr<Schema> TableBatchReader::schema() const { return impl_->schema(); }
 

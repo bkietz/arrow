@@ -67,7 +67,9 @@ inline bool BaseFloatingEquals(const NumericArray<ArrowType>& left,
 
   if (left.null_count() > 0) {
     for (int64_t i = 0; i < left.length(); ++i) {
-      if (left.IsNull(i)) continue;
+      if (left.IsNull(i)) {
+        continue;
+      }
       if (!equals(left_data[i], right_data[i])) {
         return false;
       }
@@ -92,10 +94,9 @@ inline bool FloatingEquals(const NumericArray<ArrowType>& left,
     return BaseFloatingEquals<ArrowType>(left, right, [](T x, T y) -> bool {
       return (x == y) || (std::isnan(x) && std::isnan(y));
     });
-  } else {
+  }
     return BaseFloatingEquals<ArrowType>(left, right,
                                          [](T x, T y) -> bool { return x == y; });
-  }
 }
 
 template <typename ArrowType>
@@ -109,10 +110,9 @@ inline bool FloatingApproxEquals(const NumericArray<ArrowType>& left,
     return BaseFloatingEquals<ArrowType>(left, right, [epsilon](T x, T y) -> bool {
       return (fabs(x - y) <= epsilon) || (std::isnan(x) && std::isnan(y));
     });
-  } else {
+  }
     return BaseFloatingEquals<ArrowType>(
         left, right, [epsilon](T x, T y) -> bool { return fabs(x - y) <= epsilon; });
-  }
 }
 
 // RangeEqualsVisitor assumes the range sizes are equal
@@ -153,7 +153,9 @@ class RangeEqualsVisitor {
       if (is_null != right.IsNull(o_i)) {
         return false;
       }
-      if (is_null) continue;
+      if (is_null) {
+        continue;
+      }
       const int32_t begin_offset = left.value_offset(i);
       const int32_t end_offset = left.value_offset(i + 1);
       const int32_t right_begin_offset = right.value_offset(o_i);
@@ -164,9 +166,9 @@ class RangeEqualsVisitor {
       }
 
       if (end_offset - begin_offset > 0 &&
-          std::memcmp(left.value_data()->data() + begin_offset,
-                      right.value_data()->data() + right_begin_offset,
-                      static_cast<size_t>(end_offset - begin_offset))) {
+          (std::memcmp(left.value_data()->data() + begin_offset,
+                       right.value_data()->data() + right_begin_offset,
+                       static_cast<size_t>(end_offset - begin_offset)) != 0)) {
         return false;
       }
     }
@@ -185,7 +187,9 @@ class RangeEqualsVisitor {
       if (is_null != right.IsNull(o_i)) {
         return false;
       }
-      if (is_null) continue;
+      if (is_null) {
+        continue;
+      }
       const int32_t begin_offset = left.value_offset(i);
       const int32_t end_offset = left.value_offset(i + 1);
       const int32_t right_begin_offset = right.value_offset(o_i);
@@ -210,9 +214,11 @@ class RangeEqualsVisitor {
       if (left.IsNull(i) != right.IsNull(o_i)) {
         return false;
       }
-      if (left.IsNull(i)) continue;
+      if (left.IsNull(i)) {
+        continue;
+      }
       for (int j = 0; j < left.num_fields(); ++j) {
-        // TODO: really we should be comparing stretches of non-null data rather
+        // TODO(unknown): really we should be comparing stretches of non-null data rather
         // than looking at one value at a time.
         equal_fields = left.field(j)->RangeEquals(i, i + 1, o_i, right.field(j));
         if (!equal_fields) {
@@ -237,8 +243,7 @@ class RangeEqualsVisitor {
     uint8_t max_code = 0;
 
     const std::vector<uint8_t>& type_codes = left_type.type_codes();
-    for (size_t i = 0; i < type_codes.size(); ++i) {
-      const uint8_t code = type_codes[i];
+    for (unsigned char code : type_codes) {
       if (code > max_code) {
         max_code = code;
       }
@@ -259,7 +264,9 @@ class RangeEqualsVisitor {
       if (left.IsNull(i) != right.IsNull(o_i)) {
         return false;
       }
-      if (left.IsNull(i)) continue;
+      if (left.IsNull(i)) {
+        continue;
+      }
       if (left_ids[i] != right_ids[o_i]) {
         return false;
       }
@@ -313,9 +320,11 @@ class RangeEqualsVisitor {
         result_ = false;
         return Status::OK();
       }
-      if (is_null) continue;
+      if (is_null) {
+        continue;
+      }
 
-      if (std::memcmp(left_data + width * i, right_data + width * o_i, width)) {
+      if (std::memcmp(left_data + width * i, right_data + width * o_i, width) != 0) {
         result_ = false;
         return Status::OK();
       }
@@ -408,7 +417,8 @@ static bool IsEqualPrimitive(const PrimitiveArray& left, const PrimitiveArray& r
       }
     }
     return true;
-  } else if (left.null_count() > 0) {
+  }
+  if (left.null_count() > 0) {
     for (int64_t i = 0; i < left.length(); ++i) {
       const bool left_null = left.IsNull(i);
       const bool right_null = right.IsNull(i);
@@ -477,7 +487,7 @@ class ArrayEqualsVisitor : public RangeEqualsVisitor {
     return Status::OK();
   }
 
-  // TODO nan-aware specialization for half-floats
+  // TODO(unknown): nan-aware specialization for half-floats
 
   Status Visit(const FloatArray& left) {
     result_ =
@@ -498,7 +508,7 @@ class ArrayEqualsVisitor : public RangeEqualsVisitor {
     if (left.offset() == 0 && right.offset() == 0) {
       return left.value_offsets()->Equals(*right.value_offsets(),
                                           (left.length() + 1) * sizeof(int32_t));
-    } else {
+    }
       // One of the arrays is sliced; logic is more complicated because the
       // value offsets are not both 0-based
       auto left_offsets =
@@ -513,7 +523,6 @@ class ArrayEqualsVisitor : public RangeEqualsVisitor {
         }
       }
       return true;
-    }
   }
 
   bool CompareBinary(const BinaryArray& left) {
@@ -539,13 +548,13 @@ class ArrayEqualsVisitor : public RangeEqualsVisitor {
       if (left.offset() == 0 && right.offset() == 0) {
         return std::memcmp(left_data, right_data,
                            left.raw_value_offsets()[left.length()]) == 0;
-      } else {
+      }
         const int64_t total_bytes =
             left.value_offset(left.length()) - left.value_offset(0);
         return std::memcmp(left_data + left.value_offset(0),
                            right_data + right.value_offset(0),
                            static_cast<size_t>(total_bytes)) == 0;
-      }
+
     } else {
       // ARROW-537: Only compare data in non-null slots
       const int32_t* left_offsets = left.raw_value_offsets();
@@ -555,7 +564,7 @@ class ArrayEqualsVisitor : public RangeEqualsVisitor {
           continue;
         }
         if (std::memcmp(left_data + left_offsets[i], right_data + right_offsets[i],
-                        left.value_length(i))) {
+                        left.value_length(i)) != 0) {
           return false;
         }
       }
@@ -617,7 +626,7 @@ class ApproxEqualsVisitor : public ArrayEqualsVisitor {
 
   using ArrayEqualsVisitor::Visit;
 
-  // TODO half-floats
+  // TODO(unknown): half-floats
 
   Status Visit(const FloatArray& left) {
     result_ = FloatingApproxEquals<FloatType>(
@@ -700,7 +709,7 @@ class TypeEqualsVisitor {
   typename std::enable_if<std::is_base_of<NoExtraMeta, T>::value ||
                               std::is_base_of<PrimitiveCType, T>::value,
                           Status>::type
-  Visit(const T&) {
+  Visit(const T& /*unused*/) {
     result_ = true;
     return Status::OK();
   }
@@ -982,7 +991,7 @@ struct SparseTensorEqualsImpl<SparseIndexType, SparseIndexType> {
     const uint8_t* right_data = right.data()->data();
 
     return memcmp(left_data, right_data,
-                  static_cast<size_t>(byte_width * left.non_zero_length()));
+                  static_cast<size_t>(byte_width * left.non_zero_length())) != 0;
   }
 };
 
@@ -1014,7 +1023,8 @@ inline bool SparseTensorEqualsImplDispatch(const SparseTensorImpl<SparseIndexTyp
 bool SparseTensorEquals(const SparseTensor& left, const SparseTensor& right) {
   if (&left == &right) {
     return true;
-  } else if (left.type()->id() != right.type()->id()) {
+  }
+  if (left.type()->id() != right.type()->id()) {
     return false;
   } else if (left.size() == 0) {
     return true;

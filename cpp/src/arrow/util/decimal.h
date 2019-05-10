@@ -56,7 +56,7 @@ class ARROW_EXPORT Decimal128 : public BasicDecimal128 {
   constexpr Decimal128(const BasicDecimal128& value) noexcept : BasicDecimal128(value) {}
 
   /// \brief Parse the number from a base 10 string representation.
-  explicit Decimal128(const std::string& value);
+  explicit Decimal128(const std::string& str);
 
   /// \brief Empty constructor creates a Decimal128 with a value of 0.
   // This is required on some older compilers.
@@ -101,7 +101,7 @@ class ARROW_EXPORT Decimal128 : public BasicDecimal128 {
   /// \brief Convert from a big-endian byte representation. The length must be
   ///        between 1 and 16.
   /// \return error status if the length is an invalid value
-  static Status FromBigEndian(const uint8_t* data, int32_t length, Decimal128* out);
+  static Status FromBigEndian(const uint8_t* bytes, int32_t length, Decimal128* out);
 
   /// \brief Convert Decimal128 from one scale to another
   Status Rescale(int32_t original_scale, int32_t new_scale, Decimal128* out) const {

@@ -32,9 +32,9 @@
 #include <string>
 
 #include <fcntl.h>
-#include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>  // IWYU pragma: keep
+#include <cstdlib>
 
 // Defines that don't exist in MinGW
 #if defined(__MINGW32__)
@@ -405,7 +405,7 @@ Status FileRead(int fd, uint8_t* buffer, int64_t nbytes, int64_t* bytes_read) {
     int64_t ret =
         static_cast<int64_t>(_read(fd, buffer, static_cast<uint32_t>(chunksize)));
 #else
-    int64_t ret = static_cast<int64_t>(read(fd, buffer, static_cast<size_t>(chunksize)));
+    auto ret = static_cast<int64_t>(read(fd, buffer, static_cast<size_t>(chunksize)));
 #endif
 
     if (ret == -1) {
@@ -548,9 +548,9 @@ Status SetEnvVar(const char* name, const char* value) {
 #else
   if (setenv(name, value, 1) == 0) {
     return Status::OK();
-  } else {
-    return Status::Invalid("failed setting environment variable");
   }
+    return Status::Invalid("failed setting environment variable");
+
 #endif
 }
 
@@ -568,9 +568,9 @@ Status DelEnvVar(const char* name) {
 #else
   if (unsetenv(name) == 0) {
     return Status::OK();
-  } else {
-    return Status::Invalid("failed deleting environment variable");
   }
+    return Status::Invalid("failed deleting environment variable");
+
 #endif
 }
 

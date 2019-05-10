@@ -689,7 +689,7 @@ class ARROW_EXPORT StructArray : public Array {
   // Return a shared pointer in case the requestor desires to share ownership
   // with this array.  The returned array has its offset, length and null
   // count adjusted.
-  std::shared_ptr<Array> field(int pos) const;
+  std::shared_ptr<Array> field(int i) const;
 
   /// Returns null if name not found
   std::shared_ptr<Array> GetFieldByName(const std::string& name) const;
@@ -890,10 +890,10 @@ class ARROW_EXPORT UnionArray : public Array {
   // For sparse unions, the returned array has its offset, length and null
   // count adjusted.
   // For dense unions, the returned array is unchanged.
-  std::shared_ptr<Array> child(int pos) const;
+  std::shared_ptr<Array> child(int i) const;
 
   /// Only use this while the UnionArray is in scope
-  const Array* UnsafeChild(int pos) const;
+  const Array* UnsafeChild(int i) const;
 
  protected:
   void SetData(const std::shared_ptr<ArrayData>& data);

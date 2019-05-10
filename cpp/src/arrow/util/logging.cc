@@ -24,7 +24,7 @@
 #include <iostream>
 
 #ifdef ARROW_USE_GLOG
-#include <signal.h>
+#include <csignal>
 #include <vector>
 #include "glog/logging.h"
 #endif
@@ -79,7 +79,7 @@ class CerrLog {
 };
 
 #ifdef ARROW_USE_GLOG
-typedef google::LogMessage LoggingProvider;
+using LoggingProvider = google::LogMessage;
 #else
 typedef CerrLog LoggingProvider;
 #endif
@@ -137,7 +137,7 @@ void ArrowLog::StartArrowLog(const std::string& app_name,
     } else {
       // Find the app name without the path.
       size_t pos = app_name.rfind('/');
-      if (pos != app_name.npos && pos + 1 < app_name.length()) {
+      if (pos != std::string::npos && pos + 1 < app_name.length()) {
         app_name_without_path = app_name.substr(pos + 1);
       }
     }
@@ -166,7 +166,7 @@ void ArrowLog::UninstallSignalAction() {
   sigemptyset(&sig_action.sa_mask);
   sig_action.sa_handler = SIG_DFL;
   for (int signal_num : installed_signals) {
-    ARROW_CHECK(sigaction(signal_num, &sig_action, NULL) == 0);
+    ARROW_CHECK(sigaction(signal_num, &sig_action, nullptr) == 0);
   }
 #endif
 }

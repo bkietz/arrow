@@ -18,6 +18,7 @@
 #include "arrow/scalar.h"
 
 #include <memory>
+#include <utility>
 
 #include "arrow/array.h"
 #include "arrow/buffer.h"
@@ -62,9 +63,9 @@ Decimal128Scalar::Decimal128Scalar(const Decimal128& value,
                                    const std::shared_ptr<DataType>& type, bool is_valid)
     : Scalar{type, is_valid}, value(value) {}
 
-ListScalar::ListScalar(const std::shared_ptr<Array>& value,
+ListScalar::ListScalar(std::shared_ptr<Array> value,
                        const std::shared_ptr<DataType>& type, bool is_valid)
-    : Scalar{type, is_valid}, value(value) {}
+    : Scalar{type, is_valid}, value(std::move(value)) {}
 
 ListScalar::ListScalar(const std::shared_ptr<Array>& value, bool is_valid)
     : ListScalar(value, value->type(), is_valid) {}

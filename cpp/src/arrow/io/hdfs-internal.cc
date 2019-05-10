@@ -49,7 +49,7 @@
 namespace fs = boost::filesystem;
 
 #ifndef _WIN32
-static void* libjvm_handle = NULL;
+static void* libjvm_handle = nullptr;
 #else
 static HINSTANCE libjvm_handle = NULL;
 #endif
@@ -93,7 +93,7 @@ static std::vector<fs::path> get_potential_libhdfs_paths() {
 
   const char* libhdfs_dir = std::getenv("ARROW_LIBHDFS_DIR");
   if (libhdfs_dir != nullptr) {
-    search_paths.push_back(fs::path(libhdfs_dir));
+    search_paths.emplace_back(libhdfs_dir);
   }
 
   // All paths with file name
@@ -122,7 +122,7 @@ static std::vector<fs::path> get_potential_libhdfs3_paths() {
 
   const char* libhdfs3_dir = std::getenv("ARROW_LIBHDFS3_DIR");
   if (libhdfs3_dir != nullptr) {
-    search_paths.push_back(fs::path(libhdfs3_dir));
+    search_paths.emplace_back(libhdfs3_dir);
   }
 
   // All paths with file name
@@ -179,8 +179,8 @@ static std::vector<fs::path> get_potential_libjvm_paths() {
   file_name = "libjvm.so";
 #endif
   // From direct environment variable
-  char* env_value = NULL;
-  if ((env_value = getenv("JAVA_HOME")) != NULL) {
+  char* env_value = nullptr;
+  if ((env_value = getenv("JAVA_HOME")) != nullptr) {
     search_prefixes.insert(search_prefixes.begin(), env_value);
   }
 
@@ -204,20 +204,19 @@ static arrow::Status try_dlopen(std::vector<fs::path> potential_paths, const cha
     i.make_preferred();
     out_handle = dlopen(i.native().c_str(), RTLD_NOW | RTLD_LOCAL);
 
-    if (out_handle != NULL) {
+    if (out_handle != nullptr) {
       // std::cout << "Loaded " << i << std::endl;
       break;
-    } else {
-      const char* err_msg = dlerror();
-      if (err_msg != NULL) {
-        error_messages.push_back(std::string(err_msg));
-      } else {
-        error_messages.push_back(std::string(" returned NULL"));
-      }
     }
+      const char* err_msg = dlerror();
+      if (err_msg != nullptr) {
+        error_messages.emplace_back(err_msg);
+      } else {
+        error_messages.emplace_back(" returned NULL");
+      }
   }
 
-  if (out_handle == NULL) {
+  if (out_handle == nullptr) {
     return arrow::Status::IOError("Unable to load ", name);
   }
 
@@ -249,7 +248,9 @@ static arrow::Status try_dlopen(std::vector<fs::path> potential_paths, const cha
 #endif  // _WIN32
 
 static inline void* GetLibrarySymbol(void* handle, const char* symbol) {
-  if (handle == NULL) return NULL;
+  if (handle == nullptr) {
+    return nullptr;
+  }
 #ifndef _WIN32
   return dlsym(handle, symbol);
 #else
@@ -287,7 +288,7 @@ namespace internal {
 static LibHdfsShim libhdfs_shim;
 static LibHdfsShim libhdfs3_shim;
 
-hdfsBuilder* LibHdfsShim::NewBuilder(void) { return this->hdfsNewBuilder(); }
+hdfsBuilder* LibHdfsShim::NewBuilder() { return this->hdfsNewBuilder(); }
 
 void LibHdfsShim::BuilderSetNameNode(hdfsBuilder* bld, const char* nn) {
   this->hdfsBuilderSetNameNode(bld, nn);
@@ -363,26 +364,26 @@ int LibHdfsShim::Flush(hdfsFS fs, hdfsFile file) { return this->hdfsFlush(fs, fi
 
 int LibHdfsShim::Available(hdfsFS fs, hdfsFile file) {
   GET_SYMBOL(this, hdfsAvailable);
-  if (this->hdfsAvailable)
+  if (this->hdfsAvailable != nullptr) {
     return this->hdfsAvailable(fs, file);
-  else
-    return 0;
+  }
+  { return 0; }
 }
 
 int LibHdfsShim::Copy(hdfsFS srcFS, const char* src, hdfsFS dstFS, const char* dst) {
   GET_SYMBOL(this, hdfsCopy);
-  if (this->hdfsCopy)
+  if (this->hdfsCopy != nullptr) {
     return this->hdfsCopy(srcFS, src, dstFS, dst);
-  else
-    return 0;
+  }
+  { return 0; }
 }
 
 int LibHdfsShim::Move(hdfsFS srcFS, const char* src, hdfsFS dstFS, const char* dst) {
   GET_SYMBOL(this, hdfsMove);
-  if (this->hdfsMove)
+  if (this->hdfsMove != nullptr) {
     return this->hdfsMove(srcFS, src, dstFS, dst);
-  else
-    return 0;
+  }
+  { return 0; }
 }
 
 int LibHdfsShim::Delete(hdfsFS fs, const char* path, int recursive) {
@@ -391,28 +392,26 @@ int LibHdfsShim::Delete(hdfsFS fs, const char* path, int recursive) {
 
 int LibHdfsShim::Rename(hdfsFS fs, const char* oldPath, const char* newPath) {
   GET_SYMBOL(this, hdfsRename);
-  if (this->hdfsRename)
+  if (this->hdfsRename != nullptr) {
     return this->hdfsRename(fs, oldPath, newPath);
-  else
-    return 0;
+  }
+  { return 0; }
 }
 
 char* LibHdfsShim::GetWorkingDirectory(hdfsFS fs, char* buffer, size_t bufferSize) {
   GET_SYMBOL(this, hdfsGetWorkingDirectory);
-  if (this->hdfsGetWorkingDirectory) {
+  if (this->hdfsGetWorkingDirectory != nullptr) {
     return this->hdfsGetWorkingDirectory(fs, buffer, bufferSize);
-  } else {
-    return NULL;
   }
+  return nullptr;
 }
 
 int LibHdfsShim::SetWorkingDirectory(hdfsFS fs, const char* path) {
   GET_SYMBOL(this, hdfsSetWorkingDirectory);
-  if (this->hdfsSetWorkingDirectory) {
+  if (this->hdfsSetWorkingDirectory != nullptr) {
     return this->hdfsSetWorkingDirectory(fs, path);
-  } else {
-    return 0;
   }
+    return 0;
 }
 
 int LibHdfsShim::MakeDirectory(hdfsFS fs, const char* path) {
@@ -421,11 +420,10 @@ int LibHdfsShim::MakeDirectory(hdfsFS fs, const char* path) {
 
 int LibHdfsShim::SetReplication(hdfsFS fs, const char* path, int16_t replication) {
   GET_SYMBOL(this, hdfsSetReplication);
-  if (this->hdfsSetReplication) {
+  if (this->hdfsSetReplication != nullptr) {
     return this->hdfsSetReplication(fs, path, replication);
-  } else {
-    return 0;
   }
+    return 0;
 }
 
 hdfsFileInfo* LibHdfsShim::ListDirectory(hdfsFS fs, const char* path, int* numEntries) {
@@ -443,27 +441,25 @@ void LibHdfsShim::FreeFileInfo(hdfsFileInfo* hdfsFileInfo, int numEntries) {
 char*** LibHdfsShim::GetHosts(hdfsFS fs, const char* path, tOffset start,
                               tOffset length) {
   GET_SYMBOL(this, hdfsGetHosts);
-  if (this->hdfsGetHosts) {
+  if (this->hdfsGetHosts != nullptr) {
     return this->hdfsGetHosts(fs, path, start, length);
-  } else {
-    return NULL;
   }
+  return nullptr;
 }
 
 void LibHdfsShim::FreeHosts(char*** blockHosts) {
   GET_SYMBOL(this, hdfsFreeHosts);
-  if (this->hdfsFreeHosts) {
+  if (this->hdfsFreeHosts != nullptr) {
     this->hdfsFreeHosts(blockHosts);
   }
 }
 
 tOffset LibHdfsShim::GetDefaultBlockSize(hdfsFS fs) {
   GET_SYMBOL(this, hdfsGetDefaultBlockSize);
-  if (this->hdfsGetDefaultBlockSize) {
+  if (this->hdfsGetDefaultBlockSize != nullptr) {
     return this->hdfsGetDefaultBlockSize(fs);
-  } else {
-    return 0;
   }
+    return 0;
 }
 
 tOffset LibHdfsShim::GetCapacity(hdfsFS fs) { return this->hdfsGetCapacity(fs); }
@@ -481,11 +477,10 @@ int LibHdfsShim::Chmod(hdfsFS fs, const char* path, short mode) {  // NOLINT
 
 int LibHdfsShim::Utime(hdfsFS fs, const char* path, tTime mtime, tTime atime) {
   GET_SYMBOL(this, hdfsUtime);
-  if (this->hdfsUtime) {
+  if (this->hdfsUtime != nullptr) {
     return this->hdfsUtime(fs, path, mtime, atime);
-  } else {
-    return 0;
   }
+    return 0;
 }
 
 Status LibHdfsShim::GetRequiredSymbols() {

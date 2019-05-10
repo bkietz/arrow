@@ -130,19 +130,19 @@ Status StringBuilder::AppendValues(const std::vector<std::string>& values,
   RETURN_NOT_OK(value_data_builder_.Reserve(total_length));
   RETURN_NOT_OK(offsets_builder_.Reserve(values.size()));
 
-  if (valid_bytes) {
+  if (valid_bytes != nullptr) {
     for (std::size_t i = 0; i < values.size(); ++i) {
       UnsafeAppendNextOffset();
-      if (valid_bytes[i]) {
+      if (valid_bytes[i] != 0u) {
         value_data_builder_.UnsafeAppend(
             reinterpret_cast<const uint8_t*>(values[i].data()), values[i].size());
       }
     }
   } else {
-    for (std::size_t i = 0; i < values.size(); ++i) {
+    for (const auto& value : values) {
       UnsafeAppendNextOffset();
-      value_data_builder_.UnsafeAppend(reinterpret_cast<const uint8_t*>(values[i].data()),
-                                       values[i].size());
+      value_data_builder_.UnsafeAppend(reinterpret_cast<const uint8_t*>(value.data()),
+                                       value.size());
     }
   }
 
@@ -156,7 +156,7 @@ Status StringBuilder::AppendValues(const char** values, int64_t length,
   std::vector<std::size_t> value_lengths(length);
   bool have_null_value = false;
   for (int64_t i = 0; i < length; ++i) {
-    if (values[i]) {
+    if (values[i] != nullptr) {
       auto value_length = strlen(values[i]);
       value_lengths[i] = value_length;
       total_length += value_length;
@@ -168,12 +168,12 @@ Status StringBuilder::AppendValues(const char** values, int64_t length,
   RETURN_NOT_OK(value_data_builder_.Reserve(total_length));
   RETURN_NOT_OK(offsets_builder_.Reserve(length));
 
-  if (valid_bytes) {
+  if (valid_bytes != nullptr) {
     int64_t valid_bytes_offset = 0;
     for (int64_t i = 0; i < length; ++i) {
       UnsafeAppendNextOffset();
-      if (valid_bytes[i]) {
-        if (values[i]) {
+      if (valid_bytes[i] != 0u) {
+        if (values[i] != nullptr) {
           value_data_builder_.UnsafeAppend(reinterpret_cast<const uint8_t*>(values[i]),
                                            value_lengths[i]);
         } else {
@@ -189,7 +189,7 @@ Status StringBuilder::AppendValues(const char** values, int64_t length,
       std::vector<uint8_t> valid_vector(length, 0);
       for (int64_t i = 0; i < length; ++i) {
         UnsafeAppendNextOffset();
-        if (values[i]) {
+        if (values[i] != nullptr) {
           value_data_builder_.UnsafeAppend(reinterpret_cast<const uint8_t*>(values[i]),
                                            value_lengths[i]);
           valid_vector[i] = 1;
@@ -288,7 +288,7 @@ ChunkedBinaryBuilder::ChunkedBinaryBuilder(int32_t max_chunk_size, MemoryPool* p
       builder_(new BinaryBuilder(pool)) {}
 
 Status ChunkedBinaryBuilder::Finish(ArrayVector* out) {
-  if (builder_->length() > 0 || chunks_.size() == 0) {
+  if (builder_->length() > 0 || chunks_.empty()) {
     std::shared_ptr<Array> chunk;
     RETURN_NOT_OK(builder_->Finish(&chunk));
     chunks_.emplace_back(std::move(chunk));
@@ -310,10 +310,10 @@ Status ChunkedStringBuilder::Finish(ArrayVector* out) {
   RETURN_NOT_OK(ChunkedBinaryBuilder::Finish(out));
 
   // Change data type to string/utf8
-  for (size_t i = 0; i < out->size(); ++i) {
-    std::shared_ptr<ArrayData> data = (*out)[i]->data();
+  for (auto& i : *out) {
+    std::shared_ptr<ArrayData> data = i->data();
     data->type = ::arrow::utf8();
-    (*out)[i] = std::make_shared<StringArray>(data);
+    i = std::make_shared<StringArray>(data);
   }
   return Status::OK();
 }

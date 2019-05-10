@@ -55,13 +55,13 @@ void ColumnBuilder::Append(const std::shared_ptr<BlockParser>& parser) {
 
 class TypedColumnBuilder : public ColumnBuilder {
  public:
-  TypedColumnBuilder(const std::shared_ptr<DataType>& type, int32_t col_index,
-                     const ConvertOptions& options, MemoryPool* pool,
+  TypedColumnBuilder(std::shared_ptr<DataType> type, int32_t col_index,
+                     ConvertOptions options, MemoryPool* pool,
                      const std::shared_ptr<internal::TaskGroup>& task_group)
       : ColumnBuilder(task_group),
-        type_(type),
+        type_(std::move(type)),
         col_index_(col_index),
-        options_(options),
+        options_(std::move(options)),
         pool_(pool) {}
 
   Status Init();
@@ -73,11 +73,10 @@ class TypedColumnBuilder : public ColumnBuilder {
   Status WrapConversionError(const Status& st) {
     if (st.ok()) {
       return st;
-    } else {
+    }
       std::stringstream ss;
       ss << "In column #" << col_index_ << ": " << st.message();
       return Status(st.code(), ss.str());
-    }
   }
 
   std::mutex mutex_;
@@ -100,7 +99,7 @@ void TypedColumnBuilder::Insert(int64_t block_index,
 
   // Create a null Array pointer at the back at the list
   // and spawn a task to initialize it after conversion
-  size_t chunk_index = static_cast<size_t>(block_index);
+  auto chunk_index = static_cast<size_t>(block_index);
   {
     std::lock_guard<std::mutex> lock(mutex_);
     if (chunks_.size() <= chunk_index) {
@@ -139,12 +138,11 @@ Status TypedColumnBuilder::Finish(std::shared_ptr<ChunkedArray>* out) {
 
 class InferringColumnBuilder : public ColumnBuilder {
  public:
-  InferringColumnBuilder(int32_t col_index, const ConvertOptions& options,
-                         MemoryPool* pool,
+  InferringColumnBuilder(int32_t col_index, ConvertOptions options, MemoryPool* pool,
                          const std::shared_ptr<internal::TaskGroup>& task_group)
       : ColumnBuilder(task_group),
         col_index_(col_index),
-        options_(options),
+        options_(std::move(options)),
         pool_(pool) {}
 
   Status Init();
@@ -281,7 +279,8 @@ Status InferringColumnBuilder::TryConvertChunk(size_t chunk_index) {
       parsers_[chunk_index].reset();
     }
     return Status::OK();
-  } else if (can_loosen_type_) {
+  }
+  if (can_loosen_type_) {
     // Conversion failed, try another type
     RETURN_NOT_OK(LoosenType());
 
@@ -313,7 +312,7 @@ Status InferringColumnBuilder::TryConvertChunk(size_t chunk_index) {
 void InferringColumnBuilder::Insert(int64_t block_index,
                                     const std::shared_ptr<BlockParser>& parser) {
   // Create a slot for the new chunk and spawn a task to convert it
-  size_t chunk_index = static_cast<size_t>(block_index);
+  auto chunk_index = static_cast<size_t>(block_index);
   {
     std::lock_guard<std::mutex> lock(mutex_);
 

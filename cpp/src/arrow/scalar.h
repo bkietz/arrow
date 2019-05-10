@@ -152,7 +152,7 @@ struct ARROW_EXPORT Decimal128Scalar : public Scalar {
 struct ARROW_EXPORT ListScalar : public Scalar {
   std::shared_ptr<Array> value;
 
-  ListScalar(const std::shared_ptr<Array>& value, const std::shared_ptr<DataType>& type,
+  ListScalar(std::shared_ptr<Array> value, const std::shared_ptr<DataType>& type,
              bool is_valid = true);
 
   explicit ListScalar(const std::shared_ptr<Array>& value, bool is_valid = true);

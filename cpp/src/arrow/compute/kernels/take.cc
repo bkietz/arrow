@@ -70,8 +70,8 @@ Status UnsafeAppend(StringBuilder* builder, util::string_view value) {
 
 template <bool AllValuesValid, bool AllIndicesValid, typename ValueArray,
           typename IndexArray, typename OutBuilder>
-Status TakeImpl(FunctionContext*, const ValueArray& values, const IndexArray& indices,
-                OutBuilder* builder) {
+Status TakeImpl(FunctionContext* /*unused*/, const ValueArray& values,
+                const IndexArray& indices, OutBuilder* builder) {
   auto raw_indices = indices.raw_values();
   for (int64_t i = 0; i < indices.length(); ++i) {
     if (!AllIndicesValid && indices.IsNull(i)) {
@@ -115,11 +115,11 @@ struct UnpackValues {
   using IndexArrayRef = const typename TypeTraits<IndexType>::ArrayType&;
 
   template <typename ValueType>
-  Status Visit(const ValueType&) {
+  Status Visit(const ValueType& /*unused*/) {
     using ValueArrayRef = const typename TypeTraits<ValueType>::ArrayType&;
     using OutBuilder = typename TypeTraits<ValueType>::BuilderType;
-    IndexArrayRef indices = static_cast<IndexArrayRef>(*params_.indices);
-    ValueArrayRef values = static_cast<ValueArrayRef>(*params_.values);
+    auto indices = static_cast<IndexArrayRef>(*params_.indices);
+    auto values = static_cast<ValueArrayRef>(*params_.values);
     std::unique_ptr<ArrayBuilder> builder;
     RETURN_NOT_OK(MakeBuilder(params_.context->memory_pool(), values.type(), &builder));
     RETURN_NOT_OK(builder->Reserve(indices.length()));
@@ -182,7 +182,7 @@ struct UnpackValues {
 
 struct UnpackIndices {
   template <typename IndexType>
-  enable_if_integer<IndexType, Status> Visit(const IndexType&) {
+  enable_if_integer<IndexType, Status> Visit(const IndexType& /*unused*/) {
     UnpackValues<IndexType> unpack = {params_};
     return VisitTypeInline(*params_.values->type(), &unpack);
   }

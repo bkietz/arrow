@@ -56,7 +56,8 @@ class CompareFunction final : public FilterFunction {
  public:
   explicit CompareFunction(FunctionContext* ctx) : ctx_(ctx) {}
 
-  Status Filter(const ArrayData& input, const Scalar& scalar, ArrayData* output) const {
+  Status Filter(const ArrayData& input, const Scalar& scalar,
+                ArrayData* output) const override {
     // Caller must cast
     DCHECK(input.type->Equals(scalar.type));
     // Output must be a boolean array

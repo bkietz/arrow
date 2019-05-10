@@ -449,18 +449,17 @@ Status BlockParser::DoParse(const char* start, uint32_t size, bool is_final,
     if (options_.escaping) {
       return DoParseSpecialized<SpecializedOptions<true, true>>(start, size, is_final,
                                                                 out_size);
-    } else {
+    }
       return DoParseSpecialized<SpecializedOptions<true, false>>(start, size, is_final,
                                                                  out_size);
-    }
+
   } else {
     if (options_.escaping) {
       return DoParseSpecialized<SpecializedOptions<false, true>>(start, size, is_final,
                                                                  out_size);
-    } else {
+    }
       return DoParseSpecialized<SpecializedOptions<false, false>>(start, size, is_final,
                                                                   out_size);
-    }
   }
 }
 

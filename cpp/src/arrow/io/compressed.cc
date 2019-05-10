@@ -43,8 +43,12 @@ namespace io {
 
 class CompressedOutputStream::Impl {
  public:
-  Impl(MemoryPool* pool, Codec* codec, const std::shared_ptr<OutputStream>& raw)
-      : pool_(pool), raw_(raw), codec_(codec), is_open_(true), compressed_pos_(0) {}
+  Impl(MemoryPool* pool, Codec* codec, std::shared_ptr<OutputStream> raw)
+      : pool_(pool),
+        raw_(std::move(raw)),
+        codec_(codec),
+        is_open_(true),
+        compressed_pos_(0) {}
 
   ~Impl() { DCHECK_OK(Close()); }
 
@@ -164,9 +168,8 @@ class CompressedOutputStream::Impl {
       is_open_ = false;
       RETURN_NOT_OK(FinalizeCompression());
       return raw_->Close();
-    } else {
-      return Status::OK();
     }
+      return Status::OK();
   }
 
   bool closed() {
@@ -205,7 +208,7 @@ Status CompressedOutputStream::Make(MemoryPool* pool, util::Codec* codec,
   return Status::OK();
 }
 
-CompressedOutputStream::~CompressedOutputStream() {}
+CompressedOutputStream::~CompressedOutputStream() = default;
 
 Status CompressedOutputStream::Close() { return impl_->Close(); }
 
@@ -228,8 +231,8 @@ std::shared_ptr<OutputStream> CompressedOutputStream::raw() const { return impl_
 
 class CompressedInputStream::Impl {
  public:
-  Impl(MemoryPool* pool, Codec* codec, const std::shared_ptr<InputStream>& raw)
-      : pool_(pool), raw_(raw), codec_(codec), is_open_(true) {}
+  Impl(MemoryPool* pool, Codec* codec, std::shared_ptr<InputStream> raw)
+      : pool_(pool), raw_(std::move(raw)), codec_(codec), is_open_(true) {}
 
   Status Init() {
     RETURN_NOT_OK(codec_->MakeDecompressor(&decompressor_));
@@ -243,9 +246,8 @@ class CompressedInputStream::Impl {
     if (is_open_) {
       is_open_ = false;
       return raw_->Close();
-    } else {
-      return Status::OK();
     }
+      return Status::OK();
   }
 
   bool closed() {
@@ -391,7 +393,7 @@ Status CompressedInputStream::Make(MemoryPool* pool, Codec* codec,
   return Status::OK();
 }
 
-CompressedInputStream::~CompressedInputStream() {}
+CompressedInputStream::~CompressedInputStream() = default;
 
 Status CompressedInputStream::Close() { return impl_->Close(); }
 

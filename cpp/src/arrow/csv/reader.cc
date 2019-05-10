@@ -67,12 +67,11 @@ static constexpr int64_t kDefaultRightPadding = 16;
 class BaseTableReader : public csv::TableReader {
  public:
   BaseTableReader(MemoryPool* pool, const ReadOptions& read_options,
-                  const ParseOptions& parse_options,
-                  const ConvertOptions& convert_options)
+                  const ParseOptions& parse_options, ConvertOptions convert_options)
       : pool_(pool),
         read_options_(read_options),
         parse_options_(parse_options),
-        convert_options_(convert_options) {}
+        convert_options_(std::move(convert_options)) {}
 
  protected:
   // Read a next data block, stitch it to trailing data
@@ -136,7 +135,7 @@ class BaseTableReader : public csv::TableReader {
   Status ProcessHeader() {
     DCHECK_GT(cur_size_, 0);
     if (parse_options_.header_rows == 0) {
-      // TODO allow passing names and/or generate column numbers?
+      // TODO(unknown): allow passing names and/or generate column numbers?
       return Status::Invalid("header_rows == 0 needs explicit column names");
     }
 
@@ -249,7 +248,7 @@ class SerialTableReader : public BaseTableReader {
         kDefaultRightPadding);
   }
 
-  Status Read(std::shared_ptr<Table>* out) {
+  Status Read(std::shared_ptr<Table>* out) override {
     task_group_ = internal::TaskGroup::MakeSerial();
 
     // First block
@@ -315,7 +314,7 @@ class ThreadedTableReader : public BaseTableReader {
         kDefaultRightPadding);
   }
 
-  ~ThreadedTableReader() {
+  ~ThreadedTableReader() override {
     if (task_group_) {
       // In case of error, make sure all pending tasks are finished before
       // we start destroying BaseTableReader members
@@ -323,7 +322,7 @@ class ThreadedTableReader : public BaseTableReader {
     }
   }
 
-  Status Read(std::shared_ptr<Table>* out) {
+  Status Read(std::shared_ptr<Table>* out) override {
     task_group_ = internal::TaskGroup::MakeThreaded(thread_pool_);
     static constexpr int32_t max_num_rows = std::numeric_limits<int32_t>::max();
     Chunker chunker(parse_options_);
@@ -414,12 +413,11 @@ Status TableReader::Make(MemoryPool* pool, std::shared_ptr<io::InputStream> inpu
         pool, input, GetCpuThreadPool(), read_options, parse_options, convert_options);
     *out = result;
     return Status::OK();
-  } else {
+  }
     result = std::make_shared<SerialTableReader>(pool, input, read_options, parse_options,
                                                  convert_options);
     *out = result;
     return Status::OK();
-  }
 }
 
 }  // namespace csv

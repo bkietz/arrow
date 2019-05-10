@@ -315,7 +315,7 @@ Status BufferReader::ReadAt(int64_t position, int64_t nbytes, int64_t* bytes_rea
     return Status::IOError("Cannot read a negative number of bytes from BufferReader.");
   }
   *bytes_read = std::min(nbytes, size_ - position);
-  if (*bytes_read) {
+  if (*bytes_read != 0) {
     memcpy(buffer, data_ + position, *bytes_read);
   }
   return Status::OK();

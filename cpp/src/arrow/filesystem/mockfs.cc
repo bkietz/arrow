@@ -57,7 +57,7 @@ struct File {
   std::string name;
   std::string data;
 
-  File(TimePoint mtime, const std::string& name) : mtime(mtime), name(name) {}
+  File(TimePoint mtime, std::string name) : mtime(mtime), name(std::move(name)) {}
 
   int64_t size() const { return static_cast<int64_t>(data.length()); }
 };
@@ -67,16 +67,15 @@ struct Directory {
   TimePoint mtime;
   std::map<std::string, std::unique_ptr<Entry>> entries;
 
-  Directory(const std::string& name, TimePoint mtime) : name(name), mtime(mtime) {}
+  Directory(std::string name, TimePoint mtime) : name(std::move(name)), mtime(mtime) {}
   Directory(Directory&&) = default;
 
   Entry* Find(const std::string& s) {
     auto it = entries.find(s);
     if (it != entries.end()) {
       return it->second.get();
-    } else {
-      return nullptr;
     }
+      return nullptr;
   }
 
   bool CreateEntry(const std::string& s, std::unique_ptr<Entry> entry) {
@@ -159,7 +158,7 @@ class MockFSOutputStream : public io::OutputStream {
  public:
   explicit MockFSOutputStream(File* file) : file_(file), closed_(false) {}
 
-  ~MockFSOutputStream() override {}
+  ~MockFSOutputStream() override = default;
 
   // Implement the OutputStream interface
   Status Close() override {
@@ -347,7 +346,7 @@ class MockFileSystem::Impl {
   }
 };
 
-MockFileSystem::~MockFileSystem() {}
+MockFileSystem::~MockFileSystem() = default;
 
 MockFileSystem::MockFileSystem(TimePoint current_time) {
   impl_ = std::unique_ptr<Impl>(new Impl(current_time));
@@ -450,9 +449,8 @@ Status MockFileSystem::GetTargetStats(const Selector& selector,
     // Base directory does not exist
     if (selector.allow_non_existent) {
       return Status::OK();
-    } else {
-      return PathNotFound(selector.base_dir);
     }
+      return PathNotFound(selector.base_dir);
   }
   if (!base_dir->is_dir()) {
     return NotADir(selector.base_dir);

@@ -20,7 +20,7 @@
 namespace arrow {
 namespace csv {
 
-ParseOptions ParseOptions::Defaults() { return ParseOptions(); }
+ParseOptions ParseOptions::Defaults() { return {}; }
 
 ConvertOptions ConvertOptions::Defaults() {
   auto options = ConvertOptions();
@@ -33,7 +33,7 @@ ConvertOptions ConvertOptions::Defaults() {
   return options;
 }
 
-ReadOptions ReadOptions::Defaults() { return ReadOptions(); }
+ReadOptions ReadOptions::Defaults() { return {}; }
 
 }  // namespace csv
 }  // namespace arrow

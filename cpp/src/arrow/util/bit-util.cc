@@ -146,7 +146,7 @@ void TransferBitmap(const uint8_t* data, int64_t offset, int64_t length,
 
     if (bit_offset > 0) {
       uint8_t carry_mask = BitUtil::kPrecedingBitmask[bit_offset];
-      uint8_t carry_shift = static_cast<uint8_t>(8U - static_cast<uint8_t>(bit_offset));
+      auto carry_shift = static_cast<uint8_t>(8U - static_cast<uint8_t>(bit_offset));
 
       uint8_t carry = 0U;
       if (BitUtil::BytesForBits(length + bit_offset) > num_bytes) {

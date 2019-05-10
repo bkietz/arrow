@@ -23,8 +23,8 @@
 #include <sys/sysctl.h>
 #endif
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstring>
 
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -86,9 +86,9 @@ namespace {
 // Returns a bitmap of flags.
 int64_t ParseCPUFlags(const std::string& values) {
   int64_t flags = 0;
-  for (int i = 0; i < num_flags; ++i) {
-    if (contains(values, flag_mappings[i].name)) {
-      flags |= flag_mappings[i].flag;
+  for (auto& flag_mapping : flag_mappings) {
+    if (contains(values, flag_mapping.name)) {
+      flags |= flag_mapping.flag;
     }
   }
   return flags;
@@ -228,23 +228,25 @@ void CpuInfo::Init() {
       value = line.substr(colon + 1, std::string::npos);
       trim(name);
       trim(value);
-      if (name.compare("flags") == 0) {
+      if (name == "flags") {
         hardware_flags_ |= ParseCPUFlags(value);
-      } else if (name.compare("cpu MHz") == 0) {
+      } else if (name == "cpu MHz") {
         // Every core will report a different speed.  We'll take the max, assuming
         // that when impala is running, the core will not be in a lower power state.
-        // TODO: is there a more robust way to do this, such as
+        // TODO(unknown): is there a more robust way to do this, such as
         // Window's QueryPerformanceFrequency()
-        float mhz = static_cast<float>(atof(value.c_str()));
+        auto mhz = static_cast<float>(atof(value.c_str()));
         max_mhz = max(mhz, max_mhz);
-      } else if (name.compare("processor") == 0) {
+      } else if (name == "processor") {
         ++num_cores;
-      } else if (name.compare("model name") == 0) {
+      } else if (name == "model name") {
         model_name_ = value;
       }
     }
   }
-  if (cpuinfo.is_open()) cpuinfo.close();
+  if (cpuinfo.is_open()) {
+    cpuinfo.close();
+  }
 #endif
 
 #ifdef __APPLE__

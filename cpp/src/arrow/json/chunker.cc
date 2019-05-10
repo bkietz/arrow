@@ -114,11 +114,15 @@ class MultiStringStream {
     std::reverse(strings_.begin(), strings_.end());
   }
   char Peek() const {
-    if (strings_.size() == 0) return '\0';
+    if (strings_.empty()) {
+      return '\0';
+    }
     return strings_.back()[0];
   }
   char Take() {
-    if (strings_.size() == 0) return '\0';
+    if (strings_.empty()) {
+      return '\0';
+    }
     char taken = strings_.back()[0];
     if (strings_.back().size() == 1) {
       strings_.pop_back();
@@ -129,13 +133,13 @@ class MultiStringStream {
     return taken;
   }
   size_t Tell() { return index_; }
-  void Put(char) { ARROW_LOG(FATAL) << "not implemented"; }
+  void Put(char /*unused*/) { ARROW_LOG(FATAL) << "not implemented"; }
   void Flush() { ARROW_LOG(FATAL) << "not implemented"; }
   char* PutBegin() {
     ARROW_LOG(FATAL) << "not implemented";
     return nullptr;
   }
-  size_t PutEnd(char*) {
+  size_t PutEnd(char* /*unused*/) {
     ARROW_LOG(FATAL) << "not implemented";
     return 0;
   }

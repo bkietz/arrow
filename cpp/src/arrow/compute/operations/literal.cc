@@ -18,6 +18,7 @@
 #include "arrow/compute/operations/literal.h"
 
 #include <memory>
+#include <utility>
 
 #include "arrow/compute/expression.h"
 #include "arrow/compute/logical_type.h"
@@ -27,7 +28,7 @@ namespace arrow {
 namespace compute {
 namespace ops {
 
-Literal::Literal(const std::shared_ptr<Scalar>& value) : value_(value) {}
+Literal::Literal(std::shared_ptr<Scalar> value) : value_(std::move(value)) {}
 
 Status Literal::ToExpr(std::shared_ptr<Expr>* out) const {
   std::shared_ptr<LogicalType> ty;

@@ -33,7 +33,7 @@ namespace ops {
 /// scalar value
 class ARROW_EXPORT Literal : public Operation {
  public:
-  explicit Literal(const std::shared_ptr<Scalar>& value);
+  explicit Literal(std::shared_ptr<Scalar> value);
   Status ToExpr(std::shared_ptr<Expr>* out) const override;
 
  private:

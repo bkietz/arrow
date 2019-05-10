@@ -127,7 +127,7 @@ Status InvokeBinaryArrayKernel(FunctionContext* ctx, BinaryKernel* kernel,
   if (right_length != left_length) {
     return Status::Invalid("Right and left have different lengths");
   }
-  // TODO: Remove duplication with ChunkedArray::Equals
+  // TODO(unknown): Remove duplication with ChunkedArray::Equals
   int left_chunk_idx = 0;
   int64_t left_start_idx = 0;
   int right_chunk_idx = 0;
@@ -179,7 +179,8 @@ Datum WrapArraysLike(const Datum& value,
   // Create right kind of datum
   if (value.kind() == Datum::ARRAY) {
     return Datum(arrays[0]->data());
-  } else if (value.kind() == Datum::CHUNKED_ARRAY) {
+  }
+  if (value.kind() == Datum::CHUNKED_ARRAY) {
     return Datum(std::make_shared<ChunkedArray>(arrays));
   } else {
     DCHECK(false) << "unhandled datum kind";
@@ -192,7 +193,8 @@ Datum WrapDatumsLike(const Datum& value, const std::vector<Datum>& datums) {
   if (value.kind() == Datum::ARRAY) {
     DCHECK_EQ(1, datums.size());
     return Datum(datums[0].array());
-  } else if (value.kind() == Datum::CHUNKED_ARRAY) {
+  }
+  if (value.kind() == Datum::CHUNKED_ARRAY) {
     std::vector<std::shared_ptr<Array>> arrays;
     for (const Datum& datum : datums) {
       DCHECK_EQ(Datum::ARRAY, datum.kind());
@@ -210,7 +212,7 @@ PrimitiveAllocatingUnaryKernel::PrimitiveAllocatingUnaryKernel(UnaryKernel* dele
 
 Status PropagateNulls(FunctionContext* ctx, const ArrayData& input, ArrayData* output) {
   const int64_t length = input.length;
-  if (output->buffers.size() == 0) {
+  if (output->buffers.empty()) {
     // Ensure we can assign a buffer
     output->buffers.resize(1);
   }
@@ -238,7 +240,7 @@ Status PropagateNulls(FunctionContext* ctx, const ArrayData& input, ArrayData* o
 
 Status SetAllNulls(FunctionContext* ctx, const ArrayData& input, ArrayData* output) {
   const int64_t length = input.length;
-  if (output->buffers.size() == 0) {
+  if (output->buffers.empty()) {
     // Ensure we can assign a buffer
     output->buffers.resize(1);
   }
@@ -258,7 +260,7 @@ Status SetAllNulls(FunctionContext* ctx, const ArrayData& input, ArrayData* outp
 
 Status AssignNullIntersection(FunctionContext* ctx, const ArrayData& left,
                               const ArrayData& right, ArrayData* output) {
-  if (output->buffers.size() == 0) {
+  if (output->buffers.empty()) {
     // Ensure we can assign a buffer
     output->buffers.resize(1);
   }
@@ -271,7 +273,8 @@ Status AssignNullIntersection(FunctionContext* ctx, const ArrayData& left,
     output->null_count = kUnknownNullCount;
     output->GetNullCount();
     return Status::OK();
-  } else if (left.null_count != 0) {
+  }
+  if (left.null_count != 0) {
     return PropagateNulls(ctx, left, output);
   } else {
     // right has a positive null_count or both are zero.

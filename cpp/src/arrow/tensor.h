@@ -67,9 +67,9 @@ class ARROW_EXPORT Tensor {
          const std::vector<int64_t>& shape, const std::vector<int64_t>& strides);
 
   /// Constructor with non-negative strides and dimension names
-  Tensor(const std::shared_ptr<DataType>& type, const std::shared_ptr<Buffer>& data,
+  Tensor(const std::shared_ptr<DataType>& type, std::shared_ptr<Buffer> data,
          const std::vector<int64_t>& shape, const std::vector<int64_t>& strides,
-         const std::vector<std::string>& dim_names);
+         std::vector<std::string> dim_names);
 
   std::shared_ptr<DataType> type() const { return type_; }
   std::shared_ptr<Buffer> data() const { return data_; }

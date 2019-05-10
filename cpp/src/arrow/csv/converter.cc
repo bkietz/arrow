@@ -21,6 +21,7 @@
 #include <sstream>
 #include <string>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #include "arrow/builder.h"
@@ -77,7 +78,7 @@ class ConcreteConverter : public Converter {
 };
 
 Status ConcreteConverter::Initialize() {
-  // TODO no need to build a separate Trie for each Converter instance
+  // TODO(unknown): no need to build a separate Trie for each Converter instance
   return InitializeTrie(options_.null_values, &null_trie_);
 }
 
@@ -107,9 +108,9 @@ Status NullConverter::Convert(const BlockParser& parser, int32_t col_index,
   auto visit = [&](const uint8_t* data, uint32_t size, bool quoted) -> Status {
     if (ARROW_PREDICT_TRUE(IsNull(data, size, quoted))) {
       return builder.AppendNull();
-    } else {
+    } 
       return GenericConversionError(type_, data, size);
-    }
+    
   };
   RETURN_NOT_OK(parser.VisitColumn(col_index, visit));
   RETURN_NOT_OK(builder.Finish(out));
@@ -147,9 +148,9 @@ class VarSizeBinaryConverter : public ConcreteConverter {
         if (size > 0 && IsNull(data, size, false /* quoted */)) {
           builder.UnsafeAppendNull();
           return Status::OK();
-        } else {
+        } 
           return visit_non_null(data, size, quoted);
-        }
+        
       };
       RETURN_NOT_OK(parser.VisitColumn(col_index, visit));
     } else {
@@ -182,9 +183,9 @@ class FixedSizeBinaryConverter : public ConcreteConverter {
 Status FixedSizeBinaryConverter::Convert(const BlockParser& parser, int32_t col_index,
                                          std::shared_ptr<Array>* out) {
   FixedSizeBinaryBuilder builder(type_, pool_);
-  const uint32_t byte_width = static_cast<uint32_t>(builder.byte_width());
+  const auto byte_width = static_cast<uint32_t>(builder.byte_width());
 
-  // TODO do we accept nulls here?
+  // TODO(unknown): do we accept nulls here?
 
   auto visit = [&](const uint8_t* data, uint32_t size, bool quoted) -> Status {
     if (ARROW_PREDICT_FALSE(size != byte_width)) {
@@ -212,7 +213,7 @@ class BooleanConverter : public ConcreteConverter {
 
  protected:
   Status Initialize() override {
-    // TODO no need to build separate Tries for each BooleanConverter instance
+    // TODO(unknown): no need to build separate Tries for each BooleanConverter instance
     RETURN_NOT_OK(InitializeTrie(options_.true_values, &true_trie_));
     RETURN_NOT_OK(InitializeTrie(options_.false_values, &false_trie_));
     return ConcreteConverter::Initialize();
@@ -351,9 +352,9 @@ class TimestampConverter : public ConcreteConverter {
 /////////////////////////////////////////////////////////////////////////
 // Base Converter class implementation
 
-Converter::Converter(const std::shared_ptr<DataType>& type, const ConvertOptions& options,
+Converter::Converter(std::shared_ptr<DataType> type, ConvertOptions options,
                      MemoryPool* pool)
-    : options_(options), pool_(pool), type_(type) {}
+    : options_(std::move(options)), pool_(pool), type_(std::move(type)) {}
 
 Status Converter::Make(const std::shared_ptr<DataType>& type,
                        const ConvertOptions& options, MemoryPool* pool,

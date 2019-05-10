@@ -33,9 +33,9 @@ namespace arrow {
 
 /// offset, length pair for representing a Range of a buffer or array
 struct Range {
-  int64_t offset, length;
+  int64_t offset{-1}, length{0};
 
-  Range() : offset(-1), length(0) {}
+  Range() {}
   Range(int64_t o, int64_t l) : offset(o), length(l) {}
 };
 
@@ -56,15 +56,14 @@ struct Bitmap {
 static Status ConcatenateBitmaps(const std::vector<Bitmap>& bitmaps, MemoryPool* pool,
                                  std::shared_ptr<Buffer>* out) {
   int64_t out_length = 0;
-  for (size_t i = 0; i < bitmaps.size(); ++i) {
-    out_length += bitmaps[i].range.length;
+  for (const auto& bitmap : bitmaps) {
+    out_length += bitmap.range.length;
   }
   RETURN_NOT_OK(AllocateBitmap(pool, out_length, out));
   uint8_t* dst = (*out)->mutable_data();
 
   int64_t bitmap_offset = 0;
-  for (size_t i = 0; i < bitmaps.size(); ++i) {
-    auto bitmap = bitmaps[i];
+  for (auto bitmap : bitmaps) {
     if (bitmap.AllSet()) {
       BitUtil::SetBitsTo(dst, bitmap_offset, bitmap.range.length, true);
     } else {
@@ -97,8 +96,8 @@ static Status ConcatenateOffsets(const BufferVector& buffers, MemoryPool* pool,
 
   // allocate output buffer
   int64_t out_length = 0;
-  for (size_t i = 0; i < buffers.size(); ++i) {
-    out_length += buffers[i]->size() / sizeof(Offset);
+  for (const auto& buffer : buffers) {
+    out_length += buffer->size() / sizeof(Offset);
   }
   RETURN_NOT_OK(AllocateBuffer(pool, (out_length + 1) * sizeof(Offset), out));
   auto dst = reinterpret_cast<Offset*>((*out)->mutable_data());
@@ -170,9 +169,9 @@ class ConcatenateImpl {
     return Status::OK();
   }
 
-  Status Visit(const NullType&) { return Status::OK(); }
+  Status Visit(const NullType& /*unused*/) { return Status::OK(); }
 
-  Status Visit(const BooleanType&) {
+  Status Visit(const BooleanType& /*unused*/) {
     return ConcatenateBitmaps(Bitmaps(1), pool_, &out_.buffers[1]);
   }
 
@@ -181,14 +180,14 @@ class ConcatenateImpl {
     return ConcatenateBuffers(Buffers(1, fixed), pool_, &out_.buffers[1]);
   }
 
-  Status Visit(const BinaryType&) {
+  Status Visit(const BinaryType& /*unused*/) {
     std::vector<Range> value_ranges;
     RETURN_NOT_OK(ConcatenateOffsets<int32_t>(Buffers(1, *offset_type), pool_,
                                               &out_.buffers[1], &value_ranges));
     return ConcatenateBuffers(Buffers(2, value_ranges), pool_, &out_.buffers[2]);
   }
 
-  Status Visit(const ListType&) {
+  Status Visit(const ListType& /*unused*/) {
     std::vector<Range> value_ranges;
     RETURN_NOT_OK(ConcatenateOffsets<int32_t>(Buffers(1, *offset_type), pool_,
                                               &out_.buffers[1], &value_ranges));
@@ -297,7 +296,7 @@ const std::shared_ptr<FixedWidthType> ConcatenateImpl::offset_type =
 
 Status Concatenate(const ArrayVector& arrays, MemoryPool* pool,
                    std::shared_ptr<Array>* out) {
-  if (arrays.size() == 0) {
+  if (arrays.empty()) {
     return Status::Invalid("Must pass at least one array");
   }
 

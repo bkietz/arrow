@@ -12,7 +12,7 @@
 
 #include "arrow/status.h"
 
-#include <assert.h>
+#include <cassert>
 #include <sstream>
 
 namespace arrow {
@@ -103,7 +103,7 @@ std::string Status::CodeAsString() const {
 
 std::string Status::ToString() const {
   std::string result(CodeAsString());
-  if (state_ == NULL) {
+  if (state_ == nullptr) {
     return result;
   }
   result += ": ";

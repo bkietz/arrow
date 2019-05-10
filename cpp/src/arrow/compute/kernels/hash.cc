@@ -66,8 +66,8 @@ namespace {
 
 class ActionBase {
  public:
-  ActionBase(const std::shared_ptr<DataType>& type, MemoryPool* pool)
-      : type_(type), pool_(pool) {}
+  ActionBase(std::shared_ptr<DataType> type, MemoryPool* pool)
+      : type_(std::move(type)), pool_(pool) {}
 
  protected:
   std::shared_ptr<DataType> type_;
@@ -293,13 +293,13 @@ class RegularHashKernelImpl : public HashKernelImpl {
       };
       memo_table_->GetOrInsert(value, on_found, on_not_found);
       return status;
-    } else {
+    }
       auto on_not_found = [this](int32_t memo_index) {
         action_.ObserveNotFound(memo_index);
       };
 
       memo_table_->GetOrInsert(value, on_found, on_not_found);
-    }
+
     return Status::OK();
   }
 

@@ -87,7 +87,9 @@ std::shared_ptr<AggregateFunction> MakeSumAggregateFunction(const DataType& type
 static Status GetSumKernel(FunctionContext* ctx, const DataType& type,
                            std::shared_ptr<AggregateUnaryKernel>& kernel) {
   std::shared_ptr<AggregateFunction> aggregate = MakeSumAggregateFunction(type, ctx);
-  if (!aggregate) return Status::Invalid("No sum for type ", type);
+  if (!aggregate) {
+    return Status::Invalid("No sum for type ", type);
+  }
 
   kernel = std::make_shared<AggregateUnaryKernel>(aggregate);
 
@@ -98,10 +100,12 @@ Status Sum(FunctionContext* ctx, const Datum& value, Datum* out) {
   std::shared_ptr<AggregateUnaryKernel> kernel;
 
   auto data_type = value.type();
-  if (data_type == nullptr)
+  if (data_type == nullptr) {
     return Status::Invalid("Datum must be array-like");
-  else if (!is_integer(data_type->id()) && !is_floating(data_type->id()))
+  }
+  if (!is_integer(data_type->id()) && !is_floating(data_type->id())) {
     return Status::Invalid("Datum must contain a NumericType");
+  }
 
   RETURN_NOT_OK(GetSumKernel(ctx, *data_type, kernel));
 
