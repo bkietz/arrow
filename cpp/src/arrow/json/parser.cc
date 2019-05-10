@@ -96,7 +96,7 @@ Kind::type Kind::FromTag(const std::shared_ptr<const KeyValueMetadata>& tag) {
   return static_cast<Kind::type>(name_to_kind.Find(name));
 }
 
-Status Kind::ForType(const DataType& type, const Kind::type* kind) {
+Status Kind::ForType(const DataType& type, Kind::type* kind) {
   struct {
     Status Visit(const NullType& /*unused*/) { return SetKind(Kind::kNull); }
     Status Visit(const BooleanType& /*unused*/) { return SetKind(Kind::kBoolean); }

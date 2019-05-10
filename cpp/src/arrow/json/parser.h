@@ -44,7 +44,7 @@ struct Kind {
 
   static Kind::type FromTag(const std::shared_ptr<const KeyValueMetadata>& tag);
 
-  static Status ForType(const DataType& type, const Kind::type* kind);
+  static Status ForType(const DataType& type, Kind::type* kind);
 };
 
 constexpr int32_t kMaxParserNumRows = 100000;
