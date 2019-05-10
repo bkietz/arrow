@@ -549,7 +549,7 @@ Status SetEnvVar(const char* name, const char* value) {
   if (setenv(name, value, 1) == 0) {
     return Status::OK();
   }
-    return Status::Invalid("failed setting environment variable");
+  return Status::Invalid("failed setting environment variable");
 
 #endif
 }
@@ -569,7 +569,7 @@ Status DelEnvVar(const char* name) {
   if (unsetenv(name) == 0) {
     return Status::OK();
   }
-    return Status::Invalid("failed deleting environment variable");
+  return Status::Invalid("failed deleting environment variable");
 
 #endif
 }

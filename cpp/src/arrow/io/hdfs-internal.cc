@@ -208,12 +208,12 @@ static arrow::Status try_dlopen(std::vector<fs::path> potential_paths, const cha
       // std::cout << "Loaded " << i << std::endl;
       break;
     }
-      const char* err_msg = dlerror();
-      if (err_msg != nullptr) {
-        error_messages.emplace_back(err_msg);
-      } else {
-        error_messages.emplace_back(" returned NULL");
-      }
+    const char* err_msg = dlerror();
+    if (err_msg != nullptr) {
+      error_messages.emplace_back(err_msg);
+    } else {
+      error_messages.emplace_back(" returned NULL");
+    }
   }
 
   if (out_handle == nullptr) {
@@ -411,7 +411,7 @@ int LibHdfsShim::SetWorkingDirectory(hdfsFS fs, const char* path) {
   if (this->hdfsSetWorkingDirectory != nullptr) {
     return this->hdfsSetWorkingDirectory(fs, path);
   }
-    return 0;
+  return 0;
 }
 
 int LibHdfsShim::MakeDirectory(hdfsFS fs, const char* path) {
@@ -423,7 +423,7 @@ int LibHdfsShim::SetReplication(hdfsFS fs, const char* path, int16_t replication
   if (this->hdfsSetReplication != nullptr) {
     return this->hdfsSetReplication(fs, path, replication);
   }
-    return 0;
+  return 0;
 }
 
 hdfsFileInfo* LibHdfsShim::ListDirectory(hdfsFS fs, const char* path, int* numEntries) {
@@ -459,7 +459,7 @@ tOffset LibHdfsShim::GetDefaultBlockSize(hdfsFS fs) {
   if (this->hdfsGetDefaultBlockSize != nullptr) {
     return this->hdfsGetDefaultBlockSize(fs);
   }
-    return 0;
+  return 0;
 }
 
 tOffset LibHdfsShim::GetCapacity(hdfsFS fs) { return this->hdfsGetCapacity(fs); }
@@ -480,7 +480,7 @@ int LibHdfsShim::Utime(hdfsFS fs, const char* path, tTime mtime, tTime atime) {
   if (this->hdfsUtime != nullptr) {
     return this->hdfsUtime(fs, path, mtime, atime);
   }
-    return 0;
+  return 0;
 }
 
 Status LibHdfsShim::GetRequiredSymbols() {

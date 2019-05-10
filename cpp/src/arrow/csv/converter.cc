@@ -108,9 +108,8 @@ Status NullConverter::Convert(const BlockParser& parser, int32_t col_index,
   auto visit = [&](const uint8_t* data, uint32_t size, bool quoted) -> Status {
     if (ARROW_PREDICT_TRUE(IsNull(data, size, quoted))) {
       return builder.AppendNull();
-    } 
-      return GenericConversionError(type_, data, size);
-    
+    }
+    return GenericConversionError(type_, data, size);
   };
   RETURN_NOT_OK(parser.VisitColumn(col_index, visit));
   RETURN_NOT_OK(builder.Finish(out));
@@ -148,9 +147,8 @@ class VarSizeBinaryConverter : public ConcreteConverter {
         if (size > 0 && IsNull(data, size, false /* quoted */)) {
           builder.UnsafeAppendNull();
           return Status::OK();
-        } 
-          return visit_non_null(data, size, quoted);
-        
+        }
+        return visit_non_null(data, size, quoted);
       };
       RETURN_NOT_OK(parser.VisitColumn(col_index, visit));
     } else {

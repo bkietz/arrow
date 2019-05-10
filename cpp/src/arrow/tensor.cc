@@ -101,8 +101,8 @@ const std::string& Tensor::dim_name(int i) const {
   if (dim_names_.empty()) {
     return kEmpty;
   }
-    DCHECK_LT(i, static_cast<int>(dim_names_.size()));
-    return dim_names_[i];
+  DCHECK_LT(i, static_cast<int>(dim_names_.size()));
+  return dim_names_[i];
 }
 
 int64_t Tensor::size() const {
@@ -166,7 +166,7 @@ inline int64_t TensorCountNonZero(const Tensor& tensor) {
   if (tensor.is_contiguous()) {
     return ContiguousTensorCountNonZero<TYPE>(tensor);
   }
-    return StridedTensorCountNonZero<TYPE>(0, 0, tensor);
+  return StridedTensorCountNonZero<TYPE>(0, 0, tensor);
 }
 
 struct NonZeroCounter {

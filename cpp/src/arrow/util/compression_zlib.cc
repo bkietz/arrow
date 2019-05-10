@@ -71,8 +71,8 @@ static int DecompressionWindowBitsForFormat(GZipCodec::Format format) {
   if (format == GZipCodec::DEFLATE) {
     return -WINDOW_BITS;
   }
-    /* If not deflate, autodetect format from header */
-    return WINDOW_BITS | DETECT_CODEC;
+  /* If not deflate, autodetect format from header */
+  return WINDOW_BITS | DETECT_CODEC;
 }
 
 static Status ZlibErrorPrefix(const char* prefix_msg, const char* msg) {
@@ -102,8 +102,8 @@ class GZipDecompressor : public Decompressor {
     if ((ret = inflateInit2(&stream_, window_bits)) != Z_OK) {
       return ZlibError("zlib inflateInit failed: ");
     }
-      initialized_ = true;
-      return Status::OK();
+    initialized_ = true;
+    return Status::OK();
   }
 
   Status Decompress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -176,8 +176,8 @@ class GZipCompressor : public Compressor {
                             kGZipDefaultCompressionLevel, Z_DEFAULT_STRATEGY)) != Z_OK) {
       return ZlibError("zlib deflateInit failed: ");
     }
-      initialized_ = true;
-      return Status::OK();
+    initialized_ = true;
+    return Status::OK();
   }
 
   Status Compress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -284,7 +284,7 @@ Status GZipCompressor::End(int64_t output_len, uint8_t* output, int64_t* bytes_w
     if (ret == Z_OK) {
       return Status::OK();
     }
-      return ZlibError("zlib end failed: ");
+    return ZlibError("zlib end failed: ");
 
   } else {
     // Not everything could be flushed,

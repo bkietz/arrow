@@ -60,7 +60,7 @@ class LZ4Decompressor : public Decompressor {
     if (LZ4F_isError(ret) != 0u) {
       return LZ4Error(ret, "LZ4 init failed: ");
     }
-      return Status::OK();
+    return Status::OK();
   }
 
   Status Decompress(int64_t input_len, const uint8_t* input, int64_t output_len,
@@ -112,7 +112,7 @@ class LZ4Compressor : public Compressor {
     if (LZ4F_isError(ret) != 0u) {
       return LZ4Error(ret, "LZ4 init failed: ");
     }
-      return Status::OK();
+    return Status::OK();
   }
 
   Status Compress(int64_t input_len, const uint8_t* input, int64_t output_len,

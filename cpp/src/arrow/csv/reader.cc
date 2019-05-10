@@ -414,10 +414,10 @@ Status TableReader::Make(MemoryPool* pool, std::shared_ptr<io::InputStream> inpu
     *out = result;
     return Status::OK();
   }
-    result = std::make_shared<SerialTableReader>(pool, input, read_options, parse_options,
-                                                 convert_options);
-    *out = result;
-    return Status::OK();
+  result = std::make_shared<SerialTableReader>(pool, input, read_options, parse_options,
+                                               convert_options);
+  *out = result;
+  return Status::OK();
 }
 
 }  // namespace csv

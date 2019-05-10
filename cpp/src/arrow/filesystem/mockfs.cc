@@ -75,7 +75,7 @@ struct Directory {
     if (it != entries.end()) {
       return it->second.get();
     }
-      return nullptr;
+    return nullptr;
   }
 
   bool CreateEntry(const std::string& s, std::unique_ptr<Entry> entry) {
@@ -450,7 +450,7 @@ Status MockFileSystem::GetTargetStats(const Selector& selector,
     if (selector.allow_non_existent) {
       return Status::OK();
     }
-      return PathNotFound(selector.base_dir);
+    return PathNotFound(selector.base_dir);
   }
   if (!base_dir->is_dir()) {
     return NotADir(selector.base_dir);

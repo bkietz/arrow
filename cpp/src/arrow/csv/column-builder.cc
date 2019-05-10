@@ -74,9 +74,9 @@ class TypedColumnBuilder : public ColumnBuilder {
     if (st.ok()) {
       return st;
     }
-      std::stringstream ss;
-      ss << "In column #" << col_index_ << ": " << st.message();
-      return Status(st.code(), ss.str());
+    std::stringstream ss;
+    ss << "In column #" << col_index_ << ": " << st.message();
+    return Status(st.code(), ss.str());
   }
 
   std::mutex mutex_;

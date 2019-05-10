@@ -181,7 +181,7 @@ Status TrieBuilder::Append(util::string_view s, bool allow_duplicate) {
         if (allow_duplicate) {
           return Status::OK();
         }
-          return Status::Invalid("Duplicate entry in trie");
+        return Status::Invalid("Duplicate entry in trie");
       }
       node->found_index_ = trie_.size_++;
       return Status::OK();

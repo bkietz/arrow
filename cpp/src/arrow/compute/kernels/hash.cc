@@ -294,11 +294,11 @@ class RegularHashKernelImpl : public HashKernelImpl {
       memo_table_->GetOrInsert(value, on_found, on_not_found);
       return status;
     }
-      auto on_not_found = [this](int32_t memo_index) {
-        action_.ObserveNotFound(memo_index);
-      };
+    auto on_not_found = [this](int32_t memo_index) {
+      action_.ObserveNotFound(memo_index);
+    };
 
-      memo_table_->GetOrInsert(value, on_found, on_not_found);
+    memo_table_->GetOrInsert(value, on_found, on_not_found);
 
     return Status::OK();
   }

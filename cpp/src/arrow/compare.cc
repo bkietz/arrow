@@ -95,8 +95,8 @@ inline bool FloatingEquals(const NumericArray<ArrowType>& left,
       return (x == y) || (std::isnan(x) && std::isnan(y));
     });
   }
-    return BaseFloatingEquals<ArrowType>(left, right,
-                                         [](T x, T y) -> bool { return x == y; });
+  return BaseFloatingEquals<ArrowType>(left, right,
+                                       [](T x, T y) -> bool { return x == y; });
 }
 
 template <typename ArrowType>
@@ -111,8 +111,8 @@ inline bool FloatingApproxEquals(const NumericArray<ArrowType>& left,
       return (fabs(x - y) <= epsilon) || (std::isnan(x) && std::isnan(y));
     });
   }
-    return BaseFloatingEquals<ArrowType>(
-        left, right, [epsilon](T x, T y) -> bool { return fabs(x - y) <= epsilon; });
+  return BaseFloatingEquals<ArrowType>(
+      left, right, [epsilon](T x, T y) -> bool { return fabs(x - y) <= epsilon; });
 }
 
 // RangeEqualsVisitor assumes the range sizes are equal
@@ -509,20 +509,19 @@ class ArrayEqualsVisitor : public RangeEqualsVisitor {
       return left.value_offsets()->Equals(*right.value_offsets(),
                                           (left.length() + 1) * sizeof(int32_t));
     }
-      // One of the arrays is sliced; logic is more complicated because the
-      // value offsets are not both 0-based
-      auto left_offsets =
-          reinterpret_cast<const int32_t*>(left.value_offsets()->data()) + left.offset();
-      auto right_offsets =
-          reinterpret_cast<const int32_t*>(right.value_offsets()->data()) +
-          right.offset();
+    // One of the arrays is sliced; logic is more complicated because the
+    // value offsets are not both 0-based
+    auto left_offsets =
+        reinterpret_cast<const int32_t*>(left.value_offsets()->data()) + left.offset();
+    auto right_offsets =
+        reinterpret_cast<const int32_t*>(right.value_offsets()->data()) + right.offset();
 
-      for (int64_t i = 0; i < left.length() + 1; ++i) {
-        if (left_offsets[i] - left_offsets[0] != right_offsets[i] - right_offsets[0]) {
-          return false;
-        }
+    for (int64_t i = 0; i < left.length() + 1; ++i) {
+      if (left_offsets[i] - left_offsets[0] != right_offsets[i] - right_offsets[0]) {
+        return false;
       }
-      return true;
+    }
+    return true;
   }
 
   bool CompareBinary(const BinaryArray& left) {
@@ -549,11 +548,10 @@ class ArrayEqualsVisitor : public RangeEqualsVisitor {
         return std::memcmp(left_data, right_data,
                            left.raw_value_offsets()[left.length()]) == 0;
       }
-        const int64_t total_bytes =
-            left.value_offset(left.length()) - left.value_offset(0);
-        return std::memcmp(left_data + left.value_offset(0),
-                           right_data + right.value_offset(0),
-                           static_cast<size_t>(total_bytes)) == 0;
+      const int64_t total_bytes = left.value_offset(left.length()) - left.value_offset(0);
+      return std::memcmp(left_data + left.value_offset(0),
+                         right_data + right.value_offset(0),
+                         static_cast<size_t>(total_bytes)) == 0;
 
     } else {
       // ARROW-537: Only compare data in non-null slots

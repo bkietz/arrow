@@ -182,25 +182,25 @@ class SparseTensorConverter<TYPE, SparseCSRIndex>
     if (ndim <= 1) {
       return Status::NotImplemented("TODO for ndim <= 1");
     }
-      RETURN_NOT_OK(AllocateBuffer(sizeof(int64_t) * (nr + 1), &indptr_buffer));
-      auto* indptr = reinterpret_cast<int64_t*>(indptr_buffer->mutable_data());
+    RETURN_NOT_OK(AllocateBuffer(sizeof(int64_t) * (nr + 1), &indptr_buffer));
+    auto* indptr = reinterpret_cast<int64_t*>(indptr_buffer->mutable_data());
 
-      RETURN_NOT_OK(AllocateBuffer(sizeof(int64_t) * nonzero_count, &indices_buffer));
-      auto* indices = reinterpret_cast<int64_t*>(indices_buffer->mutable_data());
+    RETURN_NOT_OK(AllocateBuffer(sizeof(int64_t) * nonzero_count, &indices_buffer));
+    auto* indices = reinterpret_cast<int64_t*>(indices_buffer->mutable_data());
 
-      int64_t k = 0;
-      *indptr++ = 0;
-      for (int64_t i = 0; i < nr; ++i) {
-        for (int64_t j = 0; j < nc; ++j) {
-          const value_type x = tensor_.Value({i, j});
-          if (x != 0) {
-            *values++ = x;
-            *indices++ = j;
-            k++;
-          }
+    int64_t k = 0;
+    *indptr++ = 0;
+    for (int64_t i = 0; i < nr; ++i) {
+      for (int64_t j = 0; j < nc; ++j) {
+        const value_type x = tensor_.Value({i, j});
+        if (x != 0) {
+          *values++ = x;
+          *indices++ = j;
+          k++;
         }
-        *indptr++ = k;
       }
+      *indptr++ = k;
+    }
 
     std::vector<int64_t> indptr_shape({nr + 1});
     std::shared_ptr<SparseCSRIndex::IndexTensor> indptr_tensor =
@@ -291,8 +291,8 @@ const std::string& SparseTensor::dim_name(int i) const {
   if (dim_names_.empty()) {
     return kEmpty;
   }
-    DCHECK_LT(i, static_cast<int>(dim_names_.size()));
-    return dim_names_[i];
+  DCHECK_LT(i, static_cast<int>(dim_names_.size()));
+  return dim_names_[i];
 }
 
 int64_t SparseTensor::size() const {

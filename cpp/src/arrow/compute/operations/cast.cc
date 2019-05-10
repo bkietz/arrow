@@ -44,7 +44,7 @@ Status Cast::ToExpr(std::shared_ptr<Expr>* out) const {
   if (value_expr.rank() == ValueRank::SCALAR) {
     return GetScalarExpr(op, out_type_, out);
   }
-    return GetArrayExpr(op, out_type_, out);
+  return GetArrayExpr(op, out_type_, out);
 }
 
 }  // namespace ops

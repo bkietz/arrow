@@ -700,7 +700,7 @@ int32_t BasicDecimal128::CountLeadingBinaryZeros() const {
   if (high_bits_ == 0) {
     return BitUtil::CountLeadingZeros(low_bits_) + 64;
   }
-    return BitUtil::CountLeadingZeros(static_cast<uint64_t>(high_bits_));
+  return BitUtil::CountLeadingZeros(static_cast<uint64_t>(high_bits_));
 }
 
 }  // namespace arrow

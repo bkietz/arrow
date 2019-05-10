@@ -169,7 +169,7 @@ class CompressedOutputStream::Impl {
       RETURN_NOT_OK(FinalizeCompression());
       return raw_->Close();
     }
-      return Status::OK();
+    return Status::OK();
   }
 
   bool closed() {
@@ -247,7 +247,7 @@ class CompressedInputStream::Impl {
       is_open_ = false;
       return raw_->Close();
     }
-      return Status::OK();
+    return Status::OK();
   }
 
   bool closed() {

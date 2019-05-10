@@ -369,7 +369,7 @@ class MemoryMappedFile::MemoryMap : public MutableBuffer {
       // remain valid until the MemoryMap object is destroyed
       return file_->Close();
     }
-      return Status::OK();
+    return Status::OK();
   }
 
   bool closed() const { return !file_->is_open(); }

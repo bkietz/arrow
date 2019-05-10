@@ -336,8 +336,8 @@ Status ArrayPrinter::WriteValidityBitmap(const Array& array) {
                           array.offset());
     return PrettyPrint(is_valid, indent_ + indent_size_, sink_);
   }
-    Write(" all not null");
-    return Status::OK();
+  Write(" all not null");
+  return Status::OK();
 }
 
 Status PrettyPrint(const Array& arr, int indent, std::ostream* sink) {

@@ -66,7 +66,7 @@ Status RecordBatchBuilder::Flush(bool reset_builders,
   if (reset_builders) {
     return InitBuilders();
   }
-    return Status::OK();
+  return Status::OK();
 }
 
 Status RecordBatchBuilder::Flush(std::shared_ptr<RecordBatch>* batch) {

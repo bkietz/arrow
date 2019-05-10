@@ -183,9 +183,8 @@ uint8_t DetectIntWidth(const int64_t* values, int64_t length, uint8_t min_width)
     if (ARROW_PREDICT_FALSE(((v + addend) & test_mask) != 0)) {
       --p;
       return false;
-    } 
-      return true;
-    
+    }
+    return true;
   };
 
   auto test_four_items = [&](uint64_t addend, uint64_t test_mask) -> bool {
@@ -194,9 +193,8 @@ uint8_t DetectIntWidth(const int64_t* values, int64_t length, uint8_t min_width)
     if (ARROW_PREDICT_FALSE((mask & test_mask) != 0)) {
       p -= 4;
       return false;
-    } 
-      return true;
-    
+    }
+    return true;
   };
 
   if (width == 1) {
@@ -280,9 +278,8 @@ uint8_t DetectIntWidth(const int64_t* values, const uint8_t* valid_bytes, int64_
       --b;
       --p;
       return false;
-    } 
-      return true;
-    
+    }
+    return true;
   };
 
   auto test_eight_items = [&](uint64_t addend, uint64_t test_mask) -> bool {
@@ -296,9 +293,8 @@ uint8_t DetectIntWidth(const int64_t* values, const uint8_t* valid_bytes, int64_
       b -= 8;
       p -= 8;
       return false;
-    } 
-      return true;
-    
+    }
+    return true;
   };
 
 #undef MASK
