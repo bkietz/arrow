@@ -382,7 +382,7 @@ class ARROW_EXPORT StructBuilder : public ArrayBuilder {
 
   std::shared_ptr<DataType> type() const override;
 
- private:
+ protected:
   std::shared_ptr<DataType> type_;
 };
 

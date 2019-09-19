@@ -21,6 +21,7 @@
 #include <string>
 
 #include "arrow/json/options.h"
+#include "arrow/result.h"
 #include "arrow/status.h"
 #include "arrow/util/key_value_metadata.h"
 #include "arrow/util/macros.h"
@@ -39,13 +40,14 @@ namespace json {
 struct Kind {
   enum type : uint8_t { kNull, kBoolean, kNumber, kString, kArray, kObject };
 
-  static const std::string& Name(Kind::type);
+  static const std::string& Name(Kind::type kind);
 
-  static const std::shared_ptr<const KeyValueMetadata>& Tag(Kind::type);
+  /// return the JSON kind associated with a parsed and converted type
+  static Result<Kind::type> FromType(const DataType& out_type);
 
-  static Kind::type FromTag(const std::shared_ptr<const KeyValueMetadata>& tag);
-
-  static Status ForType(const DataType& type, Kind::type* kind);
+  /// return the JSON kind associated with a parsed (but not yet converted) type
+  /// NB: behavior is undefined for unconverted_type not taken from a parsed array
+  static Kind::type FromUnconvertedType(const DataType& unconverted_type);
 };
 
 constexpr int32_t kMaxParserNumRows = 100000;

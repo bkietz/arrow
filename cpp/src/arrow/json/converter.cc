@@ -31,6 +31,7 @@
 namespace arrow {
 namespace json {
 
+using internal::checked_cast;
 using util::string_view;
 
 template <typename... Args>
@@ -45,15 +46,16 @@ const DictionaryArray& GetDictionaryArray(const std::shared_ptr<Array>& in) {
   DCHECK_EQ(in->type_id(), Type::DICTIONARY);
   auto dict_type = static_cast<const DictionaryType*>(in->type().get());
   DCHECK_EQ(dict_type->index_type()->id(), Type::INT32);
-  DCHECK_EQ(dict_type->value_type()->id(), Type::STRING);
+  DCHECK(dict_type->value_type()->id() == Type::STRING ||
+         dict_type->value_type()->id() == Type::BINARY);
   return static_cast<const DictionaryArray&>(*in);
 }
 
 template <typename ValidVisitor, typename NullVisitor>
 Status VisitDictionaryEntries(const DictionaryArray& dict_array,
                               ValidVisitor&& visit_valid, NullVisitor&& visit_null) {
-  const StringArray& dict = static_cast<const StringArray&>(*dict_array.dictionary());
-  const Int32Array& indices = static_cast<const Int32Array&>(*dict_array.indices());
+  const auto& dict = checked_cast<const BinaryArray&>(*dict_array.dictionary());
+  const auto& indices = checked_cast<const Int32Array&>(*dict_array.indices());
   for (int64_t i = 0; i < indices.length(); ++i) {
     if (indices.IsValid(i)) {
       RETURN_NOT_OK(visit_valid(dict.GetView(indices.GetView(i))));
@@ -277,13 +279,12 @@ Status MakeConverter(const std::shared_ptr<DataType>& out_type, MemoryPool* pool
 const PromotionGraph* GetPromotionGraph() {
   static struct : PromotionGraph {
     std::shared_ptr<Field> Null(const std::string& name) const override {
-      return field(name, null(), true, Kind::Tag(Kind::kNull));
+      return field(name, null());
     }
 
     std::shared_ptr<DataType> Infer(
         const std::shared_ptr<Field>& unexpected_field) const override {
-      auto kind = Kind::FromTag(unexpected_field->metadata());
-      switch (kind) {
+      switch (Kind::FromUnconvertedType(*unexpected_field->type())) {
         case Kind::kNull:
           return null();
 
@@ -297,8 +298,8 @@ const PromotionGraph* GetPromotionGraph() {
           return timestamp(TimeUnit::SECOND);
 
         case Kind::kArray: {
-          auto type = static_cast<const ListType*>(unexpected_field->type().get());
-          auto value_field = type->value_field();
+          auto value_field =
+              static_cast<const ListType&>(*unexpected_field->type()).value_field();
           return list(value_field->WithType(Infer(value_field)));
         }
         case Kind::kObject: {
