@@ -18,6 +18,7 @@
 #include <chrono>
 #include <cstdint>
 #include <iostream>
+#include <vector>
 
 #include <gtest/gtest.h>
 

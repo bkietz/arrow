@@ -18,6 +18,7 @@
 #ifndef ARROW_UTIL_LOGGING_H
 #define ARROW_UTIL_LOGGING_H
 
+#include "arrow/compute/operation.h"
 #ifdef GANDIVA_IR
 
 // The LLVM IR code doesn't have an NDEBUG mode. And, it shouldn't include references to
@@ -39,8 +40,10 @@
 #include <memory>
 #include <ostream>
 #include <string>
+#include <utility>
 
 #include "arrow/util/macros.h"
+#include "arrow/util/string_builder.h"
 #include "arrow/util/visibility.h"
 
 namespace arrow {
@@ -222,7 +225,7 @@ class ARROW_EXPORT Voidify {
   Voidify() {}
   // This has to be an operator with a precedence lower than << but
   // higher than ?:
-  void operator&(ArrowLogBase&) {}
+  void operator&(const ArrowLogBase&)&& {}
 };
 
 namespace detail {
@@ -243,6 +246,146 @@ class NullLog {
     return *this;
   }
 };
+
+struct ComparisonLog {
+  enum type {
+    EQUAL,
+    NOT_EQUAL,
+    GREATER,
+    GREATER_EQUAL,
+    LESS,
+    LESS_EQUAL,
+  };
+
+  template <type Op>
+  struct OpImpl;
+
+  template <>
+  struct OpImpl<EQUAL> {
+    template <typename Lhs, typename Rhs>
+    static bool Evaluate(const Lhs& lhs, const Rhs& rhs) {
+      return lhs == rhs;
+    }
+  };
+
+  template <>
+  struct OpImpl<NOT_EQUAL> {
+    template <typename Lhs, typename Rhs>
+    static bool Evaluate(const Lhs& lhs, const Rhs& rhs) {
+      return lhs != rhs;
+    }
+  };
+
+  template <>
+  struct OpImpl<GREATER> {
+    template <typename Lhs, typename Rhs>
+    static bool Evaluate(const Lhs& lhs, const Rhs& rhs) {
+      return lhs > rhs;
+    }
+  };
+
+  template <>
+  struct OpImpl<GREATER_EQUAL> {
+    template <typename Lhs, typename Rhs>
+    static bool Evaluate(const Lhs& lhs, const Rhs& rhs) {
+      return lhs >= rhs;
+    }
+  };
+
+  template <>
+  struct OpImpl<LESS> {
+    template <typename Lhs, typename Rhs>
+    static bool Evaluate(const Lhs& lhs, const Rhs& rhs) {
+      return lhs < rhs;
+    }
+  };
+
+  template <>
+  struct OpImpl<LESS_EQUAL> {
+    template <typename Lhs, typename Rhs>
+    static bool Evaluate(const Lhs& lhs, const Rhs& rhs) {
+      return lhs <= rhs;
+    }
+  };
+
+  template <type Op, typename Lhs, typename Rhs>
+  struct Bound {
+    const Lhs& lhs_;
+    const Rhs& rhs_;
+    ArrowLogBase&& log_;
+  };
+
+  template <type Op, typename Lhs, typename Rhs, typename... A>
+  static void DoCheck(Bound<Op, Lhs, Rhs>&& bound, const A&... a) {
+    if (ARROW_PREDICT_TRUE(OpImpl<Op>::Evaluate(bound.lhs_, bound.rhs_))) {
+      return;
+    }
+    // check failed; report failure
+    std::move(bound.log_) << "  LHS: " << bound.lhs_ << "\n"
+                          << "  RHS: " << bound.rhs_ << "\n"
+                          << StringBuilder(a...);
+  }
+
+  template <typename Lhs>
+  struct BoundLhs {
+    template <typename Rhs>
+    Bound<EQUAL, Lhs, Rhs> operator==(const Rhs& rhs) && {
+      return Bound<EQUAL, Lhs, Rhs>{lhs_, rhs, std::move(log_)};
+    }
+
+    template <typename Rhs>
+    Bound<NOT_EQUAL, Lhs, Rhs> operator!=(const Rhs& rhs) && {
+      return Bound<NOT_EQUAL, Lhs, Rhs>{lhs_, rhs, std::move(log_)};
+    }
+
+    template <typename Rhs>
+    Bound<GREATER, Lhs, Rhs> operator>(const Rhs& rhs) && {
+      return Bound<GREATER, Lhs, Rhs>{lhs_, rhs, std::move(log_)};
+    }
+
+    template <typename Rhs>
+    Bound<GREATER_EQUAL, Lhs, Rhs> operator>=(const Rhs& rhs) && {
+      return Bound<GREATER_EQUAL, Lhs, Rhs>{lhs_, rhs, std::move(log_)};
+    }
+
+    template <typename Rhs>
+    Bound<LESS, Lhs, Rhs> operator<(const Rhs& rhs) && {
+      return Bound<LESS, Lhs, Rhs>{lhs_, rhs, std::move(log_)};
+    }
+
+    template <typename Rhs>
+    Bound<LESS_EQUAL, Lhs, Rhs> operator<=(const Rhs& rhs) && {
+      return Bound<LESS_EQUAL, Lhs, Rhs>{lhs_, rhs, std::move(log_)};
+    }
+
+    const Lhs& lhs_;
+    ArrowLogBase&& log_;
+  };
+
+  template <typename Condition, typename... A>
+  static void DoCheck(BoundLhs<Condition>&& bound, const A&... a) {
+    if (ARROW_PREDICT_TRUE(static_cast<bool>(bound.lhs_))) {
+      return;
+    }
+    // check failed; report failure
+    std::move(bound.log_) << StringBuilder(a...);
+  }
+
+  template <typename Lhs>
+  BoundLhs<Lhs> operator<=(const Lhs& lhs) && {
+    return BoundLhs<Lhs>{lhs, std::move(log_)};
+  }
+
+  ArrowLogBase&& log_;
+};
+
+#define DCHECK2(condition, message...)                                                 \
+  ::arrow::util::detail::ComparisonLog::DoCheck(                                       \
+      ::arrow::util::detail::ComparisonLog{                                            \
+          std::move(::arrow::util::ArrowLog(__FILE__, __LINE__,                        \
+                                            ::arrow::util::ArrowLogLevel::ARROW_FATAL) \
+                    << " Check failed: " #condition "\n")} <= condition,               \
+      message)
 
 }  // namespace detail
 }  // namespace util

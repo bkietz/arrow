@@ -135,7 +135,6 @@ set(ARROW_SRCS
     util/key_value_metadata.cc
     util/memory.cc
     util/string.cc
-    util/string_builder.cc
     util/task_group.cc
     util/thread_pool.cc
     util/trie.cc
