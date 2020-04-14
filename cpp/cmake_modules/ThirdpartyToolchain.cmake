@@ -209,8 +209,8 @@ if(ARROW_ORC OR ARROW_FLIGHT OR ARROW_GANDIVA)
 endif()
 
 # ----------------------------------------------------------------------
-# Versions and URLs for toolchain builds, which also can be used to configure
-# offline builds
+# Get versions, URLs, and checksums for ExternalProject bundles
+# (can be used to configure offline builds)
 # Note: We should not use the Apache dist server for build dependencies
 
 macro(set_urls URLS)
@@ -222,256 +222,7 @@ macro(set_urls URLS)
   endif()
 endmacro()
 
-# Read toolchain versions from cpp/thirdparty/versions.txt
-file(STRINGS "${THIRDPARTY_DIR}/versions.txt" TOOLCHAIN_VERSIONS_TXT)
-foreach(_VERSION_ENTRY ${TOOLCHAIN_VERSIONS_TXT})
-  # Exclude comments
-  if(NOT
-     ((_VERSION_ENTRY MATCHES "^[^#][A-Za-z0-9-_]+_VERSION=")
-      OR (_VERSION_ENTRY MATCHES "^[^#][A-Za-z0-9-_]+_CHECKSUM=")))
-    continue()
-  endif()
-
-  string(REGEX MATCH "^[^=]*" _VARIABLE_NAME ${_VERSION_ENTRY})
-  string(REPLACE "${_VARIABLE_NAME}=" "" _VARIABLE_VALUE ${_VERSION_ENTRY})
-
-  # Skip blank or malformed lines
-  if(_VARIABLE_VALUE STREQUAL "")
-    continue()
-  endif()
-
-  # For debugging
-  message(STATUS "${_VARIABLE_NAME}: ${_VARIABLE_VALUE}")
-
-  set(${_VARIABLE_NAME} ${_VARIABLE_VALUE})
-endforeach()
-
-if(DEFINED ENV{ARROW_AWSSDK_URL})
-  set(AWSSDK_SOURCE_URL "$ENV{ARROW_AWSSDK_URL}")
-else()
-  set_urls(
-    AWSSDK_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/aws-sdk-cpp-${ARROW_AWSSDK_BUILD_VERSION}.tar.gz"
-    "https://github.com/aws/aws-sdk-cpp/archive/${ARROW_AWSSDK_BUILD_VERSION}.tar.gz"
-    "https://dl.bintray.com/ursalabs/arrow-awssdk/aws-sdk-cpp-${ARROW_AWSSDK_BUILD_VERSION}.tar.gz/aws-sdk-cpp-${ARROW_AWSSDK_BUILD_VERSION}.tar.gz"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_BOOST_URL})
-  set(BOOST_SOURCE_URL "$ENV{ARROW_BOOST_URL}")
-else()
-  string(REPLACE "." "_" ARROW_BOOST_BUILD_VERSION_UNDERSCORES
-                 ${ARROW_BOOST_BUILD_VERSION})
-  set_urls(
-    BOOST_SOURCE_URL
-    # These are trimmed boost bundles we maintain.
-    # See cpp/build_support/trim-boost.sh
-    "https://dl.bintray.com/ursalabs/arrow-boost/boost_${ARROW_BOOST_BUILD_VERSION_UNDERSCORES}.tar.gz"
-    # FIXME(ARROW-6407) automate uploading this archive to ensure it reflects
-    # our currently used packages and doesn't fall out of sync with
-    # ${ARROW_BOOST_BUILD_VERSION_UNDERSCORES}
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/boost_${ARROW_BOOST_BUILD_VERSION_UNDERSCORES}.tar.gz"
-    # Fallback: full boost bundles.
-    "https://github.com/boostorg/boost/archive/boost-${ARROW_BOOST_BUILD_VERSION}.tar.gz"
-    "https://dl.bintray.com/boostorg/release/${ARROW_BOOST_BUILD_VERSION}/source/boost_${ARROW_BOOST_BUILD_VERSION_UNDERSCORES}.tar.gz"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_BROTLI_URL})
-  set(BROTLI_SOURCE_URL "$ENV{ARROW_BROTLI_URL}")
-else()
-  set_urls(
-    BROTLI_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/brotli-${ARROW_BROTLI_BUILD_VERSION}.tar.gz"
-    "https://github.com/google/brotli/archive/${ARROW_BROTLI_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_CARES_URL})
-  set(CARES_SOURCE_URL "$ENV{ARROW_CARES_URL}")
-else()
-  set_urls(
-    CARES_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/cares-${ARROW_CARES_BUILD_VERSION}.tar.gz"
-    "https://c-ares.haxx.se/download/c-ares-${ARROW_CARES_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_GBENCHMARK_URL})
-  set(GBENCHMARK_SOURCE_URL "$ENV{ARROW_GBENCHMARK_URL}")
-else()
-  set_urls(
-    GBENCHMARK_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/gbenchmark-${ARROW_GBENCHMARK_BUILD_VERSION}.tar.gz"
-    "https://github.com/google/benchmark/archive/${ARROW_GBENCHMARK_BUILD_VERSION}.tar.gz"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_GFLAGS_URL})
-  set(GFLAGS_SOURCE_URL "$ENV{ARROW_GFLAGS_URL}")
-else()
-  set_urls(
-    GFLAGS_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/gflags-${ARROW_GFLAGS_BUILD_VERSION}.tar.gz"
-    "https://github.com/gflags/gflags/archive/${ARROW_GFLAGS_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_GLOG_URL})
-  set(GLOG_SOURCE_URL "$ENV{ARROW_GLOG_URL}")
-else()
-  set_urls(
-    GLOG_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/glog-${ARROW_GLOG_BUILD_VERSION}.tar.gz"
-    "https://github.com/google/glog/archive/${ARROW_GLOG_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_GRPC_URL})
-  set(GRPC_SOURCE_URL "$ENV{ARROW_GRPC_URL}")
-else()
-  set_urls(
-    GRPC_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/grpc-${ARROW_GRPC_BUILD_VERSION}.tar.gz"
-    "https://github.com/grpc/grpc/archive/${ARROW_GRPC_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_GTEST_URL})
-  set(GTEST_SOURCE_URL "$ENV{ARROW_GTEST_URL}")
-else()
-  set_urls(
-    GTEST_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/gtest-${ARROW_GTEST_BUILD_VERSION}.tar.gz"
-    "https://github.com/google/googletest/archive/release-${ARROW_GTEST_BUILD_VERSION}.tar.gz"
-    "https://dl.bintray.com/ursalabs/arrow-gtest/gtest-${ARROW_GTEST_BUILD_VERSION}.tar.gz"
-    "https://chromium.googlesource.com/external/github.com/google/googletest/+archive/release-${ARROW_GTEST_BUILD_VERSION}.tar.gz"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_JEMALLOC_URL})
-  set(JEMALLOC_SOURCE_URL "$ENV{ARROW_JEMALLOC_URL}")
-else()
-  set_urls(
-    JEMALLOC_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/jemalloc-${ARROW_JEMALLOC_BUILD_VERSION}.tar.bz2"
-    "https://github.com/jemalloc/jemalloc/releases/download/${ARROW_JEMALLOC_BUILD_VERSION}/jemalloc-${ARROW_JEMALLOC_BUILD_VERSION}.tar.bz2"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_MIMALLOC_URL})
-  set(MIMALLOC_SOURCE_URL "$ENV{ARROW_MIMALLOC_URL}")
-else()
-  set_urls(
-    MIMALLOC_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/mimalloc-${ARROW_MIMALLOC_BUILD_VERSION}.tar.gz"
-    "https://github.com/microsoft/mimalloc/archive/${ARROW_MIMALLOC_BUILD_VERSION}.tar.gz"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_LZ4_URL})
-  set(LZ4_SOURCE_URL "$ENV{ARROW_LZ4_URL}")
-else()
-  set_urls(
-    LZ4_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/lz4-${ARROW_LZ4_BUILD_VERSION}.tar.gz"
-    "https://github.com/lz4/lz4/archive/${ARROW_LZ4_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_ORC_URL})
-  set(ORC_SOURCE_URL "$ENV{ARROW_ORC_URL}")
-else()
-  set_urls(
-    ORC_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/orc-${ARROW_ORC_BUILD_VERSION}.tar.gz"
-    "https://github.com/apache/orc/archive/rel/release-${ARROW_ORC_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_PROTOBUF_URL})
-  set(PROTOBUF_SOURCE_URL "$ENV{ARROW_PROTOBUF_URL}")
-else()
-  string(SUBSTRING ${ARROW_PROTOBUF_BUILD_VERSION} 1 -1
-                   ARROW_PROTOBUF_STRIPPED_BUILD_VERSION)
-  # strip the leading `v`
-  set_urls(
-    PROTOBUF_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/protobuf-${ARROW_PROTOBUF_BUILD_VERSION}.tar.gz"
-    "https://github.com/protocolbuffers/protobuf/releases/download/${ARROW_PROTOBUF_BUILD_VERSION}/protobuf-all-${ARROW_PROTOBUF_STRIPPED_BUILD_VERSION}.tar.gz"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_RE2_URL})
-  set(RE2_SOURCE_URL "$ENV{ARROW_RE2_URL}")
-else()
-  set_urls(
-    RE2_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/re2-${ARROW_RE2_BUILD_VERSION}.tar.gz"
-    "https://github.com/google/re2/archive/${ARROW_RE2_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_RAPIDJSON_URL})
-  set(RAPIDJSON_SOURCE_URL "$ENV{ARROW_RAPIDJSON_URL}")
-else()
-  set_urls(
-    RAPIDJSON_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/rapidjson-${ARROW_RAPIDJSON_BUILD_VERSION}.tar.gz"
-    "https://github.com/miloyip/rapidjson/archive/${ARROW_RAPIDJSON_BUILD_VERSION}.tar.gz"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_SNAPPY_URL})
-  set(SNAPPY_SOURCE_URL "$ENV{ARROW_SNAPPY_URL}")
-else()
-  set_urls(
-    SNAPPY_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/snappy-${ARROW_SNAPPY_BUILD_VERSION}.tar.gz"
-    "https://github.com/google/snappy/archive/${ARROW_SNAPPY_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_THRIFT_URL})
-  set(THRIFT_SOURCE_URL "$ENV{ARROW_THRIFT_URL}")
-else()
-  set_urls(
-    THRIFT_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://github.com/apache/thrift/archive/v${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://dl.bintray.com/ursalabs/arrow-thrift/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://downloads.apache.org/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://apache.claz.org/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://apache.cs.utah.edu/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://apache.mirrors.lucidnetworks.net/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://apache.osuosl.org/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://ftp.wayne.edu/apache/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://mirror.olnevhost.net/pub/apache/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://mirrors.gigenet.com/apache/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://mirrors.koehn.com/apache/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://mirrors.ocf.berkeley.edu/apache/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://mirrors.sonic.net/apache/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    "https://us.mirrors.quenda.co/apache/thrift/${ARROW_THRIFT_BUILD_VERSION}/thrift-${ARROW_THRIFT_BUILD_VERSION}.tar.gz"
-    )
-endif()
-
-if(DEFINED ENV{ARROW_ZLIB_URL})
-  set(ZLIB_SOURCE_URL "$ENV{ARROW_ZLIB_URL}")
-else()
-  set_urls(
-    ZLIB_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/zlib-${ARROW_ZLIB_BUILD_VERSION}.tar.gz"
-    "https://zlib.net/fossils/zlib-${ARROW_ZLIB_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{ARROW_ZSTD_URL})
-  set(ZSTD_SOURCE_URL "$ENV{ARROW_ZSTD_URL}")
-else()
-  set_urls(
-    ZSTD_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/zstd-${ARROW_ZSTD_BUILD_VERSION}.tar.gz"
-    "https://github.com/facebook/zstd/archive/${ARROW_ZSTD_BUILD_VERSION}.tar.gz")
-endif()
-
-if(DEFINED ENV{BZIP2_SOURCE_URL})
-  set(BZIP2_SOURCE_URL "$ENV{BZIP2_SOURCE_URL}")
-else()
-  set_urls(
-    BZIP2_SOURCE_URL
-    "https://github.com/ursa-labs/thirdparty/releases/download/latest/bzip2-${ARROW_BZIP2_BUILD_VERSION}.tar.gz"
-    "https://sourceware.org/pub/bzip2/bzip2-${ARROW_BZIP2_BUILD_VERSION}.tar.gz")
-endif()
+include("${THIRDPARTY_DIR}/versions.cmake")
 
 # ----------------------------------------------------------------------
 # ExternalProject options
@@ -631,6 +382,7 @@ macro(build_boost)
 
   externalproject_add(boost_ep
                       URL ${BOOST_SOURCE_URL}
+                      URL_HASH ${BOOST_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS ${BOOST_BUILD_PRODUCTS}
                       BUILD_IN_SOURCE 1
                       CONFIGURE_COMMAND ${BOOST_CONFIGURE_COMMAND}
@@ -760,6 +512,7 @@ macro(build_snappy)
                       BUILD_IN_SOURCE 1
                       INSTALL_DIR ${SNAPPY_PREFIX}
                       URL ${SNAPPY_SOURCE_URL}
+                      URL_HASH ${SNAPPY_BUILD_MD5_CHECKSUM}
                       CMAKE_ARGS ${SNAPPY_CMAKE_ARGS}
                       BUILD_BYPRODUCTS "${SNAPPY_STATIC_LIB}")
 
@@ -830,6 +583,7 @@ macro(build_brotli)
 
   externalproject_add(brotli_ep
                       URL ${BROTLI_SOURCE_URL}
+                      URL_HASH ${BROTLI_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS "${BROTLI_STATIC_LIBRARY_ENC}"
                                        "${BROTLI_STATIC_LIBRARY_DEC}"
                                        "${BROTLI_STATIC_LIBRARY_COMMON}"
@@ -958,6 +712,7 @@ macro(build_glog)
       -DCMAKE_CXX_FLAGS=${GLOG_CMAKE_CXX_FLAGS})
   externalproject_add(glog_ep
                       URL ${GLOG_SOURCE_URL}
+                      URL_HASH ${GLOG_BUILD_MD5_CHECKSUM}
                       BUILD_IN_SOURCE 1
                       BUILD_BYPRODUCTS "${GLOG_STATIC_LIB}"
                       CMAKE_ARGS ${GLOG_CMAKE_ARGS} ${EP_LOG_OPTIONS})
@@ -1015,6 +770,7 @@ macro(build_gflags)
   file(MAKE_DIRECTORY "${GFLAGS_INCLUDE_DIR}")
   externalproject_add(gflags_ep
                       URL ${GFLAGS_SOURCE_URL} ${EP_LOG_OPTIONS}
+                      URL_HASH ${GFLAGS_BUILD_MD5_CHECKSUM}
                       BUILD_IN_SOURCE 1
                       BUILD_BYPRODUCTS "${GFLAGS_STATIC_LIB}"
                       CMAKE_ARGS ${GFLAGS_CMAKE_ARGS})
@@ -1125,7 +881,7 @@ macro(build_thrift)
 
   externalproject_add(thrift_ep
                       URL ${THRIFT_SOURCE_URL}
-                      URL_HASH "MD5=${ARROW_THRIFT_BUILD_MD5_CHECKSUM}"
+                      URL_HASH ${ARROW_THRIFT_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS "${THRIFT_STATIC_LIB}"
                       CMAKE_ARGS ${THRIFT_CMAKE_ARGS}
                       DEPENDS ${THRIFT_DEPENDENCIES} ${EP_LOG_OPTIONS})
@@ -1188,6 +944,7 @@ macro(build_protobuf)
                       BUILD_COMMAND ${PROTOBUF_BUILD_COMMAND}
                       BUILD_IN_SOURCE 1
                       URL ${PROTOBUF_SOURCE_URL}
+                      URL_HASH ${PROTOBUF_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS "${PROTOBUF_STATIC_LIB}" "${PROTOBUF_COMPILER}"
                                        ${EP_LOG_OPTIONS})
 
@@ -1318,6 +1075,7 @@ if(ARROW_JEMALLOC)
   externalproject_add(
     jemalloc_ep
     URL ${JEMALLOC_SOURCE_URL}
+    URL_HASH ${JEMALLOC_BUILD_MD5_CHECKSUM}
     PATCH_COMMAND
       touch doc/jemalloc.3 doc/jemalloc.html
       # The prefix "je_arrow_" must be kept in sync with the value in memory_pool.cc
@@ -1374,6 +1132,7 @@ if(ARROW_MIMALLOC)
 
   externalproject_add(mimalloc_ep
                       URL ${MIMALLOC_SOURCE_URL}
+                      URL_HASH ${MIMALLOC_BUILD_MD5_CHECKSUM}
                       CMAKE_ARGS ${MIMALLOC_CMAKE_ARGS}
                       BUILD_BYPRODUCTS "${MIMALLOC_STATIC_LIB}")
 
@@ -1485,6 +1244,7 @@ macro(build_gtest)
 
   externalproject_add(googletest_ep
                       URL ${GTEST_SOURCE_URL}
+                      URL_HASH ${GTEST_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS ${GTEST_SHARED_LIB} ${GTEST_MAIN_SHARED_LIB}
                                        ${GMOCK_SHARED_LIB}
                       CMAKE_ARGS ${GTEST_CMAKE_ARGS} ${EP_LOG_OPTIONS})
@@ -1593,6 +1353,7 @@ macro(build_benchmark)
 
   externalproject_add(gbenchmark_ep
                       URL ${GBENCHMARK_SOURCE_URL}
+                      URL_HASH ${GBENCHMARK_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS "${GBENCHMARK_STATIC_LIB}"
                                        "${GBENCHMARK_MAIN_STATIC_LIB}"
                       CMAKE_ARGS ${GBENCHMARK_CMAKE_ARGS} ${EP_LOG_OPTIONS})
@@ -1640,6 +1401,7 @@ macro(build_rapidjson)
                       ${EP_LOG_OPTIONS}
                       PREFIX "${CMAKE_BINARY_DIR}"
                       URL ${RAPIDJSON_SOURCE_URL}
+                      URL_HASH ${RAPIDJSON_BUILD_MD5_CHECKSUM}
                       CMAKE_ARGS ${RAPIDJSON_CMAKE_ARGS})
 
   set(RAPIDJSON_INCLUDE_DIR "${RAPIDJSON_PREFIX}/include")
@@ -1705,6 +1467,7 @@ macro(build_zlib)
 
   externalproject_add(zlib_ep
                       URL ${ZLIB_SOURCE_URL} ${EP_LOG_OPTIONS}
+                      URL_HASH ${ZLIB_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS "${ZLIB_STATIC_LIB}"
                       CMAKE_ARGS ${ZLIB_CMAKE_ARGS})
 
@@ -1761,6 +1524,7 @@ macro(build_lz4)
   # We need to copy the header in lib to directory outside of the build
   externalproject_add(lz4_ep
                       URL ${LZ4_SOURCE_URL} ${EP_LOG_OPTIONS}
+                      URL_HASH ${LZ4_BUILD_MD5_CHECKSUM}
                       UPDATE_COMMAND ${CMAKE_COMMAND}
                                      -E
                                      copy_directory
@@ -1830,6 +1594,7 @@ macro(build_zstd)
                       SOURCE_SUBDIR "build/cmake"
                       INSTALL_DIR ${ZSTD_PREFIX}
                       URL ${ZSTD_SOURCE_URL}
+                      URL_HASH ${ZSTD_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS "${ZSTD_STATIC_LIB}")
 
   file(MAKE_DIRECTORY "${ZSTD_PREFIX}/include")
@@ -1866,6 +1631,7 @@ macro(build_re2)
                       ${EP_LOG_OPTIONS}
                       INSTALL_DIR ${RE2_PREFIX}
                       URL ${RE2_SOURCE_URL}
+                      URL_HASH ${RE2_BUILD_MD5_CHECKSUM}
                       CMAKE_ARGS ${RE2_CMAKE_ARGS}
                       BUILD_BYPRODUCTS "${RE2_STATIC_LIB}")
 
@@ -1905,6 +1671,7 @@ macro(build_bzip2)
                                       ${BZIP2_EXTRA_ARGS}
                       INSTALL_DIR ${BZIP2_PREFIX}
                       URL ${BZIP2_SOURCE_URL}
+                      URL_HASH ${BZIP2_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS "${BZIP2_STATIC_LIB}")
 
   file(MAKE_DIRECTORY "${BZIP2_PREFIX}/include")
@@ -1953,6 +1720,7 @@ macro(build_cares)
   externalproject_add(cares_ep
                       ${EP_LOG_OPTIONS}
                       URL ${CARES_SOURCE_URL}
+                      URL_HASH ${CARES_BUILD_MD5_CHECKSUM}
                       CMAKE_ARGS ${CARES_CMAKE_ARGS}
                       BUILD_BYPRODUCTS "${CARES_STATIC_LIB}")
 
@@ -2085,6 +1853,7 @@ macro(build_grpc)
   # vendored dependencies such as c-ares...
   externalproject_add(grpc_ep
                       URL ${GRPC_SOURCE_URL}
+                      URL_HASH ${GRPC_BUILD_MD5_CHECKSUM}
                       LIST_SEPARATOR |
                       BUILD_BYPRODUCTS ${GRPC_STATIC_LIBRARY_GPR}
                                        ${GRPC_STATIC_LIBRARY_GRPC}
@@ -2255,6 +2024,7 @@ macro(build_orc)
 
   externalproject_add(orc_ep
                       URL ${ORC_SOURCE_URL}
+                      URL_HASH ${ORC_BUILD_MD5_CHECKSUM}
                       BUILD_BYPRODUCTS ${ORC_STATIC_LIB}
                       CMAKE_ARGS ${ORC_CMAKE_ARGS} ${EP_LOG_OPTIONS})
 
@@ -2325,6 +2095,7 @@ macro(build_awssdk)
   externalproject_add(awssdk_ep
                       ${EP_LOG_OPTIONS}
                       URL ${AWSSDK_SOURCE_URL}
+                      URL_HASH ${AWSSDK_BUILD_MD5_CHECKSUM}
                       CMAKE_ARGS ${AWSSDK_CMAKE_ARGS}
                       BUILD_BYPRODUCTS ${AWSSDK_SHARED_LIBS})
 

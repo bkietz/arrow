@@ -1,0 +1,279 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# License); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# AS IS BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Toolchain library versions.
+# This file is managed by archery, to update it use for example
+#
+# $ archery bundled-thirdparty versions --update=BOOST@1.71.0
+#
+# See also versions.cmake
+#
+# - URL templates are ordered by suspected performance.
+# - Bundles may be provided with a trimmed subset of the canonical
+#   archive for performance reasons. In this case the script for
+#   deriving the trimmed archive from the canonical should be inlined.
+#   Its usage is `script $trimmed_out_dir`, executed in a decompressed
+#   canonical archive.
+# - The first non-ursalabs url to a canonical archive
+#   will be used to update checksums and ursalabs bintray
+#   and github mirrors when the version is bumped.
+
+AWSSDK: !Bundle
+  version: !Version 1.7.160
+  name_template: aws-sdk-cpp-{version}.tar.gz
+  full:
+    md5: b9d39a6d14f26ea4890b0437509b4c9f
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/aws-sdk-cpp-{version}.tar.gz
+    - https://github.com/aws/aws-sdk-cpp/archive/{version}.tar.gz
+    - https://dl.bintray.com/ursalabs/arrow-awssdk/aws-sdk-cpp-{version}.tar.gz/aws-sdk-cpp-{version}.tar.gz
+
+BOOST: !Bundle
+  version: !Version 1.71.0
+  name_template: boost-{version}.tar.gz
+  full:
+    md5: 8c5007d10d60d3426bb41eab7bbe090f
+    url_templates:
+    - https://dl.bintray.com/boostorg/release/{version}/source/boost_{version.dots_as_underscores}.tar.gz
+  trimmed:
+    script: |
+      #!/bin/bash
+      set -eu
+
+      BOOST_SUBSET=(
+        # Arrow tests require these
+        system.hpp filesystem.hpp
+
+        # Add these to be able to build those
+        config build boost_install headers log predef
+
+        # Parquet needs this (if using gcc < 4.9)
+        regex.hpp
+
+        # Gandiva needs these
+        functional/hash.hpp multiprecision/cpp_int.hpp
+
+        # These are for Thrift when Thrift_SOURCE=BUNDLED
+        algorithm/string.hpp locale.hpp noncopyable.hpp
+        numeric/conversion/cast.hpp scope_exit.hpp scoped_array.hpp
+        shared_array.hpp tokenizer.hpp version.hpp
+      )
+
+      if [ ! -f "dist/bin/bcp" ]; then
+        ./bootstrap.sh
+        ./b2 tools/bcp
+      fi
+
+      ./dist/bin/bcp "${BOOST_SUBSET[@]}" $1
+    md5: 056bbc673d60814c0fb0eeeeaf12392b
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/boost_{version.dots_as_underscores}.tar.gz
+    - https://dl.bintray.com/ursalabs/arrow-boost/boost_{version.dots_as_underscores}.tar.gz
+
+BROTLI: !Bundle
+  version: !Version 1.0.7
+  name_template: brotli-v{version}.tar.gz
+  full:
+    md5: 7b6edd4f2128f22794d0ca28c53898a5
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/brotli-v{version}.tar.gz
+    - https://github.com/google/brotli/archive/v{version}.tar.gz
+
+BZIP2: !Bundle
+  version: !Version 1.0.8
+  name_template: bzip2-{version}.tar.gz
+  full:
+    md5: 67e051268d0c475ea773822f7500d0e5
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/bzip2-{version}.tar.gz
+    - https://sourceware.org/pub/bzip2/bzip2-{version}.tar.gz
+
+CARES: !Bundle
+  version: !Version 1.15.0
+  name_template: cares-{version}.tar.gz
+  full:
+    md5: d2391da274653f7643270623e822dff7
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/cares-{version}.tar.gz
+    - https://c-ares.haxx.se/download/c-ares-{version}.tar.gz
+
+GBENCHMARK: !Bundle
+  version: !Version 1.5.0
+  name_template: gbenchmark-v{version}.tar.gz
+  full:
+    md5: eb1466370f3ae31e74557baa29729e9e
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/gbenchmark-v{version}.tar.gz
+    - https://github.com/google/benchmark/archive/v{version}.tar.gz
+
+GFLAGS: !Bundle
+  version: !Version 2.2.0
+  name_template: gflags-v{version}.tar.gz
+  full:
+    md5: b99048d9ab82d8c56e876fb1456c285e
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/gflags-v{version}.tar.gz
+    - https://github.com/gflags/gflags/archive/v{version}.tar.gz
+
+GLOG: !Bundle
+  version: !Version 0.3.5
+  name_template: glog-v{version}.tar.gz
+  full:
+    md5: 5df6d78b81e51b90ac0ecd7ed932b0d4
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/glog-v{version}.tar.gz
+    - https://github.com/google/glog/archive/v{version}.tar.gz
+
+GRPC: !Bundle
+  version: !Version 1.25.0
+  name_template: grpc-v{version}.tar.gz
+  full:
+    md5: 3a875f7b3f0e3bdd3a603500bcef3d41
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/grpc-v{version}.tar.gz
+    - https://github.com/grpc/grpc/archive/v{version}.tar.gz
+
+GTEST: !Bundle
+  version: !Version 1.8.1
+  name_template: gtest-{version}.tar.gz
+  full:
+    md5: 2e6fbeb6a91310a16efe181886c59596
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/gtest-{version}.tar.gz
+    - https://github.com/google/googletest/archive/release-{version}.tar.gz
+    - https://dl.bintray.com/ursalabs/arrow-gtest/gtest-{version}.tar.gz
+    - https://chromium.googlesource.com/external/github.com/google/googletest/+archive/release-{version}.tar.gz
+
+JEMALLOC: !Bundle
+  version: !Version 5.2.1
+  name_template: jemalloc-{version}.tar.bz2
+  full:
+    md5: 3d41fbf006e6ebffd489bdb304d009ae
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/jemalloc-{version}.tar.bz2
+    - https://github.com/jemalloc/jemalloc/releases/download/{version}/jemalloc-{version}.tar.bz2
+
+LZ4: !Bundle
+  version: !Version 1.9.2
+  name_template: lz4-v{version}.tar.gz
+  full:
+    md5: 3898c56c82fb3d9455aefd48db48eaad
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/lz4-v{version}.tar.gz
+    - https://github.com/lz4/lz4/archive/v{version}.tar.gz
+
+MIMALLOC: !Bundle
+  # Need post-v1.0.6 version for
+  # https://github.com/microsoft/mimalloc/pull/140,
+  # https://github.com/microsoft/mimalloc/pull/145, and
+  # https://github.com/microsoft/mimalloc/pull/148
+  version: !Version 270e765454f98e8bab9d42609b153425f749fff6
+  name_template: mimalloc-{version}.tar.gz
+  full:
+    md5: ff46129827bfc5f35dedbf5a6f301aa2
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/mimalloc-{version}.tar.gz
+    - https://github.com/microsoft/mimalloc/archive/{version}.tar.gz
+
+ORC: !Bundle
+  version: !Version 1.6.2
+  name_template: orc-{version}.tar.gz
+  full:
+    md5: b60ed99eb7d108f6cfe7b86790604d7d
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/orc-{version}.tar.gz
+    - https://github.com/apache/orc/archive/rel/release-{version}.tar.gz
+
+PROTOBUF: !Bundle
+  version: !Version 3.7.1
+  name_template: protobuf-v{version}.tar.gz
+  full:
+    md5: cda6ae370a5df941f8aa837c8a0292ba
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/protobuf-{version}.tar.gz
+    - https://github.com/google/protobuf/releases/download/v{version}/protobuf-all-{version}.tar.gz
+
+RAPIDJSON: !Bundle
+  # Because of https://github.com/Tencent/rapidjson/pull/1323, we require
+  # a pre-release version of RapidJSON to build with GCC 8 without
+  # warnings.
+  version: !Version 2bbd33b33217ff4a73434ebf10cdac41e2ef5e34
+  name_template: rapidjson-{version}.tar.gz
+  full:
+    md5: f1db3c5449677f148f60425d88481d76
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/rapidjson-{version}.tar.gz
+    - https://github.com/miloyip/rapidjson/archive/{version}.tar.gz
+
+RE2: !Bundle
+  version: !Version 2019-08-01
+  name_template: re2-{version}.tar.gz
+  full:
+    md5: b38416cfa4c9dc68651292b5137989e0
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/re2-{version}.tar.gz
+    - https://github.com/google/re2/archive/{version}.tar.gz
+
+SNAPPY: !Bundle
+  version: !Version 1.1.7
+  name_template: snappy-{version}.tar.gz
+  full:
+    md5: ee9086291c9ae8deb4dac5e0b85bf54a
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/snappy-{version}.tar.gz
+    - https://github.com/google/snappy/archive/{version}.tar.gz
+
+THRIFT: !Bundle
+  version: !Version 0.12.0
+  name_template: thrift-{version}.tar.gz
+  full:
+    md5: 3deebbb4d1ca77dd9c9e009a1ea02183
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/thrift-{version}.tar.gz
+    - https://dl.bintray.com/ursalabs/arrow-thrift/thrift-{version}.tar.gz
+    - https://archive.apache.org/dist/thrift/{version}/thrift-{version}.tar.gz
+    - https://downloads.apache.org/thrift/{version}/thrift-{version}.tar.gz
+    - https://apache.claz.org/thrift/{version}/thrift-{version}.tar.gz
+    - https://apache.cs.utah.edu/thrift/{version}/thrift-{version}.tar.gz
+    - https://apache.mirrors.lucidnetworks.net/thrift/{version}/thrift-{version}.tar.gz
+    - https://apache.osuosl.org/thrift/{version}/thrift-{version}.tar.gz
+    - https://ftp.wayne.edu/apache/thrift/{version}/thrift-{version}.tar.gz
+    - https://mirror.olnevhost.net/pub/apache/thrift/{version}/thrift-{version}.tar.gz
+    - https://mirrors.gigenet.com/apache/thrift/{version}/thrift-{version}.tar.gz
+    - https://mirrors.koehn.com/apache/thrift/{version}/thrift-{version}.tar.gz
+    - https://mirrors.ocf.berkeley.edu/apache/thrift/{version}/thrift-{version}.tar.gz
+    - https://mirrors.sonic.net/apache/thrift/{version}/thrift-{version}.tar.gz
+    - https://us.mirrors.quenda.co/apache/thrift/{version}/thrift-{version}.tar.gz
+
+ZLIB: !Bundle
+  version: !Version 1.2.11
+  name_template: zlib-{version}.tar.gz
+  full:
+    md5: 1c9f62f0778697a09d36121ead88e08e
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/zlib-{version}.tar.gz
+    - https://zlib.net/fossils/zlib-{version}.tar.gz
+
+ZSTD: !Bundle
+  version: !Version 1.4.3
+  name_template: zstd-v{version}.tar.gz
+  full:
+    md5: dd73dd3b6e5efd8946e6c5e7fe7cb1d2
+    url_templates:
+    - https://github.com/ursa-labs/thirdparty/releases/download/latest/zstd-v{version}.tar.gz
+    - https://github.com/facebook/zstd/archive/v{version}.tar.gz
+

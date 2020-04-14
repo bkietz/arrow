@@ -330,20 +330,18 @@ To enable offline builds, you can download the source artifacts yourself and
 use environment variables of the form ``ARROW_$LIBRARY_URL`` to direct the
 build system to read from a local file rather than accessing the internet.
 
-To make this easier for you, we have prepared a script
-``thirdparty/download_dependencies.sh`` which will download the correct version
-of each dependency to a directory of your choosing. It will print a list of
-bash-style environment variable statements at the end to use for your build
-script.
+``archery`` can be used to download the correct version of each dependency:
 
 .. code-block:: shell
 
    # Download tarballs into $HOME/arrow-thirdparty
-   $ ./thirdparty/download_dependencies.sh $HOME/arrow-thirdparty
+   $ archery bundled_thirdparty download \
+       --destination=$HOME/arrow-thirdparty/
 
-You can then invoke CMake to create the build directory and it will use the
-declared environment variable pointing to downloaded archives instead of
-downloading them (one for each build dir!).
+Additionally, ``$HOME/arrow-thirdparty/env.sh`` will populated with bash-style
+environment variable statements. If sourced before creating a build directory,
+CMake will recognize the environment variables use the archives in
+``$HOME/arrow-thirdparty`` instead of re-downloading them.
 
 Extra debugging help
 ~~~~~~~~~~~~~~~~~~~~

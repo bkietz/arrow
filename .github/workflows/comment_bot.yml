@@ -41,7 +41,7 @@ jobs:
           update-conda: true
           python-version: 3.7
           conda-channels: conda-forge
-      - name: Instal Archery and Crossbow dependencies
+      - name: Install Archery and Crossbow dependencies
         run: |
           conda install -y --file arrow/ci/conda_env_crossbow.txt pygithub
           pip install -e arrow/dev/archery

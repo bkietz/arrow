@@ -16,6 +16,7 @@
 # under the License.
 
 import os
+from pathlib import Path
 
 from .git import git
 
@@ -41,6 +42,10 @@ class ArrowSources:
         """
         assert isinstance(path, str) and ArrowSources.valid(path)
         self.path = path
+
+    def __truediv__(self, relative_path):
+        """ Convenience pathlib-style accessor. """
+        return Path(self.path) / relative_path
 
     @property
     def archery(self):
