@@ -127,6 +127,17 @@ TEST_F(TestPartitioning, DirectoryPartitioning) {
   AssertParse("/0/foo/ignored=2341", "alpha"_ == int32_t(0) and "beta"_ == "foo");
 }
 
+TEST_F(TestPartitioning, DirectoryPartitioningWithTemporal) {
+  for (auto temporal : {timestamp(TimeUnit::SECOND), date32()}) {
+    partitioning_ = std::make_shared<DirectoryPartitioning>(
+        schema({field("year", int32()), field("month", int8()), field("day", temporal)}));
+
+    ASSERT_OK_AND_ASSIGN(auto day, StringScalar("2020-06-08").CastTo(temporal));
+    AssertParse("/2020/06/2020-06-08",
+                "year"_ == int32_t(2020) and "month"_ == int8_t(6) and "day"_ == day);
+  }
+}
+
 TEST_F(TestPartitioning, DiscoverSchema) {
   factory_ = DirectoryPartitioning::MakeFactory({"alpha", "beta"});
 
