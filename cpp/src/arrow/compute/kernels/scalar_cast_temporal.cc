@@ -270,7 +270,7 @@ struct ParseTimestamp {
   template <typename OUT, typename ARG0>
   OUT Call(KernelContext* ctx, ARG0 val) const {
     OUT result = 0;
-    if (ARROW_PREDICT_FALSE(!ParseValue(type, val.data(), val.size(), &result))) {
+    if (ARROW_PREDICT_FALSE(!ParseValue(type, val, &result))) {
       ctx->SetStatus(Status::Invalid("Failed to parse string: ", val));
     }
     return result;

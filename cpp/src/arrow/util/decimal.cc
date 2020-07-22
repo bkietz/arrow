@@ -309,7 +309,7 @@ static inline void ShiftAndAdd(const char* data, size_t length, Decimal128* out)
     const size_t group_size = std::min(kInt64DecimalDigits, length - posn);
     const int64_t multiple = kInt64PowersOfTen[group_size];
     int64_t chunk = 0;
-    ARROW_CHECK(internal::ParseValue<Int64Type>(data + posn, group_size, &chunk));
+    ARROW_CHECK(internal::ParseValue<Int64Type>({data + posn, group_size}, &chunk));
 
     *out *= multiple;
     *out += chunk;
@@ -399,7 +399,7 @@ bool ParseDecimalComponents(const char* s, size_t size, DecimalComponents* out) 
       ++pos;
     }
     out->has_exponent = true;
-    return internal::ParseValue<Int32Type>(s + pos, size - pos, &(out->exponent));
+    return internal::ParseValue<Int32Type>({s + pos, size - pos}, &out->exponent);
   }
   return pos == size;
 }
