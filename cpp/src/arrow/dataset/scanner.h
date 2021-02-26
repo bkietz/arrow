@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <utility>
@@ -161,11 +162,19 @@ class ARROW_DS_EXPORT Scanner {
   /// in a concurrent fashion and outlive the iterator.
   Result<ScanTaskIterator> Scan();
 
+  /// \brief Apply a visitor to each RecordBatch as it is scanned. If multiple
+  /// threads are used, the visitor will be invoked from those threads and is
+  /// responsible for any synchronization.
+  Status Scan(std::function<Status(std::shared_ptr<RecordBatch>)> visitor);
+
   /// \brief Convert a Scanner into a Table.
   ///
   /// Use this convenience utility with care. This will serially materialize the
   /// Scan result in memory before creating the Table.
   Result<std::shared_ptr<Table>> ToTable();
+
+  /// \brief GetFragments returns an iterator over all Batches yielded by this scan.
+  Result<RecordBatchIterator> ToBatches();
 
   /// \brief GetFragments returns an iterator over all Fragments in this scan.
   Result<FragmentIterator> GetFragments();

@@ -18,6 +18,7 @@
 #include "arrow/dataset/scanner.h"
 
 #include <algorithm>
+#include <condition_variable>
 #include <memory>
 #include <mutex>
 
@@ -204,6 +205,103 @@ Result<std::shared_ptr<Table>> Scanner::ToTable() {
 
   return Table::FromRecordBatches(scan_options_->projected_schema,
                                   FlattenRecordBatchVector(std::move(state->batches)));
+}
+
+struct ToBatchesState {
+  explicit ToBatchesState(size_t n_tasks)
+      : batches(n_tasks), task_drained(n_tasks, false) {}
+
+  /// Protecting mutating accesses to batches
+  std::mutex mutex;
+  std::condition_variable ready;
+  std::vector<std::deque<std::shared_ptr<RecordBatch>>> batches;
+  std::vector<bool> task_drained;
+  size_t pop_cursor = 0;
+
+  void Push(std::shared_ptr<RecordBatch> b, size_t i_task) {
+    std::lock_guard<std::mutex> lock(mutex);
+    ready.notify_one();
+    if (batches.size() <= i_task) {
+      batches.resize(i_task + 1);
+      task_drained.resize(i_task + 1);
+    }
+    batches[i_task].push_back(std::move(b));
+  }
+
+  Status Finish(size_t position) {
+    std::lock_guard<std::mutex> lock(mutex);
+    task_drained[position] = true;
+    return Status::OK();
+  }
+
+  std::shared_ptr<RecordBatch> Pop() {
+    std::unique_lock<std::mutex> lock(mutex);
+    ready.wait(lock, [this] {
+      while (pop_cursor < batches.size()) {
+        // queue for current scan task contains at least one batch, pop that
+        if (!batches[pop_cursor].empty()) return true;
+
+        // queue is empty but will be appended to eventually, wait for that
+        if (!task_drained[pop_cursor]) return false;
+
+        ++pop_cursor;
+      }
+      // all scan tasks drained, terminate
+      return true;
+    });
+
+    if (pop_cursor == batches.size()) return nullptr;
+
+    auto batch = std::move(batches[pop_cursor].front());
+    batches[pop_cursor].pop_front();
+    return batch;
+  }
+};
+
+Result<RecordBatchIterator> Scanner::ToBatches() {
+  ARROW_ASSIGN_OR_RAISE(auto scan_task_it, Scan());
+  ARROW_ASSIGN_OR_RAISE(auto scan_task_vector, scan_task_it.ToVector());
+
+  auto task_group = scan_context_->TaskGroup();
+  auto state = std::make_shared<ToBatchesState>(scan_task_vector.size());
+
+  size_t scan_task_id = 0;
+  for (auto scan_task : scan_task_vector) {
+    auto id = scan_task_id++;
+    task_group->Append([state, id, scan_task] {
+      ARROW_ASSIGN_OR_RAISE(auto batch_it, scan_task->Execute());
+      for (auto maybe_batch : batch_it) {
+        ARROW_ASSIGN_OR_RAISE(auto batch, maybe_batch);
+        state->Push(std::move(batch), id);
+      }
+      return state->Finish(id);
+    });
+  }
+
+  return MakeFunctionIterator(
+      [task_group, state]() -> Result<std::shared_ptr<RecordBatch>> {
+        if (auto batch = state->Pop()) {
+          return batch;
+        }
+        RETURN_NOT_OK(task_group->Finish());
+        return nullptr;
+      });
+}
+
+Status Scanner::Scan(std::function<Status(std::shared_ptr<RecordBatch>)> visitor) {
+  ARROW_ASSIGN_OR_RAISE(auto scan_task_it, Scan());
+
+  auto task_group = scan_context_->TaskGroup();
+
+  for (auto maybe_scan_task : scan_task_it) {
+    ARROW_ASSIGN_OR_RAISE(auto scan_task, maybe_scan_task);
+    task_group->Append([scan_task, visitor] {
+      ARROW_ASSIGN_OR_RAISE(auto batch_it, scan_task->Execute());
+      return batch_it.Visit(visitor);
+    });
+  }
+
+  return task_group->Finish();
 }
 
 }  // namespace dataset

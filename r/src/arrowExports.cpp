@@ -1105,6 +1105,15 @@ BEGIN_CPP11
 	return R_NilValue;
 END_CPP11
 }
+// dataset.cpp
+std::shared_ptr<arrow::Table> dataset___Scanner__TakeRows(const std::shared_ptr<ds::Scanner>& scanner, const std::shared_ptr<arrow::Array>& indices);
+extern "C" SEXP _arrow_dataset___Scanner__TakeRows(SEXP scanner_sexp, SEXP indices_sexp){
+BEGIN_CPP11
+	arrow::r::Input<const std::shared_ptr<ds::Scanner>&>::type scanner(scanner_sexp);
+	arrow::r::Input<const std::shared_ptr<arrow::Array>&>::type indices(indices_sexp);
+	return cpp11::as_sexp(dataset___Scanner__TakeRows(scanner, indices));
+END_CPP11
+}
 // datatype.cpp
 std::shared_ptr<arrow::DataType> Int8__initialize();
 extern "C" SEXP _arrow_Int8__initialize(){
@@ -3651,6 +3660,7 @@ static const R_CallMethodDef CallEntries[] = {
 		{ "_arrow_dataset___Scanner__schema", (DL_FUNC) &_arrow_dataset___Scanner__schema, 1}, 
 		{ "_arrow_dataset___ScanTask__get_batches", (DL_FUNC) &_arrow_dataset___ScanTask__get_batches, 1}, 
 		{ "_arrow_dataset___Dataset__Write", (DL_FUNC) &_arrow_dataset___Dataset__Write, 6}, 
+		{ "_arrow_dataset___Scanner__TakeRows", (DL_FUNC) &_arrow_dataset___Scanner__TakeRows, 2}, 
 		{ "_arrow_Int8__initialize", (DL_FUNC) &_arrow_Int8__initialize, 0}, 
 		{ "_arrow_Int16__initialize", (DL_FUNC) &_arrow_Int16__initialize, 0}, 
 		{ "_arrow_Int32__initialize", (DL_FUNC) &_arrow_Int32__initialize, 0}, 

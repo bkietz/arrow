@@ -19,6 +19,9 @@
 
 #include <memory>
 
+#include "arrow/compute/api_scalar.h"
+#include "arrow/compute/api_vector.h"
+#include "arrow/compute/cast.h"
 #include "arrow/dataset/scanner_internal.h"
 #include "arrow/dataset/test_util.h"
 #include "arrow/record_batch.h"
@@ -144,11 +147,42 @@ TEST_F(TestScanner, ToTable) {
   ASSERT_OK_AND_ASSIGN(actual, scanner.ToTable());
   AssertTablesEqual(*expected, *actual);
 
-  // There is no guarantee on the ordering when using multiple threads, but
-  // since the RecordBatch is always the same it will pass.
   ctx_->use_threads = true;
   ASSERT_OK_AND_ASSIGN(actual, scanner.ToTable());
   AssertTablesEqual(*expected, *actual);
+}
+
+TEST_F(TestScanner, ToBatches) {
+  SetSchema({field("i32", int32()), field("f64", float64())});
+  auto batch = ConstantArrayGenerator::Zeroes(kBatchSize, schema_);
+
+  for (bool use_threads : {false, true}) {
+    ctx_->use_threads = use_threads;
+    auto scanner = MakeScanner(batch);
+
+    ASSERT_OK_AND_ASSIGN(auto batch_it, scanner.ToBatches());
+
+    for (auto maybe_batch : batch_it) {
+      ASSERT_OK_AND_ASSIGN(auto scanned_batch, maybe_batch);
+      AssertBatchesEqual(*batch, *scanned_batch);
+    }
+  }
+}
+
+TEST_F(TestScanner, ScanWithVisitor) {
+  SetSchema({field("i32", int32()), field("f64", float64())});
+  auto batch = ConstantArrayGenerator::Zeroes(kBatchSize, schema_);
+
+  for (bool use_threads : {false, true}) {
+    ctx_->use_threads = use_threads;
+    auto scanner = MakeScanner(batch);
+
+    ASSERT_OK_AND_ASSIGN(auto batch_it, scanner.ToBatches());
+    ASSERT_OK(scanner.Scan([batch](std::shared_ptr<RecordBatch> scanned_batch) {
+      AssertBatchesEqual(*batch, *scanned_batch);
+      return Status::OK();
+    }));
+  }
 }
 
 class TestScannerBuilder : public ::testing::Test {

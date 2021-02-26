@@ -19,6 +19,8 @@
 
 #if defined(ARROW_R_WITH_ARROW)
 
+#include <arrow/array.h>
+#include <arrow/compute/api.h>
 #include <arrow/dataset/api.h>
 #include <arrow/filesystem/filesystem.h>
 #include <arrow/ipc/writer.h>
@@ -411,6 +413,71 @@ void dataset___Dataset__Write(
   opts.partitioning = partitioning;
   opts.basename_template = basename_template;
   StopIfNotOk(ds::FileSystemDataset::Write(opts, scanner));
+}
+
+namespace arrow {
+
+Result<std::shared_ptr<Table>> TakeRows(std::shared_ptr<Array> indices,
+                                        ds::Scanner* scanner) {
+  if (indices->null_count() != 0) {
+    return Status::NotImplemented("null take indices");
+  }
+
+  if (indices->type_id() != Type::INT64) {
+    ARROW_ASSIGN_OR_RAISE(indices, compute::Cast(*indices, int64()));
+  }
+
+  std::shared_ptr<Array> unsort_indices;
+  {
+    ARROW_ASSIGN_OR_RAISE(auto sort_indices, compute::SortIndices(*indices));
+    ARROW_ASSIGN_OR_RAISE(indices, compute::Take(*indices, *sort_indices));
+    ARROW_ASSIGN_OR_RAISE(unsort_indices, compute::SortIndices(*sort_indices));
+  }
+
+  RecordBatchVector out_batches;
+
+  auto raw_indices = static_cast<const Int64Array&>(*indices).raw_values();
+  int64_t offset = 0, row_begin = 0;
+
+  ARROW_ASSIGN_OR_RAISE(auto batch_it, scanner->ToBatches());
+  for (auto maybe_batch : batch_it) {
+    ARROW_ASSIGN_OR_RAISE(auto batch, maybe_batch);
+
+    if (offset == indices->length()) break;
+    // DCHECK_LT(offset, indices->length());
+
+    int64_t length = 0;
+    while (offset + length < indices->length()) {
+      auto rel_index = raw_indices[offset + length] - row_begin;
+      if (rel_index >= batch->num_rows()) break;
+      ++length;
+    }
+    // DCHECK_LE(offset + length, indices->length());
+
+    Datum rel_indices = indices->Slice(offset, length);
+    ARROW_ASSIGN_OR_RAISE(rel_indices, compute::Subtract(rel_indices, Datum(row_begin)));
+
+    ARROW_ASSIGN_OR_RAISE(Datum out_batch, compute::Take(batch, rel_indices));
+    out_batches.push_back(out_batch.record_batch());
+
+    offset += length;
+    row_begin += batch->num_rows();
+  }
+
+  ARROW_ASSIGN_OR_RAISE(
+      Datum out, Table::FromRecordBatches(scanner->schema(), std::move(out_batches)));
+
+  ARROW_ASSIGN_OR_RAISE(out, compute::Take(out, unsort_indices));
+  return out.table();
+}
+
+}  // namespace arrow
+
+// [[arrow::export]]
+std::shared_ptr<arrow::Table> dataset___Scanner__TakeRows(
+    const std::shared_ptr<ds::Scanner>& scanner,
+    const std::shared_ptr<arrow::Array>& indices) {
+  return ValueOrStop(TakeRows(indices, scanner.get()));
 }
 
 #endif
