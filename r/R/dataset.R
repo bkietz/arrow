@@ -307,6 +307,6 @@ take_dataset_rows <- function(x, i) {
     stop("Only slicing with positive indices is supported", call. = FALSE)
   }
   scanner <- Scanner$create(ensure_group_vars(x))
-  i <- Array$create(i)
+  i <- Array$create(i - 1)
   dataset___Scanner__TakeRows(scanner, i)
 }
