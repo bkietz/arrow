@@ -1569,8 +1569,15 @@ const FunctionDoc strptime_doc(
 
 const FunctionDoc binary_length_doc(
     "Compute string lengths",
-    ("For each string in `strings`, emit its length.  Null values emit null."),
+    ("For each string in `strings`, emit the number of bytes.  Null values emit null."),
     {"strings"});
+
+#ifdef ARROW_WITH_UTF8PROC
+const FunctionDoc utf8_length_doc("Compute utf8 string lengths",
+                                  ("For each string in `strings`, emit the number of "
+                                   "utf8 characters.  Null values emit null."),
+                                  {"strings"});
+#endif  // ARROW_WITH_UTF8PROC
 
 void AddStrptime(FunctionRegistry* registry) {
   auto func = std::make_shared<ScalarFunction>("strptime", Arity::Unary(), &strptime_doc);
@@ -1597,6 +1604,14 @@ void AddBinaryLength(FunctionRegistry* registry) {
   DCHECK_OK(registry->AddFunction(std::move(func)));
 }
 
+#ifdef ARROW_WITH_UTF8PROC
+void AddUtf8Length(FunctionRegistry* registry) {
+  auto func =
+      std::make_shared<ScalarFunction>("utf8_length", Arity::Unary(), &utf8_length_doc);
+
+  DCHECK_OK(registry->AddFunction(std::move(func)));
+}
+#endif  // ARROW_WITH_UTF8PROC
 template <template <typename> class ExecFunctor>
 void MakeUnaryStringBatchKernel(
     std::string name, FunctionRegistry* registry, const FunctionDoc* doc,
@@ -1866,6 +1881,9 @@ void RegisterScalarStringAscii(FunctionRegistry* registry) {
 
   AddSplit(registry);
   AddBinaryLength(registry);
+#ifdef ARROW_WITH_UTF8PROC
+  AddUtf8Length(registry);
+#endif
   AddMatchSubstring(registry);
   AddStrptime(registry);
 }
