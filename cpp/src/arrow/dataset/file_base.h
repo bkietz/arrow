@@ -319,7 +319,7 @@ class ARROW_DS_EXPORT FileWriter {
              std::shared_ptr<io::OutputStream> destination)
       : schema_(std::move(schema)),
         options_(std::move(options)),
-        destination_(destination) {}
+        destination_(std::move(destination)) {}
 
   virtual Status FinishInternal() = 0;
 
