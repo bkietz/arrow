@@ -1,3 +1,5 @@
+# -*- indent-tabs-mode: nil -*-
+#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,29 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 
-aws-sdk-cpp
-benchmark>=1.5.4
-boost-cpp>=1.68.0
-brotli
-bzip2
-c-ares
-cmake
-meson=0.60
-gflags
-glog
-gmock>=1.10.0
-grpc-cpp>=1.27.3
-gtest=1.10.0
-libprotobuf
-libutf8proc
-lz4-c
-make
-ninja
-pkg-config
-python
-rapidjson
-re2
-snappy
-thrift-cpp>=0.11.0
-zlib
-zstd
+option('build_tests',
+       type: 'boolean',
+       value: false,
+       description: 'Build the Arrow googletest unit tests')
+
+option('quiet_lint',
+       type: 'boolean',
+       value: true,
+       description: 'Pass "quiet" flags to linting tools')
+

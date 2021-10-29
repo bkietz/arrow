@@ -508,3 +508,41 @@ the command ``xcodebuild`` will perform a command-line build using the
 generated project. It is recommended to use the "Automatically Create Schemes"
 option when first launching the project.  Selecting an auto-generated scheme
 will allow you to build and run a unittest with breakpoints enabled.
+
+Building with Meson
+===================
+
+Arrow provides Meson as an experimental build configuration system.
+
+Building requires:
+
+* A C++11-enabled compiler. On Linux, gcc 4.8 and higher should be
+  sufficient. For Windows, at least Visual Studio 2017 is required.
+* Meson 0.60 or higher
+* On Linux the ``ninja`` build utility
+
+You can install the requirements using conda:
+
+.. code-block:: shell
+
+   conda install -y -c conda-forge \
+       --file arrow\ci\conda_env_cpp.txt \
+       python=3.7
+
+Building
+========
+
+See full list of
+`meson built-in options <https://mesonbuild.com/Builtin-options.html>`_
+for reference.
+
+.. code-block:: shell
+
+   meson setup meson-build
+
+   meson configure                       \
+     --buildtype debug                   \
+     --default-library both              \
+     meson-build
+
+   ninja -C meson-build
