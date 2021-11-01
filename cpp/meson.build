@@ -23,6 +23,52 @@ project('arrow', 'cpp', 'c',
           'cpp_std=c++11',
         ])
 
+# Meson style guide:
+# - name variables in snake_case
+# - prefer dependency() or a wrap file for dependencies
+#   https://mesonbuild.com/Wrap-dependency-system-manual.html
+# - name options minimally- don't call something 'enable-ipc'
+#   when 'ipc' will do.
+# - prefer add_project_arguments to manual flags
+# - prefer sorted lists
+# - don't alias get_option
+# - subdir() calls should never be conditional. Instead if a
+#   subdir should be skipped then put that check at the top of
+#   its meson.build and invoke subdir_done(). This makes
+#   preconditions obvious in the file to which they apply instead
+#   of implicitly handled at a higher level
+# - don't automatically resolve inter-option dependencies,
+#   just error helpfully
+
+option_interdependencies = {
+  # [$option: name of an option]: {
+  #   [name of an option required to enable $option]: extra error message
+  # },
+
+  'tests': {
+    'json': 'unit tests use JSON to generate test data',
+    # XXX is this required for anything other than json_integration_test?
+    'ipc': '',
+  },
+
+  'integration': {
+    'ipc': '',
+  },
+
+  'benchmarks': {
+    'json': 'benchmarks use JSON to generate test data',
+  },
+}
+
+foreach opt, deps : option_interdependencies
+  foreach dep, err : deps
+    get_option(opt).require(
+      get_option(dep).enabled(),
+      error_message: err + ' (use -D ' + dep + '=enabled)'
+    )
+  endforeach
+endforeach
+
 version = '7.0.0-SNAPSHOT'
 if version.endswith('-SNAPSHOT')
   version_numbers = version.split('-')[0].split('.')
@@ -39,10 +85,6 @@ so_version = version_major * 100 + version_minor
 so_version_patch = version_micro
 library_version = '@0@.@1@.@2@'.format(so_version, so_version_patch, 0)
 
-prefix = get_option('prefix')
-
-build_tests = get_option('build_tests')
-
 base_include_directories = [
   include_directories('src'),
   include_directories('src/generated'),
@@ -50,56 +92,14 @@ base_include_directories = [
   include_directories('thirdparty/flatbuffers/include'),
 ]
 
-build_support_dir = join_paths(meson.source_root(), 'build-support')
-src_dir = join_paths(meson.source_root(), 'src')
-
-python = find_program('python3')
-threads = dependency('threads')
-dl = meson.get_compiler('c').find_library('dl', required: false)
-dl = dl.found() ? [dl] : []
-
-lint_exclusions = join_paths(build_support_dir, 'lint_exclusions.txt')
-lint_quiet = get_option('quiet_lint') ? ['--quiet'] : []
-
-custom_target(
-  output: 'lint',
-  command: [
-    python.path(),
-    join_paths(build_support_dir, 'run_cpplint.py'),
-    '--cpplint_binary', join_paths(build_support_dir, 'cpplint.py'),
-    '--exclude_globs', lint_exclusions,
-    '--source_dir', src_dir,
-  ] + lint_quiet,
-)
-
-custom_target(
-  output: 'lint-cpp-cli',
-  command: [
-    python.path(),
-    join_paths(build_support_dir, 'lint_cpp_cli.py'),
-    join_paths(build_support_dir, 'cpplint.py'),
-  ],
-)
-
-clang_format = find_program('clang-format-8')
-if clang_format.found()
-  clang_format_cmd = [
-    python.path(),
-    join_paths(build_support_dir, 'run_clang_format.py'),
-    '--clang_format_binary', clang_format.path(),
-    '--exclude_globs', lint_exclusions,
-    '--source_dir', src_dir,
-  ] + lint_quiet
-
-  custom_target(
-    output: 'format',
-    command: clang_format_cmd + ['--fix'],
-  )
-
-  custom_target(
-    output: 'check-format',
-    command: clang_format_cmd,
-  )
-endif
+base_dependencies = [
+  dependency('threads'),
+  dependency('RapidJSON', required: get_option('json')),
+  meson.get_compiler('c').find_library('dl', required: false),
+]
 
 subdir('src/arrow')
+
+# lint jobs etc
+subdir('build-support')
+

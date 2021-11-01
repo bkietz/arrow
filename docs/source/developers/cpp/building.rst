@@ -512,7 +512,7 @@ will allow you to build and run a unittest with breakpoints enabled.
 Building with Meson
 ===================
 
-Arrow provides Meson as an experimental build configuration system.
+Experimentally, Arrow provides Meson as a build configuration system.
 
 Building requires:
 
@@ -536,13 +536,32 @@ See full list of
 `meson built-in options <https://mesonbuild.com/Builtin-options.html>`_
 for reference.
 
+Also see `meson's FAQ <https://mesonbuild.com/howtox.html>`_
+
 .. code-block:: shell
 
-   meson setup meson-build
+   # setup a new build directory
+   BUILD_DIR=$ARROW_HOME/cpp/meson-build
+   mkdir $BUILD_DIR; cd $BUILD_DIR
+   meson setup ..
 
-   meson configure                       \
-     --buildtype debug                   \
-     --default-library both              \
-     meson-build
+   # reconfigure build options at any time
+   meson configure                        \
+     -D buildtype=debug                   \
+     -D default_library=both              \
+     -D build_tests=true                  \
+     -D prefix=$CONDA_PREFIX              \
+   # (Note: generator and compiler are immutable after `setup`)
 
-   ninja -C meson-build
+   # print a summary of build options
+   meson configure
+
+   # build and install arrow
+   meson install
+
+   # rebuild just one target
+   meson compile arrow_dataset
+
+   # run some unit tests (automatically rebuilds if necessary)
+   meson test --list
+   meson test array_test buffer_test

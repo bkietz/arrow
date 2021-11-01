@@ -17,13 +17,122 @@
 # specific language governing permissions and limitations
 # under the License.
 
-option('build_tests',
-       type: 'boolean',
-       value: false,
-       description: 'Build the Arrow googletest unit tests')
+option('tests',
+       type: 'feature',
+       value: 'disabled',
+       description: 'Build the unit tests')
+
+option('benchmarks',
+       type: 'feature',
+       value: 'disabled',
+       description: 'Build the micro benchmarks')
 
 option('quiet_lint',
        type: 'boolean',
        value: true,
        description: 'Pass "quiet" flags to linting tools')
 
+option('ipc',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build the Arrow IPC extensions')
+
+option('csv',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build with CSV support')
+
+option('json',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build with JSON support (requires RapidJSON)')
+
+option('hdfs',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build the HDFS bridge')
+
+option('compute',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build the compute modules')
+
+option('integration',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build the integration test executables')
+
+option('utilities',
+       type: 'feature',
+       value: 'auto',
+       description: 'Build commandline utilities')
+
+# comparison to DefineOptions.cmake:
+
+# ARROW_CXX_FLAGS use built-in option `-D cpp_args=-f
+# ARROW_BUILD_SHARED use built-in option `-D default_library=shared`
+# ARROW_BUILD_STATIC use built-in option `-D default_library=static`
+#                     (or use `-D default_library=both`)
+
+# ARROW_PACKAGE_KIND FIXME
+# ARROW_GIT_ID FIXME
+# ARROW_GIT_DESCRIPTION FIXME
+# ARROW_NO_DEPRECATED_API FIXME
+# ARROW_USE_CCACHE ccache is automatically detected by meson
+# ARROW_USE_LD_GOLD use `CXX_LD=ld.gold meson setup`
+# ARROW_USE_PRECOMPILED_HEADERS use built-in option `-D b_pch=false`
+#                               (meson uses these by default)
+# ARROW_SIMD_LEVEL FIXME
+# ARROW_RUNTIME_SIMD_LEVEL FIXME
+# ARROW_ARMV8_ARCH FIXME
+# ARROW_ALTIVEC FIXME
+# ARROW_RPATH_ORIGIN FIXME
+# ARROW_INSTALL_NAME_RPATH FIXME
+# ARROW_GGDB_DEBUG FIXME
+
+# ARROW_BUILD_EXAMPLES FIXME
+# ARROW_BUILD_TESTS use `-D tests=enabled`
+# ARROW_ENABLE_TIMING_TESTS FIXME
+# ARROW_BUILD_INTEGRATION use `-D integration=enabled`
+# ARROW_BUILD_BENCHMARKS use `-D benchmarks=enabled`
+# ARROW_BUILD_BENCHMARKS_REFERENCE FIXME
+# ARROW_TEST_LINKAGE FIXME
+# ARROW_FUZZING FIXME
+# ARROW_LARGE_MEMORY_TESTS FIXME
+
+# ARROW_ONLY_LINT FIXME
+# ARROW_VERBOSE_LINT use `-D quiet_lint=true`
+# ARROW_GENERATE_COVERAGE use built-in option `-D b_coverage=true`
+
+# ARROW_TEST_MEMCHECK FIXME
+# ARROW_USE_ASAN use built-in option `-D b_sanitize=address`
+# ARROW_USE_TSAN use built-in option `-D b_sanitize=thread`
+# ARROW_USE_UBSAN use built-in option `-D b_sanitize=undefined`
+#                  (or use `-D b_sanitize=address,undefined`)
+
+# ARROW_BUILD_UTILITIES use `-D utilities=enabled`
+# ARROW_COMPUTE use `-D compute=enabled`
+# ARROW_CSV FIXME
+# ARROW_DATASET FIXME
+# ARROW_FILESYSTEM FIXME
+# ARROW_FLIGHT FIXME
+# ARROW_GANDIVA FIXME
+# ARROW_GCS FIXME
+# ARROW_HDFS use `-D hdfs=enabled`
+# ARROW_HIVESERVER2 FIXME
+# ARROW_IPC use `-D ipc=enabled`
+# ARROW_JEMALLOC FIXME
+# ARROW_JNI FIXME
+# ARROW_JSON use `-D json=enabled`
+# ARROW_MIMALLOC FIXME
+# ARROW_PARQUET FIXME
+# ARROW_ORC FIXME
+# ARROW_PLASMA FIXME
+# ARROW_PLASMA_JAVA_CLIENT FIXME
+# ARROW_PYTHON FIXME
+# ARROW_S3 FIXME
+# ARROW_SKYHOOK FIXME
+# ARROW_TENSORFLOW FIXME
+# ARROW_TESTING removed
+
+# meson built-in option man page https://mesonbuild.com/Builtin-options.html
