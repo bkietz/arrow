@@ -17,54 +17,92 @@
 # specific language governing permissions and limitations
 # under the License.
 
+option('package_kind',
+       type: 'string',
+       description: '''Arbitrary string that identifies the kind of package;
+                       (for informational purposes)''')
+
+option('git_id',
+       type: 'string',
+       description: 'The Arrow git commit id (if any)')
+
+option('git_description',
+       type: 'string',
+       description: 'The Arrow git commit description (if any)')
+
+option('deprecated_api',
+       type: 'feature',
+       value: 'enabled',
+       description: 'Enable deprecated APIs')
+
+option('simd_level',
+       type: 'combo',
+       choices: [
+         'DEFAULT', # default to SSE4_2 on x86, NEON on Arm, NONE otherwise
+         'NONE',
+         'SSE4_2',
+         'AVX2',
+         'AVX512',
+         'NEON',
+         'ALTIVEC',
+       ],
+       value: 'DEFAULT',
+       description: 'Enable deprecated APIs')
+
+option('examples',
+       type: 'feature',
+       description: 'Build the examples')
+
 option('tests',
        type: 'feature',
-       value: 'disabled',
        description: 'Build the unit tests')
+
+option('large_memory_tests',
+       type: 'feature',
+       description: 'Enable unit tests which use large memory')
+
+option('memcheck_tests',
+       type: 'feature',
+       description: 'Tweak unit tests for wrapping with valgrind --tool=memcheck')
+
+option('timing_tests',
+       type: 'feature',
+       description: 'Enable timing-sensitive tests')
 
 option('benchmarks',
        type: 'feature',
-       value: 'disabled',
        description: 'Build the micro benchmarks')
 
-option('quiet_lint',
-       type: 'boolean',
-       value: true,
-       description: 'Pass "quiet" flags to linting tools')
+option('verbose_lint',
+       type: 'feature',
+       description: 'If disabled, pass "quiet" flags to linting tools')
 
 option('ipc',
        type: 'feature',
-       value: 'auto',
        description: 'Build the Arrow IPC extensions')
 
 option('csv',
        type: 'feature',
-       value: 'auto',
        description: 'Build with CSV support')
 
 option('json',
        type: 'feature',
-       value: 'auto',
        description: 'Build with JSON support (requires RapidJSON)')
 
 option('hdfs',
        type: 'feature',
-       value: 'auto',
        description: 'Build the HDFS bridge')
 
 option('compute',
        type: 'feature',
-       value: 'auto',
        description: 'Build the compute modules')
 
 option('integration',
        type: 'feature',
-       value: 'auto',
        description: 'Build the integration test executables')
 
 option('utilities',
        type: 'feature',
-       value: 'auto',
        description: 'Build commandline utilities')
 
 # comparison to DefineOptions.cmake:
@@ -74,37 +112,46 @@ option('utilities',
 # ARROW_BUILD_STATIC use built-in option `-D default_library=static`
 #                     (or use `-D default_library=both`)
 
-# ARROW_PACKAGE_KIND FIXME
-# ARROW_GIT_ID FIXME
-# ARROW_GIT_DESCRIPTION FIXME
-# ARROW_NO_DEPRECATED_API FIXME
+# ARROW_PACKAGE_KIND use `-D package_kind=debian`
+# ARROW_GIT_ID use `-D git_id=deadbeef`
+# ARROW_GIT_DESCRIPTION use `-D git_description=apache-arrow-7.0.0.stuff`
+# ARROW_NO_DEPRECATED_API use `-D deprecated_api=disabled`
 # ARROW_USE_CCACHE ccache is automatically detected by meson
 # ARROW_USE_LD_GOLD use `CXX_LD=ld.gold meson setup`
 # ARROW_USE_PRECOMPILED_HEADERS use built-in option `-D b_pch=false`
 #                               (meson uses these by default)
-# ARROW_SIMD_LEVEL FIXME
+# ARROW_SIMD_LEVEL use `-D simd_level=AVX2`
 # ARROW_RUNTIME_SIMD_LEVEL FIXME
 # ARROW_ARMV8_ARCH FIXME
-# ARROW_ALTIVEC FIXME
+# ARROW_ALTIVEC use `-D simd_level=ALTIVEC`
 # ARROW_RPATH_ORIGIN FIXME
 # ARROW_INSTALL_NAME_RPATH FIXME
 # ARROW_GGDB_DEBUG FIXME
 
-# ARROW_BUILD_EXAMPLES FIXME
+# ARROW_BUILD_EXAMPLES use `-D examples=enabled`
 # ARROW_BUILD_TESTS use `-D tests=enabled`
-# ARROW_ENABLE_TIMING_TESTS FIXME
+# ARROW_ENABLE_TIMING_TESTS use `-D timing_tests=enabled`
 # ARROW_BUILD_INTEGRATION use `-D integration=enabled`
 # ARROW_BUILD_BENCHMARKS use `-D benchmarks=enabled`
 # ARROW_BUILD_BENCHMARKS_REFERENCE FIXME
 # ARROW_TEST_LINKAGE FIXME
 # ARROW_FUZZING FIXME
-# ARROW_LARGE_MEMORY_TESTS FIXME
+# ARROW_LARGE_MEMORY_TESTS use `-D large_memory_tests=enabled`
 
 # ARROW_ONLY_LINT FIXME
-# ARROW_VERBOSE_LINT use `-D quiet_lint=true`
+# ARROW_VERBOSE_LINT use `-D quiet_lint=enabled`
 # ARROW_GENERATE_COVERAGE use built-in option `-D b_coverage=true`
 
-# ARROW_TEST_MEMCHECK FIXME
+# ARROW_TEST_MEMCHECK use `-D memcheck_tests=enabled`
+#     ... then use the built-in meson test wrapper:
+#          meson test --wrap="valgrind
+#              --tool=memcheck
+#              --gen-suppressions=all
+#              --suppressions=../valgrind.supp
+#              --num-callers=500
+#              --leak-check=full
+#              --leak-check-heuristics=stdstring
+#              --error-exitcode=1"
 # ARROW_USE_ASAN use built-in option `-D b_sanitize=address`
 # ARROW_USE_TSAN use built-in option `-D b_sanitize=thread`
 # ARROW_USE_UBSAN use built-in option `-D b_sanitize=undefined`
@@ -112,7 +159,7 @@ option('utilities',
 
 # ARROW_BUILD_UTILITIES use `-D utilities=enabled`
 # ARROW_COMPUTE use `-D compute=enabled`
-# ARROW_CSV FIXME
+# ARROW_CSV use `-D csv=enabled`
 # ARROW_DATASET FIXME
 # ARROW_FILESYSTEM FIXME
 # ARROW_FLIGHT FIXME

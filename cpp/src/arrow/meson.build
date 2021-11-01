@@ -402,7 +402,7 @@ if get_option('benchmarks').enabled()
     benchmark(name + '_benchmark',
       executable(name + '_benchmark',
         sources,
-        dependencies: base_dependencies + bench,
+        dependencies: test_dependencies + bench,
         link_with: [arrow, arrow_testing],
         include_directories: base_include_directories,
         cpp_pch: 'testing/pch.h',
