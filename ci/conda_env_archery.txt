@@ -40,3 +40,6 @@ gitpython
 #jinja2
 #jira
 semver
+
+# protobuf
+nanopb

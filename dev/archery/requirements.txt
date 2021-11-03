@@ -1,4 +1,5 @@
 click
 pygithub
+nanopb
 python-dotenv
 ruamel.yaml

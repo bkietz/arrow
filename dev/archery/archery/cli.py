@@ -933,6 +933,24 @@ def linking_check_dependencies(obj, allowed, disallowed, paths):
         raise click.ClickException(str(e))
 
 
+@archery.command("regenerate-protobuf")
+@click.option("--src", metavar="<arrow_src>", default=None,
+              callback=validate_arrow_sources,
+              help="Specify Arrow source directory")
+def regenerate_protobuf(src):
+    """
+    Quick and dirty utility for regenerating protbufs.
+    """
+    import subprocess
+    subprocess.run([
+        'protoc',
+        '--plugin="python -m nanopb.generator.nanopb_generator"',
+        '--nanopb_opt=--library-include-format=\'#include "arrow/vendored/nanopb/%s"\'',
+        '--nanopb_out=generated/',
+        'arrow/compute/exec/ir/simple.proto',
+    ], cwd=src.cpp / 'src')
+
+
 add_optional_command("docker", module=".docker.cli", function="docker",
                      parent=archery)
 add_optional_command("crossbow", module=".crossbow.cli", function="crossbow",
