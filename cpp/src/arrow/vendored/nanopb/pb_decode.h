@@ -10,6 +10,7 @@
 
 #ifdef __cplusplus
 extern "C" {
+namespace arrow_vendored {
 #endif
 
 /* Structure for defining custom input streams. You will need to provide
@@ -193,6 +194,7 @@ bool pb_make_string_substream(pb_istream_t *stream, pb_istream_t *substream);
 bool pb_close_string_substream(pb_istream_t *stream, pb_istream_t *substream);
 
 #ifdef __cplusplus
+} // namespace arrow_vendored
 } /* extern "C" */
 #endif
 

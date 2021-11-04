@@ -10,6 +10,7 @@
 
 #ifdef __cplusplus
 extern "C" {
+namespace arrow_vendored {
 #endif
 
 /* Structure for defining custom output streams. You will need to provide
@@ -179,6 +180,7 @@ bool pb_encode_float_as_double(pb_ostream_t *stream, float value);
 bool pb_encode_submessage(pb_ostream_t *stream, const pb_msgdesc_t *fields, const void *src_struct);
 
 #ifdef __cplusplus
+} // namespace arrow_vendored
 } /* extern "C" */
 #endif
 

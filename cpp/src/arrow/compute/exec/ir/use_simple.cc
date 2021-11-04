@@ -32,38 +32,55 @@
 #include "arrow/util/visibility.h"
 #include "arrow/vendored/nanopb/pb_decode.h"
 #include "arrow/vendored/nanopb/pb_encode.h"
-#include "generated/arrow/compute/exec/ir/simple.pb.h"
+
+namespace arrow_vendored {
+// Awful kludge. This is the only way nanopb can do namespaces AFAICT
+#include "generated/arrow/compute/exec/ir/simple.pb.c"
+}  // namespace arrow_vendored
 
 namespace arrow {
 namespace compute {
 
-__attribute__((constructor)) void Usage() {
-  std::vector<uint8_t> buffer;
-
-  // encode the message
-  SimpleMessage encoded = {0};
-  encoded.lucky_number = 13;
-
-  {
-    size_t encoded_size;
-    DCHECK(pb_get_encoded_size(&encoded_size, &SimpleMessage_msg, &encoded));
-    buffer.resize(encoded_size);
+template <typename Msg, typename Desc = arrow_vendored::nanopb::MessageDescriptor<Msg>>
+Result<std::unique_ptr<Buffer>> Encode(const Msg& msg,
+                                       MemoryPool* pool = default_memory_pool()) {
+  size_t encoded_size;
+  if (!pb_get_encoded_size(&encoded_size, Desc::fields(), &msg)) {
+    return Status::IOError("couldn't get message size");
   }
 
-  pb_ostream_t ostream = pb_ostream_from_buffer(buffer.data(), buffer.size());
+  ARROW_ASSIGN_OR_RAISE(auto buf,
+                        AllocateBuffer(static_cast<int64_t>(encoded_size), pool));
 
-  DCHECK(pb_encode(&ostream, &SimpleMessage_msg, &encoded))
-      << "Encoding failed: " << PB_GET_ERROR(&ostream);
+  auto stream = arrow_vendored::pb_ostream_from_buffer(buf->mutable_data(), encoded_size);
+  if (!pb_encode(&stream, Desc::fields(), &msg)) {
+    return Status::IOError("Encoding failed: ", PB_GET_ERROR(&stream));
+  }
 
-  DCHECK_EQ(ostream.bytes_written, buffer.size());
+  DCHECK_EQ(stream.bytes_written, encoded_size);
+  return std::move(buf);
+}
 
-  // decode the message
-  SimpleMessage decoded = {0};
+template <typename Msg, typename Desc = arrow_vendored::nanopb::MessageDescriptor<Msg>>
+Result<Msg> Decode(const Buffer& buf) {
+  arrow_vendored::SimpleMessage decoded = {0};
 
-  pb_istream_t istream = pb_istream_from_buffer(buffer.data(), buffer.size());
+  auto stream =
+      arrow_vendored::pb_istream_from_buffer(buf.data(), static_cast<size_t>(buf.size()));
+  if (!pb_decode(&stream, Desc::fields(), &decoded)) {
+    return Status::IOError("Decoding failed: ", PB_GET_ERROR(&stream));
+  }
 
-  DCHECK(pb_decode(&istream, SimpleMessage_fields, &decoded))
-      << "Decoding failed: " << PB_GET_ERROR(&istream);
+  return decoded;
+}
+
+__attribute__((constructor)) void Usage() {
+  // encode the message
+  arrow_vendored::SimpleMessage encoded = {0};
+  encoded.lucky_number = 13;
+  auto buf = *Encode(encoded);
+
+  auto decoded = *Decode<arrow_vendored::SimpleMessage>(*buf);
 
   DCHECK_EQ(decoded.lucky_number, encoded.lucky_number) << "Format failure?";
 }

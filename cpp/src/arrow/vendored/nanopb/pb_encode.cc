@@ -7,6 +7,10 @@
 #include "pb_encode.h"
 #include "pb_common.h"
 
+#ifdef __cplusplus
+namespace arrow_vendored {
+#endif
+
 /* Use the GCC warn_unused_result attribute to check that all return values
  * are propagated correctly. On other compilers and gcc before 3.4.0 just
  * ignore the annotation.
@@ -994,4 +998,8 @@ bool pb_encode_float_as_double(pb_ostream_t *stream, float value)
 
     return pb_encode_fixed64(stream, &mantissa);
 }
+#endif
+
+#ifdef __cplusplus
+} // namespace arrow_vendored
 #endif

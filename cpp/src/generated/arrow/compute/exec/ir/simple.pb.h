@@ -3,7 +3,9 @@
 
 #ifndef PB_ARROW_COMPUTE_EXEC_IR_SIMPLE_PB_H_INCLUDED
 #define PB_ARROW_COMPUTE_EXEC_IR_SIMPLE_PB_H_INCLUDED
+} // namespace arrow_vendored
 #include "arrow/vendored/nanopb/pb.h"
+namespace arrow_vendored {
 
 #if PB_PROTO_HEADER_VERSION != 40
 #error Regenerate this file with the current version of nanopb generator.
@@ -43,5 +45,20 @@ extern const pb_msgdesc_t SimpleMessage_msg;
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
+
+#ifdef __cplusplus
+/* Message descriptors for nanopb */
+namespace nanopb {
+template <>
+struct MessageDescriptor<SimpleMessage> {
+    static PB_INLINE_CONSTEXPR const pb_size_t fields_array_length = 1;
+    static inline const pb_msgdesc_t* fields() {
+        return &SimpleMessage_msg;
+    }
+};
+}  // namespace nanopb
+
+#endif  /* __cplusplus */
+
 
 #endif

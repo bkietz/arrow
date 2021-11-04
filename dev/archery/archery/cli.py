@@ -942,10 +942,19 @@ def regenerate_protobuf(src):
     Quick and dirty utility for regenerating protbufs.
     """
     import subprocess
+
+    nanopb_opt = '--cpp-descriptors '
+
+    nanopb_opt += '--library-include-format="'
+    nanopb_opt += '} // namespace arrow_vendored\n'
+    nanopb_opt += '#include \\"arrow/vendored/nanopb/%s\\"\n'
+    nanopb_opt += 'namespace arrow_vendored {'
+    nanopb_opt += '" ' # --library-include-format
+
     subprocess.run([
         'protoc',
         '--plugin="python -m nanopb.generator.nanopb_generator"',
-        '--nanopb_opt=--library-include-format=\'#include "arrow/vendored/nanopb/%s"\'',
+        '--nanopb_opt=' + nanopb_opt,
         '--nanopb_out=generated/',
         'arrow/compute/exec/ir/simple.proto',
     ], cwd=src.cpp / 'src')

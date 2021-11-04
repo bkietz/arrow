@@ -9,6 +9,7 @@
 
 #ifdef __cplusplus
 extern "C" {
+namespace arrow_vendored {
 #endif
 
 /* Initialize the field iterator structure to beginning.
@@ -42,6 +43,7 @@ bool pb_validate_utf8(const char *s);
 #endif
 
 #ifdef __cplusplus
+} // namespace arrow_vendored
 } /* extern "C" */
 #endif
 

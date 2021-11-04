@@ -705,6 +705,9 @@ redistribute it freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source 
    distribution.
 
+They have been modified to include the c++ namespace arrow_vendored
+to avoid conflict with other instances of nanopb.
+
 --------------------------------------------------------------------------------
 
 The files in cpp/src/arrow/vendored/xxhash/ have the following license

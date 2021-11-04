@@ -235,9 +235,9 @@ set(ARROW_SRCS
     vendored/double-conversion/fixed-dtoa.cc
     vendored/double-conversion/diy-fp.cc
     vendored/double-conversion/strtod.cc
-    vendored/nanopb/pb_common.c
-    vendored/nanopb/pb_decode.c
-    vendored/nanopb/pb_encode.c)
+    vendored/nanopb/pb_common.cc
+    vendored/nanopb/pb_decode.cc
+    vendored/nanopb/pb_encode.cc)
 
 append_avx2_src(util/bpacking_avx2.cc)
 append_avx512_src(util/bpacking_avx512.cc)
@@ -429,8 +429,7 @@ if(ARROW_COMPUTE)
        compute/exec/util.cc
        compute/exec/hash_join.cc
        compute/exec/hash_join_node.cc
-       compute/exec/task_util.cc
-       ${ARROW_SOURCE_DIR}/src/generated/arrow/compute/exec/ir/simple.pb.c)
+       compute/exec/task_util.cc)
 
   append_avx2_src(compute/kernels/aggregate_basic_avx2.cc)
   append_avx512_src(compute/kernels/aggregate_basic_avx512.cc)

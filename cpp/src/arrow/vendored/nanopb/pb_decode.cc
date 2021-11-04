@@ -21,6 +21,10 @@
  * Declarations internal to this file *
  **************************************/
 
+#ifdef __cplusplus
+namespace arrow_vendored {
+#endif
+
 static bool checkreturn buf_read(pb_istream_t *stream, pb_byte_t *buf, size_t count);
 static bool checkreturn pb_decode_varint32_eof(pb_istream_t *stream, uint32_t *dest, bool *eof);
 static bool checkreturn read_raw_value(pb_istream_t *stream, pb_wire_type_t wire_type, pb_byte_t *buf, size_t *size);
@@ -1710,4 +1714,8 @@ bool pb_decode_double_as_float(pb_istream_t *stream, float *dest)
     *dest = out.f;
     return true;
 }
+#endif
+
+#ifdef __cplusplus
+} // namespace arrow_vendored
 #endif

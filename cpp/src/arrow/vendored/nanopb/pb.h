@@ -151,6 +151,10 @@ extern "C" {
 #endif
 #endif
 
+#ifdef __cplusplus
+namespace arrow_vendored {
+#endif
+
 /* Compile-time assertion, used for checking compatible compilation options.
  * If this does not work properly on your compiler, use
  * #define PB_NO_STATIC_ASSERT to disable it.
@@ -870,6 +874,7 @@ struct pb_extension_s {
 #define PB_RETURN_ERROR(stream, msg) return PB_SET_ERROR(stream, msg), false
 
 #ifdef __cplusplus
+} // namespace arrow_vendored
 } /* extern "C" */
 #endif
 
@@ -886,10 +891,12 @@ struct pb_extension_s {
 #define PB_INLINE_CONSTEXPR PB_CONSTEXPR
 #endif  // __cplusplus >= 201703L
 
+namespace arrow_vendored {
 namespace nanopb {
 // Each type will be partially specialized by the generator.
 template <typename GenMessageT> struct MessageDescriptor;
 }  // namespace nanopb
+} // namespace arrow_vendored
 #endif  /* __cplusplus */
 
 #endif

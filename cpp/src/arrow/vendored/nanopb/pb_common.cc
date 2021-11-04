@@ -5,6 +5,10 @@
 
 #include "pb_common.h"
 
+#ifdef __cplusplus
+namespace arrow_vendored {
+#endif
+
 static bool load_descriptor_values(pb_field_iter_t *iter)
 {
     uint32_t word0;
@@ -386,3 +390,6 @@ bool pb_validate_utf8(const char *str)
 
 #endif
 
+#ifdef __cplusplus
+} // namespace arrow_vendored
+#endif
