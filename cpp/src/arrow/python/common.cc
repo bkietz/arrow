@@ -90,16 +90,22 @@ class PythonErrorDetail : public StatusDetail {
 
   std::string ToString() const override {
     // This is simple enough not to need the GIL
-    const auto ty = reinterpret_cast<const PyTypeObject*>(exc_type_.obj());
+    const char* type_name =
+        exc_type_ ? reinterpret_cast<const PyTypeObject*>(exc_type_.obj())->tp_name
+                  : "<already restored>";
     // XXX Should we also print traceback?
-    return std::string("Python exception: ") + ty->tp_name;
+    return std::string("Python exception: ") + type_name;
   }
 
-  void RestorePyError() const {
-    Py_INCREF(exc_type_.obj());
-    Py_INCREF(exc_value_.obj());
-    Py_INCREF(exc_traceback_.obj());
-    PyErr_Restore(exc_type_.obj(), exc_value_.obj(), exc_traceback_.obj());
+  void RestorePyError() {
+    DCHECK(exc_type_ && exc_value_ && exc_traceback_)
+        << "PythonErrorDetail can only be restored once";
+    PyErr_Restore(exc_type_.detach(), exc_value_.detach(), exc_traceback_.detach());
+  }
+
+  ~PythonErrorDetail() {
+    DCHECK(!exc_type_ && !exc_value_ && !exc_traceback_)
+        << "PythonErrorDetail was never restored " << ToString();
   }
 
   PyObject* exc_type() const { return exc_type_.obj(); }
@@ -163,8 +169,7 @@ bool IsPyError(const Status& status) {
 
 void RestorePyError(const Status& status) {
   ARROW_CHECK(IsPyError(status));
-  const auto& detail = checked_cast<const PythonErrorDetail&>(*status.detail());
-  detail.RestorePyError();
+  checked_cast<PythonErrorDetail&>(*status.detail()).RestorePyError();
 }
 
 // ----------------------------------------------------------------------

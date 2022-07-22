@@ -1942,12 +1942,12 @@ AsyncGenerator<T> MakeFailingGenerator(Status st) {
   assert(!st.ok());
   auto state = std::make_shared<Status>(std::move(st));
   return [state]() -> Future<T> {
-    auto st = std::move(*state);
-    if (!st.ok()) {
-      return std::move(st);
-    } else {
+    if (state->ok()) {
       return AsyncGeneratorEnd<T>();
     }
+    auto st = std::move(*state);
+    *state = Status::OK();
+    return st;
   };
 }
 

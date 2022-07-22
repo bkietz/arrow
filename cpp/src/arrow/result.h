@@ -39,6 +39,11 @@ ARROW_EXPORT void DieWithMessage(const std::string& msg);
 
 ARROW_EXPORT void InvalidValueOrDie(const Status& st);
 
+inline Status UninitializedResult() {
+  static Status::Permanent error{StatusCode::UnknownError, "Uninitialized Result<T>"};
+  return error.status();
+}
+
 }  // namespace internal
 
 /// A class for representing either a usable value, or an error.
@@ -112,7 +117,7 @@ class ARROW_MUST_USE_TYPE Result : public util::EqualityComparable<Result<T>> {
   /// an empty vector, it will actually invoke the default constructor of
   /// Result.
   explicit Result() noexcept  // NOLINT(runtime/explicit)
-      : status_(Status::UnknownError("Uninitialized Result<T>")) {}
+      : status_(internal::UninitializedResult()) {}
 
   ~Result() noexcept { Destroy(); }
 
@@ -126,7 +131,7 @@ class ARROW_MUST_USE_TYPE Result : public util::EqualityComparable<Result<T>> {
   /// convenience.
   ///
   /// \param status The non-OK Status object to initialize to.
-  Result(const Status& status) noexcept  // NOLINT(runtime/explicit)
+  Result(Status status) noexcept  // NOLINT(runtime/explicit)
       : status_(status) {
     if (ARROW_PREDICT_FALSE(status.ok())) {
       internal::DieWithMessage(std::string("Constructed with a non-error status: ") +
@@ -218,10 +223,10 @@ class ARROW_MUST_USE_TYPE Result : public util::EqualityComparable<Result<T>> {
       return *this;
     }
     Destroy();
-    status_ = other.status_;
-    if (ARROW_PREDICT_TRUE(status_.ok())) {
+    if (ARROW_PREDICT_TRUE(other.status_.ok())) {
       ConstructValue(other.ValueUnsafe());
     }
+    status_ = other.status_;
     return *this;
   }
 
@@ -238,13 +243,9 @@ class ARROW_MUST_USE_TYPE Result : public util::EqualityComparable<Result<T>> {
                                                  std::is_convertible<U, T>::value>::type>
   Result(Result<U>&& other) noexcept {
     if (ARROW_PREDICT_TRUE(other.status_.ok())) {
-      status_ = std::move(other.status_);
       ConstructValue(other.MoveValueUnsafe());
-    } else {
-      // If we moved the status, the other status may become ok but the other
-      // value hasn't been constructed => crash on other destructor.
-      status_ = other.status_;
     }
+    status_ = other.status_;
   }
 
   /// Move-assignment operator.
@@ -260,13 +261,9 @@ class ARROW_MUST_USE_TYPE Result : public util::EqualityComparable<Result<T>> {
     }
     Destroy();
     if (ARROW_PREDICT_TRUE(other.status_.ok())) {
-      status_ = std::move(other.status_);
       ConstructValue(other.MoveValueUnsafe());
-    } else {
-      // If we moved the status, the other status may become ok but the other
-      // value hasn't been constructed => crash on other destructor.
-      status_ = other.status_;
     }
+    status_ = other.status_;
     return *this;
   }
 

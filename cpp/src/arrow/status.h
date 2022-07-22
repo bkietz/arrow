@@ -28,13 +28,11 @@
 #ifdef ARROW_EXTRA_ERROR_CONTEXT
 
 /// \brief Return with given status if condition is met.
-#define ARROW_RETURN_IF_(condition, status, expr)   \
-  do {                                              \
-    if (ARROW_PREDICT_FALSE(condition)) {           \
-      ::arrow::Status _st = (status);               \
-      _st.AddContextLine(__FILE__, __LINE__, expr); \
-      return _st;                                   \
-    }                                               \
+#define ARROW_RETURN_IF_(condition, status, expr)               \
+  do {                                                          \
+    if (ARROW_PREDICT_FALSE(condition)) {                       \
+      return (status).AddContextLine(__FILE__, __LINE__, expr); \
+    }                                                           \
   } while (0)
 
 #else
@@ -132,35 +130,17 @@ class ARROW_EXPORT StatusDetail {
 class ARROW_MUST_USE_TYPE ARROW_EXPORT Status : public util::EqualityComparable<Status>,
                                                 public util::ToStringOstreamable<Status> {
  public:
-  // Create a success status.
-  Status() noexcept : state_(NULLPTR) {}
-  ~Status() noexcept {
-    // ARROW-2400: On certain compilers, splitting off the slow path improves
-    // performance significantly.
-    if (ARROW_PREDICT_FALSE(state_ != NULL)) {
-      DeleteState();
-    }
-  }
+  Status() = default;
 
-  Status(StatusCode code, const std::string& msg);
+  Status(StatusCode code, std::string msg);
   /// \brief Pluggable constructor for use by sub-systems.  detail cannot be null.
   Status(StatusCode code, std::string msg, std::shared_ptr<StatusDetail> detail);
-
-  // Copy the specified status.
-  inline Status(const Status& s);
-  inline Status& operator=(const Status& s);
-
-  // Move the specified status.
-  inline Status(Status&& s) noexcept;
-  inline Status& operator=(Status&& s) noexcept;
 
   inline bool Equals(const Status& s) const;
 
   // AND the statuses.
   inline Status operator&(const Status& s) const noexcept;
-  inline Status operator&(Status&& s) const noexcept;
   inline Status& operator&=(const Status& s) noexcept;
-  inline Status& operator&=(Status&& s) noexcept;
 
   /// Return a success status
   static Status OK() { return Status(); }
@@ -352,8 +332,20 @@ class ARROW_MUST_USE_TYPE ARROW_EXPORT Status : public util::EqualityComparable<
   [[noreturn]] void Abort(const std::string& message) const;
 
 #ifdef ARROW_EXTRA_ERROR_CONTEXT
-  void AddContextLine(const char* filename, int line, const char* expr);
+  Status AddContextLine(const char* filename, int line, const char* expr) const;
 #endif
+
+  /// \brief Garbage collect error Statuses.
+  ///
+  /// Instead of requiring destructor logic, non-empty (error) Status states
+  /// are simply appended to a global free list on construction. If we are guaranteed that
+  /// only permanent error statuses are currently constructed, then we can safely destroy
+  /// everything in that free list. Otherwise the next access to a non-permanent Status
+  /// will segfault.
+  static void GarbageCollect();
+
+  /// \brief A Status which will not be subject to garbage collection.
+  class Permanent;
 
  private:
   struct State {
@@ -361,60 +353,48 @@ class ARROW_MUST_USE_TYPE ARROW_EXPORT Status : public util::EqualityComparable<
     std::string msg;
     std::shared_ptr<StatusDetail> detail;
   };
+
+  friend class StatusStateFreeList;
+
   // OK status has a `NULL` state_.  Otherwise, `state_` points to
   // a `State` structure containing the error code and message(s)
-  State* state_;
-
-  void DeleteState() {
-    delete state_;
-    state_ = NULLPTR;
-  }
-  void CopyFrom(const Status& s);
-  inline void MoveFrom(Status& s);
+  const State* state_{};
 };
 
-void Status::MoveFrom(Status& s) {
-  delete state_;
-  state_ = s.state_;
-  s.state_ = NULLPTR;
-}
+class Status::Permanent {
+ public:
+  Permanent(StatusCode code, std::string msg, std::shared_ptr<StatusDetail> detail = {});
 
-Status::Status(const Status& s)
-    : state_((s.state_ == NULLPTR) ? NULLPTR : new State(*s.state_)) {}
+  Status status() const;
 
-Status& Status::operator=(const Status& s) {
-  // The following condition catches both aliasing (when this == &s),
-  // and the common case where both s and *this are ok.
-  if (state_ != s.state_) {
-    CopyFrom(s);
-  }
-  return *this;
-}
-
-Status::Status(Status&& s) noexcept : state_(s.state_) { s.state_ = NULLPTR; }
-
-Status& Status::operator=(Status&& s) noexcept {
-  MoveFrom(s);
-  return *this;
-}
+ private:
+  State state_;
+};
 
 bool Status::Equals(const Status& s) const {
   if (state_ == s.state_) {
+    // same-pointer short circuit, also handles case where both are OK
     return true;
   }
 
-  if (ok() || s.ok()) {
+  if (code() != s.code()) {
     return false;
   }
 
-  if (detail() != s.detail()) {
-    if ((detail() && !s.detail()) || (!detail() && s.detail())) {
-      return false;
-    }
+  if (message() != s.message()) {
+    return false;
+  }
+
+  if (detail() == s.detail()) {
+    // same-pointer short circuit, also handles case where neither has detail
+    return true;
+  }
+
+  if (detail() && s.detail()) {
     return *detail() == *s.detail();
   }
 
-  return code() == s.code() && message() == s.message();
+  return false;
 }
 
 /// \cond FALSE
@@ -423,29 +403,13 @@ bool Status::Equals(const Status& s) const {
 Status Status::operator&(const Status& s) const noexcept {
   if (ok()) {
     return s;
-  } else {
-    return *this;
-  }
-}
-
-Status Status::operator&(Status&& s) const noexcept {
-  if (ok()) {
-    return std::move(s);
-  } else {
-    return *this;
-  }
-}
-
-Status& Status::operator&=(const Status& s) noexcept {
-  if (ok() && !s.ok()) {
-    CopyFrom(s);
   }
   return *this;
 }
 
-Status& Status::operator&=(Status&& s) noexcept {
+Status& Status::operator&=(const Status& s) noexcept {
   if (ok() && !s.ok()) {
-    MoveFrom(s);
+    *this = s;
   }
   return *this;
 }

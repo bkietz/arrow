@@ -14,33 +14,63 @@
 
 #include <cassert>
 #include <cstdlib>
+#include <deque>
 #include <iostream>
+#include <mutex>
 #include <sstream>
 
 #include "arrow/util/logging.h"
 
 namespace arrow {
 
-Status::Status(StatusCode code, const std::string& msg)
-    : Status::Status(code, msg, nullptr) {}
+class StatusStateFreeList {
+ public:
+  static Status::State* MakeError(StatusCode code, std::string msg,
+                                  std::shared_ptr<StatusDetail> detail) {
+    ARROW_CHECK_NE(code, StatusCode::OK) << "Cannot construct ok status with message";
 
-Status::Status(StatusCode code, std::string msg, std::shared_ptr<StatusDetail> detail) {
-  ARROW_CHECK_NE(code, StatusCode::OK) << "Cannot construct ok status with message";
-  state_ = new State;
-  state_->code = code;
-  state_->msg = std::move(msg);
-  if (detail != nullptr) {
-    state_->detail = std::move(detail);
+    std::unique_lock<std::mutex> lock{instance().mutex_};
+    instance().states_.emplace_back();
+    auto state = &instance().states_.back();
+    lock.unlock();
+
+    state->code = code;
+    state->msg = std::move(msg);
+    state->detail = std::move(detail);
+    return state;
   }
+
+  static void GarbageCollect() { instance().states_.clear(); }
+
+ private:
+  static StatusStateFreeList& instance() {
+    static StatusStateFreeList instance;
+    return instance;
+  }
+
+  std::mutex mutex_;
+  std::deque<Status::State> states_;
+};
+
+void Status::GarbageCollect() { StatusStateFreeList::GarbageCollect(); }
+
+Status::Status(StatusCode code, std::string msg)
+    : Status{code, std::move(msg), nullptr} {}
+
+Status::Status(StatusCode code, std::string msg, std::shared_ptr<StatusDetail> detail)
+    : state_{StatusStateFreeList::MakeError(code, std::move(msg), std::move(detail))} {}
+
+Status::Permanent::Permanent(StatusCode code, std::string msg,
+                             std::shared_ptr<StatusDetail> detail) {
+  state_.code = code;
+  state_.msg = std::move(msg);
+  state_.detail = std::move(detail);
 }
 
-void Status::CopyFrom(const Status& s) {
-  delete state_;
-  if (s.state_ == nullptr) {
-    state_ = nullptr;
-  } else {
-    state_ = new State(*s.state_);
-  }
+Status Status::Permanent::status() const {
+  Status out;
+  out.state_ = &state_;
+  return out;
 }
 
 std::string Status::CodeAsString() const {
@@ -138,11 +168,11 @@ void Status::Warn(const std::string& message) const {
 }
 
 #ifdef ARROW_EXTRA_ERROR_CONTEXT
-void Status::AddContextLine(const char* filename, int line, const char* expr) {
+Status Status::AddContextLine(const char* filename, int line, const char* expr) const {
   ARROW_CHECK(!ok()) << "Cannot add context line to ok status";
   std::stringstream ss;
-  ss << "\n" << filename << ":" << line << "  " << expr;
-  state_->msg += ss.str();
+  ss << message() << "\n" << filename << ":" << line << "  " << expr;
+  return Status{code(), ss.str(), detail()};
 }
 #endif
 
