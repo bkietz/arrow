@@ -24,6 +24,8 @@
 #include "arrow/testing/gtest_util.h"
 #include "arrow/testing/matchers.h"
 
+using testing::MatchesRegex;
+
 namespace arrow {
 
 namespace {
@@ -46,7 +48,10 @@ TEST(StatusTest, TestCodeAndMessage) {
 
 TEST(StatusTest, TestToString) {
   Status file_error = Status::IOError("file error");
-  ASSERT_EQ("IOError: file error", file_error.ToString());
+  ASSERT_THAT(
+      file_error.ToString(),
+      MatchesRegex("IOError: file error\n"
+                   ".*StatusTest_TestToString_Test.* in .*status_test.cc:[0-9]+"));
 
   std::stringstream ss;
   ss << file_error;
@@ -55,7 +60,11 @@ TEST(StatusTest, TestToString) {
 
 TEST(StatusTest, TestToStringWithDetail) {
   Status status(StatusCode::IOError, "summary", std::make_shared<TestStatusDetail>());
-  ASSERT_EQ("IOError: summary. Detail: a specific detail message", status.ToString());
+  ASSERT_THAT(
+      status.ToString(),
+      MatchesRegex(
+          "IOError: summary. Detail: a specific detail message\n"
+          ".*StatusTest_TestToStringWithDetail_Test.* in .*status_test.cc:[0-9]+"));
 
   std::stringstream ss;
   ss << status;

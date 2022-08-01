@@ -20,6 +20,7 @@
 #include <sstream>
 
 #include "arrow/util/logging.h"
+#include "arrow/util/stacktrace.h"
 
 namespace arrow {
 
@@ -36,6 +37,9 @@ class StatusStateFreeList {
 
     state->code = code;
     state->msg = std::move(msg);
+    #ifdef ARROW_EXTRA_ERROR_CONTEXT
+    state->stacktrace = util::PrintStacktrace(/*skip=*/2);
+    #endif
     state->detail = std::move(detail);
     return state;
   }
@@ -55,7 +59,7 @@ class StatusStateFreeList {
 void Status::GarbageCollect() { StatusStateFreeList::GarbageCollect(); }
 
 Status::Status(StatusCode code, std::string msg)
-    : Status{code, std::move(msg), nullptr} {}
+    : state_{StatusStateFreeList::MakeError(code, std::move(msg), nullptr)} {}
 
 Status::Status(StatusCode code, std::string msg, std::shared_ptr<StatusDetail> detail)
     : state_{StatusStateFreeList::MakeError(code, std::move(msg), std::move(detail))} {}
@@ -146,6 +150,9 @@ std::string Status::ToString() const {
     result += ". Detail: ";
     result += state_->detail->ToString();
   }
+  #ifdef ARROW_EXTRA_ERROR_CONTEXT
+  result += "\n" + state_->stacktrace;
+  #endif
 
   return result;
 }
@@ -166,14 +173,5 @@ void Status::Warn() const { ARROW_LOG(WARNING) << ToString(); }
 void Status::Warn(const std::string& message) const {
   ARROW_LOG(WARNING) << message << ": " << ToString();
 }
-
-#ifdef ARROW_EXTRA_ERROR_CONTEXT
-Status Status::AddContextLine(const char* filename, int line, const char* expr) const {
-  ARROW_CHECK(!ok()) << "Cannot add context line to ok status";
-  std::stringstream ss;
-  ss << message() << "\n" << filename << ":" << line << "  " << expr;
-  return Status{code(), ss.str(), detail()};
-}
-#endif
 
 }  // namespace arrow

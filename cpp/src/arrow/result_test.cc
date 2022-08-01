@@ -791,7 +791,7 @@ TEST(ResultTest, MatcherExplanations) {
     testing::StringMatchResultListener listener;
     EXPECT_FALSE(matcher.MatchAndExplain(Status::TypeError("XXX"), &listener));
     EXPECT_THAT(listener.str(),
-                testing::StrEq("whose error \"Type error: XXX\" doesn't match"));
+                testing::MatchesRegex("whose error \"Type error: XXX.*\" doesn't match"));
   }
 }
 

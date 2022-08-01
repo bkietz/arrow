@@ -17,11 +17,11 @@
 
 #include "arrow/util/logging.h"
 
-#ifdef ARROW_WITH_BACKTRACE
-#include <execinfo.h>
-#endif
+#include <cassert>
 #include <cstdlib>
 #include <iostream>
+
+#include "arrow/util/stacktrace.h"
 
 #ifdef ARROW_USE_GLOG
 
@@ -68,7 +68,7 @@ class CerrLog {
       std::cerr << std::endl;
     }
     if (severity_ == ArrowLogLevel::ARROW_FATAL) {
-      PrintBackTrace();
+      std::cerr << PrintStacktrace(3) << std::endl;
       std::abort();
     }
   }
@@ -90,14 +90,6 @@ class CerrLog {
  protected:
   const ArrowLogLevel severity_;
   bool has_logged_;
-
-  void PrintBackTrace() {
-#ifdef ARROW_WITH_BACKTRACE
-    void* buffer[255];
-    const int calls = backtrace(buffer, static_cast<int>(sizeof(buffer) / sizeof(void*)));
-    backtrace_symbols_fd(buffer, calls, 1);
-#endif
-  }
 };
 
 #ifdef ARROW_USE_GLOG

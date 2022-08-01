@@ -119,8 +119,7 @@ class ARROW_EXPORT DataBatch {
       status = status.WithMessage("Row #", batch_row + skips_before + first_row, ": ",
                                   status.message());
     }
-    // Use return_if so that when extra context is enabled it will be added
-    ARROW_RETURN_IF_(true, std::move(status), ARROW_STRINGIFY(status));
+    return std::move(status);
   }
 
   // The number of rows in this batch (not including any skipped ones)

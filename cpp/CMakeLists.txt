@@ -780,6 +780,16 @@ if(ARROW_WITH_ZSTD)
   endif()
 endif()
 
+if(ARROW_WITH_BACKTRACE)
+  find_package(backtrace)
+  if(TARGET backtrace::backtrace)
+    list(APPEND ARROW_STATIC_LINK_LIBS backtrace::backtrace)
+  else()
+    # FIXME handle this alongside the other third party libs
+    message(WARNING "ARROW_WITH_BACKTRACE was set but backtrace was not found") 
+  endif()
+endif()
+
 if(ARROW_ORC)
   list(APPEND ARROW_LINK_LIBS orc::liborc ${ARROW_PROTOBUF_LIBPROTOBUF})
   list(APPEND ARROW_STATIC_LINK_LIBS orc::liborc ${ARROW_PROTOBUF_LIBPROTOBUF})

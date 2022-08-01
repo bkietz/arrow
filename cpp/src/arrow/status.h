@@ -22,38 +22,22 @@
 
 #include "arrow/util/compare.h"
 #include "arrow/util/macros.h"
+#include "arrow/util/stacktrace.h"
 #include "arrow/util/string_builder.h"
 #include "arrow/util/visibility.h"
 
-#ifdef ARROW_EXTRA_ERROR_CONTEXT
-
-/// \brief Return with given status if condition is met.
-#define ARROW_RETURN_IF_(condition, status, expr)               \
-  do {                                                          \
-    if (ARROW_PREDICT_FALSE(condition)) {                       \
-      return (status).AddContextLine(__FILE__, __LINE__, expr); \
-    }                                                           \
-  } while (0)
-
-#else
-
-#define ARROW_RETURN_IF_(condition, status, _) \
-  do {                                         \
-    if (ARROW_PREDICT_FALSE(condition)) {      \
-      return (status);                         \
-    }                                          \
-  } while (0)
-
-#endif  // ARROW_EXTRA_ERROR_CONTEXT
-
 #define ARROW_RETURN_IF(condition, status) \
-  ARROW_RETURN_IF_(condition, status, ARROW_STRINGIFY(status))
+  do {                                     \
+    if (ARROW_PREDICT_FALSE(condition)) {  \
+      return (status);                     \
+    }                                      \
+  } while (0)
 
 /// \brief Propagate any non-successful Status to the caller
 #define ARROW_RETURN_NOT_OK(status)                                   \
   do {                                                                \
     ::arrow::Status __s = ::arrow::internal::GenericToStatus(status); \
-    ARROW_RETURN_IF_(!__s.ok(), __s, ARROW_STRINGIFY(status));        \
+    ARROW_RETURN_IF(!__s.ok(), __s);                                  \
   } while (false)
 
 /// \brief Given `expr` and `warn_msg`; log `warn_msg` if `expr` is a non-ok status
@@ -147,12 +131,14 @@ class ARROW_MUST_USE_TYPE ARROW_EXPORT Status : public util::EqualityComparable<
 
   template <typename... Args>
   static Status FromArgs(StatusCode code, Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status(code, util::StringBuilder(std::forward<Args>(args)...));
   }
 
   template <typename... Args>
   static Status FromDetailAndArgs(StatusCode code, std::shared_ptr<StatusDetail> detail,
                                   Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status(code, util::StringBuilder(std::forward<Args>(args)...),
                   std::move(detail));
   }
@@ -160,24 +146,28 @@ class ARROW_MUST_USE_TYPE ARROW_EXPORT Status : public util::EqualityComparable<
   /// Return an error status for out-of-memory conditions
   template <typename... Args>
   static Status OutOfMemory(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::OutOfMemory, std::forward<Args>(args)...);
   }
 
   /// Return an error status for failed key lookups (e.g. column name in a table)
   template <typename... Args>
   static Status KeyError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::KeyError, std::forward<Args>(args)...);
   }
 
   /// Return an error status for type errors (such as mismatching data types)
   template <typename... Args>
   static Status TypeError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::TypeError, std::forward<Args>(args)...);
   }
 
   /// Return an error status for unknown errors
   template <typename... Args>
   static Status UnknownError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::UnknownError, std::forward<Args>(args)...);
   }
 
@@ -185,68 +175,80 @@ class ARROW_MUST_USE_TYPE ARROW_EXPORT Status : public util::EqualityComparable<
   /// data types is unimplemented
   template <typename... Args>
   static Status NotImplemented(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::NotImplemented, std::forward<Args>(args)...);
   }
 
   /// Return an error status for invalid data (for example a string that fails parsing)
   template <typename... Args>
   static Status Invalid(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::Invalid, std::forward<Args>(args)...);
   }
 
   /// Return an error status for cancelled operation
   template <typename... Args>
   static Status Cancelled(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::Cancelled, std::forward<Args>(args)...);
   }
 
   /// Return an error status when an index is out of bounds
   template <typename... Args>
   static Status IndexError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::IndexError, std::forward<Args>(args)...);
   }
 
   /// Return an error status when a container's capacity would exceed its limits
   template <typename... Args>
   static Status CapacityError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::CapacityError, std::forward<Args>(args)...);
   }
 
   /// Return an error status when some IO-related operation failed
   template <typename... Args>
   static Status IOError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::IOError, std::forward<Args>(args)...);
   }
 
   /// Return an error status when some (de)serialization operation failed
   template <typename... Args>
   static Status SerializationError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::SerializationError, std::forward<Args>(args)...);
   }
 
   template <typename... Args>
   static Status RError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::RError, std::forward<Args>(args)...);
   }
 
   template <typename... Args>
   static Status CodeGenError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::CodeGenError, std::forward<Args>(args)...);
   }
 
   template <typename... Args>
   static Status ExpressionValidationError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::ExpressionValidationError,
                             std::forward<Args>(args)...);
   }
 
   template <typename... Args>
   static Status ExecutionError(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::ExecutionError, std::forward<Args>(args)...);
   }
 
   template <typename... Args>
   static Status AlreadyExists(Args&&... args) {
+    util::StacktraceOverride omit_frame;
     return Status::FromArgs(StatusCode::AlreadyExists, std::forward<Args>(args)...);
   }
 
@@ -331,10 +333,6 @@ class ARROW_MUST_USE_TYPE ARROW_EXPORT Status : public util::EqualityComparable<
   [[noreturn]] void Abort() const;
   [[noreturn]] void Abort(const std::string& message) const;
 
-#ifdef ARROW_EXTRA_ERROR_CONTEXT
-  Status AddContextLine(const char* filename, int line, const char* expr) const;
-#endif
-
   /// \brief Garbage collect error Statuses.
   ///
   /// Instead of requiring destructor logic, non-empty (error) Status states
@@ -352,6 +350,9 @@ class ARROW_MUST_USE_TYPE ARROW_EXPORT Status : public util::EqualityComparable<
     StatusCode code;
     std::string msg;
     std::shared_ptr<StatusDetail> detail;
+#ifdef ARROW_EXTRA_ERROR_CONTEXT
+    std::string stacktrace;
+#endif
   };
 
   friend class StatusStateFreeList;

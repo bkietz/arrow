@@ -19,12 +19,18 @@
 #include <cstdint>
 #include <iostream>
 
+#include <gmock/gmock-matchers.h>
+#include <gtest/gtest-death-test.h>
 #include <gtest/gtest.h>
 
 #include "arrow/util/logging.h"
+#include "arrow/util/stacktrace.h"
 
 // This code is adapted from
 // https://github.com/ray-project/ray/blob/master/src/ray/util/logging_test.cc.
+
+using testing::MatchesRegex;
+using testing::Not;
 
 namespace arrow {
 namespace util {
@@ -42,18 +48,31 @@ int64_t current_time_ms() {
 void PrintLog() {
   ARROW_LOG(DEBUG) << "This is the"
                    << " DEBUG"
-                   << " message";
+                   << " message\n";
+
   ARROW_LOG(INFO) << "This is the"
-                  << " INFO message";
+                  << " INFO message\n";
+
   ARROW_LOG(WARNING) << "This is the"
-                     << " WARNING message";
+                     << " WARNING message\n";
+
   ARROW_LOG(ERROR) << "This is the"
-                   << " ERROR message";
-  ARROW_CHECK(true) << "This is a ARROW_CHECK"
-                    << " message but it won't show up";
-  // The following 2 lines should not run since it will cause program failure.
-  // ARROW_LOG(FATAL) << "This is the FATAL message";
-  // ARROW_CHECK(false) << "This is a ARROW_CHECK message but it won't show up";
+                   << " ERROR message\n";
+
+  ARROW_CHECK(true) << "This is an ARROW_CHECK"
+                    << " message but it won't show up\n";
+
+  ASSERT_DEATH({ ARROW_LOG(FATAL) << "This is the FATAL message\n"; },
+               StacktraceSupported() ? "This is the FATAL message"
+                                       ".*PrintLog.*\n"
+                                       ".*PrintLogTest_\\w+_Test.*TestBody\\.*"
+                                     : "This is the FATAL message");
+
+  ASSERT_DEATH({ ARROW_CHECK(false) << "This is an ARROW_CHECK message\n"; },
+               StacktraceSupported() ? "This is an ARROW_CHECK message"
+                                       ".*PrintLog.*\n"
+                                       ".*PrintLogTest_\\w+_Test.*TestBody\\.*"
+                                     : "This is an ARROW_CHECK message");
 }
 
 TEST(PrintLogTest, LogTestWithoutInit) {
@@ -66,6 +85,99 @@ TEST(PrintLogTest, LogTestWithInit) {
   ArrowLog::StartArrowLog("", ArrowLogLevel::ARROW_DEBUG);
   PrintLog();
   ArrowLog::ShutDownArrowLog();
+}
+
+std::string Foo(int skip, bool omit_starts_with_b) { return PrintStacktrace(skip); }
+std::string Bar(int skip, bool omit_starts_with_b) {
+  if (omit_starts_with_b) {
+    StacktraceOverride omit_this_frame;
+    return Foo(skip, omit_starts_with_b);
+  }
+  return Foo(skip, omit_starts_with_b);
+}
+std::string Baz(int skip, bool omit_starts_with_b) {
+  if (omit_starts_with_b) {
+    StacktraceOverride omit_this_frame;
+    return Bar(skip, omit_starts_with_b);
+  }
+  return Bar(skip, omit_starts_with_b);
+}
+std::string Quux(int skip, bool omit_starts_with_b) {
+  return Baz(skip, omit_starts_with_b);
+}
+std::string Root(int skip, bool omit_starts_with_b = false) {
+  return Quux(skip, omit_starts_with_b);
+}
+
+std::string StacktraceRegex(std::vector<std::string> names) {
+  std::string re;
+  for (const auto& name : names) {
+    re += ".*" + name + ".* in .*.src.arrow.util.logging_test.cc:[0-9]+\n";
+  }
+  return re + ".*";
+}
+
+TEST(Stacktrace, BasicPrint) {
+  if (!StacktraceSupported()) {
+    GTEST_SKIP();
+  };
+
+  ASSERT_THAT(Root(/*skip=*/0), MatchesRegex(StacktraceRegex({
+                                    "Foo",
+                                    "Bar",
+                                    "Baz",
+                                    "Quux",
+                                    "Root",
+                                })));
+
+  ASSERT_THAT(Root(/*skip=*/2), MatchesRegex(StacktraceRegex({
+                                    "Baz",
+                                    "Quux",
+                                    "Root",
+                                })));
+
+  ASSERT_THAT(Root(/*skip=*/3), MatchesRegex(StacktraceRegex({
+                                    "Quux",
+                                    "Root",
+                                })));
+}
+
+TEST(Stacktrace, OmitStartsWithB) {
+  if (!StacktraceSupported()) {
+    GTEST_SKIP();
+  };
+
+  ASSERT_THAT(Root(/*skip=*/0, /*omit_starts_with_b=*/true),
+              MatchesRegex(StacktraceRegex({
+                  "Foo",
+                  "Quux",
+                  "Root",
+              })));
+
+  ASSERT_THAT(Root(/*skip=*/0, /*omit_starts_with_b=*/true),
+              Not(MatchesRegex(StacktraceRegex({
+                  "Bar",
+                  "Baz",
+              }))));
+}
+
+std::string RootNonEmptyOverride() {
+  StacktraceOverride frame_label{"frame_label"};
+  return Quux(/*skip=*/0, /*omit_starts_with_b=*/false);
+}
+
+TEST(Stacktrace, NonEmptyOverride) {
+  if (!StacktraceSupported()) {
+    GTEST_SKIP();
+  };
+
+  ASSERT_THAT(RootNonEmptyOverride(), MatchesRegex(StacktraceRegex({
+                                                       "Foo",
+                                                       "Bar",
+                                                       "Baz",
+                                                       "Quux",
+                                                   }) +
+                                                   "frame_label.*"));
 }
 
 }  // namespace util

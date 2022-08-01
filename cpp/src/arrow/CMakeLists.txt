@@ -216,6 +216,7 @@ set(ARROW_SRCS
     util/key_value_metadata.cc
     util/memory.cc
     util/mutex.cc
+    util/stacktrace.cc
     util/string.cc
     util/string_builder.cc
     util/task_group.cc
@@ -623,13 +624,11 @@ foreach(LIB_TARGET ${ARROW_LIBRARIES})
 endforeach()
 
 if(ARROW_WITH_BACKTRACE)
-  find_package(Backtrace)
-
-  foreach(LIB_TARGET ${ARROW_LIBRARIES})
-    if(Backtrace_FOUND AND ARROW_WITH_BACKTRACE)
+  if(TARGET backtrace::backtrace)
+    foreach(LIB_TARGET ${ARROW_LIBRARIES})
       target_compile_definitions(${LIB_TARGET} PRIVATE ARROW_WITH_BACKTRACE)
-    endif()
-  endforeach()
+    endforeach()
+  endif()
 endif()
 
 if(ARROW_BUILD_BUNDLED_DEPENDENCIES)
