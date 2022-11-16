@@ -57,6 +57,8 @@ Expression::Expression(Call call) {
   impl_ = std::make_shared<Impl>(std::move(call));
 }
 
+static const decltype(Expression::Parameter::indices) kUnboundIndices = {-1};
+
 Expression::Expression(Datum literal)
     : impl_(std::make_shared<Impl>(std::move(literal))) {}
 
@@ -66,7 +68,12 @@ Expression::Expression(Parameter parameter)
 Expression literal(Datum lit) { return Expression(std::move(lit)); }
 
 Expression field_ref(FieldRef ref) {
-  return Expression(Expression::Parameter{std::move(ref), TypeHolder{}, {-1}});
+  auto indices = kUnboundIndices;
+  if (auto* path = ref.field_path()) {
+    indices.resize(path->indices().size());
+    std::copy(path->indices().begin(), path->indices().end(), indices.begin());
+  }
+  return Expression(Expression::Parameter{std::move(ref), TypeHolder{}, kUnboundIndices});
 }
 
 Expression call(std::string function, std::vector<Expression> arguments,
@@ -222,8 +229,13 @@ bool Expression::Equals(const Expression& other) const {
     return lit->Equals(*other.literal());
   }
 
-  if (auto ref = field_ref()) {
-    return ref->Equals(*other.field_ref());
+  if (auto parameter = this->parameter()) {
+    auto other_parameter = other.parameter();
+    if (parameter->indices == kUnboundIndices ||
+        other_parameter->indices == kUnboundIndices) {
+      return parameter->ref == other_parameter->ref;
+    }
+    return parameter->indices == other_parameter->indices;
   }
 
   auto call = CallNotNull(*this);

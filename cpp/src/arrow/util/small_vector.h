@@ -456,6 +456,18 @@ class StaticVectorImpl {
     }
   }
 
+  bool operator==(const StaticVectorImpl& other) const {
+    if (size() != other.size()) return false;
+
+    auto it = begin();
+    for (const auto& e : other) {
+      if (*it++ != e) return false;
+    }
+    return true;
+  }
+
+  bool operator!=(const StaticVectorImpl& other) const { return !(*this == other); }
+
  private:
   template <typename InputIt>
   void init_by_copying(size_t n, InputIt src) {
