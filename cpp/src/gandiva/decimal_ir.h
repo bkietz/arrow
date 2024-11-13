@@ -25,7 +25,7 @@
 
 namespace gandiva {
 
-/// @brief Decimal IR functions
+/// Decimal IR functions
 class DecimalIR : public FunctionIRBuilder {
  public:
   explicit DecimalIR(Engine* engine)

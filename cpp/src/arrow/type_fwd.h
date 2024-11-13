@@ -315,7 +315,7 @@ class SparseTensor;
 // ----------------------------------------------------------------------
 
 struct Type {
-  /// \brief Main data type enumeration
+  /// Main data type enumeration
   ///
   /// This enumeration provides a quick way to interrogate the category
   /// of a DataType instance.
@@ -471,7 +471,7 @@ struct Type {
   };
 };
 
-/// \brief Get a vector of all type ids
+/// Get a vector of all type ids
 ARROW_EXPORT std::vector<Type::type> AllTypeIds();
 
 /// \defgroup type-factories Factory functions for creating data types
@@ -479,54 +479,54 @@ ARROW_EXPORT std::vector<Type::type> AllTypeIds();
 /// Factory functions for creating data types
 /// @{
 
-/// \brief Return a NullType instance
+/// Return a NullType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& null();
-/// \brief Return a BooleanType instance
+/// Return a BooleanType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& boolean();
-/// \brief Return a Int8Type instance
+/// Return a Int8Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& int8();
-/// \brief Return a Int16Type instance
+/// Return a Int16Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& int16();
-/// \brief Return a Int32Type instance
+/// Return a Int32Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& int32();
-/// \brief Return a Int64Type instance
+/// Return a Int64Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& int64();
-/// \brief Return a UInt8Type instance
+/// Return a UInt8Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& uint8();
-/// \brief Return a UInt16Type instance
+/// Return a UInt16Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& uint16();
-/// \brief Return a UInt32Type instance
+/// Return a UInt32Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& uint32();
-/// \brief Return a UInt64Type instance
+/// Return a UInt64Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& uint64();
-/// \brief Return a HalfFloatType instance
+/// Return a HalfFloatType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& float16();
-/// \brief Return a FloatType instance
+/// Return a FloatType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& float32();
-/// \brief Return a DoubleType instance
+/// Return a DoubleType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& float64();
-/// \brief Return a StringType instance
+/// Return a StringType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& utf8();
-/// \brief Return a StringViewType instance
+/// Return a StringViewType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& utf8_view();
-/// \brief Return a LargeStringType instance
+/// Return a LargeStringType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& large_utf8();
-/// \brief Return a BinaryType instance
+/// Return a BinaryType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& binary();
-/// \brief Return a BinaryViewType instance
+/// Return a BinaryViewType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& binary_view();
-/// \brief Return a LargeBinaryType instance
+/// Return a LargeBinaryType instance
 ARROW_EXPORT const std::shared_ptr<DataType>& large_binary();
-/// \brief Return a Date32Type instance
+/// Return a Date32Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& date32();
-/// \brief Return a Date64Type instance
+/// Return a Date64Type instance
 ARROW_EXPORT const std::shared_ptr<DataType>& date64();
 
-/// \brief Create a FixedSizeBinaryType instance.
+/// Create a FixedSizeBinaryType instance.
 ARROW_EXPORT
 std::shared_ptr<DataType> fixed_size_binary(int32_t byte_width);
 
-/// \brief Create a DecimalType instance depending on the precision
+/// Create a DecimalType instance depending on the precision
 ///
 /// If the precision is greater than 38, a Decimal256Type is returned,
 /// otherwise a Decimal128Type.
@@ -536,7 +536,7 @@ ARROW_DEPRECATED("Deprecated in 18.0. Use `smallest_decimal` instead")
 ARROW_EXPORT
 std::shared_ptr<DataType> decimal(int32_t precision, int32_t scale);
 
-/// \brief Create a the smallest DecimalType instance depending on precision
+/// Create a the smallest DecimalType instance depending on precision
 ///
 /// Given the requested precision and scale, the smallest DecimalType which
 /// is able to represent that precision will be returned. As different
@@ -545,58 +545,58 @@ std::shared_ptr<DataType> decimal(int32_t precision, int32_t scale);
 ARROW_EXPORT
 std::shared_ptr<DataType> smallest_decimal(int32_t precision, int32_t scale);
 
-/// \brief Create a Decimal32Type instance
+/// Create a Decimal32Type instance
 ARROW_EXPORT
 std::shared_ptr<DataType> decimal32(int32_t precision, int32_t scale);
 
-/// \brief Create a Decimal64Type instance
+/// Create a Decimal64Type instance
 ARROW_EXPORT
 std::shared_ptr<DataType> decimal64(int32_t precision, int32_t scale);
 
-/// \brief Create a Decimal128Type instance
+/// Create a Decimal128Type instance
 ARROW_EXPORT
 std::shared_ptr<DataType> decimal128(int32_t precision, int32_t scale);
 
-/// \brief Create a Decimal256Type instance
+/// Create a Decimal256Type instance
 ARROW_EXPORT
 std::shared_ptr<DataType> decimal256(int32_t precision, int32_t scale);
 
-/// \brief Create a ListType instance from its child Field type
+/// Create a ListType instance from its child Field type
 ARROW_EXPORT
 std::shared_ptr<DataType> list(std::shared_ptr<Field> value_type);
 
-/// \brief Create a ListType instance from its child DataType
+/// Create a ListType instance from its child DataType
 ARROW_EXPORT
 std::shared_ptr<DataType> list(std::shared_ptr<DataType> value_type);
 
-/// \brief Create a LargeListType instance from its child Field type
+/// Create a LargeListType instance from its child Field type
 ARROW_EXPORT
 std::shared_ptr<DataType> large_list(std::shared_ptr<Field> value_type);
 
-/// \brief Create a LargeListType instance from its child DataType
+/// Create a LargeListType instance from its child DataType
 ARROW_EXPORT
 std::shared_ptr<DataType> large_list(std::shared_ptr<DataType> value_type);
 
-/// \brief Create a ListViewType instance
+/// Create a ListViewType instance
 ARROW_EXPORT std::shared_ptr<DataType> list_view(std::shared_ptr<DataType> value_type);
 
-/// \brief Create a ListViewType instance from its child Field type
+/// Create a ListViewType instance from its child Field type
 ARROW_EXPORT std::shared_ptr<DataType> list_view(std::shared_ptr<Field> value_type);
 
-/// \brief Create a LargetListViewType instance
+/// Create a LargetListViewType instance
 ARROW_EXPORT std::shared_ptr<DataType> large_list_view(
     std::shared_ptr<DataType> value_type);
 
-/// \brief Create a LargetListViewType instance from its child Field type
+/// Create a LargetListViewType instance from its child Field type
 ARROW_EXPORT std::shared_ptr<DataType> large_list_view(std::shared_ptr<Field> value_type);
 
-/// \brief Create a MapType instance from its key and value DataTypes
+/// Create a MapType instance from its key and value DataTypes
 ARROW_EXPORT
 std::shared_ptr<DataType> map(std::shared_ptr<DataType> key_type,
                               std::shared_ptr<DataType> item_type,
                               bool keys_sorted = false);
 
-/// \brief Create a MapType instance from its key DataType and value field.
+/// Create a MapType instance from its key DataType and value field.
 ///
 /// The field override is provided to communicate nullability of the value.
 ARROW_EXPORT
@@ -604,78 +604,78 @@ std::shared_ptr<DataType> map(std::shared_ptr<DataType> key_type,
                               std::shared_ptr<Field> item_field,
                               bool keys_sorted = false);
 
-/// \brief Create a FixedSizeListType instance from its child Field type
+/// Create a FixedSizeListType instance from its child Field type
 ARROW_EXPORT
 std::shared_ptr<DataType> fixed_size_list(std::shared_ptr<Field> value_type,
                                           int32_t list_size);
 
-/// \brief Create a FixedSizeListType instance from its child DataType
+/// Create a FixedSizeListType instance from its child DataType
 ARROW_EXPORT
 std::shared_ptr<DataType> fixed_size_list(std::shared_ptr<DataType> value_type,
                                           int32_t list_size);
-/// \brief Return a Duration instance (naming use _type to avoid namespace conflict with
+/// Return a Duration instance (naming use _type to avoid namespace conflict with
 /// built in time classes).
 ARROW_EXPORT std::shared_ptr<DataType> duration(TimeUnit::type unit);
 
-/// \brief Return a DayTimeIntervalType instance
+/// Return a DayTimeIntervalType instance
 ARROW_EXPORT std::shared_ptr<DataType> day_time_interval();
 
-/// \brief Return a MonthIntervalType instance
+/// Return a MonthIntervalType instance
 ARROW_EXPORT std::shared_ptr<DataType> month_interval();
 
-/// \brief Return a MonthDayNanoIntervalType instance
+/// Return a MonthDayNanoIntervalType instance
 ARROW_EXPORT std::shared_ptr<DataType> month_day_nano_interval();
 
-/// \brief Create a TimestampType instance from its unit
+/// Create a TimestampType instance from its unit
 ARROW_EXPORT
 std::shared_ptr<DataType> timestamp(TimeUnit::type unit);
 
-/// \brief Create a TimestampType instance from its unit and timezone
+/// Create a TimestampType instance from its unit and timezone
 ARROW_EXPORT
 std::shared_ptr<DataType> timestamp(TimeUnit::type unit, const std::string& timezone);
 
-/// \brief Create a 32-bit time type instance
+/// Create a 32-bit time type instance
 ///
 /// Unit can be either SECOND or MILLI
 ARROW_EXPORT std::shared_ptr<DataType> time32(TimeUnit::type unit);
 
-/// \brief Create a 64-bit time type instance
+/// Create a 64-bit time type instance
 ///
 /// Unit can be either MICRO or NANO
 ARROW_EXPORT std::shared_ptr<DataType> time64(TimeUnit::type unit);
 
-/// \brief Create a StructType instance
+/// Create a StructType instance
 ARROW_EXPORT std::shared_ptr<DataType> struct_(const FieldVector& fields);
 
-/// \brief Create a StructType instance from (name, type) pairs
+/// Create a StructType instance from (name, type) pairs
 ARROW_EXPORT std::shared_ptr<DataType> struct_(
     std::initializer_list<std::pair<std::string, std::shared_ptr<DataType>>> fields);
 
-/// \brief Create a RunEndEncodedType instance
+/// Create a RunEndEncodedType instance
 ARROW_EXPORT std::shared_ptr<DataType> run_end_encoded(
     std::shared_ptr<DataType> run_end_type, std::shared_ptr<DataType> value_type);
 
-/// \brief Create a SparseUnionType instance
+/// Create a SparseUnionType instance
 ARROW_EXPORT std::shared_ptr<DataType> sparse_union(FieldVector child_fields,
                                                     std::vector<int8_t> type_codes = {});
-/// \brief Create a SparseUnionType instance
+/// Create a SparseUnionType instance
 ARROW_EXPORT std::shared_ptr<DataType> sparse_union(
     const ArrayVector& children, std::vector<std::string> field_names = {},
     std::vector<int8_t> type_codes = {});
 
-/// \brief Create a DenseUnionType instance
+/// Create a DenseUnionType instance
 ARROW_EXPORT std::shared_ptr<DataType> dense_union(FieldVector child_fields,
                                                    std::vector<int8_t> type_codes = {});
-/// \brief Create a DenseUnionType instance
+/// Create a DenseUnionType instance
 ARROW_EXPORT std::shared_ptr<DataType> dense_union(
     const ArrayVector& children, std::vector<std::string> field_names = {},
     std::vector<int8_t> type_codes = {});
 
-/// \brief Create a DictionaryType instance
-/// \param[in] index_type the type of the dictionary indices (must be
+/// Create a DictionaryType instance
+/// :param index_type: the type of the dictionary indices (must be
 /// a signed integer)
-/// \param[in] dict_type the type of the values in the variable dictionary
-/// \param[in] ordered true if the order of the dictionary values has
+/// :param dict_type: the type of the values in the variable dictionary
+/// :param ordered: true if the order of the dictionary values has
 /// semantic meaning and should be preserved where possible
 ARROW_EXPORT
 std::shared_ptr<DataType> dictionary(const std::shared_ptr<DataType>& index_type,
@@ -689,67 +689,67 @@ std::shared_ptr<DataType> dictionary(const std::shared_ptr<DataType>& index_type
 /// Factory functions for fields and schemas
 /// @{
 
-/// \brief Create a Field instance
+/// Create a Field instance
 ///
-/// \param name the field name
-/// \param type the field value type
-/// \param nullable whether the values are nullable, default true
-/// \param metadata any custom key-value metadata, default null
+/// :param name: the field name
+/// :param type: the field value type
+/// :param nullable: whether the values are nullable, default true
+/// :param metadata: any custom key-value metadata, default null
 ARROW_EXPORT std::shared_ptr<Field> field(
     std::string name, std::shared_ptr<DataType> type, bool nullable = true,
     std::shared_ptr<const KeyValueMetadata> metadata = NULLPTR);
 
-/// \brief Create a Field instance with metadata
+/// Create a Field instance with metadata
 ///
 /// The field will be assumed to be nullable.
 ///
-/// \param name the field name
-/// \param type the field value type
-/// \param metadata any custom key-value metadata
+/// :param name: the field name
+/// :param type: the field value type
+/// :param metadata: any custom key-value metadata
 ARROW_EXPORT std::shared_ptr<Field> field(
     std::string name, std::shared_ptr<DataType> type,
     std::shared_ptr<const KeyValueMetadata> metadata);
 
-/// \brief Create a Schema instance
+/// Create a Schema instance
 ///
-/// \param fields the schema's fields
-/// \param metadata any custom key-value metadata, default null
-/// \return schema shared_ptr to Schema
+/// :param fields: the schema's fields
+/// :param metadata: any custom key-value metadata, default null
+/// :return: schema shared_ptr to Schema
 ARROW_EXPORT
 std::shared_ptr<Schema> schema(
     FieldVector fields, std::shared_ptr<const KeyValueMetadata> metadata = NULLPTR);
 
-/// \brief Create a Schema instance from (name, type) pairs
+/// Create a Schema instance from (name, type) pairs
 ///
 /// The schema's fields will all be nullable with no associated metadata.
 ///
-/// \param fields (name, type) pairs of the schema's fields
-/// \param metadata any custom key-value metadata, default null
-/// \return schema shared_ptr to Schema
+/// :param fields: (name, type) pairs of the schema's fields
+/// :param metadata: any custom key-value metadata, default null
+/// :return: schema shared_ptr to Schema
 ARROW_EXPORT
 std::shared_ptr<Schema> schema(
     std::initializer_list<std::pair<std::string, std::shared_ptr<DataType>>> fields,
     std::shared_ptr<const KeyValueMetadata> metadata = NULLPTR);
 
-/// \brief Create a Schema instance
+/// Create a Schema instance
 ///
-/// \param fields the schema's fields
-/// \param endianness the endianness of the data
-/// \param metadata any custom key-value metadata, default null
-/// \return schema shared_ptr to Schema
+/// :param fields: the schema's fields
+/// :param endianness: the endianness of the data
+/// :param metadata: any custom key-value metadata, default null
+/// :return: schema shared_ptr to Schema
 ARROW_EXPORT
 std::shared_ptr<Schema> schema(
     FieldVector fields, Endianness endianness,
     std::shared_ptr<const KeyValueMetadata> metadata = NULLPTR);
 
-/// \brief Create a Schema instance
+/// Create a Schema instance
 ///
 /// The schema's fields will all be nullable with no associated metadata.
 ///
-/// \param fields (name, type) pairs of the schema's fields
-/// \param endianness the endianness of the data
-/// \param metadata any custom key-value metadata, default null
-/// \return schema shared_ptr to Schema
+/// :param fields: (name, type) pairs of the schema's fields
+/// :param endianness: the endianness of the data
+/// :param metadata: any custom key-value metadata, default null
+/// :return: schema shared_ptr to Schema
 ARROW_EXPORT
 std::shared_ptr<Schema> schema(
     std::initializer_list<std::pair<std::string, std::shared_ptr<DataType>>> fields,
@@ -762,7 +762,7 @@ ARROW_EXPORT MemoryPool* default_memory_pool();
 
 constexpr int64_t kDefaultBufferAlignment = 64;
 
-/// \brief EXPERIMENTAL: Device type enum which matches up with C Data Device types
+/// EXPERIMENTAL: Device type enum which matches up with C Data Device types
 enum class DeviceAllocationType : char {
   kCPU = 1,
   kCUDA = 2,

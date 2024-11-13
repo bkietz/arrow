@@ -30,7 +30,7 @@
 namespace arrow {
 namespace flight {
 
-/// \brief Server-side middleware for a call, instantiated per RPC.
+/// Server-side middleware for a call, instantiated per RPC.
 ///
 /// Middleware should be fast and must be infallible: there is no way
 /// to reject the call or report errors from the middleware instance.
@@ -38,19 +38,19 @@ class ARROW_FLIGHT_EXPORT ServerMiddleware {
  public:
   virtual ~ServerMiddleware() = default;
 
-  /// \brief Unique name of middleware, used as alternative to RTTI
-  /// \return the string name of the middleware
+  /// Unique name of middleware, used as alternative to RTTI
+  /// :return: the string name of the middleware
   virtual std::string name() const = 0;
 
-  /// \brief A callback before headers are sent. Extra headers can be
+  /// A callback before headers are sent. Extra headers can be
   /// added, but existing ones cannot be read.
   virtual void SendingHeaders(AddCallHeaders* outgoing_headers) = 0;
 
-  /// \brief A callback after the call has completed.
+  /// A callback after the call has completed.
   virtual void CallCompleted(const Status& status) = 0;
 };
 
-/// \brief A factory for new middleware instances.
+/// A factory for new middleware instances.
 ///
 /// If added to a server, this will be called for each RPC (including
 /// Handshake) to give the opportunity to intercept the call.
@@ -61,33 +61,33 @@ class ARROW_FLIGHT_EXPORT ServerMiddlewareFactory {
  public:
   virtual ~ServerMiddlewareFactory() = default;
 
-  /// \brief A callback for the start of a new call.
+  /// A callback for the start of a new call.
   ///
   /// Return a non-OK status to reject the call with the given status.
   ///
-  /// \param[in] info Information about the call.
-  /// \param[in] context The call context.
-  /// \param[out] middleware The middleware instance for this call. If
+  /// :param info: Information about the call.
+  /// :param context: The call context.
+  /// :param middleware[out]: The middleware instance for this call. If
   ///     null, no middleware will be added to this call instance from
   ///     this factory.
-  /// \return Status A non-OK status will reject the call with the
+  /// :return: Status A non-OK status will reject the call with the
   ///     given status. Middleware previously in the chain will have
   ///     their CallCompleted callback called. Other middleware
   ///     factories will not be called.
   virtual Status StartCall(const CallInfo& info, const ServerCallContext& context,
                            std::shared_ptr<ServerMiddleware>* middleware);
 
-  /// \brief A callback for the start of a new call.
+  /// A callback for the start of a new call.
   ///
   /// Return a non-OK status to reject the call with the given status.
   ///
-  /// \param info Information about the call.
-  /// \param incoming_headers Headers sent by the client for this call.
+  /// :param info: Information about the call.
+  /// :param incoming_headers: Headers sent by the client for this call.
   ///     Do not retain a reference to this object.
-  /// \param[out] middleware The middleware instance for this call. If
+  /// :param middleware[out]: The middleware instance for this call. If
   ///     null, no middleware will be added to this call instance from
   ///     this factory.
-  /// \return Status A non-OK status will reject the call with the
+  /// :return: Status A non-OK status will reject the call with the
   ///     given status. Middleware previously in the chain will have
   ///     their CallCompleted callback called. Other middleware
   ///     factories will not be called.

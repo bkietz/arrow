@@ -26,7 +26,7 @@ class ARROW_EXPORT FixedShapeTensorArray : public ExtensionArray {
  public:
   using ExtensionArray::ExtensionArray;
 
-  /// \brief Create a FixedShapeTensorArray from a Tensor
+  /// Create a FixedShapeTensorArray from a Tensor
   ///
   /// This method will create a FixedShapeTensorArray from a Tensor, taking its first
   /// dimension as the number of elements in the resulting array and the remaining
@@ -34,11 +34,11 @@ class ARROW_EXPORT FixedShapeTensorArray : public ExtensionArray {
   /// they will be used to determine dimension permutation. Otherwise, row-major layout
   /// (i.e. no permutation) will be assumed.
   ///
-  /// \param[in] tensor The Tensor to convert to a FixedShapeTensorArray
+  /// :param tensor: The Tensor to convert to a FixedShapeTensorArray
   static Result<std::shared_ptr<FixedShapeTensorArray>> FromTensor(
       const std::shared_ptr<Tensor>& tensor);
 
-  /// \brief Create a Tensor from FixedShapeTensorArray
+  /// Create a Tensor from FixedShapeTensorArray
   ///
   /// This method will create a Tensor from a FixedShapeTensorArray, setting its first
   /// dimension as length equal to the FixedShapeTensorArray's length and the remaining
@@ -47,7 +47,7 @@ class ARROW_EXPORT FixedShapeTensorArray : public ExtensionArray {
   const Result<std::shared_ptr<Tensor>> ToTensor() const;
 };
 
-/// \brief Concrete type class for constant-size Tensor data.
+/// Concrete type class for constant-size Tensor data.
 /// This is a canonical arrow extension type.
 /// See: https://arrow.apache.org/docs/format/CanonicalExtensions.html
 class ARROW_EXPORT FixedShapeTensorType : public ExtensionType {
@@ -96,7 +96,7 @@ class ARROW_EXPORT FixedShapeTensorType : public ExtensionType {
   /// Create a FixedShapeTensorArray from ArrayData
   std::shared_ptr<Array> MakeArray(std::shared_ptr<ArrayData> data) const override;
 
-  /// \brief Create a Tensor from an ExtensionScalar from a FixedShapeTensorArray
+  /// Create a Tensor from an ExtensionScalar from a FixedShapeTensorArray
   ///
   /// This method will return a Tensor from ExtensionScalar with strides
   /// derived from shape and permutation of FixedShapeTensorType. Shape and
@@ -105,7 +105,7 @@ class ARROW_EXPORT FixedShapeTensorType : public ExtensionType {
   static Result<std::shared_ptr<Tensor>> MakeTensor(
       const std::shared_ptr<ExtensionScalar>& scalar);
 
-  /// \brief Create a FixedShapeTensorType instance
+  /// Create a FixedShapeTensorType instance
   static Result<std::shared_ptr<DataType>> Make(
       const std::shared_ptr<DataType>& value_type, const std::vector<int64_t>& shape,
       const std::vector<int64_t>& permutation = {},
@@ -120,7 +120,7 @@ class ARROW_EXPORT FixedShapeTensorType : public ExtensionType {
   std::vector<std::string> dim_names_;
 };
 
-/// \brief Return a FixedShapeTensorType instance.
+/// Return a FixedShapeTensorType instance.
 ARROW_EXPORT std::shared_ptr<DataType> fixed_shape_tensor(
     const std::shared_ptr<DataType>& storage_type, const std::vector<int64_t>& shape,
     const std::vector<int64_t>& permutation = {},

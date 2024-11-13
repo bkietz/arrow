@@ -35,7 +35,7 @@
 namespace arrow {
 namespace dataset {
 
-/// \brief GetFragmentsFromDatasets transforms a vector<Dataset> into a
+/// GetFragmentsFromDatasets transforms a vector<Dataset> into a
 /// flattened FragmentIterator.
 inline Result<FragmentIterator> GetFragmentsFromDatasets(const DatasetVector& datasets,
                                                          compute::Expression predicate) {
@@ -68,7 +68,7 @@ inline std::shared_ptr<Schema> SchemaFromColumnNames(
 }
 
 /// Get fragment scan options of the expected type.
-/// \return Fragment scan options if provided on the scan options, else the default
+/// :return: Fragment scan options if provided on the scan options, else the default
 ///     options if set, else a default-constructed value. If options are provided
 ///     but of the wrong type, an error is returned.
 template <typename T>

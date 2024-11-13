@@ -113,7 +113,7 @@ Status InvalidMessageType(MessageType expected, MessageType actual) {
 // ----------------------------------------------------------------------
 // Record batch read path
 
-/// \brief Structure to keep common arguments to be passed
+/// Structure to keep common arguments to be passed
 struct IpcReadContext {
   IpcReadContext(DictionaryMemo* memo, const IpcReadOptions& option, bool swap,
                  MetadataVersion version = MetadataVersion::V5,
@@ -132,7 +132,7 @@ struct IpcReadContext {
 
   Compression::type compression;
 
-  /// \brief LoadRecordBatch() or LoadRecordBatchSubset() swaps endianness of elements
+  /// LoadRecordBatch() or LoadRecordBatchSubset() swaps endianness of elements
   /// if this flag is true
   const bool swap_endian;
 };
@@ -1510,7 +1510,7 @@ class RecordBatchFileReaderImpl : public RecordBatchFileReader {
     std::atomic<int64_t> num_dictionary_deltas{0};
     std::atomic<int64_t> num_replaced_dictionaries{0};
 
-    /// \brief Capture a copy of the current counters
+    /// Capture a copy of the current counters
     ReadStats poll() const {
       ReadStats stats;
       stats.num_messages = num_messages.load(std::memory_order_relaxed);
@@ -2584,7 +2584,7 @@ Result<std::shared_ptr<SparseTensor>> ReadSparseTensor(io::InputStream* file) {
   return ReadSparseTensor(*message->metadata(), reader.get());
 }
 
-///////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////
 // Helpers for fuzzing
 
 namespace internal {

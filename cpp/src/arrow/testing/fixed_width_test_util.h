@@ -30,15 +30,15 @@ namespace arrow::util::internal {
 
 class ARROW_TESTING_EXPORT NestedListGenerator {
  public:
-  /// \brief Create a nested FixedSizeListType.
+  /// Create a nested FixedSizeListType.
   ///
-  /// \return `fixed_size_list(fixed_size_list(..., sizes[1]), sizes[0])`
+  /// :return: `fixed_size_list(fixed_size_list(..., sizes[1]), sizes[0])`
   static std::shared_ptr<DataType> NestedFSLType(
       const std::shared_ptr<DataType>& inner_type, const std::vector<int>& sizes);
 
-  /// \brief Create a nested FixedListType.
+  /// Create a nested FixedListType.
   ///
-  /// \return `list(list(...))`
+  /// :return: `list(list(...))`
   static std::shared_ptr<DataType> NestedListType(
       const std::shared_ptr<DataType>& inner_type, size_t depth);
 
@@ -50,7 +50,7 @@ class ARROW_TESTING_EXPORT NestedListGenerator {
       const std::shared_ptr<DataType>& inner_type, const std::vector<int>& list_sizes,
       int64_t length);
 
-  /// \brief Generate all possible nested list configurations of depth 1 to max_depth.
+  /// Generate all possible nested list configurations of depth 1 to max_depth.
   ///
   /// Each configuration consists of a single inner value type and a list of sizes.
   /// Both can be used with NestedFSLArray and NestedListArray to generate test data.

@@ -66,14 +66,14 @@ class TestAzureOptions;
 struct ARROW_EXPORT AzureOptions {
   friend class TestAzureOptions;
 
-  /// \brief The name of the Azure Storage Account being accessed.
+  /// The name of the Azure Storage Account being accessed.
   ///
   /// All service URLs will be constructed using this storage account name.
   /// `ConfigureAccountKeyCredential` assumes the user wants to authenticate
   /// this account.
   std::string account_name;
 
-  /// \brief hostname[:port] of the Azure Blob Storage Service.
+  /// hostname[:port] of the Azure Blob Storage Service.
   ///
   /// If the hostname is a relative domain name (one that starts with a '.'), then storage
   /// account URLs will be constructed by prepending the account name to the hostname.
@@ -83,7 +83,7 @@ struct ARROW_EXPORT AzureOptions {
   /// Default: ".blob.core.windows.net"
   std::string blob_storage_authority = ".blob.core.windows.net";
 
-  /// \brief hostname[:port] of the Azure Data Lake Storage Gen 2 Service.
+  /// hostname[:port] of the Azure Data Lake Storage Gen 2 Service.
   ///
   /// If the hostname is a relative domain name (one that starts with a '.'), then storage
   /// account URLs will be constructed by prepending the account name to the hostname.
@@ -93,12 +93,12 @@ struct ARROW_EXPORT AzureOptions {
   /// Default: ".dfs.core.windows.net"
   std::string dfs_storage_authority = ".dfs.core.windows.net";
 
-  /// \brief Azure Blob Storage connection transport.
+  /// Azure Blob Storage connection transport.
   ///
   /// Default: "https"
   std::string blob_storage_scheme = "https";
 
-  /// \brief Azure Data Lake Storage Gen 2 connection transport.
+  /// Azure Data Lake Storage Gen 2 connection transport.
   ///
   /// Default: "https"
   std::string dfs_storage_scheme = "https";
@@ -107,7 +107,7 @@ struct ARROW_EXPORT AzureOptions {
   // std::string connection_string;
   // std::string sas_token;
 
-  /// \brief Default metadata for OpenOutputStream.
+  /// Default metadata for OpenOutputStream.
   ///
   /// This will be ignored if non-empty metadata is passed to OpenOutputStream.
   std::shared_ptr<const KeyValueMetadata> default_metadata;
@@ -140,7 +140,7 @@ struct ARROW_EXPORT AzureOptions {
   Status ExtractFromUriQuery(const Uri& uri);
 
  public:
-  /// \brief Construct a new AzureOptions from an URI.
+  /// Construct a new AzureOptions from an URI.
   ///
   /// Supported formats:
   ///
@@ -213,7 +213,7 @@ struct ARROW_EXPORT AzureOptions {
       Azure::Storage::Blobs::BlobServiceClient* client) const;
 };
 
-/// \brief FileSystem implementation backed by Azure Blob Storage (ABS) [1] and
+/// FileSystem implementation backed by Azure Blob Storage (ABS) [1] and
 /// Azure Data Lake Storage Gen2 (ADLS Gen2) [2].
 ///
 /// ADLS Gen2 isn't a dedicated service or account type. It's a set of capabilities that
@@ -265,13 +265,11 @@ class ARROW_EXPORT AzureFileSystem : public FileSystem {
 
   bool Equals(const FileSystem& other) const override;
 
-  /// \cond FALSE
   using FileSystem::CreateDir;
   using FileSystem::DeleteDirContents;
   using FileSystem::GetFileInfo;
   using FileSystem::OpenAppendStream;
   using FileSystem::OpenOutputStream;
-  /// \endcond
 
   Result<FileInfo> GetFileInfo(const std::string& path) override;
 
@@ -279,24 +277,24 @@ class ARROW_EXPORT AzureFileSystem : public FileSystem {
 
   Status CreateDir(const std::string& path, bool recursive) override;
 
-  /// \brief Delete a directory and its contents recursively.
+  /// Delete a directory and its contents recursively.
   ///
   /// Atomicity is guaranteed only on Hierarchical Namespace Storage accounts.
   Status DeleteDir(const std::string& path) override;
 
-  /// \brief Non-atomically deletes the contents of a directory.
+  /// Non-atomically deletes the contents of a directory.
   ///
   /// This function can return a bad Status after only partially deleting the
   /// contents of the directory.
   Status DeleteDirContents(const std::string& path, bool missing_dir_ok) override;
 
-  /// \brief Deletion of all the containers in the storage account (not
+  /// Deletion of all the containers in the storage account (not
   /// implemented for safety reasons).
   ///
-  /// \return Status::NotImplemented
+  /// :return: Status::NotImplemented
   Status DeleteRootDirContents() override;
 
-  /// \brief Deletes a file.
+  /// Deletes a file.
   ///
   /// Supported on both flat namespace and Hierarchical Namespace storage
   /// accounts. A check is made to guarantee the parent directory doesn't
@@ -307,7 +305,7 @@ class ARROW_EXPORT AzureFileSystem : public FileSystem {
   /// guarantee only one client/process is trying to delete the same file.
   Status DeleteFile(const std::string& path) override;
 
-  /// \brief Move/rename a file or directory.
+  /// Move/rename a file or directory.
   ///
   /// There are no files immediately at the root directory, so paths like
   /// "/segment" always refer to a container of the storage account and are

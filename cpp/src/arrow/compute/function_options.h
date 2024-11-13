@@ -32,7 +32,7 @@ namespace compute {
 /// \addtogroup compute-functions
 /// @{
 
-/// \brief Extension point for defining options outside libarrow (but
+/// Extension point for defining options outside libarrow (but
 /// still within this project).
 class ARROW_EXPORT FunctionOptionsType {
  public:
@@ -47,7 +47,7 @@ class ARROW_EXPORT FunctionOptionsType {
   virtual std::unique_ptr<FunctionOptions> Copy(const FunctionOptions&) const = 0;
 };
 
-/// \brief Base class for specifying options configuring a function's behavior,
+/// Base class for specifying options configuring a function's behavior,
 /// such as error handling.
 class ARROW_EXPORT FunctionOptions : public util::EqualityComparable<FunctionOptions> {
  public:
@@ -59,9 +59,9 @@ class ARROW_EXPORT FunctionOptions : public util::EqualityComparable<FunctionOpt
   bool Equals(const FunctionOptions& other) const;
   std::string ToString() const;
   std::unique_ptr<FunctionOptions> Copy() const;
-  /// \brief Serialize an options struct to a buffer.
+  /// Serialize an options struct to a buffer.
   Result<std::shared_ptr<Buffer>> Serialize() const;
-  /// \brief Deserialize an options struct from a buffer.
+  /// Deserialize an options struct from a buffer.
   /// Note: this will only look for `type_name` in the default FunctionRegistry;
   /// to use a custom FunctionRegistry, look up the FunctionOptionsType, then
   /// call FunctionOptionsType::Deserialize().

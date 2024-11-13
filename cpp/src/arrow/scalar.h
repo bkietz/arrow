@@ -44,7 +44,7 @@ namespace arrow {
 
 class Array;
 
-/// \brief Base class for scalar values
+/// Base class for scalar values
 ///
 /// A Scalar represents a single value with a specific DataType.
 /// Scalars are useful for passing single value inputs to compute functions,
@@ -54,10 +54,10 @@ struct ARROW_EXPORT Scalar : public std::enable_shared_from_this<Scalar>,
                              public util::EqualityComparable<Scalar> {
   virtual ~Scalar() = default;
 
-  /// \brief The type of the scalar value
+  /// The type of the scalar value
   std::shared_ptr<DataType> type;
 
-  /// \brief Whether the value is valid (not null) or not
+  /// Whether the value is valid (not null) or not
   bool is_valid = false;
 
   bool Equals(const Scalar& other,
@@ -78,19 +78,19 @@ struct ARROW_EXPORT Scalar : public std::enable_shared_from_this<Scalar>,
 
   std::string ToString() const;
 
-  /// \brief Perform cheap validation checks
+  /// Perform cheap validation checks
   ///
   /// This is O(k) where k is the number of descendents.
   ///
-  /// \return Status
+  /// :return: Status
   Status Validate() const;
 
-  /// \brief Perform extensive data validation checks
+  /// Perform extensive data validation checks
   ///
   /// This is potentially O(k*n) where k is the number of descendents and n
   /// is the length of descendents (if list scalars are involved).
   ///
-  /// \return Status
+  /// :return: Status
   Status ValidateFull() const;
 
   static Result<std::shared_ptr<Scalar>> Parse(const std::shared_ptr<DataType>& type,
@@ -99,10 +99,10 @@ struct ARROW_EXPORT Scalar : public std::enable_shared_from_this<Scalar>,
   // TODO(bkietz) add compute::CastOptions
   Result<std::shared_ptr<Scalar>> CastTo(std::shared_ptr<DataType> to) const;
 
-  /// \brief Apply the ScalarVisitor::Visit() method specialized to the scalar type
+  /// Apply the ScalarVisitor::Visit() method specialized to the scalar type
   Status Accept(ScalarVisitor* visitor) const;
 
-  /// \brief EXPERIMENTAL Enable obtaining shared_ptr<Scalar> from a const
+  /// EXPERIMENTAL Enable obtaining shared_ptr<Scalar> from a const
   /// Scalar& context.
   std::shared_ptr<Scalar> GetSharedPtr() const {
     return const_cast<Scalar*>(this)->shared_from_this();
@@ -119,7 +119,7 @@ ARROW_EXPORT void PrintTo(const Scalar& scalar, std::ostream* os);
 ///
 /// @{
 
-/// \brief A scalar value for NullType. Never valid
+/// A scalar value for NullType. Never valid
 struct ARROW_EXPORT NullScalar : public Scalar {
  public:
   using TypeClass = NullType;
@@ -156,9 +156,9 @@ struct ARROW_EXPORT PrimitiveScalarBase : public Scalar {
       : Scalar(std::move(type), false) {}
 
   using Scalar::Scalar;
-  /// \brief Get a const pointer to the value of this scalar. May be null.
+  /// Get a const pointer to the value of this scalar. May be null.
   virtual const void* data() const = 0;
-  /// \brief Get an immutable view of the value of this scalar as bytes.
+  /// Get an immutable view of the value of this scalar as bytes.
   virtual std::string_view view() const = 0;
 };
 
@@ -772,7 +772,7 @@ struct ARROW_EXPORT SparseUnionScalar
     return this->value[this->child_id];
   }
 
-  /// \brief Construct a SparseUnionScalar from a single value, versus having
+  /// Construct a SparseUnionScalar from a single value, versus having
   /// to construct a vector of scalars
   static std::shared_ptr<Scalar> FromValue(std::shared_ptr<Scalar> value, int field_index,
                                            std::shared_ptr<DataType> type);
@@ -830,7 +830,7 @@ struct ARROW_EXPORT RunEndEncodedScalar
 
   RunEndEncodedScalar(std::shared_ptr<Scalar> value, std::shared_ptr<DataType> type);
 
-  /// \brief Constructs a NULL RunEndEncodedScalar
+  /// Constructs a NULL RunEndEncodedScalar
   explicit RunEndEncodedScalar(const std::shared_ptr<DataType>& type);
 
   ~RunEndEncodedScalar() override;
@@ -850,7 +850,7 @@ struct ARROW_EXPORT RunEndEncodedScalar
   friend ArraySpanFillFromScalarScratchSpace;
 };
 
-/// \brief A Scalar value for DictionaryType
+/// A Scalar value for DictionaryType
 ///
 /// `is_valid` denotes the validity of the `index`, regardless of
 /// the corresponding value in the `dictionary`.
@@ -881,7 +881,7 @@ struct ARROW_EXPORT DictionaryScalar : public internal::PrimitiveScalarBase {
   }
 };
 
-/// \brief A Scalar value for ExtensionType
+/// A Scalar value for ExtensionType
 ///
 /// The value is the underlying storage scalar.
 /// `is_valid` must only be true if `value` is non-null and `value->is_valid` is true
@@ -920,18 +920,18 @@ struct MakeScalarImpl;
 ///
 /// @{
 
-/// \brief Scalar factory for null scalars
+/// Scalar factory for null scalars
 ARROW_EXPORT
 std::shared_ptr<Scalar> MakeNullScalar(std::shared_ptr<DataType> type);
 
-/// \brief Scalar factory for non-null scalars
+/// Scalar factory for non-null scalars
 template <typename Value>
 Result<std::shared_ptr<Scalar>> MakeScalar(std::shared_ptr<DataType> type,
                                            Value&& value) {
   return MakeScalarImpl<Value&&>{type, std::forward<Value>(value), NULLPTR}.Finish();
 }
 
-/// \brief Type-inferring scalar factory for non-null scalars
+/// Type-inferring scalar factory for non-null scalars
 ///
 /// Construct a Scalar instance with a DataType determined by the input C++ type.
 /// (for example Int8Scalar for a int8_t input).

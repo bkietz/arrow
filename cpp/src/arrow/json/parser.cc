@@ -124,11 +124,11 @@ Status Kind::ForType(const DataType& type, Kind::type* kind) {
   return VisitTypeInline(type, &visitor);
 }
 
-/// \brief ArrayBuilder for parsed but unconverted arrays
+/// ArrayBuilder for parsed but unconverted arrays
 template <Kind::type>
 class RawArrayBuilder;
 
-/// \brief packed pointer to a RawArrayBuilder
+/// packed pointer to a RawArrayBuilder
 ///
 /// RawArrayBuilders are stored in HandlerBase,
 /// which allows storage of their indices (uint32_t) instead of a full pointer.
@@ -166,7 +166,7 @@ struct BuilderPtr {
 
 const BuilderPtr BuilderPtr::null(Kind::kNull, 0, true);
 
-/// \brief Shared context for all value builders in a `RawBuilderSet`
+/// Shared context for all value builders in a `RawBuilderSet`
 class BuildContext {
  public:
   explicit BuildContext(MemoryPool* pool) : pool_(pool) {}
@@ -221,7 +221,7 @@ class RawArrayBuilder<Kind::kBoolean> {
   TypedBufferBuilder<bool> null_bitmap_builder_;
 };
 
-/// \brief builder for strings or unconverted numbers
+/// builder for strings or unconverted numbers
 ///
 /// Both of these are represented in the builder as an index only;
 /// the actual characters are stored in a single StringArray (into which
@@ -727,7 +727,7 @@ class HandlerBase : public BlockParser,
   }
   /// @}
 
-  /// \brief Set up builders using an expected Schema
+  /// Set up builders using an expected Schema
   Status Initialize(const std::shared_ptr<Schema>& s) {
     auto type = struct_({});
     if (s) {
@@ -742,7 +742,7 @@ class HandlerBase : public BlockParser,
     return builder_set_.Finish(scalar_values, builder_, parsed);
   }
 
-  /// \brief Emit path of current field for debugging purposes
+  /// Emit path of current field for debugging purposes
   std::string Path() {
     std::string path;
     for (size_t i = 0; i < builder_stack_.size(); ++i) {
@@ -831,7 +831,7 @@ class HandlerBase : public BlockParser,
     return struct_builder->Append();
   }
 
-  /// \brief helper for Key() functions
+  /// helper for Key() functions
   ///
   /// sets the field builder with name key, or returns false if
   /// there is no field with that name

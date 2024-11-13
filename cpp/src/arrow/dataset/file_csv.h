@@ -38,7 +38,7 @@ constexpr char kCsvTypeName[] = "csv";
 ///
 /// @{
 
-/// \brief A FileFormat implementation that reads from and writes to Csv files
+/// A FileFormat implementation that reads from and writes to Csv files
 class ARROW_DS_EXPORT CsvFileFormat : public FileFormat {
  public:
   // TODO(ARROW-18328) Remove this, moved to CsvFragmentScanOptions
@@ -53,7 +53,7 @@ class ARROW_DS_EXPORT CsvFileFormat : public FileFormat {
 
   Result<bool> IsSupported(const FileSource& source) const override;
 
-  /// \brief Return the schema of the file if possible.
+  /// Return the schema of the file if possible.
   Result<std::shared_ptr<Schema>> Inspect(const FileSource& source) const override;
 
   Future<std::shared_ptr<FragmentScanner>> BeginScan(
@@ -81,7 +81,7 @@ class ARROW_DS_EXPORT CsvFileFormat : public FileFormat {
   std::shared_ptr<FileWriteOptions> DefaultWriteOptions() override;
 };
 
-/// \brief Per-scan options for CSV fragments
+/// Per-scan options for CSV fragments
 struct ARROW_DS_EXPORT CsvFragmentScanOptions : public FragmentScanOptions {
   std::string type_name() const override { return kCsvTypeName; }
 

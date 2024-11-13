@@ -52,11 +52,11 @@ class PARQUET_EXPORT RowGroupWriter {
     virtual int current_column() const = 0;
     virtual void Close() = 0;
 
-    /// \brief total uncompressed bytes written by the page writer
+    /// total uncompressed bytes written by the page writer
     virtual int64_t total_bytes_written() const = 0;
-    /// \brief total bytes still compressed but not written by the page writer
+    /// total bytes still compressed but not written by the page writer
     virtual int64_t total_compressed_bytes() const = 0;
-    /// \brief total compressed bytes written by the page writer
+    /// total compressed bytes written by the page writer
     virtual int64_t total_compressed_bytes_written() const = 0;
 
     virtual bool buffered() const = 0;
@@ -92,12 +92,12 @@ class PARQUET_EXPORT RowGroupWriter {
    */
   int64_t num_rows() const;
 
-  /// \brief total uncompressed bytes written by the page writer
+  /// total uncompressed bytes written by the page writer
   int64_t total_bytes_written() const;
-  /// \brief total bytes still compressed but not written by the page writer.
+  /// total bytes still compressed but not written by the page writer.
   /// It will always return 0 from the SerializedPageWriter.
   int64_t total_compressed_bytes() const;
-  /// \brief total compressed bytes written by the page writer
+  /// total compressed bytes written by the page writer
   int64_t total_compressed_bytes_written() const;
 
   /// Returns whether the current RowGroupWriter is in the buffered mode and is created
@@ -200,10 +200,10 @@ class PARQUET_EXPORT ParquetFileWriter {
   /// until the next call to AppendRowGroup or AppendBufferedRowGroup or Close.
   RowGroupWriter* AppendBufferedRowGroup();
 
-  /// \brief Add key-value metadata to the file.
-  /// \param[in] key_value_metadata the metadata to add.
-  /// \note This will overwrite any existing metadata with the same key(s).
-  /// \throw ParquetException if Close() has been called.
+  /// Add key-value metadata to the file.
+  /// :param key_value_metadata: the metadata to add.
+  /// ```{note}
+  /// This will overwrite any existing metadata with the same key(s).
   void AddKeyValueMetadata(
       const std::shared_ptr<const KeyValueMetadata>& key_value_metadata);
 

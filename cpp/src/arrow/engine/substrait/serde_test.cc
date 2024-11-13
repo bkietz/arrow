@@ -1055,7 +1055,7 @@ TEST(Substrait, ReadRel) {
   EXPECT_EQ(*dataset.schema(), Schema({field("i", int64()), field("b", boolean())}));
 }
 
-/// \brief Create a NamedTableProvider that provides `table` regardless of the name
+/// Create a NamedTableProvider that provides `table` regardless of the name
 NamedTableProvider AlwaysProvideSameTable(std::shared_ptr<Table> table) {
   return [table = std::move(table)](const std::vector<std::string>&, const Schema&) {
     std::shared_ptr<acero::ExecNodeOptions> options =

@@ -63,7 +63,7 @@ int64_t LogicalNullCount(const ArraySpan& span) {
 
 namespace internal {
 
-/// \pre 0 <= i < array_span.length()
+/// :precondition: 0 <= i < array_span.length()
 template <typename RunEndCType>
 int64_t FindPhysicalIndexImpl(PhysicalIndexFinder<RunEndCType>& self, int64_t i) {
   DCHECK_LT(i, self.array_span.length);

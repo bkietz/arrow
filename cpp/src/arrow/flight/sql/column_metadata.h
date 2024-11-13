@@ -26,7 +26,7 @@ namespace arrow {
 namespace flight {
 namespace sql {
 
-/// \brief Helper class to set column metadata.
+/// Helper class to set column metadata.
 class ARROW_FLIGHT_SQL_EXPORT ColumnMetadata {
  private:
   std::shared_ptr<const arrow::KeyValueMetadata> metadata_map_;
@@ -36,137 +36,137 @@ class ARROW_FLIGHT_SQL_EXPORT ColumnMetadata {
 
   explicit ColumnMetadata(std::shared_ptr<const arrow::KeyValueMetadata> metadata_map);
 
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kCatalogName;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kSchemaName;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kTableName;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kTypeName;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kPrecision;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kScale;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kIsAutoIncrement;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kIsCaseSensitive;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kIsReadOnly;
-  /// \brief Constant variable to hold the value of the key that
+  /// Constant variable to hold the value of the key that
   ///        will be used in the KeyValueMetadata class.
   static const char* kIsSearchable;
 
-  /// \brief Static initializer.
+  /// Static initializer.
   static ColumnMetadataBuilder Builder();
 
-  /// \brief  Return the catalog name set in the KeyValueMetadata.
-  /// \return The catalog name.
+  ///  Return the catalog name set in the KeyValueMetadata.
+  /// :return: The catalog name.
   arrow::Result<std::string> GetCatalogName() const;
 
-  /// \brief  Return the schema name set in the KeyValueMetadata.
-  /// \return The schema name.
+  ///  Return the schema name set in the KeyValueMetadata.
+  /// :return: The schema name.
   arrow::Result<std::string> GetSchemaName() const;
 
-  /// \brief  Return the table name set in the KeyValueMetadata.
-  /// \return The table name.
+  ///  Return the table name set in the KeyValueMetadata.
+  /// :return: The table name.
   arrow::Result<std::string> GetTableName() const;
 
-  /// \brief  Return the data source-specific name for the data type of the column.
-  /// \return The type name.
+  ///  Return the data source-specific name for the data type of the column.
+  /// :return: The type name.
   arrow::Result<std::string> GetTypeName() const;
 
-  /// \brief  Return the precision set in the KeyValueMetadata.
-  /// \return The precision.
+  ///  Return the precision set in the KeyValueMetadata.
+  /// :return: The precision.
   arrow::Result<int32_t> GetPrecision() const;
 
-  /// \brief  Return the scale set in the KeyValueMetadata.
-  /// \return The scale.
+  ///  Return the scale set in the KeyValueMetadata.
+  /// :return: The scale.
   arrow::Result<int32_t> GetScale() const;
 
-  /// \brief  Return the IsAutoIncrement set in the KeyValueMetadata.
-  /// \return The IsAutoIncrement.
+  ///  Return the IsAutoIncrement set in the KeyValueMetadata.
+  /// :return: The IsAutoIncrement.
   arrow::Result<bool> GetIsAutoIncrement() const;
 
-  /// \brief  Return the IsCaseSensitive set in the KeyValueMetadata.
-  /// \return The IsCaseSensitive.
+  ///  Return the IsCaseSensitive set in the KeyValueMetadata.
+  /// :return: The IsCaseSensitive.
   arrow::Result<bool> GetIsCaseSensitive() const;
 
-  /// \brief  Return the IsReadOnly set in the KeyValueMetadata.
-  /// \return The IsReadOnly.
+  ///  Return the IsReadOnly set in the KeyValueMetadata.
+  /// :return: The IsReadOnly.
   arrow::Result<bool> GetIsReadOnly() const;
 
-  /// \brief  Return the IsSearchable set in the KeyValueMetadata.
-  /// \return The IsSearchable.
+  ///  Return the IsSearchable set in the KeyValueMetadata.
+  /// :return: The IsSearchable.
   arrow::Result<bool> GetIsSearchable() const;
 
-  /// \brief  Return the KeyValueMetadata.
-  /// \return The KeyValueMetadata.
+  ///  Return the KeyValueMetadata.
+  /// :return: The KeyValueMetadata.
   const std::shared_ptr<const arrow::KeyValueMetadata>& metadata_map() const;
 
-  /// \brief A builder class to construct the ColumnMetadata object.
+  /// A builder class to construct the ColumnMetadata object.
   class ARROW_FLIGHT_SQL_EXPORT ColumnMetadataBuilder {
    public:
     friend class ColumnMetadata;
 
-    /// \brief Set the catalog name in the KeyValueMetadata object.
-    /// \param[in] catalog_name The catalog name.
-    /// \return                 A ColumnMetadataBuilder.
+    /// Set the catalog name in the KeyValueMetadata object.
+    /// :param catalog_name: The catalog name.
+    /// :return:                 A ColumnMetadataBuilder.
     ColumnMetadataBuilder& CatalogName(const std::string& catalog_name);
 
-    /// \brief Set the schema_name in the KeyValueMetadata object.
-    /// \param[in] schema_name  The schema_name.
-    /// \return                 A ColumnMetadataBuilder.
+    /// Set the schema_name in the KeyValueMetadata object.
+    /// :param schema_name:  The schema_name.
+    /// :return:                 A ColumnMetadataBuilder.
     ColumnMetadataBuilder& SchemaName(const std::string& schema_name);
 
-    /// \brief Set the table name in the KeyValueMetadata object.
-    /// \param[in] table_name   The table name.
-    /// \return                 A ColumnMetadataBuilder.
+    /// Set the table name in the KeyValueMetadata object.
+    /// :param table_name:   The table name.
+    /// :return:                 A ColumnMetadataBuilder.
     ColumnMetadataBuilder& TableName(const std::string& table_name);
 
-    /// \brief Set the type name in the KeyValueMetadata object.
-    /// \param[in] type_name    The type name.
-    /// \return                 A ColumnMetadataBuilder.
+    /// Set the type name in the KeyValueMetadata object.
+    /// :param type_name:    The type name.
+    /// :return:                 A ColumnMetadataBuilder.
     ColumnMetadataBuilder& TypeName(const std::string& type_name);
 
-    /// \brief Set the precision in the KeyValueMetadata object.
-    /// \param[in] precision    The precision.
-    /// \return                 A ColumnMetadataBuilder.
+    /// Set the precision in the KeyValueMetadata object.
+    /// :param precision:    The precision.
+    /// :return:                 A ColumnMetadataBuilder.
     ColumnMetadataBuilder& Precision(int32_t precision);
 
-    /// \brief Set the scale in the KeyValueMetadata object.
-    /// \param[in] scale  The scale.
-    /// \return           A ColumnMetadataBuilder.
+    /// Set the scale in the KeyValueMetadata object.
+    /// :param scale:  The scale.
+    /// :return:           A ColumnMetadataBuilder.
     ColumnMetadataBuilder& Scale(int32_t scale);
 
-    /// \brief Set the IsAutoIncrement in the KeyValueMetadata object.
-    /// \param[in] is_auto_increment  The IsAutoIncrement.
-    /// \return                       A ColumnMetadataBuilder.
+    /// Set the IsAutoIncrement in the KeyValueMetadata object.
+    /// :param is_auto_increment:  The IsAutoIncrement.
+    /// :return:                       A ColumnMetadataBuilder.
     ColumnMetadataBuilder& IsAutoIncrement(bool is_auto_increment);
 
-    /// \brief Set the IsCaseSensitive in the KeyValueMetadata object.
-    /// \param[in] is_case_sensitive The IsCaseSensitive.
-    /// \return                      A ColumnMetadataBuilder.
+    /// Set the IsCaseSensitive in the KeyValueMetadata object.
+    /// :param is_case_sensitive: The IsCaseSensitive.
+    /// :return:                      A ColumnMetadataBuilder.
     ColumnMetadataBuilder& IsCaseSensitive(bool is_case_sensitive);
 
-    /// \brief Set the IsReadOnly in the KeyValueMetadata object.
-    /// \param[in] is_read_only   The IsReadOnly.
-    /// \return                   A ColumnMetadataBuilder.
+    /// Set the IsReadOnly in the KeyValueMetadata object.
+    /// :param is_read_only:   The IsReadOnly.
+    /// :return:                   A ColumnMetadataBuilder.
     ColumnMetadataBuilder& IsReadOnly(bool is_read_only);
 
-    /// \brief Set the IsSearchable in the KeyValueMetadata object.
-    /// \param[in] is_searchable The IsSearchable.
-    /// \return                  A ColumnMetadataBuilder.
+    /// Set the IsSearchable in the KeyValueMetadata object.
+    /// :param is_searchable: The IsSearchable.
+    /// :return:                  A ColumnMetadataBuilder.
     ColumnMetadataBuilder& IsSearchable(bool is_searchable);
 
     ColumnMetadata Build() const;
@@ -174,7 +174,7 @@ class ARROW_FLIGHT_SQL_EXPORT ColumnMetadata {
    private:
     std::shared_ptr<arrow::KeyValueMetadata> metadata_map_;
 
-    /// \brief Default constructor.
+    /// Default constructor.
     ColumnMetadataBuilder();
   };
 };

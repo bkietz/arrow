@@ -1237,11 +1237,11 @@ class AsofJoinNode : public ExecNode {
     }
   }
 
-  /// \brief Make the output schema of an as-of-join node
+  /// Make the output schema of an as-of-join node
   ///
-  /// \param[in] input_schema the schema of each input to the node
-  /// \param[in] indices_of_on_key the on-key index of each input to the node
-  /// \param[in] indices_of_by_key the by-key indices of each input to the node
+  /// :param input_schema: the schema of each input to the node
+  /// :param indices_of_on_key: the on-key index of each input to the node
+  /// :param indices_of_by_key: the by-key indices of each input to the node
   static arrow::Result<std::shared_ptr<Schema>> MakeOutputSchema(
       const std::vector<std::shared_ptr<Schema>> input_schema,
       const std::vector<col_index_t>& indices_of_on_key,

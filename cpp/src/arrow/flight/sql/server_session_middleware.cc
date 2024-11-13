@@ -174,7 +174,7 @@ Status ServerSessionMiddlewareFactory::StartCall(
   return Status::OK();
 }
 
-/// \brief Get a new, empty session option map & its id key; {"",NULLPTR} on collision.
+/// Get a new, empty session option map & its id key; {"",NULLPTR} on collision.
 std::pair<std::string, std::shared_ptr<FlightSession>>
 ServerSessionMiddlewareFactory::CreateNewSession() {
   auto new_id = id_generator_();

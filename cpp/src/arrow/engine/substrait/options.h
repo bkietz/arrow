@@ -87,11 +87,11 @@ class ARROW_ENGINE_EXPORT ExtensionProvider {
                                           const ExtensionSet& ext_set) = 0;
 };
 
-/// \brief Get the default extension provider
+/// Get the default extension provider
 ARROW_ENGINE_EXPORT std::shared_ptr<ExtensionProvider> default_extension_provider();
-/// \brief Set the default extension provider
+/// Set the default extension provider
 ///
-/// \param[in] provider the new provider to be set as default
+/// :param provider: the new provider to be set as default
 ARROW_ENGINE_EXPORT void set_default_extension_provider(
     const std::shared_ptr<ExtensionProvider>& provider);
 
@@ -109,22 +109,22 @@ struct ARROW_ENGINE_EXPORT ConversionOptions {
         extension_provider(default_extension_provider()),
         allow_arrow_extensions(false) {}
 
-  /// \brief How strictly the converter should adhere to the structure of the input.
+  /// How strictly the converter should adhere to the structure of the input.
   ConversionStrictness strictness;
-  /// \brief A custom strategy to be used for providing named tables
+  /// A custom strategy to be used for providing named tables
   ///
   /// The default behavior will return an invalid status if the plan has any
   /// named table relations.
   NamedTableProvider named_table_provider;
-  /// \brief A custom strategy to be used for obtaining a tap declaration
+  /// A custom strategy to be used for obtaining a tap declaration
   ///
   /// The default provider returns an error
   NamedTapProvider named_tap_provider;
-  /// \brief A custom strategy to be used for providing relation infos.
+  /// A custom strategy to be used for providing relation infos.
   ///
   /// The default behavior will provide for relations known to Arrow.
   std::shared_ptr<ExtensionProvider> extension_provider;
-  /// \brief If true then Arrow-specific types and functions will be allowed
+  /// If true then Arrow-specific types and functions will be allowed
   ///
   /// Set to false to create plans that are more likely to be compatible with non-Arrow
   /// engines

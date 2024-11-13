@@ -26,7 +26,7 @@ namespace flight {
 namespace transport {
 namespace grpc {
 
-/// \brief Register the gRPC transport implementation. Idempotent.
+/// Register the gRPC transport implementation. Idempotent.
 ARROW_FLIGHT_EXPORT
 void InitializeFlightGrpcServer();
 

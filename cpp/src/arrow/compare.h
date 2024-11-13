@@ -120,24 +120,24 @@ ARROW_EXPORT bool SparseTensorEquals(const SparseTensor& left, const SparseTenso
                                      const EqualOptions& = EqualOptions::Defaults());
 
 /// Returns true if the type metadata are exactly equal
-/// \param[in] left a DataType
-/// \param[in] right a DataType
-/// \param[in] check_metadata whether to compare KeyValueMetadata for child
+/// :param left: a DataType
+/// :param right: a DataType
+/// :param check_metadata: whether to compare KeyValueMetadata for child
 /// fields
 ARROW_EXPORT bool TypeEquals(const DataType& left, const DataType& right,
                              bool check_metadata = true);
 
 /// Returns true if scalars are equal
-/// \param[in] left a Scalar
-/// \param[in] right a Scalar
-/// \param[in] options comparison options
+/// :param left: a Scalar
+/// :param right: a Scalar
+/// :param options: comparison options
 ARROW_EXPORT bool ScalarEquals(const Scalar& left, const Scalar& right,
                                const EqualOptions& options = EqualOptions::Defaults());
 
 /// Returns true if scalars are approximately equal
-/// \param[in] left a Scalar
-/// \param[in] right a Scalar
-/// \param[in] options comparison options
+/// :param left: a Scalar
+/// :param right: a Scalar
+/// :param options: comparison options
 ARROW_EXPORT bool ScalarApproxEquals(
     const Scalar& left, const Scalar& right,
     const EqualOptions& options = EqualOptions::Defaults());

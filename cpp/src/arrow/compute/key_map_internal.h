@@ -87,7 +87,7 @@ class ARROW_EXPORT SwissTable {
     return reinterpret_cast<uint32_t*>(hashes_->mutable_data());
   }
 
-  /// \brief Extract group id for a given slot in a given block.
+  /// Extract group id for a given slot in a given block.
   ///
   inline uint64_t extract_group_id(const uint8_t* block_ptr, int slot,
                                    uint64_t group_id_mask) const;
@@ -108,7 +108,7 @@ class ARROW_EXPORT SwissTable {
  private:
   // Lookup helpers
 
-  /// \brief Scan bytes in block in reverse and stop as soon
+  /// Scan bytes in block in reverse and stop as soon
   /// as a position of interest is found.
   ///
   /// Positions of interest:
@@ -119,15 +119,15 @@ class ARROW_EXPORT SwissTable {
   /// Optionally an index of the first slot to start the search from can be specified.
   /// In this case slots before it will be ignored.
   ///
-  /// \param[in] block 8 byte block of hash table
-  /// \param[in] stamp 7 bits of hash used as a stamp
-  /// \param[in] start_slot Index of the first slot in the block to start search from.  We
+  /// :param block: 8 byte block of hash table
+  /// :param stamp: 7 bits of hash used as a stamp
+  /// :param start_slot: Index of the first slot in the block to start search from.  We
   ///            assume that this index always points to a non-empty slot, equivalently
   ///            that it comes before any empty slots.  (Used only by one template
   ///            variant.)
-  /// \param[out] out_slot index corresponding to the discovered position of interest (8
+  /// :param out_slot[out]: index corresponding to the discovered position of interest (8
   ///            represents end of block).
-  /// \param[out] out_match_found an integer flag (0 or 1) indicating if we reached an
+  /// :param out_match_found[out]: an integer flag (0 or 1) indicating if we reached an
   /// empty slot (0) or not (1). Therefore 1 can mean that either actual match was found
   /// (case a) above) or we reached the end of full block (case b) above).
   ///

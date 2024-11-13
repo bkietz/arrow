@@ -105,7 +105,7 @@ Status PresizeBuilder(const BlockParser& parser, BuilderType* builder) {
   }
 }
 
-/////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 // Per-type value decoders
 
 struct ValueDecoder {
@@ -470,7 +470,7 @@ struct MultipleParsersTimestampValueDecoder : public ValueDecoder {
   std::vector<const TimestampParser*> parsers_;
 };
 
-/////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 // Concrete Converter hierarchy
 
 class ConcreteConverter : public Converter {
@@ -653,7 +653,7 @@ std::shared_ptr<ConverterType> MakeRealConverter(const std::shared_ptr<DataType>
 
 }  // namespace
 
-/////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 // Base Converter class implementation
 
 Converter::Converter(const std::shared_ptr<DataType>& type, const ConvertOptions& options,

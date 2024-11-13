@@ -54,27 +54,27 @@ class ARROW_EXPORT RowTableEncoder {
   // This could be cleaned up at some point
   const std::vector<KeyColumnArray>& batch_all_cols() { return batch_all_cols_; }
 
-  /// \brief Prepare to encode a collection of columns
-  /// \param start_row The starting row to encode
-  /// \param num_rows The number of rows to encode
-  /// \param cols The columns to encode.  The order of the columns should
+  /// Prepare to encode a collection of columns
+  /// :param start_row: The starting row to encode
+  /// :param num_rows: The number of rows to encode
+  /// :param cols: The columns to encode.  The order of the columns should
   ///             be consistent with the order used to create the RowTableMetadata
   void PrepareEncodeSelected(int64_t start_row, int64_t num_rows,
                              const std::vector<KeyColumnArray>& cols);
-  /// \brief Encode selection of prepared rows into a row table
-  /// \param rows The output row table
-  /// \param num_selected The number of rows to encode
-  /// \param selection indices of the rows to encode
+  /// Encode selection of prepared rows into a row table
+  /// :param rows: The output row table
+  /// :param num_selected: The number of rows to encode
+  /// :param selection: indices of the rows to encode
   Status EncodeSelected(RowTableImpl* rows, uint32_t num_selected,
                         const uint16_t* selection);
 
-  /// \brief Decode a window of row oriented data into a corresponding
+  /// Decode a window of row oriented data into a corresponding
   ///        window of column oriented storage.
-  /// \param start_row_input The starting row to decode
-  /// \param start_row_output An offset into the output array to write to
-  /// \param num_rows The number of rows to decode
-  /// \param rows The row table to decode from
-  /// \param cols The columns to decode into, should be sized appropriately
+  /// :param start_row_input: The starting row to decode
+  /// :param start_row_output: An offset into the output array to write to
+  /// :param num_rows: The number of rows to decode
+  /// :param rows: The row table to decode from
+  /// :param cols: The columns to decode into, should be sized appropriately
   ///
   /// The output buffers need to be correctly allocated and sized before
   /// calling each method.  For that reason decoding is split into two functions.
@@ -87,12 +87,12 @@ class ARROW_EXPORT RowTableEncoder {
                                 std::vector<KeyColumnArray>* cols, int64_t hardware_flags,
                                 util::TempVectorStack* temp_stack);
 
-  /// \brief Decode the varlength columns of a row table into column storage
-  /// \param start_row_input The starting row to decode
-  /// \param start_row_output An offset into the output arrays
-  /// \param num_rows The number of rows to decode
-  /// \param rows The row table to decode from
-  /// \param cols The column arrays to decode into
+  /// Decode the varlength columns of a row table into column storage
+  /// :param start_row_input: The starting row to decode
+  /// :param start_row_output: An offset into the output arrays
+  /// :param num_rows: The number of rows to decode
+  /// :param rows: The row table to decode from
+  /// :param cols: The column arrays to decode into
   void DecodeVaryingLengthBuffers(int64_t start_row_input, int64_t start_row_output,
                                   int64_t num_rows, const RowTableImpl& rows,
                                   std::vector<KeyColumnArray>* cols,

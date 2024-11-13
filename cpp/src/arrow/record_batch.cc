@@ -58,8 +58,7 @@ std::shared_ptr<Array> RecordBatch::GetColumnByName(const std::string& name) con
 
 int RecordBatch::num_columns() const { return schema_->num_fields(); }
 
-/// \class SimpleRecordBatch
-/// \brief A basic, non-lazy in-memory record batch
+/// A basic, non-lazy in-memory record batch
 class SimpleRecordBatch : public RecordBatch {
  public:
   SimpleRecordBatch(std::shared_ptr<Schema> schema, int64_t num_rows,

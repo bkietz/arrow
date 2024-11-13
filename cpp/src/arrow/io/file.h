@@ -36,25 +36,25 @@ class Status;
 
 namespace io {
 
-/// \brief An operating system file open in write-only mode.
+/// An operating system file open in write-only mode.
 class ARROW_EXPORT FileOutputStream : public OutputStream {
  public:
   ~FileOutputStream() override;
 
-  /// \brief Open a local file for writing, truncating any existing file
-  /// \param[in] path with UTF8 encoding
-  /// \param[in] append append to existing file, otherwise truncate to 0 bytes
-  /// \return an open FileOutputStream
+  /// Open a local file for writing, truncating any existing file
+  /// :param path: with UTF8 encoding
+  /// :param append: append to existing file, otherwise truncate to 0 bytes
+  /// :return: an open FileOutputStream
   ///
   /// When opening a new file, any existing file with the indicated path is
   /// truncated to 0 bytes, deleting any existing data
   static Result<std::shared_ptr<FileOutputStream>> Open(const std::string& path,
                                                         bool append = false);
 
-  /// \brief Open a file descriptor for writing.  The underlying file isn't
+  /// Open a file descriptor for writing.  The underlying file isn't
   /// truncated.
-  /// \param[in] fd file descriptor
-  /// \return an open FileOutputStream
+  /// :param fd: file descriptor
+  /// :return: an open FileOutputStream
   ///
   /// The file descriptor becomes owned by the OutputStream, and will be closed
   /// on Close() or destruction.
@@ -67,9 +67,7 @@ class ARROW_EXPORT FileOutputStream : public OutputStream {
 
   // Write bytes to the stream. Thread-safe
   Status Write(const void* data, int64_t nbytes) override;
-  /// \cond FALSE
   using Writable::Write;
-  /// \endcond
 
   int file_descriptor() const;
 
@@ -80,7 +78,7 @@ class ARROW_EXPORT FileOutputStream : public OutputStream {
   std::unique_ptr<FileOutputStreamImpl> impl_;
 };
 
-/// \brief An operating system file open in read-only mode.
+/// An operating system file open in read-only mode.
 ///
 /// Reads through this implementation are unbuffered.  If many small reads
 /// need to be issued, it is recommended to use a buffering layer for good
@@ -90,17 +88,17 @@ class ARROW_EXPORT ReadableFile
  public:
   ~ReadableFile() override;
 
-  /// \brief Open a local file for reading
-  /// \param[in] path with UTF8 encoding
-  /// \param[in] pool a MemoryPool for memory allocations
-  /// \return ReadableFile instance
+  /// Open a local file for reading
+  /// :param path: with UTF8 encoding
+  /// :param pool: a MemoryPool for memory allocations
+  /// :return: ReadableFile instance
   static Result<std::shared_ptr<ReadableFile>> Open(
       const std::string& path, MemoryPool* pool = default_memory_pool());
 
-  /// \brief Open a local file for reading
-  /// \param[in] fd file descriptor
-  /// \param[in] pool a MemoryPool for memory allocations
-  /// \return ReadableFile instance
+  /// Open a local file for reading
+  /// :param fd: file descriptor
+  /// :param pool: a MemoryPool for memory allocations
+  /// :return: ReadableFile instance
   ///
   /// The file descriptor becomes owned by the ReadableFile, and will be closed
   /// on Close() or destruction.
@@ -123,10 +121,10 @@ class ARROW_EXPORT ReadableFile
   Result<int64_t> DoRead(int64_t nbytes, void* buffer);
   Result<std::shared_ptr<Buffer>> DoRead(int64_t nbytes);
 
-  /// \brief Thread-safe implementation of ReadAt
+  /// Thread-safe implementation of ReadAt
   Result<int64_t> DoReadAt(int64_t position, int64_t nbytes, void* out);
 
-  /// \brief Thread-safe implementation of ReadAt
+  /// Thread-safe implementation of ReadAt
   Result<std::shared_ptr<Buffer>> DoReadAt(int64_t position, int64_t nbytes);
 
   Result<int64_t> DoGetSize();
@@ -136,7 +134,7 @@ class ARROW_EXPORT ReadableFile
   std::unique_ptr<ReadableFileImpl> impl_;
 };
 
-/// \brief A file interface that uses memory-mapped files for memory interactions
+/// A file interface that uses memory-mapped files for memory interactions
 ///
 /// This implementation supports zero-copy reads. The same class is used
 /// for both reading and writing.
@@ -194,9 +192,7 @@ class ARROW_EXPORT MemoryMappedFile : public ReadWriteFileInterface {
 
   /// Write data at the current position in the file. Thread-safe
   Status Write(const void* data, int64_t nbytes) override;
-  /// \cond FALSE
   using Writable::Write;
-  /// \endcond
 
   /// Set the size of the map to new_size.
   Status Resize(int64_t new_size);

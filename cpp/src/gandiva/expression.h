@@ -25,7 +25,7 @@
 
 namespace gandiva {
 
-/// \brief An expression tree with a root node, and a result field.
+/// An expression tree with a root node, and a result field.
 class GANDIVA_EXPORT Expression {
  public:
   Expression(const NodePtr root, const FieldPtr result) : root_(root), result_(result) {}

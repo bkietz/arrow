@@ -43,7 +43,7 @@ struct LogDetails {
   std::string_view message = "";
 };
 
-/// \brief A base interface for custom loggers.
+/// A base interface for custom loggers.
 ///
 /// Loggers can be added to the LoggerRegistry for global access or directly provided to
 /// certain logging utilities.
@@ -61,42 +61,42 @@ class Logger {
   virtual ArrowLogLevel severity_threshold() const { return ArrowLogLevel::ARROW_TRACE; }
 };
 
-/// \brief Creates a simple logger that redirects output to std::cerr
+/// Creates a simple logger that redirects output to std::cerr
 ARROW_EXPORT std::shared_ptr<Logger> MakeOStreamLogger(ArrowLogLevel severity_threshold);
-/// \brief Creates a simple logger that redirects output to the provided ostream
+/// Creates a simple logger that redirects output to the provided ostream
 ARROW_EXPORT std::shared_ptr<Logger> MakeOStreamLogger(ArrowLogLevel severity_threshold,
                                                        std::ostream& sink);
 
 class ARROW_EXPORT LoggerRegistry {
  public:
-  /// \brief Add a logger to the registry with the associated name
+  /// Add a logger to the registry with the associated name
   ///
   /// Returns Invalid if a logger with the provided name already exists. Users should call
   /// `UnregisterLogger` first if they wish to overwrite it.
   static Status RegisterLogger(std::string_view name, std::shared_ptr<Logger> logger);
 
-  /// \brief Remove a logger from the registry
+  /// Remove a logger from the registry
   static void UnregisterLogger(std::string_view name);
 
-  /// \brief Return the logger associated with the provided name
+  /// Return the logger associated with the provided name
   ///
   /// If `name` is empty, the default logger is returned. If `name` doesn't match any of
   /// the registered loggers then a non-null noop logger is returned
   static std::shared_ptr<Logger> GetLogger(std::string_view name = "");
 
-  /// \brief Return the default logger
+  /// Return the default logger
   static std::shared_ptr<Logger> GetDefaultLogger();
-  /// \brief Set the default logger
+  /// Set the default logger
   static void SetDefaultLogger(std::shared_ptr<Logger> logger);
 };
 
-/// \brief Represents a single log record to be emitted by an underlying logger
+/// Represents a single log record to be emitted by an underlying logger
 class ARROW_EXPORT LogMessage {
  public:
-  /// \brief Construct a LogMessage with the provided underlying logger
+  /// Construct a LogMessage with the provided underlying logger
   LogMessage(ArrowLogLevel severity, std::shared_ptr<Logger> logger,
              SourceLocation source_location = {});
-  /// \brief Construct a LogMessage with the provided logger name, which will be used to
+  /// Construct a LogMessage with the provided logger name, which will be used to
   /// find an underlying logger in the registry
   LogMessage(ArrowLogLevel severity, std::string_view logger_name,
              SourceLocation source_location = {});

@@ -1188,7 +1188,7 @@ class TestPrimitiveBuilder : public TestBuilder {
   std::vector<uint8_t> valid_bytes_;
 };
 
-/// \brief uint8_t isn't a valid template parameter to uniform_int_distribution, so
+/// uint8_t isn't a valid template parameter to uniform_int_distribution, so
 /// we use SampleType to determine which kind of integer to use to sample.
 template <typename T, typename = enable_if_t<std::is_integral<T>::value, T>>
 struct UniformIntSampleType {
@@ -3391,10 +3391,10 @@ TEST(TestRechunkArraysConsistently, Plain) {
 // ----------------------------------------------------------------------
 // Test SwapEndianArrayData
 
-/// \brief Indicate if fields are equals.
+/// Indicate if fields are equals.
 ///
-/// \param[in] target ArrayData to be converted and tested
-/// \param[in] expected result ArrayData
+/// :param target: ArrayData to be converted and tested
+/// :param expected: result ArrayData
 void AssertArrayDataEqualsWithSwapEndian(const std::shared_ptr<ArrayData>& target,
                                          const std::shared_ptr<ArrayData>& expected) {
   auto swap_array = MakeArray(*::arrow::internal::SwapEndianArrayData(target));

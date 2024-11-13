@@ -194,7 +194,7 @@ inline Result<int64_t> PyDelta_to_ns(PyDateTime_Delta* pytimedelta) {
 ARROW_PYTHON_EXPORT
 Result<int64_t> PyDateTime_utcoffset_s(PyObject* pydatetime);
 
-/// \brief Convert a time zone name into a time zone object.
+/// Convert a time zone name into a time zone object.
 ///
 /// Supported input strings are:
 /// * As used in the Olson time zone database (the "tz database" or
@@ -204,7 +204,7 @@ Result<int64_t> PyDateTime_utcoffset_s(PyObject* pydatetime);
 ARROW_PYTHON_EXPORT
 Result<PyObject*> StringToTzinfo(const std::string& tz);
 
-/// \brief Convert a time zone object to a string representation.
+/// Convert a time zone object to a string representation.
 ///
 /// The output strings are:
 /// * An absolute time zone offset of the form +XX:XX or -XX:XX, such as +07:30
@@ -217,7 +217,7 @@ Result<PyObject*> StringToTzinfo(const std::string& tz);
 ARROW_PYTHON_EXPORT
 Result<std::string> TzinfoToString(PyObject* pytzinfo);
 
-/// \brief Convert MonthDayNano to a python namedtuple.
+/// Convert MonthDayNano to a python namedtuple.
 ///
 /// Return a named tuple (pyarrow.MonthDayNano) containing attributes
 /// "months", "days", "nanoseconds" in the given order
@@ -228,13 +228,13 @@ ARROW_PYTHON_EXPORT
 PyObject* MonthDayNanoIntervalToNamedTuple(
     const MonthDayNanoIntervalType::MonthDayNanos& interval);
 
-/// \brief Convert the given Array to a PyList object containing
+/// Convert the given Array to a PyList object containing
 /// pyarrow.MonthDayNano objects.
 ARROW_PYTHON_EXPORT
 Result<PyObject*> MonthDayNanoIntervalArrayToPyList(
     const MonthDayNanoIntervalArray& array);
 
-/// \brief Convert the Scalar object to a pyarrow.MonthDayNano (or None if
+/// Convert the Scalar object to a pyarrow.MonthDayNano (or None if
 /// is isn't valid).
 ARROW_PYTHON_EXPORT
 Result<PyObject*> MonthDayNanoIntervalScalarToPyObject(

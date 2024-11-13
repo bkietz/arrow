@@ -27,14 +27,14 @@ namespace arrow {
 namespace util {
 namespace internal {
 
-/// \brief Compress the buffer to spaced, excluding the null entries.
+/// Compress the buffer to spaced, excluding the null entries.
 ///
-/// \param[in] src the source buffer
-/// \param[in] num_values the size of source buffer
-/// \param[in] valid_bits bitmap data indicating position of valid slots
-/// \param[in] valid_bits_offset offset into valid_bits
-/// \param[out] output the output buffer spaced
-/// \return The size of spaced buffer.
+/// :param src: the source buffer
+/// :param num_values: the size of source buffer
+/// :param valid_bits: bitmap data indicating position of valid slots
+/// :param valid_bits_offset: offset into valid_bits
+/// :param output[out]: the output buffer spaced
+/// :return: The size of spaced buffer.
 template <typename T>
 inline int SpacedCompress(const T* src, int num_values, const uint8_t* valid_bits,
                           int64_t valid_bits_offset, T* output) {
@@ -53,15 +53,15 @@ inline int SpacedCompress(const T* src, int num_values, const uint8_t* valid_bit
   return num_valid_values;
 }
 
-/// \brief Relocate values in buffer into positions of non-null values as indicated by
+/// Relocate values in buffer into positions of non-null values as indicated by
 /// a validity bitmap.
 ///
-/// \param[in, out] buffer the in-place buffer
-/// \param[in] num_values total size of buffer including null slots
-/// \param[in] null_count number of null slots
-/// \param[in] valid_bits bitmap data indicating position of valid slots
-/// \param[in] valid_bits_offset offset into valid_bits
-/// \return The number of values expanded, including nulls.
+/// :param buffer[in, out]: the in-place buffer
+/// :param num_values: total size of buffer including null slots
+/// :param null_count: number of null slots
+/// :param valid_bits: bitmap data indicating position of valid slots
+/// :param valid_bits_offset: offset into valid_bits
+/// :return: The number of values expanded, including nulls.
 template <typename T>
 inline int SpacedExpand(T* buffer, int num_values, int null_count,
                         const uint8_t* valid_bits, int64_t valid_bits_offset) {

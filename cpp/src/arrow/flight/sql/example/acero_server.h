@@ -28,7 +28,7 @@ namespace flight {
 namespace sql {
 namespace acero_example {
 
-/// \brief Make a Flight SQL server backed by the Acero query engine.
+/// Make a Flight SQL server backed by the Acero query engine.
 arrow::Result<std::unique_ptr<FlightSqlServerBase>> MakeAceroServer();
 
 }  // namespace acero_example

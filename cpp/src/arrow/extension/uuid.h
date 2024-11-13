@@ -21,20 +21,20 @@
 
 namespace arrow::extension {
 
-/// \brief UuidArray stores array of UUIDs. Underlying storage type is
+/// UuidArray stores array of UUIDs. Underlying storage type is
 /// FixedSizeBinary(16).
 class ARROW_EXPORT UuidArray : public ExtensionArray {
  public:
   using ExtensionArray::ExtensionArray;
 };
 
-/// \brief UuidType is a canonical arrow extension type for UUIDs.
+/// UuidType is a canonical arrow extension type for UUIDs.
 /// UUIDs are stored as FixedSizeBinary(16) with big-endian notation and this
 /// does not interpret the bytes in any way. Specific UUID version is not
 /// required or guaranteed.
 class ARROW_EXPORT UuidType : public ExtensionType {
  public:
-  /// \brief Construct a UuidType.
+  /// Construct a UuidType.
   UuidType() : ExtensionType(fixed_size_binary(16)) {}
 
   std::string extension_name() const override { return "arrow.uuid"; }
@@ -51,11 +51,11 @@ class ARROW_EXPORT UuidType : public ExtensionType {
 
   std::string Serialize() const override { return ""; }
 
-  /// \brief Create a UuidType instance
+  /// Create a UuidType instance
   static Result<std::shared_ptr<DataType>> Make() { return std::make_shared<UuidType>(); }
 };
 
-/// \brief Return a UuidType instance.
+/// Return a UuidType instance.
 ARROW_EXPORT std::shared_ptr<DataType> uuid();
 
 }  // namespace arrow::extension

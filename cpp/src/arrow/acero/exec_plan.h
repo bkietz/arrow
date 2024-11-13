@@ -61,7 +61,7 @@ class ARROW_ACERO_EXPORT ExecPlan : public std::enable_shared_from_this<ExecPlan
 
   QueryContext* query_context();
 
-  /// \brief retrieve the nodes in the plan
+  /// retrieve the nodes in the plan
   const NodeVector& nodes() const;
 
   /// Make an empty exec plan
@@ -93,26 +93,26 @@ class ARROW_ACERO_EXPORT ExecPlan : public std::enable_shared_from_this<ExecPlan
 
   Status Validate();
 
-  /// \brief Start producing on all nodes
+  /// Start producing on all nodes
   ///
   /// Nodes are started in reverse topological order, such that any node
   /// is started before all of its inputs.
   void StartProducing();
 
-  /// \brief Stop producing on all nodes
+  /// Stop producing on all nodes
   ///
   /// Triggers all sources to stop producing new data.  In order to cleanly stop the plan
   /// will continue to run any tasks that are already in progress.  The caller should
   /// still wait for `finished` to complete before destroying the plan.
   void StopProducing();
 
-  /// \brief A future which will be marked finished when all tasks have finished.
+  /// A future which will be marked finished when all tasks have finished.
   Future<> finished();
 
-  /// \brief Return whether the plan has non-empty metadata
+  /// Return whether the plan has non-empty metadata
   bool HasMetadata() const;
 
-  /// \brief Return the plan's attached metadata
+  /// Return the plan's attached metadata
   std::shared_ptr<const KeyValueMetadata> metadata() const;
 
   std::string ToString() const;
@@ -139,7 +139,7 @@ class ARROW_ACERO_EXPORT ExecNode {
   /// True if the plan has no output schema (is a sink)
   bool is_sink() const { return !output_schema_; }
 
-  /// \brief Labels identifying the function of each input.
+  /// Labels identifying the function of each input.
   const std::vector<std::string>& input_labels() const { return input_labels_; }
 
   /// This node's successor in the exec plan
@@ -151,7 +151,7 @@ class ARROW_ACERO_EXPORT ExecNode {
   /// This node's exec plan
   ExecPlan* plan() { return plan_; }
 
-  /// \brief An optional label, for display and debugging
+  /// An optional label, for display and debugging
   ///
   /// There is no guarantee that this value is non-empty or unique.
   const std::string& label() const { return label_; }
@@ -159,7 +159,7 @@ class ARROW_ACERO_EXPORT ExecNode {
 
   virtual Status Validate() const;
 
-  /// \brief the ordering of the output batches
+  /// the ordering of the output batches
   ///
   /// This does not guarantee the batches will be emitted by this node
   /// in order.  Instead it guarantees that the batches will have their
@@ -231,7 +231,7 @@ class ARROW_ACERO_EXPORT ExecNode {
   /// knows when it has received all input, regardless of order.
   virtual Status InputFinished(ExecNode* input, int total_batches) = 0;
 
-  /// \brief Perform any needed initialization
+  /// Perform any needed initialization
   ///
   /// This hook performs any actions in between creation of ExecPlan and the call to
   /// StartProducing. An example could be Bloom filter pushdown. The order of ExecNodes
@@ -279,17 +279,17 @@ class ARROW_ACERO_EXPORT ExecNode {
   // the highest counter value is valid.  So if a call to PauseProducing(5) comes after
   // a call to ResumeProducing(6) then the source should continue producing.
 
-  /// \brief Start producing
+  /// Start producing
   ///
   /// This must only be called once.
   ///
   /// This is typically called automatically by ExecPlan::StartProducing().
   virtual Status StartProducing() = 0;
 
-  /// \brief Pause producing temporarily
+  /// Pause producing temporarily
   ///
-  /// \param output Pointer to the output that is full
-  /// \param counter Counter used to sequence calls to pause/resume
+  /// :param output: Pointer to the output that is full
+  /// :param counter: Counter used to sequence calls to pause/resume
   ///
   /// This call is a hint that an output node is currently not willing
   /// to receive data.
@@ -299,17 +299,17 @@ class ARROW_ACERO_EXPORT ExecNode {
   /// to prevent anyway if data is produced using multiple threads).
   virtual void PauseProducing(ExecNode* output, int32_t counter) = 0;
 
-  /// \brief Resume producing after a temporary pause
+  /// Resume producing after a temporary pause
   ///
-  /// \param output Pointer to the output that is now free
-  /// \param counter Counter used to sequence calls to pause/resume
+  /// :param output: Pointer to the output that is now free
+  /// :param counter: Counter used to sequence calls to pause/resume
   ///
   /// This call is a hint that an output node is willing to receive data again.
   ///
   /// This may be called any number of times.
   virtual void ResumeProducing(ExecNode* output, int32_t counter) = 0;
 
-  /// \brief Stop producing new data
+  /// Stop producing new data
   ///
   /// If this node is a source then the source should stop generating data
   /// as quickly as possible.  If this node is not a source then there is typically
@@ -349,7 +349,7 @@ class ARROW_ACERO_EXPORT ExecNode {
   ExecNode* output_ = NULLPTR;
 };
 
-/// \brief An extensible registry for factories of ExecNodes
+/// An extensible registry for factories of ExecNodes
 class ARROW_ACERO_EXPORT ExecFactoryRegistry {
  public:
   using Factory = std::function<Result<ExecNode*>(ExecPlan*, std::vector<ExecNode*>,
@@ -357,12 +357,12 @@ class ARROW_ACERO_EXPORT ExecFactoryRegistry {
 
   virtual ~ExecFactoryRegistry() = default;
 
-  /// \brief Get the named factory from this registry
+  /// Get the named factory from this registry
   ///
   /// will raise if factory_name is not found
   virtual Result<Factory> GetFactory(const std::string& factory_name) = 0;
 
-  /// \brief Add a factory to this registry with the provided name
+  /// Add a factory to this registry with the provided name
   ///
   /// will raise if factory_name is already in the registry
   virtual Status AddFactory(std::string factory_name, Factory factory) = 0;
@@ -372,7 +372,7 @@ class ARROW_ACERO_EXPORT ExecFactoryRegistry {
 ARROW_ACERO_EXPORT
 ExecFactoryRegistry* default_exec_factory_registry();
 
-/// \brief Construct an ExecNode using the named factory
+/// Construct an ExecNode using the named factory
 inline Result<ExecNode*> MakeExecNode(
     const std::string& factory_name, ExecPlan* plan, std::vector<ExecNode*> inputs,
     const ExecNodeOptions& options,
@@ -386,7 +386,7 @@ inline Result<ExecNode*> MakeExecNode(
 /// \addtogroup acero-api
 /// @{
 
-/// \brief Helper class for declaring execution nodes
+/// Helper class for declaring execution nodes
 ///
 /// A Declaration represents an unconstructed ExecNode (and potentially an entire graph
 /// since its inputs may also be Declarations)
@@ -402,14 +402,14 @@ struct ARROW_ACERO_EXPORT Declaration {
 
   Declaration() {}
 
-  /// \brief construct a declaration
-  /// \param factory_name the name of the exec node to construct.  The node must have
+  /// construct a declaration
+  /// :param factory_name: the name of the exec node to construct.  The node must have
   ///                     been added to the exec node registry with this name.
-  /// \param inputs the inputs to the node, these should be other declarations
-  /// \param options options that control the behavior of the node.  You must use
+  /// :param inputs: the inputs to the node, these should be other declarations
+  /// :param options: options that control the behavior of the node.  You must use
   ///                the appropriate subclass.  For example, if `factory_name` is
   ///                "project" then `options` should be ProjectNodeOptions.
-  /// \param label a label to give the node.  Can be used to distinguish it from other
+  /// :param label: a label to give the node.  Can be used to distinguish it from other
   ///              nodes of the same type in the plan.
   Declaration(std::string factory_name, std::vector<Input> inputs,
               std::shared_ptr<ExecNodeOptions> options, std::string label)
@@ -439,7 +439,7 @@ struct ARROW_ACERO_EXPORT Declaration {
   Declaration(std::string factory_name, Options options, std::string label)
       : Declaration{std::move(factory_name), {}, std::move(options), std::move(label)} {}
 
-  /// \brief Convenience factory for the common case of a simple sequence of nodes.
+  /// Convenience factory for the common case of a simple sequence of nodes.
   ///
   /// Each of decls will be appended to the inputs of the subsequent declaration,
   /// and the final modified declaration will be returned.
@@ -471,44 +471,44 @@ struct ARROW_ACERO_EXPORT Declaration {
   ///     });
   static Declaration Sequence(std::vector<Declaration> decls);
 
-  /// \brief add the declaration to an already created execution plan
-  /// \param plan the plan to add the node to
-  /// \param registry the registry to use to lookup the node factory
+  /// add the declaration to an already created execution plan
+  /// :param plan: the plan to add the node to
+  /// :param registry: the registry to use to lookup the node factory
   ///
   /// This method will recursively call AddToPlan on all of the declaration's inputs.
   /// This method is only for advanced use when the DeclarationToXyz methods are not
   /// sufficient.
   ///
-  /// \return the instantiated execution node
+  /// :return: the instantiated execution node
   Result<ExecNode*> AddToPlan(ExecPlan* plan, ExecFactoryRegistry* registry =
                                                   default_exec_factory_registry()) const;
 
   // Validate a declaration
   bool IsValid(ExecFactoryRegistry* registry = default_exec_factory_registry()) const;
 
-  /// \brief the name of the factory to use when creating a node
+  /// the name of the factory to use when creating a node
   std::string factory_name;
-  /// \brief the declarations's inputs
+  /// the declarations's inputs
   std::vector<Input> inputs;
-  /// \brief options to control the behavior of the node
+  /// options to control the behavior of the node
   std::shared_ptr<ExecNodeOptions> options;
-  /// \brief a label to give the node in the plan
+  /// a label to give the node in the plan
   std::string label;
 };
 
-/// \brief How to handle unaligned buffers
+/// How to handle unaligned buffers
 enum class UnalignedBufferHandling { kWarn, kIgnore, kReallocate, kError };
 
-/// \brief get the default behavior of unaligned buffer handling
+/// get the default behavior of unaligned buffer handling
 ///
 /// This is configurable via the ACERO_ALIGNMENT_HANDLING environment variable which
 /// can be set to "warn", "ignore", "reallocate", or "error".  If the environment
 /// variable is not set, or is set to an invalid value, this will return kWarn
 UnalignedBufferHandling GetDefaultUnalignedBufferHandling();
 
-/// \brief plan-wide options that can be specified when executing an execution plan
+/// plan-wide options that can be specified when executing an execution plan
 struct ARROW_ACERO_EXPORT QueryOptions {
-  /// \brief Should the plan use a legacy batching strategy
+  /// Should the plan use a legacy batching strategy
   ///
   /// This is currently in place only to support the Scanner::ToTable
   /// method.  This method relies on batch indices from the scanner
@@ -534,7 +534,7 @@ struct ARROW_ACERO_EXPORT QueryOptions {
   /// may offer a small decrease to latency.
   std::optional<bool> sequence_output = std::nullopt;
 
-  /// \brief should the plan use multiple background threads for CPU-intensive work
+  /// should the plan use multiple background threads for CPU-intensive work
   ///
   /// If this is false then all CPU work will be done on the calling thread.  I/O tasks
   /// will still happen on the I/O executor and may be multi-threaded (but should not use
@@ -543,37 +543,37 @@ struct ARROW_ACERO_EXPORT QueryOptions {
   /// Will be ignored if custom_cpu_executor is set
   bool use_threads = true;
 
-  /// \brief custom executor to use for CPU-intensive work
+  /// custom executor to use for CPU-intensive work
   ///
   /// Must be null or remain valid for the duration of the plan.  If this is null then
   /// a default thread pool will be chosen whose behavior will be controlled by
   /// the `use_threads` option.
   ::arrow::internal::Executor* custom_cpu_executor = NULLPTR;
 
-  /// \brief custom executor to use for IO work
+  /// custom executor to use for IO work
   ///
   /// Must be null or remain valid for the duration of the plan.  If this is null then
   /// the global io thread pool will be chosen whose behavior will be controlled by
   /// the "ARROW_IO_THREADS" environment.
   ::arrow::internal::Executor* custom_io_executor = NULLPTR;
 
-  /// \brief a memory pool to use for allocations
+  /// a memory pool to use for allocations
   ///
   /// Must remain valid for the duration of the plan.
   MemoryPool* memory_pool = default_memory_pool();
 
-  /// \brief a function registry to use for the plan
+  /// a function registry to use for the plan
   ///
   /// Must remain valid for the duration of the plan.
   FunctionRegistry* function_registry = GetFunctionRegistry();
-  /// \brief the names of the output columns
+  /// the names of the output columns
   ///
   /// If this is empty then names will be generated based on the input columns
   ///
   /// If set then the number of names must equal the number of output columns
   std::vector<std::string> field_names;
 
-  /// \brief Policy for unaligned buffers in source data
+  /// Policy for unaligned buffers in source data
   ///
   /// Various compute functions and acero internals will type pun array
   /// buffers from uint8_t* to some kind of value type (e.g. we might
@@ -604,20 +604,20 @@ struct ARROW_ACERO_EXPORT QueryOptions {
   std::optional<UnalignedBufferHandling> unaligned_buffer_handling;
 };
 
-/// \brief Calculate the output schema of a declaration
+/// Calculate the output schema of a declaration
 ///
 /// This does not actually execute the plan.  This operation may fail if the
 /// declaration represents an invalid plan (e.g. a project node with multiple inputs)
 ///
-/// \param declaration A declaration describing an execution plan
-/// \param function_registry The function registry to use for function execution.  If null
+/// :param declaration: A declaration describing an execution plan
+/// :param function_registry: The function registry to use for function execution.  If null
 ///                          then the default function registry will be used.
 ///
-/// \return the schema that batches would have after going through the execution plan
+/// :return: the schema that batches would have after going through the execution plan
 ARROW_ACERO_EXPORT Result<std::shared_ptr<Schema>> DeclarationToSchema(
     const Declaration& declaration, FunctionRegistry* function_registry = NULLPTR);
 
-/// \brief Create a string representation of a plan
+/// Create a string representation of a plan
 ///
 /// This representation is for debug purposes only.
 ///
@@ -626,23 +626,23 @@ ARROW_ACERO_EXPORT Result<std::shared_ptr<Schema>> DeclarationToSchema(
 ///
 /// Use Substrait for complete serialization of plans
 ///
-/// \param declaration A declaration describing an execution plan
-/// \param function_registry The function registry to use for function execution.  If null
+/// :param declaration: A declaration describing an execution plan
+/// :param function_registry: The function registry to use for function execution.  If null
 ///                          then the default function registry will be used.
 ///
-/// \return a string representation of the plan suitable for debugging output
+/// :return: a string representation of the plan suitable for debugging output
 ARROW_ACERO_EXPORT Result<std::string> DeclarationToString(
     const Declaration& declaration, FunctionRegistry* function_registry = NULLPTR);
 
-/// \brief Utility method to run a declaration and collect the results into a table
+/// Utility method to run a declaration and collect the results into a table
 ///
-/// \param declaration A declaration describing the plan to run
-/// \param use_threads If `use_threads` is false then all CPU work will be done on the
+/// :param declaration: A declaration describing the plan to run
+/// :param use_threads: If `use_threads` is false then all CPU work will be done on the
 ///                    calling thread.  I/O tasks will still happen on the I/O executor
 ///                    and may be multi-threaded (but should not use significant CPU
 ///                    resources).
-/// \param memory_pool The memory pool to use for allocations made while running the plan.
-/// \param function_registry The function registry to use for function execution.  If null
+/// :param memory_pool: The memory pool to use for allocations made while running the plan.
+/// :param function_registry: The function registry to use for function execution.  If null
 ///                          then the default function registry will be used.
 ///
 /// This method will add a sink node to the declaration to collect results into a
@@ -656,39 +656,41 @@ ARROW_ACERO_EXPORT Result<std::shared_ptr<Table>> DeclarationToTable(
 ARROW_ACERO_EXPORT Result<std::shared_ptr<Table>> DeclarationToTable(
     Declaration declaration, QueryOptions query_options);
 
-/// \brief Asynchronous version of \see DeclarationToTable
+/// Asynchronous version of \see DeclarationToTable
 ///
-/// \param declaration A declaration describing the plan to run
-/// \param use_threads The behavior of use_threads is slightly different than the
+/// :param declaration: A declaration describing the plan to run
+/// :param use_threads: The behavior of use_threads is slightly different than the
 ///                    synchronous version since we cannot run synchronously on the
 ///                    calling thread. Instead, if use_threads=false then a new thread
 ///                    pool will be created with a single thread and this will be used for
 ///                    all compute work.
-/// \param memory_pool The memory pool to use for allocations made while running the plan.
-/// \param function_registry The function registry to use for function execution. If null
+/// :param memory_pool: The memory pool to use for allocations made while running the plan.
+/// :param function_registry: The function registry to use for function execution. If null
 ///                          then the default function registry will be used.
 ARROW_ACERO_EXPORT Future<std::shared_ptr<Table>> DeclarationToTableAsync(
     Declaration declaration, bool use_threads = true,
     MemoryPool* memory_pool = default_memory_pool(),
     FunctionRegistry* function_registry = NULLPTR);
 
-/// \brief Overload of \see DeclarationToTableAsync accepting a custom exec context
+/// Overload of \see DeclarationToTableAsync accepting a custom exec context
 ///
 /// The executor must be specified (cannot be null) and must be kept alive until the
 /// returned future finishes.
 ARROW_ACERO_EXPORT Future<std::shared_ptr<Table>> DeclarationToTableAsync(
     Declaration declaration, ExecContext custom_exec_context);
 
-/// \brief a collection of exec batches with a common schema
+/// a collection of exec batches with a common schema
 struct BatchesWithCommonSchema {
   std::vector<ExecBatch> batches;
   std::shared_ptr<Schema> schema;
 };
 
-/// \brief Utility method to run a declaration and collect the results into ExecBatch
+/// Utility method to run a declaration and collect the results into ExecBatch
 /// vector
 ///
-/// \see DeclarationToTable for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTable for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Result<BatchesWithCommonSchema> DeclarationToExecBatches(
     Declaration declaration, bool use_threads = true,
     MemoryPool* memory_pool = default_memory_pool(),
@@ -697,23 +699,29 @@ ARROW_ACERO_EXPORT Result<BatchesWithCommonSchema> DeclarationToExecBatches(
 ARROW_ACERO_EXPORT Result<BatchesWithCommonSchema> DeclarationToExecBatches(
     Declaration declaration, QueryOptions query_options);
 
-/// \brief Asynchronous version of \see DeclarationToExecBatches
+/// Asynchronous version of \see DeclarationToExecBatches
 ///
-/// \see DeclarationToTableAsync for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTableAsync for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Future<BatchesWithCommonSchema> DeclarationToExecBatchesAsync(
     Declaration declaration, bool use_threads = true,
     MemoryPool* memory_pool = default_memory_pool(),
     FunctionRegistry* function_registry = NULLPTR);
 
-/// \brief Overload of \see DeclarationToExecBatchesAsync accepting a custom exec context
+/// Overload of \see DeclarationToExecBatchesAsync accepting a custom exec context
 ///
-/// \see DeclarationToTableAsync for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTableAsync for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Future<BatchesWithCommonSchema> DeclarationToExecBatchesAsync(
     Declaration declaration, ExecContext custom_exec_context);
 
-/// \brief Utility method to run a declaration and collect the results into a vector
+/// Utility method to run a declaration and collect the results into a vector
 ///
-/// \see DeclarationToTable for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTable for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Result<std::vector<std::shared_ptr<RecordBatch>>> DeclarationToBatches(
     Declaration declaration, bool use_threads = true,
     MemoryPool* memory_pool = default_memory_pool(),
@@ -722,21 +730,25 @@ ARROW_ACERO_EXPORT Result<std::vector<std::shared_ptr<RecordBatch>>> Declaration
 ARROW_ACERO_EXPORT Result<std::vector<std::shared_ptr<RecordBatch>>> DeclarationToBatches(
     Declaration declaration, QueryOptions query_options);
 
-/// \brief Asynchronous version of \see DeclarationToBatches
+/// Asynchronous version of \see DeclarationToBatches
 ///
-/// \see DeclarationToTableAsync for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTableAsync for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Future<std::vector<std::shared_ptr<RecordBatch>>>
 DeclarationToBatchesAsync(Declaration declaration, bool use_threads = true,
                           MemoryPool* memory_pool = default_memory_pool(),
                           FunctionRegistry* function_registry = NULLPTR);
 
-/// \brief Overload of \see DeclarationToBatchesAsync accepting a custom exec context
+/// Overload of \see DeclarationToBatchesAsync accepting a custom exec context
 ///
-/// \see DeclarationToTableAsync for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTableAsync for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Future<std::vector<std::shared_ptr<RecordBatch>>>
 DeclarationToBatchesAsync(Declaration declaration, ExecContext exec_context);
 
-/// \brief Utility method to run a declaration and return results as a RecordBatchReader
+/// Utility method to run a declaration and return results as a RecordBatchReader
 ///
 /// If an exec context is not provided then a default exec context will be used based
 /// on the value of `use_threads`.  If `use_threads` is false then the CPU executor will
@@ -763,12 +775,14 @@ ARROW_ACERO_EXPORT Result<std::unique_ptr<RecordBatchReader>> DeclarationToReade
 ARROW_ACERO_EXPORT Result<std::unique_ptr<RecordBatchReader>> DeclarationToReader(
     Declaration declaration, QueryOptions query_options);
 
-/// \brief Utility method to run a declaration and ignore results
+/// Utility method to run a declaration and ignore results
 ///
 /// This can be useful when the data are consumed as part of the plan itself, for
 /// example, when the plan ends with a write node.
 ///
-/// \see DeclarationToTable for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTable for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Status
 DeclarationToStatus(Declaration declaration, bool use_threads = true,
                     MemoryPool* memory_pool = default_memory_pool(),
@@ -777,26 +791,30 @@ DeclarationToStatus(Declaration declaration, bool use_threads = true,
 ARROW_ACERO_EXPORT Status DeclarationToStatus(Declaration declaration,
                                               QueryOptions query_options);
 
-/// \brief Asynchronous version of \see DeclarationToStatus
+/// Asynchronous version of \see DeclarationToStatus
 ///
 /// This can be useful when the data are consumed as part of the plan itself, for
 /// example, when the plan ends with a write node.
 ///
-/// \see DeclarationToTableAsync for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTableAsync for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Future<> DeclarationToStatusAsync(
     Declaration declaration, bool use_threads = true,
     MemoryPool* memory_pool = default_memory_pool(),
     FunctionRegistry* function_registry = NULLPTR);
 
-/// \brief Overload of \see DeclarationToStatusAsync accepting a custom exec context
+/// Overload of \see DeclarationToStatusAsync accepting a custom exec context
 ///
-/// \see DeclarationToTableAsync for details on threading & execution
+/// ```{seealso}
+/// DeclarationToTableAsync for details on threading & execution
+/// ```
 ARROW_ACERO_EXPORT Future<> DeclarationToStatusAsync(Declaration declaration,
                                                      ExecContext exec_context);
 
 /// @}
 
-/// \brief Wrap an ExecBatch generator in a RecordBatchReader.
+/// Wrap an ExecBatch generator in a RecordBatchReader.
 ///
 /// The RecordBatchReader does not impose any ordering on emitted batches.
 ARROW_ACERO_EXPORT
@@ -807,7 +825,7 @@ std::shared_ptr<RecordBatchReader> MakeGeneratorReader(
 constexpr int kDefaultBackgroundMaxQ = 32;
 constexpr int kDefaultBackgroundQRestart = 16;
 
-/// \brief Make a generator of RecordBatchReaders
+/// Make a generator of RecordBatchReaders
 ///
 /// Useful as a source node for an Exec plan
 ARROW_ACERO_EXPORT

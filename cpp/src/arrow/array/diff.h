@@ -31,7 +31,7 @@
 
 namespace arrow {
 
-/// \brief Compare two arrays, returning an edit script which expresses the difference
+/// Compare two arrays, returning an edit script which expresses the difference
 /// between them
 ///
 /// An edit script is an array of struct(insert: bool, run_length: int64_t).
@@ -51,15 +51,15 @@ namespace arrow {
 ///
 /// Diffing arrays containing nulls is not currently supported.
 ///
-/// \param[in] base baseline for comparison
-/// \param[in] target an array of identical type to base whose elements differ from base's
-/// \param[in] pool memory to store the result will be allocated from this memory pool
-/// \return an edit script array which can be applied to base to produce target
+/// :param base: baseline for comparison
+/// :param target: an array of identical type to base whose elements differ from base's
+/// :param pool: memory to store the result will be allocated from this memory pool
+/// :return: an edit script array which can be applied to base to produce target
 ARROW_EXPORT
 Result<std::shared_ptr<StructArray>> Diff(const Array& base, const Array& target,
                                           MemoryPool* pool = default_memory_pool());
 
-/// \brief visitor interface for easy traversal of an edit script
+/// visitor interface for easy traversal of an edit script
 ///
 /// visitor will be called for each hunk of insertions and deletions.
 ARROW_EXPORT Status VisitEditScript(
@@ -67,7 +67,7 @@ ARROW_EXPORT Status VisitEditScript(
     const std::function<Status(int64_t delete_begin, int64_t delete_end,
                                int64_t insert_begin, int64_t insert_end)>& visitor);
 
-/// \brief return a function which will format an edit script in unified
+/// return a function which will format an edit script in unified
 /// diff format to os, given base and target arrays of type
 ARROW_EXPORT Result<
     std::function<Status(const Array& edits, const Array& base, const Array& target)>>

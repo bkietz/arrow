@@ -66,7 +66,7 @@ struct ParquetEncryptionConfig;
 
 constexpr char kParquetTypeName[] = "parquet";
 
-/// \brief A FileFormat implementation that reads from Parquet files
+/// A FileFormat implementation that reads from Parquet files
 class ARROW_DS_EXPORT ParquetFileFormat : public FileFormat {
  public:
   ParquetFileFormat();
@@ -95,7 +95,7 @@ class ARROW_DS_EXPORT ParquetFileFormat : public FileFormat {
 
   Result<bool> IsSupported(const FileSource& source) const override;
 
-  /// \brief Return the schema of the file if possible.
+  /// Return the schema of the file if possible.
   Result<std::shared_ptr<Schema>> Inspect(const FileSource& source) const override;
 
   Result<RecordBatchGenerator> ScanBatchesAsync(
@@ -108,17 +108,17 @@ class ARROW_DS_EXPORT ParquetFileFormat : public FileFormat {
 
   using FileFormat::MakeFragment;
 
-  /// \brief Create a Fragment targeting all RowGroups.
+  /// Create a Fragment targeting all RowGroups.
   Result<std::shared_ptr<FileFragment>> MakeFragment(
       FileSource source, compute::Expression partition_expression,
       std::shared_ptr<Schema> physical_schema) override;
 
-  /// \brief Create a Fragment, restricted to the specified row groups.
+  /// Create a Fragment, restricted to the specified row groups.
   Result<std::shared_ptr<ParquetFileFragment>> MakeFragment(
       FileSource source, compute::Expression partition_expression,
       std::shared_ptr<Schema> physical_schema, std::vector<int> row_groups);
 
-  /// \brief Return a FileReader on the given source.
+  /// Return a FileReader on the given source.
   Result<std::shared_ptr<parquet::arrow::FileReader>> GetReader(
       const FileSource& source, const std::shared_ptr<ScanOptions>& options) const;
 
@@ -141,7 +141,7 @@ class ARROW_DS_EXPORT ParquetFileFormat : public FileFormat {
   std::shared_ptr<FileWriteOptions> DefaultWriteOptions() override;
 };
 
-/// \brief A FileFragment with parquet logic.
+/// A FileFragment with parquet logic.
 ///
 /// ParquetFileFragment provides a lazy (with respect to IO) interface to
 /// scan parquet files. Any heavy IO calls are deferred to the Scan() method.
@@ -157,20 +157,20 @@ class ARROW_DS_EXPORT ParquetFileFragment : public FileFragment {
  public:
   Result<FragmentVector> SplitByRowGroup(compute::Expression predicate);
 
-  /// \brief Return the RowGroups selected by this fragment.
+  /// Return the RowGroups selected by this fragment.
   const std::vector<int>& row_groups() const {
     if (row_groups_) return *row_groups_;
     static std::vector<int> empty;
     return empty;
   }
 
-  /// \brief Return the FileMetaData associated with this fragment.
+  /// Return the FileMetaData associated with this fragment.
   std::shared_ptr<parquet::FileMetaData> metadata();
 
-  /// \brief Ensure this fragment's FileMetaData is in memory.
+  /// Ensure this fragment's FileMetaData is in memory.
   Status EnsureCompleteMetadata(parquet::arrow::FileReader* reader = NULLPTR);
 
-  /// \brief Return fragment which selects a filtered subset of this fragment's RowGroups.
+  /// Return fragment which selects a filtered subset of this fragment's RowGroups.
   Result<std::shared_ptr<Fragment>> Subset(compute::Expression predicate);
   Result<std::shared_ptr<Fragment>> Subset(std::vector<int> row_group_ids);
 
@@ -227,7 +227,7 @@ class ARROW_DS_EXPORT ParquetFileFragment : public FileFragment {
   friend class ParquetDatasetFactory;
 };
 
-/// \brief Per-scan options for Parquet fragments
+/// Per-scan options for Parquet fragments
 class ARROW_DS_EXPORT ParquetFragmentScanOptions : public FragmentScanOptions {
  public:
   ParquetFragmentScanOptions();
@@ -246,10 +246,10 @@ class ARROW_DS_EXPORT ParquetFragmentScanOptions : public FragmentScanOptions {
 
 class ARROW_DS_EXPORT ParquetFileWriteOptions : public FileWriteOptions {
  public:
-  /// \brief Parquet writer properties.
+  /// Parquet writer properties.
   std::shared_ptr<parquet::WriterProperties> writer_properties;
 
-  /// \brief Parquet Arrow writer properties.
+  /// Parquet Arrow writer properties.
   std::shared_ptr<parquet::ArrowWriterProperties> arrow_writer_properties;
 
   // A configuration structure that provides encryption properties for a dataset
@@ -283,7 +283,7 @@ class ARROW_DS_EXPORT ParquetFileWriter : public FileWriter {
   friend class ParquetFileFormat;
 };
 
-/// \brief Options for making a FileSystemDataset from a Parquet _metadata file.
+/// Options for making a FileSystemDataset from a Parquet _metadata file.
 struct ParquetFactoryOptions {
   /// Either an explicit Partitioning or a PartitioningFactory to discover one.
   ///
@@ -319,7 +319,7 @@ struct ParquetFactoryOptions {
   bool validate_column_chunk_paths = false;
 };
 
-/// \brief Create FileSystemDataset from custom `_metadata` cache file.
+/// Create FileSystemDataset from custom `_metadata` cache file.
 ///
 /// Dask and other systems will generate a cache metadata file by concatenating
 /// the RowGroupMetaData of multiple parquet files into a single parquet file
@@ -330,30 +330,30 @@ struct ParquetFactoryOptions {
 /// number of row groups and statistics for each columns.
 class ARROW_DS_EXPORT ParquetDatasetFactory : public DatasetFactory {
  public:
-  /// \brief Create a ParquetDatasetFactory from a metadata path.
+  /// Create a ParquetDatasetFactory from a metadata path.
   ///
   /// The `metadata_path` will be read from `filesystem`. Each RowGroup
   /// contained in the metadata file will be relative to `dirname(metadata_path)`.
   ///
-  /// \param[in] metadata_path path of the metadata parquet file
-  /// \param[in] filesystem from which to open/read the path
-  /// \param[in] format to read the file with.
-  /// \param[in] options see ParquetFactoryOptions
+  /// :param metadata_path: path of the metadata parquet file
+  /// :param filesystem: from which to open/read the path
+  /// :param format: to read the file with.
+  /// :param options: see ParquetFactoryOptions
   static Result<std::shared_ptr<DatasetFactory>> Make(
       const std::string& metadata_path, std::shared_ptr<fs::FileSystem> filesystem,
       std::shared_ptr<ParquetFileFormat> format, ParquetFactoryOptions options);
 
-  /// \brief Create a ParquetDatasetFactory from a metadata source.
+  /// Create a ParquetDatasetFactory from a metadata source.
   ///
   /// Similar to the previous Make definition, but the metadata can be a Buffer
   /// and the base_path is explicit instead of inferred from the metadata
   /// path.
   ///
-  /// \param[in] metadata source to open the metadata parquet file from
-  /// \param[in] base_path used as the prefix of every parquet files referenced
-  /// \param[in] filesystem from which to read the files referenced.
-  /// \param[in] format to read the file with.
-  /// \param[in] options see ParquetFactoryOptions
+  /// :param metadata: source to open the metadata parquet file from
+  /// :param base_path: used as the prefix of every parquet files referenced
+  /// :param filesystem: from which to read the files referenced.
+  /// :param format: to read the file with.
+  /// :param options: see ParquetFactoryOptions
   static Result<std::shared_ptr<DatasetFactory>> Make(
       const FileSource& metadata, const std::string& base_path,
       std::shared_ptr<fs::FileSystem> filesystem,

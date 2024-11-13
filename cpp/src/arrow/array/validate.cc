@@ -822,7 +822,7 @@ struct ValidateArrayImpl {
   }
 
  private:
-  /// \pre basic validation has already been performed
+  /// :precondition: basic validation has already been performed
   template <typename offset_type>
   Status FullyValidateOffsets(int64_t offset_limit) {
     const auto* offsets = data.GetValues<offset_type>(1);
@@ -871,7 +871,7 @@ struct ValidateArrayImpl {
     }
   }
 
-  /// \pre basic validation has already been performed
+  /// :precondition: basic validation has already been performed
   template <typename offset_type>
   Status FullyValidateOffsetsAndSizes(int64_t offset_limit) {
     const auto* offsets = data.GetValues<offset_type>(1);

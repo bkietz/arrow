@@ -62,7 +62,7 @@ class FieldPosition {
 
 }  // namespace internal
 
-/// \brief Map fields in a schema to dictionary ids
+/// Map fields in a schema to dictionary ids
 ///
 /// The mapping is structural, i.e. the field path (as a vector of indices)
 /// is associated to the dictionary id.  A dictionary id may be associated
@@ -80,7 +80,7 @@ class ARROW_EXPORT DictionaryFieldMapper {
 
   int num_fields() const;
 
-  /// \brief Returns number of unique dictionaries, taking into
+  /// Returns number of unique dictionaries, taking into
   /// account that different fields can share the same dictionary.
   int num_dicts() const;
 
@@ -91,7 +91,7 @@ class ARROW_EXPORT DictionaryFieldMapper {
 
 using DictionaryVector = std::vector<std::pair<int64_t, std::shared_ptr<Array>>>;
 
-/// \brief Memoization data structure for reading dictionaries from IPC streams
+/// Memoization data structure for reading dictionaries from IPC streams
 ///
 /// This structure tracks the following associations:
 /// - field position (structural) -> dictionary id
@@ -112,30 +112,30 @@ class ARROW_EXPORT DictionaryMemo {
   DictionaryFieldMapper& fields();
   const DictionaryFieldMapper& fields() const;
 
-  /// \brief Return current dictionary corresponding to a particular
+  /// Return current dictionary corresponding to a particular
   /// id. Returns KeyError if id not found
   Result<std::shared_ptr<ArrayData>> GetDictionary(int64_t id, MemoryPool* pool) const;
 
-  /// \brief Return dictionary value type corresponding to a
+  /// Return dictionary value type corresponding to a
   /// particular dictionary id.
   Result<std::shared_ptr<DataType>> GetDictionaryType(int64_t id) const;
 
-  /// \brief Return true if we have a dictionary for the input id
+  /// Return true if we have a dictionary for the input id
   bool HasDictionary(int64_t id) const;
 
-  /// \brief Add a dictionary value type to the memo with a particular id.
+  /// Add a dictionary value type to the memo with a particular id.
   /// Returns KeyError if a different type is already registered with the same id.
   Status AddDictionaryType(int64_t id, const std::shared_ptr<DataType>& type);
 
-  /// \brief Add a dictionary to the memo with a particular id. Returns
+  /// Add a dictionary to the memo with a particular id. Returns
   /// KeyError if that dictionary already exists
   Status AddDictionary(int64_t id, const std::shared_ptr<ArrayData>& dictionary);
 
-  /// \brief Append a dictionary delta to the memo with a particular id. Returns
+  /// Append a dictionary delta to the memo with a particular id. Returns
   /// KeyError if that dictionary does not exists
   Status AddDictionaryDelta(int64_t id, const std::shared_ptr<ArrayData>& dictionary);
 
-  /// \brief Add a dictionary to the memo if it does not have one with the id,
+  /// Add a dictionary to the memo if it does not have one with the id,
   /// otherwise, replace the dictionary with the new one.
   ///
   /// Return true if the dictionary was added, false if replaced.

@@ -41,15 +41,15 @@ namespace csv {
 /// \defgroup csv-write-functions High-level functions for writing CSV files
 /// @{
 
-/// \brief Convert table to CSV and write the result to output.
+/// Convert table to CSV and write the result to output.
 /// Experimental
 ARROW_EXPORT Status WriteCSV(const Table& table, const WriteOptions& options,
                              arrow::io::OutputStream* output);
-/// \brief Convert batch to CSV and write the result to output.
+/// Convert batch to CSV and write the result to output.
 /// Experimental
 ARROW_EXPORT Status WriteCSV(const RecordBatch& batch, const WriteOptions& options,
                              arrow::io::OutputStream* output);
-/// \brief Convert batches read through a RecordBatchReader
+/// Convert batches read through a RecordBatchReader
 /// to CSV and write the results to output.
 /// Experimental
 ARROW_EXPORT Status WriteCSV(const std::shared_ptr<RecordBatchReader>& reader,
@@ -61,24 +61,24 @@ ARROW_EXPORT Status WriteCSV(const std::shared_ptr<RecordBatchReader>& reader,
 /// \defgroup csv-writer-factories Functions for creating an incremental CSV writer
 /// @{
 
-/// \brief Create a new CSV writer. User is responsible for closing the
+/// Create a new CSV writer. User is responsible for closing the
 /// actual OutputStream.
 ///
-/// \param[in] sink output stream to write to
-/// \param[in] schema the schema of the record batches to be written
-/// \param[in] options options for serialization
-/// \return Result<std::shared_ptr<RecordBatchWriter>>
+/// :param sink: output stream to write to
+/// :param schema: the schema of the record batches to be written
+/// :param options: options for serialization
+/// :return: Result<std::shared_ptr<RecordBatchWriter>>
 ARROW_EXPORT
 Result<std::shared_ptr<ipc::RecordBatchWriter>> MakeCSVWriter(
     std::shared_ptr<io::OutputStream> sink, const std::shared_ptr<Schema>& schema,
     const WriteOptions& options = WriteOptions::Defaults());
 
-/// \brief Create a new CSV writer.
+/// Create a new CSV writer.
 ///
-/// \param[in] sink output stream to write to (does not take ownership)
-/// \param[in] schema the schema of the record batches to be written
-/// \param[in] options options for serialization
-/// \return Result<std::shared_ptr<RecordBatchWriter>>
+/// :param sink: output stream to write to (does not take ownership)
+/// :param schema: the schema of the record batches to be written
+/// :param options: options for serialization
+/// :return: Result<std::shared_ptr<RecordBatchWriter>>
 ARROW_EXPORT
 Result<std::shared_ptr<ipc::RecordBatchWriter>> MakeCSVWriter(
     io::OutputStream* sink, const std::shared_ptr<Schema>& schema,

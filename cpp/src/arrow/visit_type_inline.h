@@ -29,12 +29,12 @@ namespace arrow {
     return visitor->Visit(internal::checked_cast<const TYPE_CLASS##Type&>(type), \
                           std::forward<ARGS>(args)...);
 
-/// \brief Calls `visitor` with the corresponding concrete type class
+/// Calls `visitor` with the corresponding concrete type class
 ///
-/// \tparam VISITOR Visitor type that implements Visit() for all Arrow types.
-/// \tparam ARGS Additional arguments, if any, will be passed to the Visit function after
+/// :param VISITOR: Visitor type that implements Visit() for all Arrow types.
+/// :param ARGS: Additional arguments, if any, will be passed to the Visit function after
 /// the `type` argument
-/// \return Status
+/// :return: Status
 ///
 /// A visitor is a type that implements specialized logic for each Arrow type.
 /// Example usage:
@@ -66,8 +66,8 @@ inline Status VisitTypeInline(const DataType& type, VISITOR* visitor, ARGS&&... 
         internal::checked_cast<const TYPE_CLASS##Type&>(type), \
         std::forward<ARGS>(args)...);
 
-/// \brief Call `visitor` with the corresponding concrete type class
-/// \tparam ARGS Additional arguments, if any, will be passed to the Visit function after
+/// Call `visitor` with the corresponding concrete type class
+/// :param ARGS: Additional arguments, if any, will be passed to the Visit function after
 /// the `type` argument
 ///
 /// Unlike VisitTypeInline which calls `visitor.Visit`, here `visitor`
@@ -96,12 +96,12 @@ inline auto VisitType(const DataType& type, VISITOR&& visitor, ARGS&&... args)
     return visitor->Visit(concrete_ptr, std::forward<ARGS>(args)...); \
   }
 
-/// \brief Calls `visitor` with a nullptr of the corresponding concrete type class
+/// Calls `visitor` with a nullptr of the corresponding concrete type class
 ///
-/// \tparam VISITOR Visitor type that implements Visit() for all Arrow types.
-/// \tparam ARGS Additional arguments, if any, will be passed to the Visit function after
+/// :param VISITOR: Visitor type that implements Visit() for all Arrow types.
+/// :param ARGS: Additional arguments, if any, will be passed to the Visit function after
 /// the `type` argument
-/// \return Status
+/// :return: Status
 template <typename VISITOR, typename... ARGS>
 inline Status VisitTypeIdInline(Type::type id, VISITOR* visitor, ARGS&&... args) {
   switch (id) {

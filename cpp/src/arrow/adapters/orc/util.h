@@ -47,20 +47,20 @@ ARROW_EXPORT Status AppendBatch(const liborc::Type* type,
                                 liborc::ColumnVectorBatch* batch, int64_t offset,
                                 int64_t length, arrow::ArrayBuilder* builder);
 
-/// \brief Write a chunked array to an orc::ColumnVectorBatch
+/// Write a chunked array to an orc::ColumnVectorBatch
 ///
-/// \param[in] chunked_array the chunked array
-/// \param[in] length the orc::ColumnVectorBatch size limit
-/// \param[in,out] arrow_chunk_offset The current chunk being processed
-/// \param[in,out] arrow_index_offset The index of the arrow_chunk_offset array
+/// :param chunked_array: the chunked array
+/// :param length: the orc::ColumnVectorBatch size limit
+/// :param arrow_chunk_offset[in,out]: The current chunk being processed
+/// :param arrow_index_offset[in,out]: The index of the arrow_chunk_offset array
 /// before or after a process
-/// \param[in,out] column_vector_batch the orc::ColumnVectorBatch to be filled
-/// \return Status
+/// :param column_vector_batch[in,out]: the orc::ColumnVectorBatch to be filled
+/// :return: Status
 ARROW_EXPORT Status WriteBatch(const ChunkedArray& chunked_array, int64_t length,
                                int* arrow_chunk_offset, int64_t* arrow_index_offset,
                                liborc::ColumnVectorBatch* column_vector_batch);
 
-/// \brief Get the major version provided by the official ORC C++ library.
+/// Get the major version provided by the official ORC C++ library.
 ARROW_EXPORT int GetOrcMajorVersion();
 
 }  // namespace orc

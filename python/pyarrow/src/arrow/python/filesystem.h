@@ -81,13 +81,11 @@ class ARROW_PYTHON_EXPORT PyFileSystem : public arrow::fs::FileSystem {
 
   bool Equals(const FileSystem& other) const override;
 
-  /// \cond FALSE
   using FileSystem::CreateDir;
   using FileSystem::DeleteDirContents;
   using FileSystem::GetFileInfo;
   using FileSystem::OpenAppendStream;
   using FileSystem::OpenOutputStream;
-  /// \endcond
 
   Result<arrow::fs::FileInfo> GetFileInfo(const std::string& path) override;
   Result<std::vector<arrow::fs::FileInfo>> GetFileInfo(

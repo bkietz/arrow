@@ -44,11 +44,11 @@ namespace dataset {
 
 using RecordBatchGenerator = std::function<Future<std::shared_ptr<RecordBatch>>()>;
 
-/// \brief Description of a column to scan
+/// Description of a column to scan
 struct ARROW_DS_EXPORT FragmentSelectionColumn {
-  /// \brief The path to the column to load
+  /// The path to the column to load
   FieldPath path;
-  /// \brief The type of the column in the dataset schema
+  /// The type of the column in the dataset schema
   ///
   /// A format may choose to ignore this field completely.  For example, when
   /// reading from IPC the reader can just return the column in the data type
@@ -60,7 +60,7 @@ struct ARROW_DS_EXPORT FragmentSelectionColumn {
   DataType* requested_type;
 };
 
-/// \brief A list of columns that should be loaded from a fragment
+/// A list of columns that should be loaded from a fragment
 ///
 /// The paths in this selection should be referring to the fragment schema.  This class
 /// contains a virtual destructor as it is expected evolution strategies will need to
@@ -80,20 +80,22 @@ class ARROW_DS_EXPORT FragmentSelection {
   std::vector<FragmentSelectionColumn> columns_;
 };
 
-/// \brief Instructions for scanning a particular fragment
+/// Instructions for scanning a particular fragment
 ///
 /// The fragment scan request is derived from ScanV2Options.  The main
 /// difference is that the scan options are based on the dataset schema
 /// while the fragment request is based on the fragment schema.
 struct ARROW_DS_EXPORT FragmentScanRequest {
-  /// \brief A row filter
+  /// A row filter
   ///
   /// The filter expression should be written against the fragment schema.
   ///
-  /// \see ScanV2Options for details on how this filter should be applied
+  /// ```{seealso}
+  /// ScanV2Options for details on how this filter should be applied
+  /// ```
   compute::Expression filter = compute::literal(true);
 
-  /// \brief The columns to scan
+  /// The columns to scan
   ///
   /// These indices refer to the fragment schema
   ///
@@ -105,11 +107,11 @@ struct ARROW_DS_EXPORT FragmentScanRequest {
   /// column (e.g. JSON) then it must apply the column selection (in memory)
   /// before returning the scanned batch.
   std::shared_ptr<FragmentSelection> fragment_selection;
-  /// \brief Options specific to the format being scanned
+  /// Options specific to the format being scanned
   const FragmentScanOptions* format_scan_options;
 };
 
-/// \brief An iterator-like object that can yield batches created from a fragment
+/// An iterator-like object that can yield batches created from a fragment
 class ARROW_DS_EXPORT FragmentScanner {
  public:
   /// This instance will only be destroyed after all ongoing scan futures
@@ -118,19 +120,19 @@ class ARROW_DS_EXPORT FragmentScanner {
   /// This means any callbacks created as part of the scan can safely
   /// capture `this`
   virtual ~FragmentScanner() = default;
-  /// \brief Scan a batch of data from the file
-  /// \param batch_number The index of the batch to read
+  /// Scan a batch of data from the file
+  /// :param batch_number: The index of the batch to read
   virtual Future<std::shared_ptr<RecordBatch>> ScanBatch(int batch_number) = 0;
-  /// \brief Calculate an estimate of how many data bytes the given batch will represent
+  /// Calculate an estimate of how many data bytes the given batch will represent
   ///
   /// "Data bytes" should be the total size of all the buffers once the data has been
   /// decoded into the Arrow format.
   virtual int64_t EstimatedDataBytes(int batch_number) = 0;
-  /// \brief The number of batches in the fragment to scan
+  /// The number of batches in the fragment to scan
   virtual int NumBatches() = 0;
 };
 
-/// \brief Information learned about a fragment through inspection
+/// Information learned about a fragment through inspection
 ///
 /// This information can be used to figure out which fields need
 /// to be read from a file and how the data read in should be evolved
@@ -145,7 +147,7 @@ struct ARROW_DS_EXPORT InspectedFragment {
   std::vector<std::string> column_names;
 };
 
-/// \brief A granular piece of a Dataset, such as an individual file.
+/// A granular piece of a Dataset, such as an individual file.
 ///
 /// A Fragment can be read/scanned separately from other fragments. It yields a
 /// collection of RecordBatches when scanned
@@ -155,10 +157,10 @@ struct ARROW_DS_EXPORT InspectedFragment {
 /// Dataset's schema and the physical schemas of sibling Fragments.
 class ARROW_DS_EXPORT Fragment : public std::enable_shared_from_this<Fragment> {
  public:
-  /// \brief An expression that represents no known partition information
+  /// An expression that represents no known partition information
   static const compute::Expression kNoPartitionInformation;
 
-  /// \brief Return the physical schema of the Fragment.
+  /// Return the physical schema of the Fragment.
   ///
   /// The physical schema is also called the writer schema.
   /// This method is blocking and may suffer from high latency filesystem.
@@ -169,7 +171,7 @@ class ARROW_DS_EXPORT Fragment : public std::enable_shared_from_this<Fragment> {
   virtual Result<RecordBatchGenerator> ScanBatchesAsync(
       const std::shared_ptr<ScanOptions>& options) = 0;
 
-  /// \brief Inspect a fragment to learn basic information
+  /// Inspect a fragment to learn basic information
   ///
   /// This will be called before a scan and a fragment should attach whatever
   /// information will be needed to figure out an evolution strategy.  This information
@@ -177,12 +179,12 @@ class ARROW_DS_EXPORT Fragment : public std::enable_shared_from_this<Fragment> {
   virtual Future<std::shared_ptr<InspectedFragment>> InspectFragment(
       const FragmentScanOptions* format_options, compute::ExecContext* exec_context);
 
-  /// \brief Start a scan operation
+  /// Start a scan operation
   virtual Future<std::shared_ptr<FragmentScanner>> BeginScan(
       const FragmentScanRequest& request, const InspectedFragment& inspected_fragment,
       const FragmentScanOptions* format_options, compute::ExecContext* exec_context);
 
-  /// \brief Count the number of rows in this fragment matching the filter using metadata
+  /// Count the number of rows in this fragment matching the filter using metadata
   /// only. That is, this method may perform I/O, but will not load data.
   ///
   /// If this is not possible, resolve with an empty optional. The fragment can perform
@@ -193,7 +195,7 @@ class ARROW_DS_EXPORT Fragment : public std::enable_shared_from_this<Fragment> {
   virtual std::string type_name() const = 0;
   virtual std::string ToString() const { return type_name(); }
 
-  /// \brief An expression which evaluates to true for all data viewed by this
+  /// An expression which evaluates to true for all data viewed by this
   /// Fragment.
   const compute::Expression& partition_expression() const {
     return partition_expression_;
@@ -213,7 +215,7 @@ class ARROW_DS_EXPORT Fragment : public std::enable_shared_from_this<Fragment> {
   std::shared_ptr<Schema> physical_schema_;
 };
 
-/// \brief Per-scan options for fragment(s) in a dataset.
+/// Per-scan options for fragment(s) in a dataset.
 ///
 /// These options are not intrinsic to the format or fragment itself, but do affect
 /// the results of a scan. These are options which make sense to change between
@@ -232,7 +234,7 @@ class ARROW_DS_EXPORT FragmentScanOptions {
 ///
 /// @{
 
-/// \brief A trivial Fragment that yields ScanTask out of a fixed set of
+/// A trivial Fragment that yields ScanTask out of a fixed set of
 /// RecordBatch.
 class ARROW_DS_EXPORT InMemoryFragment : public Fragment {
  public:
@@ -268,13 +270,13 @@ class ARROW_DS_EXPORT InMemoryFragment : public Fragment {
 
 using FragmentGenerator = AsyncGenerator<std::shared_ptr<Fragment>>;
 
-/// \brief Rules for converting the dataset schema to and from fragment schemas
+/// Rules for converting the dataset schema to and from fragment schemas
 class ARROW_DS_EXPORT FragmentEvolutionStrategy {
  public:
   /// This instance will only be destroyed when all scan operations for the
   /// fragment have completed.
   virtual ~FragmentEvolutionStrategy() = default;
-  /// \brief A guarantee that applies to all batches of this fragment
+  /// A guarantee that applies to all batches of this fragment
   ///
   /// For example, if a fragment is missing one of the fields in the dataset
   /// schema then a typical evolution strategy is to set that field to null.
@@ -287,7 +289,7 @@ class ARROW_DS_EXPORT FragmentEvolutionStrategy {
   virtual Result<compute::Expression> GetGuarantee(
       const std::vector<FieldPath>& dataset_schema_selection) const = 0;
 
-  /// \brief Return a fragment schema selection given a dataset schema selection
+  /// Return a fragment schema selection given a dataset schema selection
   ///
   /// For example, if the user wants fields 2 & 4 of the dataset schema and
   /// in this fragment the field 2 is missing and the field 4 is at index 1 then
@@ -295,7 +297,7 @@ class ARROW_DS_EXPORT FragmentEvolutionStrategy {
   virtual Result<std::unique_ptr<FragmentSelection>> DevolveSelection(
       const std::vector<FieldPath>& dataset_schema_selection) const = 0;
 
-  /// \brief Return a filter expression bound to the fragment schema given
+  /// Return a filter expression bound to the fragment schema given
   ///        a filter expression bound to the dataset schema
   ///
   /// The dataset scan filter will first be simplified by the guarantee returned
@@ -308,7 +310,7 @@ class ARROW_DS_EXPORT FragmentEvolutionStrategy {
   virtual Result<compute::Expression> DevolveFilter(
       const compute::Expression& filter) const = 0;
 
-  /// \brief Convert a batch from the fragment schema to the dataset schema
+  /// Convert a batch from the fragment schema to the dataset schema
   ///
   /// Typically this involves casting columns from the data type stored on disk
   /// to the data type of the dataset schema.  For example, this fragment might
@@ -322,64 +324,64 @@ class ARROW_DS_EXPORT FragmentEvolutionStrategy {
       const std::vector<FieldPath>& dataset_selection,
       const FragmentSelection& selection) const = 0;
 
-  /// \brief Return a string description of this strategy
+  /// Return a string description of this strategy
   virtual std::string ToString() const = 0;
 };
 
-/// \brief Lookup to create a FragmentEvolutionStrategy for a given fragment
+/// Lookup to create a FragmentEvolutionStrategy for a given fragment
 class ARROW_DS_EXPORT DatasetEvolutionStrategy {
  public:
   virtual ~DatasetEvolutionStrategy() = default;
-  /// \brief Create a strategy for evolving from the given fragment
+  /// Create a strategy for evolving from the given fragment
   ///        to the schema of the given dataset
   virtual std::unique_ptr<FragmentEvolutionStrategy> GetStrategy(
       const Dataset& dataset, const Fragment& fragment,
       const InspectedFragment& inspected_fragment) = 0;
 
-  /// \brief Return a string description of this strategy
+  /// Return a string description of this strategy
   virtual std::string ToString() const = 0;
 };
 
 ARROW_DS_EXPORT std::unique_ptr<DatasetEvolutionStrategy>
 MakeBasicDatasetEvolutionStrategy();
 
-/// \brief A container of zero or more Fragments.
+/// A container of zero or more Fragments.
 ///
 /// A Dataset acts as a union of Fragments, e.g. files deeply nested in a
 /// directory. A Dataset has a schema to which Fragments must align during a
 /// scan operation. This is analogous to Avro's reader and writer schema.
 class ARROW_DS_EXPORT Dataset : public std::enable_shared_from_this<Dataset> {
  public:
-  /// \brief Begin to build a new Scan operation against this Dataset
+  /// Begin to build a new Scan operation against this Dataset
   Result<std::shared_ptr<ScannerBuilder>> NewScan();
 
-  /// \brief GetFragments returns an iterator of Fragments given a predicate.
+  /// GetFragments returns an iterator of Fragments given a predicate.
   Result<FragmentIterator> GetFragments(compute::Expression predicate);
   Result<FragmentIterator> GetFragments();
 
-  /// \brief Async versions of `GetFragments`.
+  /// Async versions of `GetFragments`.
   Result<FragmentGenerator> GetFragmentsAsync(compute::Expression predicate);
   Result<FragmentGenerator> GetFragmentsAsync();
 
   const std::shared_ptr<Schema>& schema() const { return schema_; }
 
-  /// \brief An expression which evaluates to true for all data viewed by this Dataset.
+  /// An expression which evaluates to true for all data viewed by this Dataset.
   /// May be null, which indicates no information is available.
   const compute::Expression& partition_expression() const {
     return partition_expression_;
   }
 
-  /// \brief The name identifying the kind of Dataset
+  /// The name identifying the kind of Dataset
   virtual std::string type_name() const = 0;
 
-  /// \brief Return a copy of this Dataset with a different schema.
+  /// Return a copy of this Dataset with a different schema.
   ///
   /// The copy will view the same Fragments. If the new schema is not compatible with the
   /// original dataset's schema then an error will be raised.
   virtual Result<std::shared_ptr<Dataset>> ReplaceSchema(
       std::shared_ptr<Schema> schema) const = 0;
 
-  /// \brief Rules used by this dataset to handle schema evolution
+  /// Rules used by this dataset to handle schema evolution
   DatasetEvolutionStrategy* evolution_strategy() { return evolution_strategy_.get(); }
 
   virtual ~Dataset() = default;
@@ -390,7 +392,7 @@ class ARROW_DS_EXPORT Dataset : public std::enable_shared_from_this<Dataset> {
   Dataset(std::shared_ptr<Schema> schema, compute::Expression partition_expression);
 
   virtual Result<FragmentIterator> GetFragmentsImpl(compute::Expression predicate) = 0;
-  /// \brief Default non-virtual implementation method for the base
+  /// Default non-virtual implementation method for the base
   /// `GetFragmentsAsyncImpl` method, which creates a fragment generator for
   /// the dataset, possibly filtering results with a predicate (forwarding to
   /// the synchronous `GetFragmentsImpl` method and moving the computations
@@ -413,7 +415,7 @@ class ARROW_DS_EXPORT Dataset : public std::enable_shared_from_this<Dataset> {
 ///
 /// @{
 
-/// \brief A Source which yields fragments wrapping a stream of record batches.
+/// A Source which yields fragments wrapping a stream of record batches.
 ///
 /// The record batches must match the schema provided to the source at construction.
 class ARROW_DS_EXPORT InMemoryDataset : public Dataset {
@@ -446,13 +448,13 @@ class ARROW_DS_EXPORT InMemoryDataset : public Dataset {
   std::shared_ptr<RecordBatchGenerator> get_batches_;
 };
 
-/// \brief A Dataset wrapping child Datasets.
+/// A Dataset wrapping child Datasets.
 class ARROW_DS_EXPORT UnionDataset : public Dataset {
  public:
-  /// \brief Construct a UnionDataset wrapping child Datasets.
+  /// Construct a UnionDataset wrapping child Datasets.
   ///
-  /// \param[in] schema the schema of the resulting dataset.
-  /// \param[in] children one or more child Datasets. Their schemas must be identical to
+  /// :param schema: the schema of the resulting dataset.
+  /// :param children: one or more child Datasets. Their schemas must be identical to
   /// schema.
   static Result<std::shared_ptr<UnionDataset>> Make(std::shared_ptr<Schema> schema,
                                                     DatasetVector children);

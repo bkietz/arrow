@@ -72,7 +72,7 @@ extern const char* kGrpcStatusDetailHeader;
 ARROW_FLIGHT_EXPORT
 extern const char* kBinaryErrorDetailsKey;
 
-/// \brief Combine a gRPC status, possible client-side Arrow status,
+/// Combine a gRPC status, possible client-side Arrow status,
 ///   and a gRPC ClientContext into a transport status.
 ARROW_FLIGHT_EXPORT
 Status CombinedTransportStatus(const ::grpc::Status& grpc_status,

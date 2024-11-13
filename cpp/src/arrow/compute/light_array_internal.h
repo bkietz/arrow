@@ -34,7 +34,7 @@
 namespace arrow {
 namespace compute {
 
-/// \brief Context needed by various execution engine operations
+/// Context needed by various execution engine operations
 ///
 /// In the execution engine this context is provided by either the node or the
 /// plan and the context exists for the lifetime of the plan.  Defining this here
@@ -46,7 +46,7 @@ struct LightContext {
   util::TempVectorStack* stack;
 };
 
-/// \brief Description of the layout of a "key" column
+/// Description of the layout of a "key" column
 ///
 /// A "key" column is a non-nested, non-union column.
 /// Every key column has either 0 (null), 2 (e.g. int32) or 3 (e.g. string) buffers
@@ -60,14 +60,14 @@ struct ARROW_EXPORT KeyColumnMetadata {
       : is_fixed_length(is_fixed_length_in),
         is_null_type(is_null_type_in),
         fixed_length(fixed_length_in) {}
-  /// \brief True if the column is not a varying-length binary type
+  /// True if the column is not a varying-length binary type
   ///
   /// If this is true the column will have a validity buffer and
   /// a data buffer and the third buffer will be unused.
   bool is_fixed_length;
-  /// \brief True if this column is the null type(NA).
+  /// True if this column is the null type(NA).
   bool is_null_type;
-  /// \brief The number of bytes for each item
+  /// The number of bytes for each item
   ///
   /// Zero has a special meaning, indicating a bit vector with one bit per value if it
   /// isn't a null type column. Generally, this means that the column is a boolean type.
@@ -76,16 +76,16 @@ struct ARROW_EXPORT KeyColumnMetadata {
   uint32_t fixed_length;
 };
 
-/// \brief A lightweight view into a "key" array
+/// A lightweight view into a "key" array
 ///
 /// A "key" column is a non-nested, non-union column \see KeyColumnMetadata
 ///
 /// This metadata object is a zero-allocation analogue of arrow::ArrayData
 class ARROW_EXPORT KeyColumnArray {
  public:
-  /// \brief Create an uninitialized KeyColumnArray
+  /// Create an uninitialized KeyColumnArray
   KeyColumnArray() = default;
-  /// \brief Create a read-only view from buffers
+  /// Create a read-only view from buffers
   ///
   /// This is a view only and does not take ownership of the buffers.  The lifetime
   /// of the buffers must exceed the lifetime of this view
@@ -93,7 +93,7 @@ class ARROW_EXPORT KeyColumnArray {
                  const uint8_t* validity_buffer, const uint8_t* fixed_length_buffer,
                  const uint8_t* var_length_buffer, int bit_offset_validity = 0,
                  int bit_offset_fixed = 0);
-  /// \brief Create a mutable view from buffers
+  /// Create a mutable view from buffers
   ///
   /// This is a view only and does not take ownership of the buffers.  The lifetime
   /// of the buffers must exceed the lifetime of this view
@@ -101,19 +101,19 @@ class ARROW_EXPORT KeyColumnArray {
                  uint8_t* validity_buffer, uint8_t* fixed_length_buffer,
                  uint8_t* var_length_buffer, int bit_offset_validity = 0,
                  int bit_offset_fixed = 0);
-  /// \brief Create a sliced view of `this`
+  /// Create a sliced view of `this`
   ///
   /// The number of rows used in offset must be divisible by 8
   /// in order to not split bit vectors within a single byte.
   KeyColumnArray Slice(int64_t offset, int64_t length) const;
-  /// \brief Create a copy of `this` with a buffer from `other`
+  /// Create a copy of `this` with a buffer from `other`
   ///
   /// The copy will be identical to `this` except the buffer at buffer_id_to_replace
   /// will be replaced by the corresponding buffer in `other`.
   KeyColumnArray WithBufferFrom(const KeyColumnArray& other,
                                 int buffer_id_to_replace) const;
 
-  /// \brief Create a copy of `this` with new metadata
+  /// Create a copy of `this` with new metadata
   KeyColumnArray WithMetadata(const KeyColumnMetadata& metadata) const;
 
   // Constants used for accessing buffers using data() and mutable_data().
@@ -121,17 +121,17 @@ class ARROW_EXPORT KeyColumnArray {
   static constexpr int kFixedLengthBuffer = 1;
   static constexpr int kVariableLengthBuffer = 2;
 
-  /// \brief Return one of the underlying mutable buffers
+  /// Return one of the underlying mutable buffers
   uint8_t* mutable_data(int i) {
     ARROW_DCHECK(i >= 0 && i < kMaxBuffers);
     return mutable_buffers_[i];
   }
-  /// \brief Return one of the underlying read-only buffers
+  /// Return one of the underlying read-only buffers
   const uint8_t* data(int i) const {
     ARROW_DCHECK(i >= 0 && i < kMaxBuffers);
     return buffers_[i];
   }
-  /// \brief Return a mutable version of the offsets buffer
+  /// Return a mutable version of the offsets buffer
   ///
   /// Only valid if this is a view into a varbinary type
   uint32_t* mutable_offsets() {
@@ -139,7 +139,7 @@ class ARROW_EXPORT KeyColumnArray {
     DCHECK_EQ(metadata_.fixed_length, sizeof(uint32_t));
     return reinterpret_cast<uint32_t*>(mutable_data(kFixedLengthBuffer));
   }
-  /// \brief Return a read-only version of the offsets buffer
+  /// Return a read-only version of the offsets buffer
   ///
   /// Only valid if this is a view into a varbinary type
   const uint32_t* offsets() const {
@@ -147,7 +147,7 @@ class ARROW_EXPORT KeyColumnArray {
     DCHECK_EQ(metadata_.fixed_length, sizeof(uint32_t));
     return reinterpret_cast<const uint32_t*>(data(kFixedLengthBuffer));
   }
-  /// \brief Return a mutable version of the large-offsets buffer
+  /// Return a mutable version of the large-offsets buffer
   ///
   /// Only valid if this is a view into a large varbinary type
   uint64_t* mutable_large_offsets() {
@@ -155,7 +155,7 @@ class ARROW_EXPORT KeyColumnArray {
     DCHECK_EQ(metadata_.fixed_length, sizeof(uint64_t));
     return reinterpret_cast<uint64_t*>(mutable_data(kFixedLengthBuffer));
   }
-  /// \brief Return a read-only version of the large-offsets buffer
+  /// Return a read-only version of the large-offsets buffer
   ///
   /// Only valid if this is a view into a large varbinary type
   const uint64_t* large_offsets() const {
@@ -163,11 +163,11 @@ class ARROW_EXPORT KeyColumnArray {
     DCHECK_EQ(metadata_.fixed_length, sizeof(uint64_t));
     return reinterpret_cast<const uint64_t*>(data(kFixedLengthBuffer));
   }
-  /// \brief Return the type metadata
+  /// Return the type metadata
   const KeyColumnMetadata& metadata() const { return metadata_; }
-  /// \brief Return the length (in rows) of the array
+  /// Return the length (in rows) of the array
   int64_t length() const { return length_; }
-  /// \brief Return the bit offset into the corresponding vector
+  /// Return the bit offset into the corresponding vector
   ///
   /// if i == 1 then this must be a bool array
   int bit_offset(int i) const {
@@ -211,7 +211,7 @@ class ARROW_EXPORT KeyColumnArray {
   }
 };
 
-/// \brief Create KeyColumnMetadata from a DataType
+/// Create KeyColumnMetadata from a DataType
 ///
 /// If `type` is a dictionary type then this will return the KeyColumnMetadata for
 /// the indices type
@@ -221,52 +221,62 @@ class ARROW_EXPORT KeyColumnArray {
 ARROW_EXPORT Result<KeyColumnMetadata> ColumnMetadataFromDataType(
     const std::shared_ptr<DataType>& type);
 
-/// \brief Create KeyColumnArray from ArrayData
+/// Create KeyColumnArray from ArrayData
 ///
 /// If `type` is a dictionary type then this will return the KeyColumnArray for
 /// the indices array
 ///
 /// The caller should ensure this is only called on "key" columns.
-/// \see ColumnMetadataFromDataType for details
+/// ```{seealso}
+/// ColumnMetadataFromDataType for details
+/// ```
 ARROW_EXPORT Result<KeyColumnArray> ColumnArrayFromArrayData(
     const std::shared_ptr<ArrayData>& array_data, int64_t start_row, int64_t num_rows);
 
-/// \brief Create KeyColumnArray from ArrayData and KeyColumnMetadata
+/// Create KeyColumnArray from ArrayData and KeyColumnMetadata
 ///
 /// If `type` is a dictionary type then this will return the KeyColumnArray for
 /// the indices array
 ///
 /// The caller should ensure this is only called on "key" columns.
-/// \see ColumnMetadataFromDataType for details
+/// ```{seealso}
+/// ColumnMetadataFromDataType for details
+/// ```
 ARROW_EXPORT KeyColumnArray ColumnArrayFromArrayDataAndMetadata(
     const std::shared_ptr<ArrayData>& array_data, const KeyColumnMetadata& metadata,
     int64_t start_row, int64_t num_rows);
 
-/// \brief Create KeyColumnMetadata instances from an ExecBatch
+/// Create KeyColumnMetadata instances from an ExecBatch
 ///
 /// column_metadatas will be resized to fit
 ///
 /// All columns in `batch` must be eligible "key" columns and have an array shape
-/// \see ColumnMetadataFromDataType for more details
+/// ```{seealso}
+/// ColumnMetadataFromDataType for more details
+/// ```
 ARROW_EXPORT Status ColumnMetadatasFromExecBatch(
     const ExecBatch& batch, std::vector<KeyColumnMetadata>* column_metadatas);
 
-/// \brief Create KeyColumnArray instances from a slice of an ExecBatch
+/// Create KeyColumnArray instances from a slice of an ExecBatch
 ///
 /// column_arrays will be resized to fit
 ///
 /// All columns in `batch` must be eligible "key" columns and have an array shape
-/// \see ColumnArrayFromArrayData for more details
+/// ```{seealso}
+/// ColumnArrayFromArrayData for more details
+/// ```
 ARROW_EXPORT Status ColumnArraysFromExecBatch(const ExecBatch& batch, int64_t start_row,
                                               int64_t num_rows,
                                               std::vector<KeyColumnArray>* column_arrays);
 
-/// \brief Create KeyColumnArray instances from an ExecBatch
+/// Create KeyColumnArray instances from an ExecBatch
 ///
 /// column_arrays will be resized to fit
 ///
 /// All columns in `batch` must be eligible "key" columns and have an array shape
-/// \see ColumnArrayFromArrayData for more details
+/// ```{seealso}
+/// ColumnArrayFromArrayData for more details
+/// ```
 ARROW_EXPORT Status ColumnArraysFromExecBatch(const ExecBatch& batch,
                                               std::vector<KeyColumnArray>* column_arrays);
 
@@ -278,7 +288,7 @@ ARROW_EXPORT Status ColumnArraysFromExecBatch(const ExecBatch& batch,
 /// used so that resizes will always grow up to the next power of 2
 class ARROW_EXPORT ResizableArrayData {
  public:
-  /// \brief Create an uninitialized instance
+  /// Create an uninitialized instance
   ///
   /// Init must be called before calling any other operations
   ResizableArrayData()
@@ -290,25 +300,25 @@ class ARROW_EXPORT ResizableArrayData {
 
   ~ResizableArrayData() { Clear(true); }
 
-  /// \brief Initialize the array
-  /// \param data_type The data type this array is holding data for.
-  /// \param pool The pool to make allocations on
-  /// \param log_num_rows_min All resize operations will allocate at least enough
+  /// Initialize the array
+  /// :param data_type: The data type this array is holding data for.
+  /// :param pool: The pool to make allocations on
+  /// :param log_num_rows_min: All resize operations will allocate at least enough
   ///                         space for (1 << log_num_rows_min) rows
   Status Init(const std::shared_ptr<DataType>& data_type, MemoryPool* pool,
               int log_num_rows_min);
 
-  /// \brief Resets the array back to an empty state
-  /// \param release_buffers If true then allocated memory is released and the
+  /// Resets the array back to an empty state
+  /// :param release_buffers: If true then allocated memory is released and the
   ///                        next resize operation will have to reallocate memory
   void Clear(bool release_buffers);
 
-  /// \brief Resize the fixed length buffers
+  /// Resize the fixed length buffers
   ///
   /// The buffers will be resized to hold at least `num_rows_new` rows of data
   Status ResizeFixedLengthBuffers(int num_rows_new);
 
-  /// \brief Resize the varying length buffer if this array is a variable binary type
+  /// Resize the varying length buffer if this array is a variable binary type
   ///
   /// This must be called after offsets have been populated and the buffer will be
   /// resized to hold at least as much data as the offsets require
@@ -316,18 +326,18 @@ class ARROW_EXPORT ResizableArrayData {
   /// Does nothing if the array is not a variable binary type
   Status ResizeVaryingLengthBuffer();
 
-  /// \brief The current length (in rows) of the array
+  /// The current length (in rows) of the array
   int num_rows() const { return num_rows_; }
 
-  /// \brief A non-owning view into this array
+  /// A non-owning view into this array
   KeyColumnArray column_array() const;
 
-  /// \brief A lightweight descriptor of the data held by this array
+  /// A lightweight descriptor of the data held by this array
   Result<KeyColumnMetadata> column_metadata() const {
     return ColumnMetadataFromDataType(data_type_);
   }
 
-  /// \brief Convert the data to an arrow::ArrayData
+  /// Convert the data to an arrow::ArrayData
   ///
   /// This is a zero copy operation and the created ArrayData will reference the
   /// buffers held by this instance.
@@ -338,7 +348,7 @@ class ARROW_EXPORT ResizableArrayData {
   static constexpr int kFixedLengthBuffer = 1;
   static constexpr int kVariableLengthBuffer = 2;
 
-  /// \brief A raw pointer to the requested buffer
+  /// A raw pointer to the requested buffer
   ///
   /// If i is 0 (kValidityBuffer) then this returns the validity buffer
   /// If i is 1 (kFixedLengthBuffer) then this returns the buffer used for values (if this
@@ -361,12 +371,12 @@ class ARROW_EXPORT ResizableArrayData {
   std::shared_ptr<ResizableBuffer> buffers_[kMaxBuffers];
 };
 
-/// \brief A builder to concatenate batches of data into a larger batch
+/// A builder to concatenate batches of data into a larger batch
 ///
 /// Will only store num_rows_max() rows
 class ARROW_EXPORT ExecBatchBuilder {
  public:
-  /// \brief Add rows from `source` into `target` column
+  /// Add rows from `source` into `target` column
   ///
   /// If `target` is uninitialized or cleared it will be initialized to use
   /// the given pool.
@@ -374,7 +384,7 @@ class ARROW_EXPORT ExecBatchBuilder {
                                ResizableArrayData* target, int num_rows_to_append,
                                const uint16_t* row_ids, MemoryPool* pool);
 
-  /// \brief Add nulls into `target` column
+  /// Add nulls into `target` column
   ///
   /// If `target` is uninitialized or cleared it will be initialized to use
   /// the given pool.
@@ -382,7 +392,7 @@ class ARROW_EXPORT ExecBatchBuilder {
                             ResizableArrayData& target, int num_rows_to_append,
                             MemoryPool* pool);
 
-  /// \brief Add selected rows from `batch`
+  /// Add selected rows from `batch`
   ///
   /// If `col_ids` is null then `num_cols` should less than batch.num_values() and
   /// the first `num_cols` columns of batch will be appended.
@@ -392,12 +402,12 @@ class ARROW_EXPORT ExecBatchBuilder {
                         const uint16_t* row_ids, int num_cols,
                         const int* col_ids = NULLPTR);
 
-  /// \brief Add all-null rows
+  /// Add all-null rows
   Status AppendNulls(MemoryPool* pool,
                      const std::vector<std::shared_ptr<DataType>>& types,
                      int num_rows_to_append);
 
-  /// \brief Create an ExecBatch with the data that has been appended so far
+  /// Create an ExecBatch with the data that has been appended so far
   ///        and clear this builder to be used again
   ///
   /// Should only be called if num_rows() returns non-zero.

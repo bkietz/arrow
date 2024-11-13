@@ -55,7 +55,7 @@ namespace flight {
 ARROW_PYFLIGHT_EXPORT
 extern const char* kPyServerMiddlewareName;
 
-/// \brief A table of function pointers for calling from C++ into
+/// A table of function pointers for calling from C++ into
 /// Python.
 class ARROW_PYFLIGHT_EXPORT PyFlightServerVtable {
  public:
@@ -108,7 +108,7 @@ class ARROW_PYFLIGHT_EXPORT PyClientAuthHandlerVtable {
   std::function<Status(PyObject*, std::string*)> get_token;
 };
 
-/// \brief A helper to implement an auth mechanism in Python.
+/// A helper to implement an auth mechanism in Python.
 class ARROW_PYFLIGHT_EXPORT PyServerAuthHandler
     : public arrow::flight::ServerAuthHandler {
  public:
@@ -123,7 +123,7 @@ class ARROW_PYFLIGHT_EXPORT PyServerAuthHandler
   PyServerAuthHandlerVtable vtable_;
 };
 
-/// \brief A helper to implement an auth mechanism in Python.
+/// A helper to implement an auth mechanism in Python.
 class ARROW_PYFLIGHT_EXPORT PyClientAuthHandler
     : public arrow::flight::ClientAuthHandler {
  public:
@@ -175,14 +175,14 @@ class ARROW_PYFLIGHT_EXPORT PyFlightServer : public arrow::flight::FlightServerB
   PyFlightServerVtable vtable_;
 };
 
-/// \brief A callback that obtains the next result from a Flight action.
+/// A callback that obtains the next result from a Flight action.
 typedef std::function<Status(PyObject*, std::unique_ptr<arrow::flight::Result>*)>
     PyFlightResultStreamCallback;
 
-/// \brief A ResultStream built around a Python callback.
+/// A ResultStream built around a Python callback.
 class ARROW_PYFLIGHT_EXPORT PyFlightResultStream : public arrow::flight::ResultStream {
  public:
-  /// \brief Construct a FlightResultStream from a Python object and callback.
+  /// Construct a FlightResultStream from a Python object and callback.
   /// Must only be called while holding the GIL.
   explicit PyFlightResultStream(PyObject* generator,
                                 PyFlightResultStreamCallback callback);
@@ -193,11 +193,11 @@ class ARROW_PYFLIGHT_EXPORT PyFlightResultStream : public arrow::flight::ResultS
   PyFlightResultStreamCallback callback_;
 };
 
-/// \brief A wrapper around a FlightDataStream that keeps alive a
+/// A wrapper around a FlightDataStream that keeps alive a
 /// Python object backing it.
 class ARROW_PYFLIGHT_EXPORT PyFlightDataStream : public arrow::flight::FlightDataStream {
  public:
-  /// \brief Construct a FlightDataStream from a Python object and underlying stream.
+  /// Construct a FlightDataStream from a Python object and underlying stream.
   /// Must only be called while holding the GIL.
   explicit PyFlightDataStream(PyObject* data_source,
                               std::unique_ptr<arrow::flight::FlightDataStream> stream);
@@ -214,14 +214,14 @@ class ARROW_PYFLIGHT_EXPORT PyFlightDataStream : public arrow::flight::FlightDat
 class ARROW_PYFLIGHT_EXPORT PyServerMiddlewareFactory
     : public arrow::flight::ServerMiddlewareFactory {
  public:
-  /// \brief A callback to create the middleware instance in Python
+  /// A callback to create the middleware instance in Python
   typedef std::function<Status(
       PyObject*, const arrow::flight::CallInfo& info,
       const arrow::flight::CallHeaders& incoming_headers,
       std::shared_ptr<arrow::flight::ServerMiddleware>* middleware)>
       StartCallCallback;
 
-  /// \brief Must only be called while holding the GIL.
+  /// Must only be called while holding the GIL.
   explicit PyServerMiddlewareFactory(PyObject* factory, StartCallCallback start_call);
 
   Status StartCall(const arrow::flight::CallInfo& info,
@@ -245,13 +245,13 @@ class ARROW_PYFLIGHT_EXPORT PyServerMiddleware : public arrow::flight::ServerMid
     CallCompletedCallback call_completed;
   };
 
-  /// \brief Must only be called while holding the GIL.
+  /// Must only be called while holding the GIL.
   explicit PyServerMiddleware(PyObject* middleware, Vtable vtable);
 
   void SendingHeaders(arrow::flight::AddCallHeaders* outgoing_headers) override;
   void CallCompleted(const Status& status) override;
   std::string name() const override;
-  /// \brief Get the underlying Python object.
+  /// Get the underlying Python object.
   PyObject* py_object() const;
 
  private:
@@ -262,13 +262,13 @@ class ARROW_PYFLIGHT_EXPORT PyServerMiddleware : public arrow::flight::ServerMid
 class ARROW_PYFLIGHT_EXPORT PyClientMiddlewareFactory
     : public arrow::flight::ClientMiddlewareFactory {
  public:
-  /// \brief A callback to create the middleware instance in Python
+  /// A callback to create the middleware instance in Python
   typedef std::function<Status(
       PyObject*, const arrow::flight::CallInfo& info,
       std::unique_ptr<arrow::flight::ClientMiddleware>* middleware)>
       StartCallCallback;
 
-  /// \brief Must only be called while holding the GIL.
+  /// Must only be called while holding the GIL.
   explicit PyClientMiddlewareFactory(PyObject* factory, StartCallCallback start_call);
 
   void StartCall(const arrow::flight::CallInfo& info,
@@ -295,7 +295,7 @@ class ARROW_PYFLIGHT_EXPORT PyClientMiddleware : public arrow::flight::ClientMid
     CallCompletedCallback call_completed;
   };
 
-  /// \brief Must only be called while holding the GIL.
+  /// Must only be called while holding the GIL.
   explicit PyClientMiddleware(PyObject* factory, Vtable vtable);
 
   void SendingHeaders(arrow::flight::AddCallHeaders* outgoing_headers) override;
@@ -307,15 +307,15 @@ class ARROW_PYFLIGHT_EXPORT PyClientMiddleware : public arrow::flight::ClientMid
   Vtable vtable_;
 };
 
-/// \brief A callback that obtains the next payload from a Flight result stream.
+/// A callback that obtains the next payload from a Flight result stream.
 typedef std::function<Status(PyObject*, arrow::flight::FlightPayload*)>
     PyGeneratorFlightDataStreamCallback;
 
-/// \brief A FlightDataStream built around a Python callback.
+/// A FlightDataStream built around a Python callback.
 class ARROW_PYFLIGHT_EXPORT PyGeneratorFlightDataStream
     : public arrow::flight::FlightDataStream {
  public:
-  /// \brief Construct a FlightDataStream from a Python object and underlying stream.
+  /// Construct a FlightDataStream from a Python object and underlying stream.
   /// Must only be called while holding the GIL.
   explicit PyGeneratorFlightDataStream(PyObject* generator,
                                        std::shared_ptr<arrow::Schema> schema,
@@ -341,7 +341,7 @@ Status CreateFlightInfo(const std::shared_ptr<arrow::Schema>& schema,
                         const std::string& app_metadata,
                         std::unique_ptr<arrow::flight::FlightInfo>* out);
 
-/// \brief Create a SchemaResult from schema.
+/// Create a SchemaResult from schema.
 ARROW_PYFLIGHT_EXPORT
 Status CreateSchemaResult(const std::shared_ptr<arrow::Schema>& schema,
                           std::unique_ptr<arrow::flight::SchemaResult>* out);

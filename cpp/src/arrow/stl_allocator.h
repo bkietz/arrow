@@ -30,7 +30,7 @@
 namespace arrow {
 namespace stl {
 
-/// \brief A STL allocator delegating allocations to a Arrow MemoryPool
+/// A STL allocator delegating allocations to a Arrow MemoryPool
 template <class T>
 class allocator {
  public:
@@ -47,9 +47,9 @@ class allocator {
     using other = allocator<U>;
   };
 
-  /// \brief Construct an allocator from the default MemoryPool
+  /// Construct an allocator from the default MemoryPool
   allocator() noexcept : pool_(default_memory_pool()) {}
-  /// \brief Construct an allocator from the given MemoryPool
+  /// Construct an allocator from the given MemoryPool
   explicit allocator(MemoryPool* pool) noexcept : pool_(pool) {}
 
   template <class U>
@@ -90,14 +90,14 @@ class allocator {
   MemoryPool* pool_;
 };
 
-/// \brief A MemoryPool implementation delegating allocations to a STL allocator
+/// A MemoryPool implementation delegating allocations to a STL allocator
 ///
 /// Note that STL allocators don't provide a resizing operation, and therefore
 /// any buffer resizes will do a full reallocation and copy.
 template <typename Allocator = std::allocator<uint8_t>>
 class STLMemoryPool : public MemoryPool {
  public:
-  /// \brief Construct a memory pool from the given allocator
+  /// Construct a memory pool from the given allocator
   explicit STLMemoryPool(const Allocator& alloc) : alloc_(alloc) {}
 
   using MemoryPool::Allocate;

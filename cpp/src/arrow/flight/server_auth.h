@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-/// \brief Server-side APIs to implement authentication for Flight.
+/// Server-side APIs to implement authentication for Flight.
 
 #pragma once
 
@@ -29,7 +29,7 @@ namespace arrow {
 
 namespace flight {
 
-/// \brief A reader for messages from the client during an
+/// A reader for messages from the client during an
 /// authentication handshake.
 class ARROW_FLIGHT_EXPORT ServerAuthReader {
  public:
@@ -37,7 +37,7 @@ class ARROW_FLIGHT_EXPORT ServerAuthReader {
   virtual Status Read(std::string* token) = 0;
 };
 
-/// \brief A writer for messages to the client during an
+/// A writer for messages to the client during an
 /// authentication handshake.
 class ARROW_FLIGHT_EXPORT ServerAuthSender {
  public:
@@ -45,7 +45,7 @@ class ARROW_FLIGHT_EXPORT ServerAuthSender {
   virtual Status Write(const std::string& message) = 0;
 };
 
-/// \brief An authentication implementation for a Flight service.
+/// An authentication implementation for a Flight service.
 /// Authentication includes both an initial negotiation and a per-call
 /// token validation. Implementations may choose to use either or both
 /// mechanisms.
@@ -54,12 +54,12 @@ class ARROW_FLIGHT_EXPORT ServerAuthSender {
 class ARROW_FLIGHT_EXPORT ServerAuthHandler {
  public:
   virtual ~ServerAuthHandler();
-  /// \brief Authenticate the client on initial connection. The server
+  /// Authenticate the client on initial connection. The server
   /// can send and read responses from the client at any time.
-  /// \param[in] context The call context.
-  /// \param[in] outgoing The writer for messages to the client.
-  /// \param[in] incoming The reader for messages from the client.
-  /// \return Status OK if this authentication is succeeded.
+  /// :param context: The call context.
+  /// :param outgoing: The writer for messages to the client.
+  /// :param incoming: The reader for messages from the client.
+  /// :return: Status OK if this authentication is succeeded.
   virtual Status Authenticate(const ServerCallContext& context,
                               ServerAuthSender* outgoing, ServerAuthReader* incoming) {
     // TODO: We can make this pure virtual function when we remove
@@ -68,11 +68,11 @@ class ARROW_FLIGHT_EXPORT ServerAuthHandler {
     return Authenticate(outgoing, incoming);
     ARROW_UNSUPPRESS_DEPRECATION_WARNING
   }
-  /// \brief Authenticate the client on initial connection. The server
+  /// Authenticate the client on initial connection. The server
   /// can send and read responses from the client at any time.
-  /// \param[in] outgoing The writer for messages to the client.
-  /// \param[in] incoming The reader for messages from the client.
-  /// \return Status OK if this authentication is succeeded.
+  /// :param outgoing: The writer for messages to the client.
+  /// :param incoming: The reader for messages from the client.
+  /// :return: Status OK if this authentication is succeeded.
   /// \deprecated Deprecated in 13.0.0. Implement the Authentication()
   /// with ServerCallContext version instead.
   ARROW_DEPRECATED("Deprecated in 13.0.0. Use ServerCallContext overload instead.")
@@ -80,13 +80,13 @@ class ARROW_FLIGHT_EXPORT ServerAuthHandler {
     return Status::NotImplemented(typeid(this).name(),
                                   "::Authenticate() isn't implemented");
   }
-  /// \brief Validate a per-call client token.
-  /// \param[in] context The call context.
-  /// \param[in] token The client token. May be the empty string if
+  /// Validate a per-call client token.
+  /// :param context: The call context.
+  /// :param token: The client token. May be the empty string if
   /// the client does not provide a token.
-  /// \param[out] peer_identity The identity of the peer, if this
+  /// :param peer_identity[out]: The identity of the peer, if this
   /// authentication method supports it.
-  /// \return Status OK if the token is valid, any other status if
+  /// :return: Status OK if the token is valid, any other status if
   /// validation failed
   virtual Status IsValid(const ServerCallContext& context, const std::string& token,
                          std::string* peer_identity) {
@@ -96,12 +96,12 @@ class ARROW_FLIGHT_EXPORT ServerAuthHandler {
     return IsValid(token, peer_identity);
     ARROW_UNSUPPRESS_DEPRECATION_WARNING
   }
-  /// \brief Validate a per-call client token.
-  /// \param[in] token The client token. May be the empty string if
+  /// Validate a per-call client token.
+  /// :param token: The client token. May be the empty string if
   /// the client does not provide a token.
-  /// \param[out] peer_identity The identity of the peer, if this
+  /// :param peer_identity[out]: The identity of the peer, if this
   /// authentication method supports it.
-  /// \return Status OK if the token is valid, any other status if
+  /// :return: Status OK if the token is valid, any other status if
   /// validation failed
   /// \deprecated Deprecated in 13.0.0. Implement the IsValid()
   /// with ServerCallContext version instead.
@@ -111,7 +111,7 @@ class ARROW_FLIGHT_EXPORT ServerAuthHandler {
   }
 };
 
-/// \brief An authentication mechanism that does nothing.
+/// An authentication mechanism that does nothing.
 class ARROW_FLIGHT_EXPORT NoOpAuthHandler : public ServerAuthHandler {
  public:
   ~NoOpAuthHandler() override;

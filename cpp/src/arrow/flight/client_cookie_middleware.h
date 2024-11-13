@@ -26,7 +26,7 @@
 namespace arrow {
 namespace flight {
 
-/// \brief Returns a ClientMiddlewareFactory that handles sending and receiving cookies.
+/// Returns a ClientMiddlewareFactory that handles sending and receiving cookies.
 ARROW_FLIGHT_EXPORT std::shared_ptr<ClientMiddlewareFactory> GetCookieFactory();
 
 }  // namespace flight

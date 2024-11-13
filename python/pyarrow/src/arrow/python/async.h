@@ -25,7 +25,7 @@
 
 namespace arrow::py {
 
-/// \brief Bind a Python callback to an arrow::Future.
+/// Bind a Python callback to an arrow::Future.
 ///
 /// If the Future finishes successfully, py_wrapper is called with its
 /// result value and should return a PyObject*. If py_wrapper is successful,
@@ -34,11 +34,11 @@ namespace arrow::py {
 /// If either the Future or py_wrapper fails, py_cb is called with the
 /// associated Python exception.
 ///
-/// \param future The future to bind to.
-/// \param py_cb The Python callback function. Will be passed the result of
+/// :param future: The future to bind to.
+/// :param py_cb: The Python callback function. Will be passed the result of
 ///   py_wrapper, or a Python exception if the future failed or one was
 ///   raised by py_wrapper.
-/// \param py_wrapper A function (likely defined in Cython) to convert the C++
+/// :param py_wrapper: A function (likely defined in Cython) to convert the C++
 ///   result of the future to a Python object.
 template <typename T, typename PyWrapper = PyObject* (*)(T)>
 void BindFuture(Future<T> future, PyObject* py_cb, PyWrapper py_wrapper) {

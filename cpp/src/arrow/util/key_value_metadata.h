@@ -32,7 +32,7 @@
 
 namespace arrow {
 
-/// \brief A container for key-value pair type metadata. Not thread-safe
+/// A container for key-value pair type metadata. Not thread-safe
 class ARROW_EXPORT KeyValueMetadata {
  public:
   KeyValueMetadata();
@@ -63,12 +63,12 @@ class ARROW_EXPORT KeyValueMetadata {
 
   std::vector<std::pair<std::string, std::string>> sorted_pairs() const;
 
-  /// \brief Perform linear search for key, returning -1 if not found
+  /// Perform linear search for key, returning -1 if not found
   int FindKey(std::string_view key) const;
 
   std::shared_ptr<KeyValueMetadata> Copy() const;
 
-  /// \brief Return a new KeyValueMetadata by combining the passed metadata
+  /// Return a new KeyValueMetadata by combining the passed metadata
   /// with this KeyValueMetadata. Colliding keys will be overridden by the
   /// passed metadata. Assumes keys in both containers are unique
   std::shared_ptr<KeyValueMetadata> Merge(const KeyValueMetadata& other) const;
@@ -83,16 +83,16 @@ class ARROW_EXPORT KeyValueMetadata {
   ARROW_DISALLOW_COPY_AND_ASSIGN(KeyValueMetadata);
 };
 
-/// \brief Create a KeyValueMetadata instance
+/// Create a KeyValueMetadata instance
 ///
-/// \param pairs key-value mapping
+/// :param pairs: key-value mapping
 ARROW_EXPORT std::shared_ptr<KeyValueMetadata> key_value_metadata(
     const std::unordered_map<std::string, std::string>& pairs);
 
-/// \brief Create a KeyValueMetadata instance
+/// Create a KeyValueMetadata instance
 ///
-/// \param keys sequence of metadata keys
-/// \param values sequence of corresponding metadata values
+/// :param keys: sequence of metadata keys
+/// :param values: sequence of corresponding metadata values
 ARROW_EXPORT std::shared_ptr<KeyValueMetadata> key_value_metadata(
     std::vector<std::string> keys, std::vector<std::string> values);
 

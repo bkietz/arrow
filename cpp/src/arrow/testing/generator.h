@@ -32,100 +32,100 @@ namespace arrow {
 
 class ARROW_TESTING_EXPORT ConstantArrayGenerator {
  public:
-  /// \brief Generates a constant BooleanArray
+  /// Generates a constant BooleanArray
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> Boolean(int64_t size, bool value = false);
 
-  /// \brief Generates a constant UInt8Array
+  /// Generates a constant UInt8Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> UInt8(int64_t size, uint8_t value = 0);
 
-  /// \brief Generates a constant Int8Array
+  /// Generates a constant Int8Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> Int8(int64_t size, int8_t value = 0);
 
-  /// \brief Generates a constant UInt16Array
+  /// Generates a constant UInt16Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> UInt16(int64_t size, uint16_t value = 0);
 
-  /// \brief Generates a constant UInt16Array
+  /// Generates a constant UInt16Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> Int16(int64_t size, int16_t value = 0);
 
-  /// \brief Generates a constant UInt32Array
+  /// Generates a constant UInt32Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> UInt32(int64_t size, uint32_t value = 0);
 
-  /// \brief Generates a constant UInt32Array
+  /// Generates a constant UInt32Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> Int32(int64_t size, int32_t value = 0);
 
-  /// \brief Generates a constant UInt64Array
+  /// Generates a constant UInt64Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> UInt64(int64_t size, uint64_t value = 0);
 
-  /// \brief Generates a constant UInt64Array
+  /// Generates a constant UInt64Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> Int64(int64_t size, int64_t value = 0);
 
-  /// \brief Generates a constant Float32Array
+  /// Generates a constant Float32Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> Float32(int64_t size, float value = 0);
 
-  /// \brief Generates a constant Float64Array
+  /// Generates a constant Float64Array
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> Float64(int64_t size, double value = 0);
 
-  /// \brief Generates a constant StringArray
+  /// Generates a constant StringArray
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] value to repeat
+  /// :param size: the size of the array to generate
+  /// :param value: to repeat
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> String(int64_t size, std::string value = "");
 
   template <typename ArrowType, typename CType = typename ArrowType::c_type>
@@ -192,42 +192,42 @@ class ARROW_TESTING_EXPORT ConstantArrayGenerator {
     }
   }
 
-  /// \brief Generates a constant Array of zeroes
+  /// Generates a constant Array of zeroes
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] type the type of the Array
+  /// :param size: the size of the array to generate
+  /// :param type: the type of the Array
   ///
-  /// \return a generated Array
+  /// :return: a generated Array
   static std::shared_ptr<Array> Zeroes(int64_t size,
                                        const std::shared_ptr<DataType>& type);
 
-  /// \brief Generates a RecordBatch of zeroes
+  /// Generates a RecordBatch of zeroes
   ///
-  /// \param[in] size the size of the array to generate
-  /// \param[in] schema to conform to
+  /// :param size: the size of the array to generate
+  /// :param schema: to conform to
   ///
   /// This function is handy to return of RecordBatch of a desired shape.
   ///
-  /// \return a generated RecordBatch
+  /// :return: a generated RecordBatch
   static std::shared_ptr<RecordBatch> Zeroes(int64_t size,
                                              const std::shared_ptr<Schema>& schema);
 
-  /// \brief Generates a RecordBatchReader by repeating a RecordBatch
+  /// Generates a RecordBatchReader by repeating a RecordBatch
   ///
-  /// \param[in] n_batch the number of times it repeats batch
-  /// \param[in] batch the RecordBatch to repeat
+  /// :param n_batch: the number of times it repeats batch
+  /// :param batch: the RecordBatch to repeat
   ///
-  /// \return a generated RecordBatchReader
+  /// :return: a generated RecordBatchReader
   static std::shared_ptr<RecordBatchReader> Repeat(
       int64_t n_batch, const std::shared_ptr<RecordBatch> batch);
 
-  /// \brief Generates a RecordBatchReader of zeroes batches
+  /// Generates a RecordBatchReader of zeroes batches
   ///
-  /// \param[in] n_batch the number of RecordBatch
-  /// \param[in] batch_size the size of each RecordBatch
-  /// \param[in] schema to conform to
+  /// :param n_batch: the number of RecordBatch
+  /// :param batch_size: the size of each RecordBatch
+  /// :param schema: to conform to
   ///
-  /// \return a generated RecordBatchReader
+  /// :return: a generated RecordBatchReader
   static std::shared_ptr<RecordBatchReader> Zeroes(int64_t n_batch, int64_t batch_size,
                                                    const std::shared_ptr<Schema>& schema);
 };
@@ -275,12 +275,12 @@ class ARROW_TESTING_EXPORT DataGenerator {
   virtual Result<std::shared_ptr<::arrow::Table>> Table(int64_t rows_per_chunk,
                                                         int num_chunks = 1) = 0;
   virtual std::shared_ptr<::arrow::Schema> Schema() = 0;
-  /// @brief Converts this generator to a variant that fails (in a googletest sense)
+  /// Converts this generator to a variant that fails (in a googletest sense)
   ///        if any error is encountered.
   virtual std::unique_ptr<GTestDataGenerator> FailOnError() = 0;
 };
 
-/// @brief A potentially named field
+/// A potentially named field
 ///
 /// If name is not specified then a name will be generated automatically (e.g. f0, f1)
 struct ARROW_TESTING_EXPORT GeneratorField {

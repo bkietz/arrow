@@ -146,7 +146,7 @@ class DropNullCounter {
   const bool has_validity_;
 };
 
-/// \brief The Filter implementation for primitive (fixed-width) types does not
+/// The Filter implementation for primitive (fixed-width) types does not
 /// use the logical Arrow type but rather the physical C type. This way we only
 /// generate one take function for each byte width.
 ///

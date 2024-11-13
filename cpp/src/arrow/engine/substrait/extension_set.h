@@ -83,7 +83,7 @@ struct ARROW_ENGINE_EXPORT IdHashEq {
   bool operator()(Id l, Id r) const;
 };
 
-/// \brief Owning storage for ids
+/// Owning storage for ids
 ///
 /// Substrait plans may reuse URIs and names in many places.  For convenience
 /// and performance Substrait ids are typically passed around as views.  As we
@@ -93,19 +93,19 @@ struct ARROW_ENGINE_EXPORT IdHashEq {
 class ARROW_ENGINE_EXPORT IdStorage {
  public:
   virtual ~IdStorage() = default;
-  /// \brief Get an equivalent id pointing into this storage
+  /// Get an equivalent id pointing into this storage
   ///
   /// This operation will copy the ids into storage if they do not already exist
   virtual Id Emplace(Id id) = 0;
-  /// \brief Get an equivalent view pointing into this storage for a URI
+  /// Get an equivalent view pointing into this storage for a URI
   ///
   /// If no URI is found then the uri will be copied into storage
   virtual std::string_view EmplaceUri(std::string_view uri) = 0;
-  /// \brief Get an equivalent id pointing into this storage
+  /// Get an equivalent id pointing into this storage
   ///
   /// If no id is found then nullopt will be returned
   virtual std::optional<Id> Find(Id id) const = 0;
-  /// \brief Get an equivalent view pointing into this storage for a URI
+  /// Get an equivalent view pointing into this storage for a URI
   ///
   /// If no URI is found then nullopt will be returned
   virtual std::optional<std::string_view> FindUri(std::string_view uri) const = 0;
@@ -113,7 +113,7 @@ class ARROW_ENGINE_EXPORT IdStorage {
   static std::unique_ptr<IdStorage> Make();
 };
 
-/// \brief Describes a Substrait call
+/// Describes a Substrait call
 ///
 /// Substrait call expressions contain a list of arguments which can either
 /// be enum arguments (which are serialized as strings), value arguments (which)
@@ -188,17 +188,17 @@ class ARROW_ENGINE_EXPORT ExtensionIdRegistry {
   using SubstraitAggregateToArrow =
       std::function<Result<arrow::compute::Aggregate>(const SubstraitCall&)>;
 
-  /// \brief A mapping between a Substrait ID and an arrow::DataType
+  /// A mapping between a Substrait ID and an arrow::DataType
   struct TypeRecord {
     Id id;
     const std::shared_ptr<DataType>& type;
   };
 
-  /// \brief Return a uri view owned by this registry
+  /// Return a uri view owned by this registry
   ///
   /// If the URI has never been emplaced it will return nullopt
   virtual std::optional<std::string_view> FindUri(std::string_view uri) const = 0;
-  /// \brief Return a id view owned by this registry
+  /// Return a id view owned by this registry
   ///
   /// If the id has never been emplaced it will return nullopt
   virtual std::optional<Id> FindId(Id id) const = 0;
@@ -206,78 +206,78 @@ class ARROW_ENGINE_EXPORT ExtensionIdRegistry {
   virtual std::optional<TypeRecord> GetType(Id) const = 0;
   virtual Status CanRegisterType(Id, const std::shared_ptr<DataType>& type) const = 0;
   virtual Status RegisterType(Id, std::shared_ptr<DataType>) = 0;
-  /// \brief Register a converter that converts an Arrow call to a Substrait call
+  /// Register a converter that converts an Arrow call to a Substrait call
   ///
   /// Note that there may not be 1:1 parity between ArrowToSubstraitCall and
   /// SubstraitCallToArrow because some standard functions (e.g. add) may map to
   /// multiple Arrow functions (e.g. add, add_checked)
   virtual Status AddArrowToSubstraitCall(std::string arrow_function_name,
                                          ArrowToSubstraitCall conversion_func) = 0;
-  /// \brief Check to see if a converter can be registered
+  /// Check to see if a converter can be registered
   ///
-  /// \return Status::OK if there are no conflicts, otherwise an error is returned
+  /// :return: Status::OK if there are no conflicts, otherwise an error is returned
   virtual Status CanAddArrowToSubstraitCall(
       const std::string& arrow_function_name) const = 0;
 
-  /// \brief Register a converter that converts an Arrow aggregate to a Substrait
+  /// Register a converter that converts an Arrow aggregate to a Substrait
   ///        aggregate
   virtual Status AddArrowToSubstraitAggregate(
       std::string arrow_function_name, ArrowToSubstraitAggregate conversion_func) = 0;
-  /// \brief Check to see if a converter can be registered
+  /// Check to see if a converter can be registered
   ///
-  /// \return Status::OK if there are no conflicts, otherwise an error is returned
+  /// :return: Status::OK if there are no conflicts, otherwise an error is returned
   virtual Status CanAddArrowToSubstraitAggregate(
       const std::string& arrow_function_name) const = 0;
 
-  /// \brief Register a converter that converts a Substrait call to an Arrow call
+  /// Register a converter that converts a Substrait call to an Arrow call
   virtual Status AddSubstraitCallToArrow(Id substrait_function_id,
                                          SubstraitCallToArrow conversion_func) = 0;
-  /// \brief Check to see if a converter can be registered
+  /// Check to see if a converter can be registered
   ///
-  /// \return Status::OK if there are no conflicts, otherwise an error is returned
+  /// :return: Status::OK if there are no conflicts, otherwise an error is returned
   virtual Status CanAddSubstraitCallToArrow(Id substrait_function_id) const = 0;
-  /// \brief Register a simple mapping function
+  /// Register a simple mapping function
   ///
   /// All calls to the function must pass only value arguments.  The arguments
   /// will be converted to expressions and passed to the Arrow function
   virtual Status AddSubstraitCallToArrow(Id substrait_function_id,
                                          std::string arrow_function_name) = 0;
 
-  /// \brief Register a converter that converts a Substrait aggregate to an Arrow
+  /// Register a converter that converts a Substrait aggregate to an Arrow
   ///        aggregate
   virtual Status AddSubstraitAggregateToArrow(
       Id substrait_function_id, SubstraitAggregateToArrow conversion_func) = 0;
-  /// \brief Check to see if a converter can be registered
+  /// Check to see if a converter can be registered
   ///
-  /// \return Status::OK if there are no conflicts, otherwise an error is returned
+  /// :return: Status::OK if there are no conflicts, otherwise an error is returned
   virtual Status CanAddSubstraitAggregateToArrow(Id substrait_function_id) const = 0;
 
-  /// \brief Return a list of Substrait functions that have a converter
+  /// Return a list of Substrait functions that have a converter
   ///
   /// The function ids are encoded as strings using the pattern {uri}#{name}
   virtual std::vector<std::string> GetSupportedSubstraitFunctions() const = 0;
 
-  /// \brief Find a converter to map Arrow calls to Substrait calls
-  /// \return A converter function or an invalid status if no converter is registered
+  /// Find a converter to map Arrow calls to Substrait calls
+  /// :return: A converter function or an invalid status if no converter is registered
   virtual Result<ArrowToSubstraitCall> GetArrowToSubstraitCall(
       const std::string& arrow_function_name) const = 0;
 
-  /// \brief Find a converter to map Arrow aggregates to Substrait aggregates
-  /// \return A converter function or an invalid status if no converter is registered
+  /// Find a converter to map Arrow aggregates to Substrait aggregates
+  /// :return: A converter function or an invalid status if no converter is registered
   virtual Result<ArrowToSubstraitAggregate> GetArrowToSubstraitAggregate(
       const std::string& arrow_function_name) const = 0;
 
-  /// \brief Find a converter to map a Substrait aggregate to an Arrow aggregate
-  /// \return A converter function or an invalid status if no converter is registered
+  /// Find a converter to map a Substrait aggregate to an Arrow aggregate
+  /// :return: A converter function or an invalid status if no converter is registered
   virtual Result<SubstraitAggregateToArrow> GetSubstraitAggregateToArrow(
       Id substrait_function_id) const = 0;
 
-  /// \brief Find a converter to map a Substrait call to an Arrow call
-  /// \return A converter function or an invalid status if no converter is registered
+  /// Find a converter to map a Substrait call to an Arrow call
+  /// :return: A converter function or an invalid status if no converter is registered
   virtual Result<SubstraitCallToArrow> GetSubstraitCallToArrow(
       Id substrait_function_id) const = 0;
 
-  /// \brief Similar to \see GetSubstraitCallToArrow but only uses the name
+  /// Similar to \see GetSubstraitCallToArrow but only uses the name
   ///
   /// There may be multiple functions with the same name and this will return
   /// the first.  This is slower than GetSubstraitCallToArrow and should only
@@ -285,9 +285,11 @@ class ARROW_ENGINE_EXPORT ExtensionIdRegistry {
   virtual Result<SubstraitCallToArrow> GetSubstraitCallToArrowFallback(
       std::string_view function_name) const = 0;
 
-  /// \brief Similar to \see GetSubstraitAggregateToArrow but only uses the name
+  /// Similar to \see GetSubstraitAggregateToArrow but only uses the name
   ///
-  /// \see GetSubstraitCallToArrowFallback for details on the fallback behavior
+  /// ```{seealso}
+  /// GetSubstraitCallToArrowFallback for details on the fallback behavior
+  /// ```
   virtual Result<SubstraitAggregateToArrow> GetSubstraitAggregateToArrowFallback(
       std::string_view function_name) const = 0;
 };
@@ -305,7 +307,7 @@ constexpr Id kTimeNanosId = {kArrowExtTypesUri, kTimeNanosTypeName};
 /// Note: Function support is currently very minimal, see ARROW-15538
 ARROW_ENGINE_EXPORT ExtensionIdRegistry* default_extension_id_registry();
 
-/// \brief Make a nested registry with a given parent.
+/// Make a nested registry with a given parent.
 ///
 /// A nested registry supports registering types and functions other and on top of those
 /// already registered in its parent registry. No conflicts in IDs and names used for
@@ -318,7 +320,7 @@ ARROW_ENGINE_EXPORT ExtensionIdRegistry* default_extension_id_registry();
 ARROW_ENGINE_EXPORT std::shared_ptr<ExtensionIdRegistry> nested_extension_id_registry(
     const ExtensionIdRegistry* parent);
 
-/// \brief A set of extensions used within a plan
+/// A set of extensions used within a plan
 ///
 /// Each time an extension is used within a Substrait plan the extension
 /// must be included in an extension set that is defined at the root of the
@@ -385,21 +387,21 @@ class ARROW_ENGINE_EXPORT ExtensionSet {
 
   const std::unordered_map<uint32_t, std::string_view>& uris() const { return uris_; }
 
-  /// \brief Returns a data type given an anchor
+  /// Returns a data type given an anchor
   ///
   /// This is used when converting a Substrait plan to an Arrow execution plan.
   ///
   /// If the anchor does not exist in this extension set an error will be returned.
   Result<TypeRecord> DecodeType(uint32_t anchor) const;
 
-  /// \brief Returns the number of custom type records in this extension set
+  /// Returns the number of custom type records in this extension set
   ///
   /// Note: the types are currently stored as a sparse vector, so this may return a value
   /// larger than the actual number of types. This behavior may change in the future; see
   /// ARROW-15583.
   std::size_t num_types() const { return types_.size(); }
 
-  /// \brief Lookup the anchor for a given type
+  /// Lookup the anchor for a given type
   ///
   /// This operation is used when converting an Arrow execution plan to a Substrait plan.
   /// If the type has been previously encoded then the same anchor value will returned.
@@ -409,17 +411,17 @@ class ARROW_ENGINE_EXPORT ExtensionSet {
   /// If the type does not exist in the extension id registry then an error will be
   /// returned.
   ///
-  /// \return An anchor that can be used to refer to the type within a plan
+  /// :return: An anchor that can be used to refer to the type within a plan
   Result<uint32_t> EncodeType(const DataType& type);
 
-  /// \brief Return a function id given an anchor
+  /// Return a function id given an anchor
   ///
   /// This is used when converting a Substrait plan to an Arrow execution plan.
   ///
   /// If the anchor does not exist in this extension set an error will be returned.
   Result<Id> DecodeFunction(uint32_t anchor) const;
 
-  /// \brief Lookup the anchor for a given function
+  /// Lookup the anchor for a given function
   ///
   /// This operation is used when converting an Arrow execution plan to a Substrait  plan.
   /// If the function has been previously encoded then the same anchor value will be
@@ -431,10 +433,10 @@ class ARROW_ENGINE_EXPORT ExtensionSet {
   /// If the function name is not in the extension id registry then an error will be
   /// returned.
   ///
-  /// \return An anchor that can be used to refer to the function within a plan
+  /// :return: An anchor that can be used to refer to the function within a plan
   Result<uint32_t> EncodeFunction(Id function_id);
 
-  /// \brief Stores a plan-specific id that is not known to the registry
+  /// Stores a plan-specific id that is not known to the registry
   ///
   /// This is used when converting an Arrow execution plan to a Substrait plan.
   ///
@@ -443,7 +445,7 @@ class ARROW_ENGINE_EXPORT ExtensionSet {
   /// views)
   Id RegisterPlanSpecificId(Id id);
 
-  /// \brief Return the number of custom functions in this extension set
+  /// Return the number of custom functions in this extension set
   std::size_t num_functions() const { return functions_.size(); }
 
   const ExtensionIdRegistry* registry() const { return registry_; }

@@ -68,14 +68,14 @@ void RegisterSelectionFunction(const std::string& name, FunctionDoc doc,
 
 namespace {
 
-/// \brief Iterate over a REE filter, emitting ranges of a plain values array that
+/// Iterate over a REE filter, emitting ranges of a plain values array that
 /// would pass the filter.
 ///
 /// Differently from REExREE, and REExPlain filtering, PlainxREE filtering
 /// does not produce a REE output, but rather a plain output array. As such it's
 /// much simpler.
 ///
-/// \param filter_may_have_nulls Only pass false if you know the filter has no nulls.
+/// :param filter_may_have_nulls: Only pass false if you know the filter has no nulls.
 template <typename FilterRunEndType>
 void VisitPlainxREEFilterOutputSegmentsImpl(
     const ArraySpan& filter, bool filter_may_have_nulls,

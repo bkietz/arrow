@@ -62,10 +62,10 @@ class BaseBinaryArray : public FlatArray {
     return raw_data_ + pos;
   }
 
-  /// \brief Get binary value as a string_view
+  /// Get binary value as a string_view
   ///
-  /// \param i the value index
-  /// \return the view over the selected value
+  /// :param i: the value index
+  /// :return: the view over the selected value
   std::string_view GetView(int64_t i) const {
     const offset_type pos = raw_value_offsets_[i];
     return std::string_view(reinterpret_cast<const char*>(raw_data_ + pos),
@@ -76,17 +76,17 @@ class BaseBinaryArray : public FlatArray {
     return *IteratorType(*this, i);
   }
 
-  /// \brief Get binary value as a string_view
+  /// Get binary value as a string_view
   /// Provided for consistency with other arrays.
   ///
-  /// \param i the value index
-  /// \return the view over the selected value
+  /// :param i: the value index
+  /// :return: the view over the selected value
   std::string_view Value(int64_t i) const { return GetView(i); }
 
-  /// \brief Get binary value as a std::string
+  /// Get binary value as a std::string
   ///
-  /// \param i the value index
-  /// \return the value copied into a std::string
+  /// :param i: the value index
+  /// :return: the value copied into a std::string
   std::string GetString(int64_t i) const { return std::string(GetView(i)); }
 
   /// Note that this buffer does not account for any slice offset
@@ -99,20 +99,20 @@ class BaseBinaryArray : public FlatArray {
 
   const uint8_t* raw_data() const { return raw_data_; }
 
-  /// \brief Return the data buffer absolute offset of the data for the value
+  /// Return the data buffer absolute offset of the data for the value
   /// at the passed index.
   ///
   /// Does not perform boundschecking
   offset_type value_offset(int64_t i) const { return raw_value_offsets_[i]; }
 
-  /// \brief Return the length of the data for the value at the passed index.
+  /// Return the length of the data for the value at the passed index.
   ///
   /// Does not perform boundschecking
   offset_type value_length(int64_t i) const {
     return raw_value_offsets_[i + 1] - raw_value_offsets_[i];
   }
 
-  /// \brief Return the total length of the memory in the data buffer
+  /// Return the total length of the memory in the data buffer
   /// referenced by this array. If the array has been sliced then this may be
   /// less than the size of the data buffer (data_->buffers[2]).
   offset_type total_values_length() const {
@@ -169,7 +169,7 @@ class ARROW_EXPORT StringArray : public BinaryArray {
               const std::shared_ptr<Buffer>& null_bitmap = NULLPTR,
               int64_t null_count = kUnknownNullCount, int64_t offset = 0);
 
-  /// \brief Validate that this array contains only valid UTF8 entries
+  /// Validate that this array contains only valid UTF8 entries
   ///
   /// This check is also implied by ValidateFull()
   Status ValidateUTF8() const;
@@ -202,7 +202,7 @@ class ARROW_EXPORT LargeStringArray : public LargeBinaryArray {
                    const std::shared_ptr<Buffer>& null_bitmap = NULLPTR,
                    int64_t null_count = kUnknownNullCount, int64_t offset = 0);
 
-  /// \brief Validate that this array contains only valid UTF8 entries
+  /// Validate that this array contains only valid UTF8 entries
   ///
   /// This check is also implied by ValidateFull()
   Status ValidateUTF8() const;
@@ -261,7 +261,7 @@ class ARROW_EXPORT StringViewArray : public BinaryViewArray {
 
   using BinaryViewArray::BinaryViewArray;
 
-  /// \brief Validate that this array contains only valid UTF8 entries
+  /// Validate that this array contains only valid UTF8 entries
   ///
   /// This check is also implied by ValidateFull()
   Status ValidateUTF8() const;

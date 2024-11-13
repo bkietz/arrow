@@ -40,7 +40,7 @@ class ARROW_EXPORT NullBuilder : public ArrayBuilder {
                        int64_t alignment = kDefaultBufferAlignment)
       : NullBuilder(pool, alignment) {}
 
-  /// \brief Append the specified number of null elements
+  /// Append the specified number of null elements
   Status AppendNulls(int64_t length) final {
     if (length < 0) return Status::Invalid("length must be positive");
     null_count_ += length;
@@ -48,7 +48,7 @@ class ARROW_EXPORT NullBuilder : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Append a single null element
+  /// Append a single null element
   Status AppendNull() final { return AppendNulls(1); }
 
   Status AppendEmptyValues(int64_t length) final { return AppendNulls(length); }
@@ -63,9 +63,7 @@ class ARROW_EXPORT NullBuilder : public ArrayBuilder {
 
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   std::shared_ptr<DataType> type() const override { return null(); }
 
@@ -115,7 +113,7 @@ class NumericBuilder
     return Status::OK();
   }
 
-  /// \brief Append a single null element
+  /// Append a single null element
   Status AppendNull() final {
     ARROW_RETURN_NOT_OK(Reserve(1));
     data_builder_.UnsafeAppend(value_type{});  // zero
@@ -123,7 +121,7 @@ class NumericBuilder
     return Status::OK();
   }
 
-  /// \brief Append a empty element
+  /// Append a empty element
   Status AppendEmptyValue() final {
     ARROW_RETURN_NOT_OK(Reserve(1));
     data_builder_.UnsafeAppend(value_type{});  // zero
@@ -131,7 +129,7 @@ class NumericBuilder
     return Status::OK();
   }
 
-  /// \brief Append several empty elements
+  /// Append several empty elements
   Status AppendEmptyValues(int64_t length) final {
     ARROW_RETURN_NOT_OK(Reserve(length));
     data_builder_.UnsafeAppend(length, value_type{});  // zero
@@ -159,12 +157,12 @@ class NumericBuilder
     return reinterpret_cast<value_type*>(data_builder_.mutable_data())[index];
   }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a contiguous C array of values
-  /// \param[in] length the number of values to append
-  /// \param[in] valid_bytes an optional sequence of bytes where non-zero
+  /// Append a sequence of elements in one shot
+  /// :param values: a contiguous C array of values
+  /// :param length: the number of values to append
+  /// :param valid_bytes: an optional sequence of bytes where non-zero
   /// indicates a valid (non-null) value
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const value_type* values, int64_t length,
                       const uint8_t* valid_bytes = NULLPTR) {
     ARROW_RETURN_NOT_OK(Reserve(length));
@@ -174,12 +172,12 @@ class NumericBuilder
     return Status::OK();
   }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a contiguous C array of values
-  /// \param[in] length the number of values to append
-  /// \param[in] bitmap a validity bitmap to copy (may be null)
-  /// \param[in] bitmap_offset an offset into the validity bitmap
-  /// \return Status
+  /// Append a sequence of elements in one shot
+  /// :param values: a contiguous C array of values
+  /// :param length: the number of values to append
+  /// :param bitmap: a validity bitmap to copy (may be null)
+  /// :param bitmap_offset: an offset into the validity bitmap
+  /// :return: Status
   Status AppendValues(const value_type* values, int64_t length, const uint8_t* bitmap,
                       int64_t bitmap_offset) {
     ARROW_RETURN_NOT_OK(Reserve(length));
@@ -189,12 +187,12 @@ class NumericBuilder
     return Status::OK();
   }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a contiguous C array of values
-  /// \param[in] length the number of values to append
-  /// \param[in] is_valid an std::vector<bool> indicating valid (1) or null
+  /// Append a sequence of elements in one shot
+  /// :param values: a contiguous C array of values
+  /// :param length: the number of values to append
+  /// :param is_valid: an std::vector<bool> indicating valid (1) or null
   /// (0). Equal in length to values
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const value_type* values, int64_t length,
                       const std::vector<bool>& is_valid) {
     ARROW_RETURN_NOT_OK(Reserve(length));
@@ -204,19 +202,19 @@ class NumericBuilder
     return Status::OK();
   }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a std::vector of values
-  /// \param[in] is_valid an std::vector<bool> indicating valid (1) or null
+  /// Append a sequence of elements in one shot
+  /// :param values: a std::vector of values
+  /// :param is_valid: an std::vector<bool> indicating valid (1) or null
   /// (0). Equal in length to values
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const std::vector<value_type>& values,
                       const std::vector<bool>& is_valid) {
     return AppendValues(values.data(), static_cast<int64_t>(values.size()), is_valid);
   }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a std::vector of values
-  /// \return Status
+  /// Append a sequence of elements in one shot
+  /// :param values: a std::vector of values
+  /// :return: Status
   Status AppendValues(const std::vector<value_type>& values) {
     return AppendValues(values.data(), static_cast<int64_t>(values.size()));
   }
@@ -230,16 +228,14 @@ class NumericBuilder
     return Status::OK();
   }
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<ArrayType>* out) { return FinishTyped(out); }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values_begin InputIterator to the beginning of the values
-  /// \param[in] values_end InputIterator pointing to the end of the values
-  /// \return Status
+  /// Append a sequence of elements in one shot
+  /// :param values_begin: InputIterator to the beginning of the values
+  /// :param values_end: InputIterator pointing to the end of the values
+  /// :return: Status
   template <typename ValuesIter>
   Status AppendValues(ValuesIter values_begin, ValuesIter values_end) {
     int64_t length = static_cast<int64_t>(std::distance(values_begin, values_end));
@@ -250,12 +246,12 @@ class NumericBuilder
     return Status::OK();
   }
 
-  /// \brief Append a sequence of elements in one shot, with a specified nullmap
-  /// \param[in] values_begin InputIterator to the beginning of the values
-  /// \param[in] values_end InputIterator pointing to the end of the values
-  /// \param[in] valid_begin InputIterator with elements indication valid(1)
+  /// Append a sequence of elements in one shot, with a specified nullmap
+  /// :param values_begin: InputIterator to the beginning of the values
+  /// :param values_end: InputIterator pointing to the end of the values
+  /// :param valid_begin: InputIterator with elements indication valid(1)
   ///  or null(0) values.
-  /// \return Status
+  /// :return: Status
   template <typename ValuesIter, typename ValidIter>
   enable_if_t<!std::is_pointer<ValidIter>::value, Status> AppendValues(
       ValuesIter values_begin, ValuesIter values_end, ValidIter valid_begin) {
@@ -416,63 +412,63 @@ class ARROW_EXPORT BooleanBuilder
 
   void UnsafeAppend(const uint8_t val) { UnsafeAppend(val != 0); }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a contiguous array of bytes (non-zero is 1)
-  /// \param[in] length the number of values to append
-  /// \param[in] valid_bytes an optional sequence of bytes where non-zero
+  /// Append a sequence of elements in one shot
+  /// :param values: a contiguous array of bytes (non-zero is 1)
+  /// :param length: the number of values to append
+  /// :param valid_bytes: an optional sequence of bytes where non-zero
   /// indicates a valid (non-null) value
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const uint8_t* values, int64_t length,
                       const uint8_t* valid_bytes = NULLPTR);
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a bitmap of values
-  /// \param[in] length the number of values to append
-  /// \param[in] validity a validity bitmap to copy (may be null)
-  /// \param[in] offset an offset into the values and validity bitmaps
-  /// \return Status
+  /// Append a sequence of elements in one shot
+  /// :param values: a bitmap of values
+  /// :param length: the number of values to append
+  /// :param validity: a validity bitmap to copy (may be null)
+  /// :param offset: an offset into the values and validity bitmaps
+  /// :return: Status
   Status AppendValues(const uint8_t* values, int64_t length, const uint8_t* validity,
                       int64_t offset);
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a contiguous C array of values
-  /// \param[in] length the number of values to append
-  /// \param[in] is_valid an std::vector<bool> indicating valid (1) or null
+  /// Append a sequence of elements in one shot
+  /// :param values: a contiguous C array of values
+  /// :param length: the number of values to append
+  /// :param is_valid: an std::vector<bool> indicating valid (1) or null
   /// (0). Equal in length to values
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const uint8_t* values, int64_t length,
                       const std::vector<bool>& is_valid);
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a std::vector of bytes
-  /// \param[in] is_valid an std::vector<bool> indicating valid (1) or null
+  /// Append a sequence of elements in one shot
+  /// :param values: a std::vector of bytes
+  /// :param is_valid: an std::vector<bool> indicating valid (1) or null
   /// (0). Equal in length to values
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const std::vector<uint8_t>& values,
                       const std::vector<bool>& is_valid);
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a std::vector of bytes
-  /// \return Status
+  /// Append a sequence of elements in one shot
+  /// :param values: a std::vector of bytes
+  /// :return: Status
   Status AppendValues(const std::vector<uint8_t>& values);
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values an std::vector<bool> indicating true (1) or false
-  /// \param[in] is_valid an std::vector<bool> indicating valid (1) or null
+  /// Append a sequence of elements in one shot
+  /// :param values: an std::vector<bool> indicating true (1) or false
+  /// :param is_valid: an std::vector<bool> indicating valid (1) or null
   /// (0). Equal in length to values
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const std::vector<bool>& values, const std::vector<bool>& is_valid);
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values an std::vector<bool> indicating true (1) or false
-  /// \return Status
+  /// Append a sequence of elements in one shot
+  /// :param values: an std::vector<bool> indicating true (1) or false
+  /// :return: Status
   Status AppendValues(const std::vector<bool>& values);
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values_begin InputIterator to the beginning of the values
-  /// \param[in] values_end InputIterator pointing to the end of the values
+  /// Append a sequence of elements in one shot
+  /// :param values_begin: InputIterator to the beginning of the values
+  /// :param values_end: InputIterator pointing to the end of the values
   ///  or null(0) values
-  /// \return Status
+  /// :return: Status
   template <typename ValuesIter>
   Status AppendValues(ValuesIter values_begin, ValuesIter values_end) {
     int64_t length = static_cast<int64_t>(std::distance(values_begin, values_end));
@@ -484,12 +480,12 @@ class ARROW_EXPORT BooleanBuilder
     return Status::OK();
   }
 
-  /// \brief Append a sequence of elements in one shot, with a specified nullmap
-  /// \param[in] values_begin InputIterator to the beginning of the values
-  /// \param[in] values_end InputIterator pointing to the end of the values
-  /// \param[in] valid_begin InputIterator with elements indication valid(1)
+  /// Append a sequence of elements in one shot, with a specified nullmap
+  /// :param values_begin: InputIterator to the beginning of the values
+  /// :param values_end: InputIterator pointing to the end of the values
+  /// :param valid_begin: InputIterator with elements indication valid(1)
   ///  or null(0) values
-  /// \return Status
+  /// :return: Status
   template <typename ValuesIter, typename ValidIter>
   enable_if_t<!std::is_pointer<ValidIter>::value, Status> AppendValues(
       ValuesIter values_begin, ValuesIter values_end, ValidIter valid_begin) {
@@ -538,9 +534,7 @@ class ARROW_EXPORT BooleanBuilder
 
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<BooleanArray>* out) { return FinishTyped(out); }
 

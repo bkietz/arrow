@@ -35,36 +35,36 @@ namespace arrow {
 ///
 /// @{
 
-/// \brief Create a strongly-typed Array instance from generic ArrayData
-/// \param[in] data the array contents
-/// \return the resulting Array instance
+/// Create a strongly-typed Array instance from generic ArrayData
+/// :param data: the array contents
+/// :return: the resulting Array instance
 ARROW_EXPORT
 std::shared_ptr<Array> MakeArray(const std::shared_ptr<ArrayData>& data);
 
-/// \brief Create a strongly-typed Array instance with all elements null
-/// \param[in] type the array type
-/// \param[in] length the array length
-/// \param[in] pool the memory pool to allocate memory from
+/// Create a strongly-typed Array instance with all elements null
+/// :param type: the array type
+/// :param length: the array length
+/// :param pool: the memory pool to allocate memory from
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> MakeArrayOfNull(const std::shared_ptr<DataType>& type,
                                                int64_t length,
                                                MemoryPool* pool = default_memory_pool());
 
-/// \brief Create an Array instance whose slots are the given scalar
-/// \param[in] scalar the value with which to fill the array
-/// \param[in] length the array length
-/// \param[in] pool the memory pool to allocate memory from
+/// Create an Array instance whose slots are the given scalar
+/// :param scalar: the value with which to fill the array
+/// :param length: the array length
+/// :param pool: the memory pool to allocate memory from
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> MakeArrayFromScalar(
     const Scalar& scalar, int64_t length, MemoryPool* pool = default_memory_pool());
 
-/// \brief Create an empty Array of a given type
+/// Create an empty Array of a given type
 ///
 /// The output Array will be of the given type.
 ///
-/// \param[in] type the data type of the empty Array
-/// \param[in] pool the memory pool to allocate memory from
-/// \return the resulting Array
+/// :param type: the data type of the empty Array
+/// :param pool: the memory pool to allocate memory from
+/// :return: the resulting Array
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> MakeEmptyArray(std::shared_ptr<DataType> type,
                                               MemoryPool* pool = default_memory_pool());
@@ -73,14 +73,14 @@ Result<std::shared_ptr<Array>> MakeEmptyArray(std::shared_ptr<DataType> type,
 
 namespace internal {
 
-/// \brief Swap endian of each element in a generic ArrayData
+/// Swap endian of each element in a generic ArrayData
 ///
 /// As dictionaries are often shared between different arrays, dictionaries
 /// are not swapped by this function and should be handled separately.
 ///
-/// \param[in] data the array contents
-/// \param[in] pool the memory pool to allocate memory from
-/// \return the resulting ArrayData whose elements were swapped
+/// :param data: the array contents
+/// :param pool: the memory pool to allocate memory from
+/// :return: the resulting ArrayData whose elements were swapped
 ARROW_EXPORT
 Result<std::shared_ptr<ArrayData>> SwapEndianArrayData(
     const std::shared_ptr<ArrayData>& data, MemoryPool* pool = default_memory_pool());

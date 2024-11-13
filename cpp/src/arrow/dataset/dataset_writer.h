@@ -32,7 +32,7 @@ namespace internal {
 // This lines up with our other defaults in the scanner and execution plan
 constexpr uint64_t kDefaultDatasetWriterMaxRowsQueued = 8 * 1024 * 1024;
 
-/// \brief Utility class that manages a set of writers to different paths
+/// Utility class that manages a set of writers to different paths
 ///
 /// Writers may be closed and reopened (and a new file created) based on the dataset
 /// write options (for example, max_rows_per_file or max_open_files)
@@ -41,13 +41,13 @@ constexpr uint64_t kDefaultDatasetWriterMaxRowsQueued = 8 * 1024 * 1024;
 /// to # of batches which is how it is typically enforced elsewhere) and # of files.
 class ARROW_DS_EXPORT DatasetWriter {
  public:
-  /// \brief Create a dataset writer
+  /// Create a dataset writer
   ///
   /// Will fail if basename_template is invalid or if there is existing data and
   /// existing_data_behavior is kError
   ///
-  /// \param write_options options to control how the data should be written
-  /// \param max_rows_queued max # of rows allowed to be queued before the dataset_writer
+  /// :param write_options: options to control how the data should be written
+  /// :param max_rows_queued: max # of rows allowed to be queued before the dataset_writer
   ///                        will ask for backpressure
   static Result<std::unique_ptr<DatasetWriter>> Make(
       FileSystemDatasetWriteOptions write_options, util::AsyncTaskScheduler* scheduler,
@@ -57,9 +57,9 @@ class ARROW_DS_EXPORT DatasetWriter {
 
   ~DatasetWriter();
 
-  /// \brief Write a batch to the dataset
-  /// \param[in] batch The batch to write
-  /// \param[in] directory The directory to write to
+  /// Write a batch to the dataset
+  /// :param batch: The batch to write
+  /// :param directory: The directory to write to
   ///
   /// Note: The written filename will be {directory}/{filename_factory(i)} where i is a
   /// counter controlled by `max_open_files` and `max_rows_per_file`

@@ -28,7 +28,7 @@
 
 namespace gandiva {
 
-/// \brief Simple arena allocator.
+/// Simple arena allocator.
 ///
 /// Memory is allocated from system in units of chunk-size, and dished out in the
 /// requested sizes. If the requested size > chunk-size, allocate directly from the

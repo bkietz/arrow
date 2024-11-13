@@ -41,7 +41,7 @@ class LLJIT;
 
 namespace gandiva {
 
-/// \brief LLVM Execution engine wrapper.
+/// LLVM Execution engine wrapper.
 class GANDIVA_EXPORT Engine {
  public:
   ~Engine();
@@ -55,10 +55,10 @@ class GANDIVA_EXPORT Engine {
 
   /// Factory method to create and initialize the engine object.
   ///
-  /// \param[in] config the engine configuration
-  /// \param[in] cached flag to mark if the module is already compiled and cached
-  /// \param[in] object_cache an optional object_cache used for building the module
-  /// \return arrow::Result containing the created engine
+  /// :param config: the engine configuration
+  /// :param cached: flag to mark if the module is already compiled and cached
+  /// :param object_cache: an optional object_cache used for building the module
+  /// :return: arrow::Result containing the created engine
   static Result<std::unique_ptr<Engine>> Make(
       const std::shared_ptr<Configuration>& config, bool cached,
       std::optional<std::reference_wrapper<GandivaObjectCache>> object_cache =

@@ -53,37 +53,37 @@ class ARROW_ACERO_EXPORT QueryContext {
   size_t GetThreadIndex();
   size_t max_concurrency() const;
 
-  /// \brief Start an external task
+  /// Start an external task
   ///
   /// This should be avoided if possible.  It is kept in for now for legacy
   /// purposes.  This should be called before the external task is started.  If
   /// a valid future is returned then it should be marked complete when the
   /// external task has finished.
   ///
-  /// \param name A name to give the task for traceability and debugging
+  /// :param name: A name to give the task for traceability and debugging
   ///
-  /// \return an invalid future if the plan has already ended, otherwise this
+  /// :return: an invalid future if the plan has already ended, otherwise this
   ///         returns a future that must be completed when the external task
   ///         finishes.
   Result<Future<>> BeginExternalTask(std::string_view name);
 
-  /// \brief Add a single function as a task to the query's task group
+  /// Add a single function as a task to the query's task group
   ///        on the compute threadpool.
   ///
-  /// \param fn The task to run. Takes no arguments and returns a Status.
-  /// \param name A name to give the task for traceability and debugging
+  /// :param fn: The task to run. Takes no arguments and returns a Status.
+  /// :param name: A name to give the task for traceability and debugging
   void ScheduleTask(std::function<Status()> fn, std::string_view name);
-  /// \brief Add a single function as a task to the query's task group
+  /// Add a single function as a task to the query's task group
   ///        on the compute threadpool.
   ///
-  /// \param fn The task to run. Takes the thread index and returns a Status.
-  /// \param name A name to give the task for traceability and debugging
+  /// :param fn: The task to run. Takes the thread index and returns a Status.
+  /// :param name: A name to give the task for traceability and debugging
   void ScheduleTask(std::function<Status(size_t)> fn, std::string_view name);
-  /// \brief Add a single function as a task to the query's task group on
+  /// Add a single function as a task to the query's task group on
   ///        the IO thread pool
   ///
-  /// \param fn The task to run. Returns a status.
-  /// \param name A name to give the task for traceability and debugging
+  /// :param fn: The task to run. Returns a status.
+  /// :param name: A name to give the task for traceability and debugging
   void ScheduleIOTask(std::function<Status()> fn, std::string_view name);
 
   // Register/Start TaskGroup is a way of performing a "Parallel For" pattern:
@@ -93,22 +93,22 @@ class ARROW_ACERO_EXPORT QueryContext {
   // StartTaskGroup. At runtime, call StartTaskGroup with the ID and the number of times
   // you'd like the task to be executed. The need to register a task group before use will
   // be removed after we rewrite the scheduler.
-  /// \brief Register a "parallel for" task group with the scheduler
+  /// Register a "parallel for" task group with the scheduler
   ///
-  /// \param task The function implementing the task. Takes the thread_index and
+  /// :param task: The function implementing the task. Takes the thread_index and
   ///             the task index.
-  /// \param on_finished The function that gets run once all tasks have been completed.
+  /// :param on_finished: The function that gets run once all tasks have been completed.
   /// Takes the thread_index.
   ///
   /// Must be called inside of ExecNode::Init.
   int RegisterTaskGroup(std::function<Status(size_t, int64_t)> task,
                         std::function<Status(size_t)> on_finished);
 
-  /// \brief Start the task group with the specified ID. This can only
+  /// Start the task group with the specified ID. This can only
   ///        be called once per task_group_id.
   ///
-  /// \param task_group_id The ID  of the task group to run
-  /// \param num_tasks The number of times to run the task
+  /// :param task_group_id: The ID  of the task group to run
+  /// :param num_tasks: The number of times to run the task
   Status StartTaskGroup(int task_group_id, int64_t num_tasks);
 
   // This is an RAII class for keeping track of in-flight file IO. Useful for getting

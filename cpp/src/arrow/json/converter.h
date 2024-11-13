@@ -33,7 +33,7 @@ class MemoryPool;
 
 namespace json {
 
-/// \brief interface for conversion of Arrays
+/// interface for conversion of Arrays
 ///
 /// Converters are not required to be correct for arbitrary input- only
 /// for unconverted arrays emitted by a corresponding parser.
@@ -61,7 +61,7 @@ class ARROW_EXPORT Converter {
   std::shared_ptr<DataType> out_type_;
 };
 
-/// \brief produce a single converter to the specified out_type
+/// produce a single converter to the specified out_type
 ARROW_EXPORT Status MakeConverter(const std::shared_ptr<DataType>& out_type,
                                   MemoryPool* pool, std::shared_ptr<Converter>* out);
 
@@ -69,15 +69,15 @@ class ARROW_EXPORT PromotionGraph {
  public:
   virtual ~PromotionGraph() = default;
 
-  /// \brief produce a valid field which will be inferred as null
+  /// produce a valid field which will be inferred as null
   virtual std::shared_ptr<Field> Null(const std::string& name) const = 0;
 
-  /// \brief given an unexpected field encountered during parsing, return a type to which
+  /// given an unexpected field encountered during parsing, return a type to which
   /// it may be convertible (may return null if none is available)
   virtual std::shared_ptr<DataType> Infer(
       const std::shared_ptr<Field>& unexpected_field) const = 0;
 
-  /// \brief given a type to which conversion failed, return a promoted type to which
+  /// given a type to which conversion failed, return a promoted type to which
   /// conversion may succeed (may return null if none is available)
   virtual std::shared_ptr<DataType> Promote(
       const std::shared_ptr<DataType>& failed,

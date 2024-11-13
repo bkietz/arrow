@@ -45,7 +45,7 @@ void RegisterSelectionFunction(const std::string& name, FunctionDoc doc,
                                const FunctionOptions* default_options,
                                FunctionRegistry* registry);
 
-/// \brief Callback type for VisitPlainxREEFilterOutputSegments.
+/// Callback type for VisitPlainxREEFilterOutputSegments.
 ///
 /// position is the logical position in the values array relative to its offset.
 ///

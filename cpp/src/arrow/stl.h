@@ -232,11 +232,11 @@ struct SchemaFromTuple {
   ///
   /// An example usage of this API can look like the following:
   ///
-  /// \code{.cpp}
+  /// ```
   /// using TupleType = std::tuple<int, std::vector<std::string>>;
   /// std::shared_ptr<Schema> schema =
   ///   SchemaFromTuple<TupleType>::MakeSchema({"int_column", "list_of_strings_column"});
-  /// \endcode
+  /// ```
   static std::shared_ptr<Schema> MakeSchema(const std::vector<std::string>& names) {
     return std::make_shared<Schema>(MakeSchemaRecursion(names));
   }
@@ -264,11 +264,11 @@ struct SchemaFromTuple {
   ///
   /// An example usage of this API can look like the following:
   ///
-  /// \code{.cpp}
+  /// ```
   /// using TupleType = std::tuple<int, std::vector<std::string>>;
   /// std::shared_ptr<Schema> schema =
   ///   SchemaFromTuple<TupleType>::MakeSchema({"int_column", "list_of_strings_column"});
-  /// \endcode
+  /// ```
   template <typename NamesTuple>
   static std::shared_ptr<Schema> MakeSchema(const NamesTuple& names) {
     return std::make_shared<Schema>(MakeSchemaRecursionT<NamesTuple>(names));

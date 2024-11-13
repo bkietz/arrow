@@ -52,9 +52,7 @@ class ARROW_EXPORT Decimal32Builder : public FixedSizeBinaryBuilder {
 
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<Decimal32Array>* out) { return FinishTyped(out); }
 
@@ -83,9 +81,7 @@ class ARROW_EXPORT Decimal64Builder : public FixedSizeBinaryBuilder {
 
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<Decimal64Array>* out) { return FinishTyped(out); }
 
@@ -114,9 +110,7 @@ class ARROW_EXPORT Decimal128Builder : public FixedSizeBinaryBuilder {
 
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<Decimal128Array>* out) { return FinishTyped(out); }
 
@@ -145,9 +139,7 @@ class ARROW_EXPORT Decimal256Builder : public FixedSizeBinaryBuilder {
 
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<Decimal256Array>* out) { return FinishTyped(out); }
 

@@ -41,19 +41,19 @@ class ARROW_FLIGHT_SQL_EXPORT FlightSession {
   std::shared_mutex map_lock_;
 
  public:
-  /// \brief Get session option by name
+  /// Get session option by name
   std::optional<SessionOptionValue> GetSessionOption(const std::string& name);
-  /// \brief Get a copy of the session options map.
+  /// Get a copy of the session options map.
   ///
   /// The returned options map may be modified by further calls to this FlightSession
   std::map<std::string, SessionOptionValue> GetSessionOptions();
-  /// \brief Set session option by name to given value
+  /// Set session option by name to given value
   void SetSessionOption(const std::string& name, const SessionOptionValue value);
-  /// \brief Idempotently remove name from this session
+  /// Idempotently remove name from this session
   void EraseSessionOption(const std::string& name);
 };
 
-/// \brief A middleware to handle session option persistence and related cookie headers.
+/// A middleware to handle session option persistence and related cookie headers.
 ///
 /// WARNING that client cookie invalidation does not currently work due to a gRPC
 /// transport bug.
@@ -64,9 +64,9 @@ class ARROW_FLIGHT_SQL_EXPORT ServerSessionMiddleware : public ServerMiddleware 
 
   std::string name() const override { return kMiddlewareName; }
 
-  /// \brief Is there an existing session (either existing or new)
+  /// Is there an existing session (either existing or new)
   virtual bool HasSession() const = 0;
-  /// \brief Get existing or new call-associated session
+  /// Get existing or new call-associated session
   ///
   /// May return NULLPTR if there is an id generation collision.
   virtual arrow::Result<std::shared_ptr<FlightSession>> GetSession() = 0;
@@ -74,12 +74,12 @@ class ARROW_FLIGHT_SQL_EXPORT ServerSessionMiddleware : public ServerMiddleware 
   ///
   /// This is presently unsupported in C++ until middleware handling can be fixed.
   virtual Status CloseSession() = 0;
-  /// \brief Get request headers, in lieu of a provided or created session.
+  /// Get request headers, in lieu of a provided or created session.
   virtual const CallHeaders& GetCallHeaders() const = 0;
 };
 
-/// \brief Returns a ServerMiddlewareFactory that handles session option storage.
-/// \param[in] id_gen A thread-safe, collision-free generator for session id strings.
+/// Returns a ServerMiddlewareFactory that handles session option storage.
+/// :param id_gen: A thread-safe, collision-free generator for session id strings.
 ARROW_FLIGHT_SQL_EXPORT std::shared_ptr<ServerMiddlewareFactory>
 MakeServerSessionMiddlewareFactory(std::function<std::string()> id_gen);
 

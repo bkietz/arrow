@@ -22,7 +22,7 @@
 namespace arrow {
 namespace flight {
 
-/// \brief Client-side middleware for sending/receiving HTTP style cookies.
+/// Client-side middleware for sending/receiving HTTP style cookies.
 class ClientCookieMiddlewareFactory : public ClientMiddlewareFactory {
  public:
   void StartCall(const CallInfo& info, std::unique_ptr<ClientMiddleware>* middleware) {

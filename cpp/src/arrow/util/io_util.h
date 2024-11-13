@@ -209,18 +209,18 @@ class ARROW_EXPORT SelfPipe {
   static Result<std::shared_ptr<SelfPipe>> Make(bool signal_safe);
   virtual ~SelfPipe();
 
-  /// \brief Wait for a wakeup.
+  /// Wait for a wakeup.
   ///
   /// Status::Invalid is returned if the pipe has been shutdown.
   /// Otherwise the next sent payload is returned.
   virtual Result<uint64_t> Wait() = 0;
 
-  /// \brief Wake up the pipe by sending a payload.
+  /// Wake up the pipe by sending a payload.
   ///
   /// This method is async-signal-safe if `signal_safe` was set to true.
   virtual void Send(uint64_t payload) = 0;
 
-  /// \brief Wake up the pipe and shut it down.
+  /// Wake up the pipe and shut it down.
   virtual Status Shutdown() = 0;
 };
 
@@ -361,17 +361,17 @@ class ARROW_EXPORT SignalHandler {
 #endif
 };
 
-/// \brief Return the current handler for the given signal number.
+/// Return the current handler for the given signal number.
 ARROW_EXPORT
 Result<SignalHandler> GetSignalHandler(int signum);
 
-/// \brief Set a new handler for the given signal number.
+/// Set a new handler for the given signal number.
 ///
 /// The old signal handler is returned.
 ARROW_EXPORT
 Result<SignalHandler> SetSignalHandler(int signum, const SignalHandler& handler);
 
-/// \brief Reinstate the signal handler
+/// Reinstate the signal handler
 ///
 /// For use in signal handlers.  This is needed on platforms without sigaction()
 /// such as Windows, as the default signal handler is restored there as
@@ -379,19 +379,19 @@ Result<SignalHandler> SetSignalHandler(int signum, const SignalHandler& handler)
 ARROW_EXPORT
 void ReinstateSignalHandler(int signum, SignalHandler::Callback handler);
 
-/// \brief Send a signal to the current process
+/// Send a signal to the current process
 ///
 /// The thread which will receive the signal is unspecified.
 ARROW_EXPORT
 Status SendSignal(int signum);
 
-/// \brief Send a signal to the given thread
+/// Send a signal to the given thread
 ///
 /// This function isn't supported on Windows.
 ARROW_EXPORT
 Status SendSignalToThread(int signum, uint64_t thread_id);
 
-/// \brief Get an unpredictable random seed
+/// Get an unpredictable random seed
 ///
 /// This function may be slightly costly, so should only be used to initialize
 /// a PRNG, not to generate a large amount of random numbers.
@@ -400,46 +400,46 @@ Status SendSignalToThread(int signum, uint64_t thread_id);
 ARROW_EXPORT
 int64_t GetRandomSeed();
 
-/// \brief Get the current thread id
+/// Get the current thread id
 ///
 /// In addition to having the same properties as std::thread, the returned value
 /// is a regular integer value, which is more convenient than an opaque type.
 ARROW_EXPORT
 uint64_t GetThreadId();
 
-/// \brief Get the current memory used by the current process in bytes
+/// Get the current memory used by the current process in bytes
 ///
 /// This function supports Windows, Linux, and Mac and will return 0 otherwise
 ARROW_EXPORT
 int64_t GetCurrentRSS();
 
-/// \brief Get the total memory available to the system in bytes
+/// Get the total memory available to the system in bytes
 ///
 /// This function supports Windows, Linux, and Mac and will return 0 otherwise
 ARROW_EXPORT
 int64_t GetTotalMemoryBytes();
 
-/// \brief Load a dynamic library
+/// Load a dynamic library
 ///
 /// This wraps dlopen() except on Windows, where LoadLibrary() is called.
 /// These two platforms handle absolute paths consistently; relative paths
 /// or the library's bare name may be handled but inconsistently.
 ///
-/// \return An opaque handle for the dynamic library, which can be used for
+/// :return: An opaque handle for the dynamic library, which can be used for
 ///         subsequent symbol lookup. Nullptr will never be returned; instead
 ///         an error will be raised.
 ARROW_EXPORT Result<void*> LoadDynamicLibrary(const PlatformFilename& path);
 
-/// \brief Load a dynamic library
+/// Load a dynamic library
 ///
 /// An overload taking null terminated string.
 ARROW_EXPORT Result<void*> LoadDynamicLibrary(const char* path);
 
-/// \brief Retrieve a symbol by name from a library handle.
+/// Retrieve a symbol by name from a library handle.
 ///
 /// This wraps dlsym() except on Windows, where GetProcAddress() is called.
 ///
-/// \return The address associated with the named symbol. Nullptr will never be
+/// :return: The address associated with the named symbol. Nullptr will never be
 ///         returned; instead an error will be raised.
 ARROW_EXPORT Result<void*> GetSymbol(void* handle, const char* name);
 

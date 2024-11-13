@@ -32,8 +32,7 @@ struct ReadRange;
 namespace ipc {
 
 namespace internal {
-/// \class IoRecordedRandomAccessFile
-/// \brief An RandomAccessFile that doesn't perform real IO, but only save all the IO
+/// An RandomAccessFile that doesn't perform real IO, but only save all the IO
 /// operations it receives, including read operation's <offset, length>, for replaying
 /// later
 class ARROW_EXPORT IoRecordedRandomAccessFile : public io::RandomAccessFile {
@@ -45,10 +44,10 @@ class ARROW_EXPORT IoRecordedRandomAccessFile : public io::RandomAccessFile {
 
   Status Abort() override;
 
-  /// \brief Return the position in this stream
+  /// Return the position in this stream
   Result<int64_t> Tell() const override;
 
-  /// \brief Return whether the stream is closed
+  /// Return whether the stream is closed
   bool closed() const override;
 
   Status Seek(int64_t position) override;
@@ -65,10 +64,10 @@ class ARROW_EXPORT IoRecordedRandomAccessFile : public io::RandomAccessFile {
 
   const io::IOContext& io_context() const override;
 
-  /// \brief Return a vector containing all the read operations this file receives, each
+  /// Return a vector containing all the read operations this file receives, each
   /// read operation is represented as an arrow::io::ReadRange
   ///
-  /// \return a vector
+  /// :return: a vector
   const std::vector<io::ReadRange>& GetReadRanges() const;
 
  private:

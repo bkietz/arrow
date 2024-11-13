@@ -36,7 +36,7 @@ enum ResultNullableType {
   kResultNullInternal,
 };
 
-/// \brief Holder for the mapping from a function in an expression to a
+/// Holder for the mapping from a function in an expression to a
 /// precompiled function.
 class GANDIVA_EXPORT NativeFunction {
  public:

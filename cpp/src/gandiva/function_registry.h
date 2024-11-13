@@ -33,7 +33,7 @@
 
 namespace gandiva {
 
-///\brief Registry of pre-compiled IR functions.
+/// brief Registry of pre-compiled IR functions.
 class GANDIVA_EXPORT FunctionRegistry {
  public:
   using iterator = const NativeFunction*;
@@ -48,30 +48,30 @@ class GANDIVA_EXPORT FunctionRegistry {
   /// Lookup a pre-compiled function by its signature.
   const NativeFunction* LookupSignature(const FunctionSignature& signature) const;
 
-  /// \brief register a set of functions into the function registry from a given bitcode
+  /// register a set of functions into the function registry from a given bitcode
   /// file
   arrow::Status Register(const std::vector<NativeFunction>& funcs,
                          const std::string& bitcode_path);
 
-  /// \brief register a set of functions into the function registry from a given bitcode
+  /// register a set of functions into the function registry from a given bitcode
   /// buffer
   arrow::Status Register(const std::vector<NativeFunction>& funcs,
                          std::shared_ptr<arrow::Buffer> bitcode_buffer);
 
-  /// \brief register a C function into the function registry
-  /// @param func the registered function's metadata
-  /// @param c_function_ptr the function pointer to the
+  /// register a C function into the function registry
+  /// :param func: the registered function's metadata
+  /// :param c_function_ptr: the function pointer to the
   /// registered function's implementation
-  /// @param function_holder_maker this will be used as the function holder if the
+  /// :param function_holder_maker: this will be used as the function holder if the
   /// function requires a function holder
   arrow::Status Register(
       NativeFunction func, void* c_function_ptr,
       std::optional<FunctionHolderMaker> function_holder_maker = std::nullopt);
 
-  /// \brief get a list of bitcode memory buffers saved in the registry
+  /// get a list of bitcode memory buffers saved in the registry
   const std::vector<std::shared_ptr<arrow::Buffer>>& GetBitcodeBuffers() const;
 
-  /// \brief get a list of C functions saved in the registry
+  /// get a list of C functions saved in the registry
   const std::vector<std::pair<NativeFunction, void*>>& GetCFunctions() const;
 
   const FunctionHolderMakerRegistry& GetFunctionHolderMakerRegistry() const;
@@ -92,7 +92,7 @@ class GANDIVA_EXPORT FunctionRegistry {
   Status Add(NativeFunction func);
 };
 
-/// \brief get the default function registry
+/// get the default function registry
 GANDIVA_EXPORT std::shared_ptr<FunctionRegistry> default_function_registry();
 
 }  // namespace gandiva

@@ -22,7 +22,7 @@
 namespace arrow {
 namespace fs {
 
-/// \brief FileSystem entry type
+/// FileSystem entry type
 enum class FileType : int8_t {
   /// Entry is not found
   NotFound,

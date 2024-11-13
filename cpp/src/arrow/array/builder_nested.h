@@ -89,7 +89,7 @@ class VarLengthListLikeBuilder : public ArrayBuilder {
     value_builder_->Reset();
   }
 
-  /// \brief Start a new variable-length list slot
+  /// Start a new variable-length list slot
   ///
   /// This function should be called before appending elements to the
   /// value builder. Elements appended to the value builder before this function
@@ -112,9 +112,9 @@ class VarLengthListLikeBuilder : public ArrayBuilder {
   /// with [Large]ListView, then `BaseListBuilder::Append(bool is_valid)`
   /// is a simpler API.
   ///
-  /// \pre if is_valid is false, list_length MUST be 0
-  /// \param is_valid Whether the new list slot is valid
-  /// \param list_length The number of elements in the list
+  /// :precondition: if is_valid is false, list_length MUST be 0
+  /// :param is_valid: Whether the new list slot is valid
+  /// :param list_length: The number of elements in the list
   Status Append(bool is_valid, int64_t list_length) {
     ARROW_RETURN_NOT_OK(Reserve(1));
     assert(is_valid || list_length == 0);
@@ -142,15 +142,15 @@ class VarLengthListLikeBuilder : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Append an empty list slot
+  /// Append an empty list slot
   ///
-  /// \post Another call to Append* or Finish should be made before appending to
+  /// :postcondition: Another call to Append* or Finish should be made before appending to
   /// the values builder to ensure list slot remains empty
   Status AppendEmptyValue() final { return Append(true, 0); }
 
-  /// \brief Append an empty list slot
+  /// Append an empty list slot
   ///
-  /// \post Another call to Append* or Finish should be made before appending to
+  /// :postcondition: Another call to Append* or Finish should be made before appending to
   /// the values builder to ensure the last list slot remains empty
   Status AppendEmptyValues(int64_t length) final {
     ARROW_RETURN_NOT_OK(Reserve(length));
@@ -159,17 +159,17 @@ class VarLengthListLikeBuilder : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Vector append
+  /// Vector append
   ///
   /// For list-array builders, the sizes are inferred from the offsets.
   /// BaseListBuilder<T> provides an implementation that doesn't take sizes, but
   /// this virtual function allows dispatching calls to both list-array and
   /// list-view-array builders (which need the sizes)
   ///
-  /// \param offsets The offsets of the variable-length lists
-  /// \param sizes The sizes of the variable-length lists
-  /// \param length The number of offsets, sizes, and validity bits to append
-  /// \param valid_bytes If passed, valid_bytes is of equal length to values,
+  /// :param offsets: The offsets of the variable-length lists
+  /// :param sizes: The sizes of the variable-length lists
+  /// :param length: The number of offsets, sizes, and validity bits to append
+  /// :param valid_bytes: If passed, valid_bytes is of equal length to values,
   /// and any zero byte will be considered as a null for that slot
   virtual Status AppendValues(const offset_type* offsets, const offset_type* sizes,
                               int64_t length, const uint8_t* valid_bytes) = 0;
@@ -235,7 +235,7 @@ class VarLengthListLikeBuilder : public ArrayBuilder {
   }
 
  protected:
-  /// \brief Append dimensions for num_values empty list slots.
+  /// Append dimensions for num_values empty list slots.
   ///
   /// ListViewBuilder overrides this to also append the sizes.
   virtual void UnsafeAppendEmptyDimensions(int64_t num_values) {
@@ -245,7 +245,7 @@ class VarLengthListLikeBuilder : public ArrayBuilder {
     }
   }
 
-  /// \brief Append dimensions for a single list slot.
+  /// Append dimensions for a single list slot.
   ///
   /// ListViewBuilder overrides this to also append the size.
   virtual void UnsafeAppendDimensions(int64_t offset, int64_t ARROW_ARG_UNUSED(size)) {
@@ -275,7 +275,7 @@ class BaseListBuilder : public VarLengthListLikeBuilder<TYPE> {
 
   ~BaseListBuilder() override = default;
 
-  /// \brief Start a new variable-length list slot
+  /// Start a new variable-length list slot
   ///
   /// This function should be called before beginning to append elements to the
   /// value builder
@@ -285,7 +285,7 @@ class BaseListBuilder : public VarLengthListLikeBuilder<TYPE> {
     return BASE::Append(is_valid, 0);
   }
 
-  /// \brief Vector append
+  /// Vector append
   ///
   /// If passed, valid_bytes is of equal length to values, and any zero byte
   /// will be considered as a null for that slot
@@ -358,8 +358,7 @@ class BaseListBuilder : public VarLengthListLikeBuilder<TYPE> {
   }
 };
 
-/// \class ListBuilder
-/// \brief Builder class for variable-length list array value types
+/// Builder class for variable-length list array value types
 ///
 /// To use this class, you must append values to the child array builder and use
 /// the Append function to delimit each distinct list value (once the values
@@ -375,24 +374,19 @@ class ARROW_EXPORT ListBuilder : public BaseListBuilder<ListType> {
  public:
   using BaseListBuilder::BaseListBuilder;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<ListArray>* out) { return FinishTyped(out); }
 };
 
-/// \class LargeListBuilder
-/// \brief Builder class for large variable-length list array value types
+/// Builder class for large variable-length list array value types
 ///
 /// Like ListBuilder, but to create large list arrays (with 64-bit offsets).
 class ARROW_EXPORT LargeListBuilder : public BaseListBuilder<LargeListType> {
  public:
   using BaseListBuilder::BaseListBuilder;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<LargeListArray>* out) { return FinishTyped(out); }
 };
@@ -423,7 +417,7 @@ class BaseListViewBuilder : public VarLengthListLikeBuilder<TYPE> {
     sizes_builder_.Reset();
   }
 
-  /// \brief Vector append
+  /// Vector append
   ///
   /// If passed, valid_bytes is of equal length to values, and any zero byte
   /// will be considered as a null for that slot
@@ -488,9 +482,7 @@ class ARROW_EXPORT ListViewBuilder final : public BaseListViewBuilder<ListViewTy
  public:
   using BaseListViewBuilder::BaseListViewBuilder;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<ListViewArray>* out) { return FinishTyped(out); }
 };
@@ -500,9 +492,7 @@ class ARROW_EXPORT LargeListViewBuilder final
  public:
   using BaseListViewBuilder::BaseListViewBuilder;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<LargeListViewArray>* out) { return FinishTyped(out); }
 };
@@ -510,8 +500,7 @@ class ARROW_EXPORT LargeListViewBuilder final
 // ----------------------------------------------------------------------
 // Map builder
 
-/// \class MapBuilder
-/// \brief Builder class for arrays of variable-size maps
+/// Builder class for arrays of variable-size maps
 ///
 /// To use this class, you must use the Append function to delimit each distinct
 /// map before appending values to the key and item array builders, or use the
@@ -538,20 +527,18 @@ class ARROW_EXPORT MapBuilder : public ArrayBuilder {
   void Reset() override;
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<MapArray>* out) { return FinishTyped(out); }
 
-  /// \brief Vector append
+  /// Vector append
   ///
   /// If passed, valid_bytes is of equal length to values, and any zero byte
   /// will be considered as a null for that slot
   Status AppendValues(const int32_t* offsets, int64_t length,
                       const uint8_t* valid_bytes = NULLPTR);
 
-  /// \brief Start a new variable-length map slot
+  /// Start a new variable-length map slot
   ///
   /// This function should be called before beginning to append elements to the
   /// key and item builders
@@ -588,19 +575,19 @@ class ARROW_EXPORT MapBuilder : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Get builder to append keys.
+  /// Get builder to append keys.
   ///
   /// Append a key with this builder should be followed by appending
   /// an item or null value with item_builder().
   ArrayBuilder* key_builder() const { return key_builder_.get(); }
 
-  /// \brief Get builder to append items
+  /// Get builder to append items
   ///
   /// Appending an item with this builder should have been preceded
   /// by appending a key with key_builder().
   ArrayBuilder* item_builder() const { return item_builder_.get(); }
 
-  /// \brief Get builder to add Map entries as struct values.
+  /// Get builder to add Map entries as struct values.
   ///
   /// This is used instead of key_builder()/item_builder() and allows
   /// the Map to be built as a list of struct values.
@@ -638,8 +625,7 @@ class ARROW_EXPORT MapBuilder : public ArrayBuilder {
 // ----------------------------------------------------------------------
 // FixedSizeList builder
 
-/// \class FixedSizeListBuilder
-/// \brief Builder class for fixed-length list array value types
+/// Builder class for fixed-length list array value types
 class ARROW_EXPORT FixedSizeListBuilder : public ArrayBuilder {
  public:
   using TypeClass = FixedSizeListType;
@@ -660,19 +646,17 @@ class ARROW_EXPORT FixedSizeListBuilder : public ArrayBuilder {
   void Reset() override;
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<FixedSizeListArray>* out) { return FinishTyped(out); }
 
-  /// \brief Append a valid fixed length list.
+  /// Append a valid fixed length list.
   ///
   /// This function affects only the validity bitmap; the child values must be appended
   /// using the child array builder.
   Status Append();
 
-  /// \brief Vector append
+  /// Vector append
   ///
   /// If passed, valid_bytes will be read and any zero byte
   /// will cause the corresponding slot to be null
@@ -682,13 +666,13 @@ class ARROW_EXPORT FixedSizeListBuilder : public ArrayBuilder {
   /// XXX this restriction is confusing, should this method be omitted?
   Status AppendValues(int64_t length, const uint8_t* valid_bytes = NULLPTR);
 
-  /// \brief Append a null fixed length list.
+  /// Append a null fixed length list.
   ///
   /// The child array builder will have the appropriate number of nulls appended
   /// automatically.
   Status AppendNull() final;
 
-  /// \brief Append length null fixed length lists.
+  /// Append length null fixed length lists.
   ///
   /// The child array builder will have the appropriate number of nulls appended
   /// automatically.
@@ -747,9 +731,7 @@ class ARROW_EXPORT StructBuilder : public ArrayBuilder {
 
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<StructArray>* out) { return FinishTyped(out); }
 
@@ -771,7 +753,7 @@ class ARROW_EXPORT StructBuilder : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Append a null value. Automatically appends an empty value to each child
+  /// Append a null value. Automatically appends an empty value to each child
   /// builder.
   Status AppendNull() final {
     for (const auto& field : children_) {
@@ -780,7 +762,7 @@ class ARROW_EXPORT StructBuilder : public ArrayBuilder {
     return Append(false);
   }
 
-  /// \brief Append multiple null values. Automatically appends empty values to each
+  /// Append multiple null values. Automatically appends empty values to each
   /// child builder.
   Status AppendNulls(int64_t length) final {
     for (const auto& field : children_) {

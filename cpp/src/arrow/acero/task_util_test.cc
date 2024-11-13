@@ -36,7 +36,7 @@ using internal::ThreadPool;
 
 namespace acero {
 
-/// \brief Create a thread pool and start all threads
+/// Create a thread pool and start all threads
 ///
 /// By default a thread pool will not create threads until they
 /// are actually needed.  This can make it a bit difficult to

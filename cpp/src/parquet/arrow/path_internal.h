@@ -46,7 +46,7 @@ namespace arrow {
 // map to parquet types (i.e. Everything but Unions).
 //
 
-/// \brief Half open range of elements in an array.
+/// Half open range of elements in an array.
 struct ElementRange {
   /// Upper bound of range (inclusive)
   int64_t start;
@@ -58,26 +58,26 @@ struct ElementRange {
   int64_t Size() const { return end - start; }
 };
 
-/// \brief Result for a single leaf array when running the builder on the
+/// Result for a single leaf array when running the builder on the
 /// its root.
 struct MultipathLevelBuilderResult {
-  /// \brief The Array containing only the values to write (after all nesting has
+  /// The Array containing only the values to write (after all nesting has
   /// been processed.
   ///
   /// No additional processing is done on this array (it is copied as is when
   /// visited via a DFS).
   std::shared_ptr<::arrow::Array> leaf_array;
 
-  /// \brief Might be null.
+  /// Might be null.
   const int16_t* def_levels = nullptr;
 
-  /// \brief  Might be null.
+  ///  Might be null.
   const int16_t* rep_levels = nullptr;
 
-  /// \brief Number of items (int16_t) contained in def/rep_levels when present.
+  /// Number of items (int16_t) contained in def/rep_levels when present.
   int64_t def_rep_level_count = 0;
 
-  /// \brief Contains element ranges of the required visiting on the
+  /// Contains element ranges of the required visiting on the
   /// descendants of the final list ancestor for any leaf node.
   ///
   /// The algorithm will attempt to consolidate visited ranges into
@@ -96,11 +96,11 @@ struct MultipathLevelBuilderResult {
   bool leaf_is_nullable;
 };
 
-/// \brief Logic for being able to write out nesting (rep/def level) data that is
+/// Logic for being able to write out nesting (rep/def level) data that is
 /// needed for writing to parquet.
 class PARQUET_EXPORT MultipathLevelBuilder {
  public:
-  /// \brief A callback function that will receive results from the call to
+  /// A callback function that will receive results from the call to
   /// Write(...) below.  The MultipathLevelBuilderResult passed in will
   /// only remain valid for the function call (i.e. storing it and relying
   /// for its data to be consistent afterwards will result in undefined
@@ -108,27 +108,27 @@ class PARQUET_EXPORT MultipathLevelBuilder {
   using CallbackFunction =
       std::function<::arrow::Status(const MultipathLevelBuilderResult&)>;
 
-  /// \brief Determine rep/def level information for the array.
+  /// Determine rep/def level information for the array.
   ///
   /// The callback will be invoked for each leaf Array that is a
   /// descendant of array.  Each leaf array is processed in a depth
   /// first traversal-order.
   ///
-  /// \param[in] array The array to process.
-  /// \param[in] array_field_nullable Whether the algorithm should consider
+  /// :param array: The array to process.
+  /// :param array_field_nullable: Whether the algorithm should consider
   ///   the array column as nullable (as determined by its type's parent
   ///   field).
-  /// \param[in, out] context for use when allocating memory, etc.
-  /// \param[out] write_leaf_callback Callback to receive results.
+  /// :param context[in, out]: for use when allocating memory, etc.
+  /// :param write_leaf_callback[out]: Callback to receive results.
   /// There will be one call to the write_leaf_callback for each leaf node.
   static ::arrow::Status Write(const ::arrow::Array& array, bool array_field_nullable,
                                ArrowWriteContext* context,
                                CallbackFunction write_leaf_callback);
 
-  /// \brief Construct a new instance of the builder.
+  /// Construct a new instance of the builder.
   ///
-  /// \param[in] array The array to process.
-  /// \param[in] array_field_nullable Whether the algorithm should consider
+  /// :param array: The array to process.
+  /// :param array_field_nullable: Whether the algorithm should consider
   ///   the array column as nullable (as determined by its type's parent
   ///   field).
   static ::arrow::Result<std::unique_ptr<MultipathLevelBuilder>> Make(
@@ -136,17 +136,17 @@ class PARQUET_EXPORT MultipathLevelBuilder {
 
   virtual ~MultipathLevelBuilder() = default;
 
-  /// \brief Returns the number of leaf columns that need to be written
+  /// Returns the number of leaf columns that need to be written
   /// to Parquet.
   virtual int GetLeafCount() const = 0;
 
-  /// \brief Calls write_leaf_callback with the MultipathLevelBuilderResult corresponding
+  /// Calls write_leaf_callback with the MultipathLevelBuilderResult corresponding
   /// to |leaf_index|.
   ///
-  /// \param[in] leaf_index The index of the leaf column to write.  Must be in the range
+  /// :param leaf_index: The index of the leaf column to write.  Must be in the range
   /// [0, GetLeafCount()].
-  /// \param[in, out] context for use when allocating memory, etc.
-  /// \param[out] write_leaf_callback Callback to receive the result.
+  /// :param context[in, out]: for use when allocating memory, etc.
+  /// :param write_leaf_callback[out]: Callback to receive the result.
   virtual ::arrow::Status Write(int leaf_index, ArrowWriteContext* context,
                                 CallbackFunction write_leaf_callback) = 0;
 };

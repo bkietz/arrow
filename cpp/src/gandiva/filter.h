@@ -34,7 +34,7 @@ namespace gandiva {
 
 class LLVMGenerator;
 
-/// \brief filter records based on a condition.
+/// filter records based on a condition.
 ///
 /// A filter is built for a specific schema and condition. Once the filter is built, it
 /// can be used to evaluate many row batches.
@@ -49,29 +49,29 @@ class GANDIVA_EXPORT Filter {
 
   /// Build a filter for the given schema and condition, with the default configuration.
   ///
-  /// \param[in] schema schema for the record batches, and the condition.
-  /// \param[in] condition filter condition.
-  /// \param[out] filter the returned filter object
+  /// :param schema: schema for the record batches, and the condition.
+  /// :param condition: filter condition.
+  /// :param filter[out]: the returned filter object
   static Status Make(SchemaPtr schema, ConditionPtr condition,
                      std::shared_ptr<Filter>* filter) {
     return Make(schema, condition, ConfigurationBuilder::DefaultConfiguration(), filter);
   }
 
-  /// \brief Build a filter for the given schema and condition.
+  /// Build a filter for the given schema and condition.
   /// Customize the filter with runtime configuration.
   ///
-  /// \param[in] schema schema for the record batches, and the condition.
-  /// \param[in] condition filter conditions.
-  /// \param[in] config run time configuration.
-  /// \param[out] filter the returned filter object
+  /// :param schema: schema for the record batches, and the condition.
+  /// :param condition: filter conditions.
+  /// :param config: run time configuration.
+  /// :param filter[out]: the returned filter object
   static Status Make(SchemaPtr schema, ConditionPtr condition,
                      std::shared_ptr<Configuration> config,
                      std::shared_ptr<Filter>* filter);
 
   /// Evaluate the specified record batch, and populate output selection vector.
   ///
-  /// \param[in] batch the record batch. schema should be the same as the one in 'Make'
-  /// \param[in,out] out_selection the selection array with indices of rows that match
+  /// :param batch: the record batch. schema should be the same as the one in 'Make'
+  /// :param out_selection[in,out]: the selection array with indices of rows that match
   ///                the condition.
   Status Evaluate(const arrow::RecordBatch& batch,
                   std::shared_ptr<SelectionVector> out_selection);

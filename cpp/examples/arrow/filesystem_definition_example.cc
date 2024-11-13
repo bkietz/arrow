@@ -65,13 +65,11 @@ class ExampleFileSystem : public fs::FileSystem {
     return type_name() == other.type_name();
   }
 
-  /// \cond FALSE
   using FileSystem::CreateDir;
   using FileSystem::DeleteDirContents;
   using FileSystem::GetFileInfo;
   using FileSystem::OpenAppendStream;
   using FileSystem::OpenOutputStream;
-  /// \endcond
 
   Result<fs::FileInfo> GetFileInfo(const std::string& path) override {
     if (path == kPath) {

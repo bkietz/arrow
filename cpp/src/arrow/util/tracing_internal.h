@@ -62,7 +62,7 @@ inline Result<T> MarkSpan(Result<T> result, opentelemetry::trace::Span* span) {
   return result;
 }
 
-/// \brief Tie the current span to a generator, ending it when the generator finishes.
+/// Tie the current span to a generator, ending it when the generator finishes.
 /// Optionally start a child span for each invocation.
 template <typename T>
 AsyncGenerator<T> WrapAsyncGenerator(AsyncGenerator<T> wrapped,
@@ -84,7 +84,7 @@ AsyncGenerator<T> WrapAsyncGenerator(AsyncGenerator<T> wrapped,
   };
 }
 
-/// \brief Propagate the given span to each invocation of an async generator.
+/// Propagate the given span to each invocation of an async generator.
 template <typename T>
 AsyncGenerator<T> PropagateSpanThroughAsyncGenerator(
     AsyncGenerator<T> wrapped,
@@ -95,7 +95,7 @@ AsyncGenerator<T> PropagateSpanThroughAsyncGenerator(
   };
 }
 
-/// \brief Propagate the currently active span to each invocation of an async generator.
+/// Propagate the currently active span to each invocation of an async generator.
 ///
 /// This prevents spans, created when running generator instances asynchronously,
 /// ending up in a separate, disconnected trace.

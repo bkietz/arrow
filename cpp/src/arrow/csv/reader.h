@@ -54,7 +54,7 @@ class ARROW_EXPORT TableReader {
                                                    const ConvertOptions&);
 };
 
-/// \brief A class that reads a CSV file incrementally
+/// A class that reads a CSV file incrementally
 ///
 /// Caveats:
 /// - For now, this is always single-threaded (regardless of `ReadOptions::use_threads`.
@@ -68,7 +68,7 @@ class ARROW_EXPORT StreamingReader : public RecordBatchReader {
 
   virtual Future<std::shared_ptr<RecordBatch>> ReadNextAsync() = 0;
 
-  /// \brief Return the number of bytes which have been read and processed
+  /// Return the number of bytes which have been read and processed
   ///
   /// The returned number includes CSV bytes which the StreamingReader has
   /// finished processing, but not bytes for which some processing (e.g.
@@ -100,7 +100,7 @@ class ARROW_EXPORT StreamingReader : public RecordBatchReader {
       const ReadOptions&, const ParseOptions&, const ConvertOptions&);
 };
 
-/// \brief Count the logical rows of data in a CSV file (i.e. the
+/// Count the logical rows of data in a CSV file (i.e. the
 /// number of rows you would get if you read the file into a table).
 ARROW_EXPORT
 Future<int64_t> CountRowsAsync(io::IOContext io_context,

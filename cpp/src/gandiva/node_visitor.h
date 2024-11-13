@@ -35,7 +35,7 @@ class BooleanNode;
 template <typename Type>
 class InExpressionNode;
 
-/// \brief Visitor for nodes in the expression tree.
+/// Visitor for nodes in the expression tree.
 class GANDIVA_EXPORT NodeVisitor {
  public:
   virtual ~NodeVisitor() = default;

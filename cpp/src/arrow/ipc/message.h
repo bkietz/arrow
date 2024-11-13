@@ -42,91 +42,92 @@ struct IpcWriteOptions;
 // individual fields metadata can be retrieved from very large schema without
 //
 
-/// \class Message
-/// \brief An IPC message including metadata and body
+/// An IPC message including metadata and body
 class ARROW_EXPORT Message {
  public:
-  /// \brief Construct message, but do not validate
+  /// Construct message, but do not validate
   ///
   /// Use at your own risk; Message::Open has more metadata validation
   Message(std::shared_ptr<Buffer> metadata, std::shared_ptr<Buffer> body);
 
   ~Message();
 
-  /// \brief Create and validate a Message instance from two buffers
+  /// Create and validate a Message instance from two buffers
   ///
-  /// \param[in] metadata a buffer containing the Flatbuffer metadata
-  /// \param[in] body a buffer containing the message body, which may be null
-  /// \return the created message
+  /// :param metadata: a buffer containing the Flatbuffer metadata
+  /// :param body: a buffer containing the message body, which may be null
+  /// :return: the created message
   static Result<std::unique_ptr<Message>> Open(std::shared_ptr<Buffer> metadata,
                                                std::shared_ptr<Buffer> body);
 
-  /// \brief Read message body and create Message given Flatbuffer metadata
-  /// \param[in] metadata containing a serialized Message flatbuffer
-  /// \param[in] stream an InputStream
-  /// \return the created Message
+  /// Read message body and create Message given Flatbuffer metadata
+  /// :param metadata: containing a serialized Message flatbuffer
+  /// :param stream: an InputStream
+  /// :return: the created Message
   ///
-  /// \note If stream supports zero-copy, this is zero-copy
+  /// ```{note}
+  /// If stream supports zero-copy, this is zero-copy
   static Result<std::unique_ptr<Message>> ReadFrom(std::shared_ptr<Buffer> metadata,
                                                    io::InputStream* stream);
 
-  /// \brief Read message body from position in file, and create Message given
+  /// Read message body from position in file, and create Message given
   /// the Flatbuffer metadata
-  /// \param[in] offset the position in the file where the message body starts.
-  /// \param[in] metadata containing a serialized Message flatbuffer
-  /// \param[in] file the seekable file interface to read from
-  /// \return the created Message
+  /// :param offset: the position in the file where the message body starts.
+  /// :param metadata: containing a serialized Message flatbuffer
+  /// :param file: the seekable file interface to read from
+  /// :return: the created Message
   ///
-  /// \note If file supports zero-copy, this is zero-copy
+  /// ```{note}
+  /// If file supports zero-copy, this is zero-copy
   static Result<std::unique_ptr<Message>> ReadFrom(const int64_t offset,
                                                    std::shared_ptr<Buffer> metadata,
                                                    io::RandomAccessFile* file);
 
-  /// \brief Return true if message type and contents are equal
+  /// Return true if message type and contents are equal
   ///
-  /// \param other another message
-  /// \return true if contents equal
+  /// :param other: another message
+  /// :return: true if contents equal
   bool Equals(const Message& other) const;
 
-  /// \brief the Message metadata
+  /// the Message metadata
   ///
-  /// \return buffer
+  /// :return: buffer
   std::shared_ptr<Buffer> metadata() const;
 
-  /// \brief Custom metadata serialized in metadata Flatbuffer. Returns nullptr
+  /// Custom metadata serialized in metadata Flatbuffer. Returns nullptr
   /// when none set
   const std::shared_ptr<const KeyValueMetadata>& custom_metadata() const;
 
-  /// \brief the Message body, if any
+  /// the Message body, if any
   ///
-  /// \return buffer is null if no body
+  /// :return: buffer is null if no body
   std::shared_ptr<Buffer> body() const;
 
-  /// \brief The expected body length according to the metadata, for
+  /// The expected body length according to the metadata, for
   /// verification purposes
   int64_t body_length() const;
 
-  /// \brief The Message type
+  /// The Message type
   MessageType type() const;
 
-  /// \brief The Message metadata version
+  /// The Message metadata version
   MetadataVersion metadata_version() const;
 
   const void* header() const;
 
-  /// \brief Write length-prefixed metadata and body to output stream
+  /// Write length-prefixed metadata and body to output stream
   ///
-  /// \param[in] file output stream to write to
-  /// \param[in] options IPC writing options including alignment
-  /// \param[out] output_length the number of bytes written
-  /// \return Status
+  /// :param file: output stream to write to
+  /// :param options: IPC writing options including alignment
+  /// :param output_length[out]: the number of bytes written
+  /// :return: Status
   Status SerializeTo(io::OutputStream* file, const IpcWriteOptions& options,
                      int64_t* output_length) const;
 
-  /// \brief Return true if the Message metadata passes Flatbuffer validation
+  /// Return true if the Message metadata passes Flatbuffer validation
   bool Verify() const;
 
-  /// \brief Whether a given message type needs a body.
+  /// Whether a given message type needs a body.
   static bool HasBody(MessageType type) {
     return type != MessageType::NONE && type != MessageType::SCHEMA;
   }
@@ -141,79 +142,79 @@ class ARROW_EXPORT Message {
 
 ARROW_EXPORT std::string FormatMessageType(MessageType type);
 
-/// \class MessageDecoderListener
-/// \brief An abstract class to listen events from MessageDecoder.
+/// An abstract class to listen events from MessageDecoder.
 ///
 /// This API is EXPERIMENTAL.
 ///
-/// \since 0.17.0
+/// ```{versionadded} 0.17.0
+/// ```
 class ARROW_EXPORT MessageDecoderListener {
  public:
   virtual ~MessageDecoderListener() = default;
 
-  /// \brief Called when a message is decoded.
+  /// Called when a message is decoded.
   ///
   /// MessageDecoder calls this method when it decodes a message. This
   /// method is called multiple times when the target stream has
   /// multiple messages.
   ///
-  /// \param[in] message a decoded message
-  /// \return Status
+  /// :param message: a decoded message
+  /// :return: Status
   virtual Status OnMessageDecoded(std::unique_ptr<Message> message) = 0;
 
-  /// \brief Called when the decoder state is changed to
+  /// Called when the decoder state is changed to
   /// MessageDecoder::State::INITIAL.
   ///
   /// The default implementation just returns arrow::Status::OK().
   ///
-  /// \return Status
+  /// :return: Status
   virtual Status OnInitial();
 
-  /// \brief Called when the decoder state is changed to
+  /// Called when the decoder state is changed to
   /// MessageDecoder::State::METADATA_LENGTH.
   ///
   /// The default implementation just returns arrow::Status::OK().
   ///
-  /// \return Status
+  /// :return: Status
   virtual Status OnMetadataLength();
 
-  /// \brief Called when the decoder state is changed to
+  /// Called when the decoder state is changed to
   /// MessageDecoder::State::METADATA.
   ///
   /// The default implementation just returns arrow::Status::OK().
   ///
-  /// \return Status
+  /// :return: Status
   virtual Status OnMetadata();
 
-  /// \brief Called when the decoder state is changed to
+  /// Called when the decoder state is changed to
   /// MessageDecoder::State::BODY.
   ///
   /// The default implementation just returns arrow::Status::OK().
   ///
-  /// \return Status
+  /// :return: Status
   virtual Status OnBody();
 
-  /// \brief Called when the decoder state is changed to
+  /// Called when the decoder state is changed to
   /// MessageDecoder::State::EOS.
   ///
   /// The default implementation just returns arrow::Status::OK().
   ///
-  /// \return Status
+  /// :return: Status
   virtual Status OnEOS();
 };
 
-/// \class AssignMessageDecoderListener
-/// \brief Assign a message decoded by MessageDecoder.
+/// Assign a message decoded by MessageDecoder.
 ///
 /// This API is EXPERIMENTAL.
 ///
-/// \since 0.17.0
+/// ```{versionadded} 0.17.0
+/// ```
 class ARROW_EXPORT AssignMessageDecoderListener : public MessageDecoderListener {
  public:
-  /// \brief Construct a listener that assigns a decoded message to the
+  /// Construct a listener that assigns a decoded message to the
   /// specified location.
   ///
-  /// \param[in] message a location to store the received message
+  /// :param message: a location to store the received message
   explicit AssignMessageDecoderListener(std::unique_ptr<Message>* message)
       : message_(message) {}
 
@@ -230,15 +231,15 @@ class ARROW_EXPORT AssignMessageDecoderListener : public MessageDecoderListener 
   ARROW_DISALLOW_COPY_AND_ASSIGN(AssignMessageDecoderListener);
 };
 
-/// \class MessageDecoder
-/// \brief Push style message decoder that receives data from user.
+/// Push style message decoder that receives data from user.
 ///
 /// This API is EXPERIMENTAL.
 ///
-/// \since 0.17.0
+/// ```{versionadded} 0.17.0
+/// ```
 class ARROW_EXPORT MessageDecoder {
  public:
-  /// \brief State for reading a message
+  /// State for reading a message
   enum State {
     /// The initial state. It requires one of the followings as the next data:
     ///
@@ -261,37 +262,37 @@ class ARROW_EXPORT MessageDecoder {
     EOS,
   };
 
-  /// \brief Construct a message decoder.
+  /// Construct a message decoder.
   ///
-  /// \param[in] listener a MessageDecoderListener that responds events from
+  /// :param listener: a MessageDecoderListener that responds events from
   /// the decoder
-  /// \param[in] pool an optional MemoryPool to copy metadata on the
-  /// \param[in] skip_body if true the body will be skipped even if the message has a body
+  /// :param pool: an optional MemoryPool to copy metadata on the
+  /// :param skip_body: if true the body will be skipped even if the message has a body
   /// CPU, if required
   explicit MessageDecoder(std::shared_ptr<MessageDecoderListener> listener,
                           MemoryPool* pool = default_memory_pool(),
                           bool skip_body = false);
 
-  /// \brief Construct a message decoder with the specified state.
+  /// Construct a message decoder with the specified state.
   ///
   /// This is a construct for advanced users that know how to decode
   /// Message.
   ///
-  /// \param[in] listener a MessageDecoderListener that responds events from
+  /// :param listener: a MessageDecoderListener that responds events from
   /// the decoder
-  /// \param[in] initial_state an initial state of the decode
-  /// \param[in] initial_next_required_size the number of bytes needed
+  /// :param initial_state: an initial state of the decode
+  /// :param initial_next_required_size: the number of bytes needed
   /// to run the next action
-  /// \param[in] pool an optional MemoryPool to copy metadata on the
+  /// :param pool: an optional MemoryPool to copy metadata on the
   /// CPU, if required
-  /// \param[in] skip_body if true the body will be skipped even if the message has a body
+  /// :param skip_body: if true the body will be skipped even if the message has a body
   MessageDecoder(std::shared_ptr<MessageDecoderListener> listener, State initial_state,
                  int64_t initial_next_required_size,
                  MemoryPool* pool = default_memory_pool(), bool skip_body = false);
 
   virtual ~MessageDecoder();
 
-  /// \brief Feed data to the decoder as a raw data.
+  /// Feed data to the decoder as a raw data.
   ///
   /// If the decoder can decode one or more messages by the data, the
   /// decoder calls listener->OnMessageDecoded() with a decoded
@@ -306,24 +307,24 @@ class ARROW_EXPORT MessageDecoder {
   /// * MessageDecoder::State::BODY: listener->OnBody()
   /// * MessageDecoder::State::EOS: listener->OnEOS()
   ///
-  /// \param[in] data a raw data to be processed. This data isn't
+  /// :param data: a raw data to be processed. This data isn't
   /// copied. The passed memory must be kept alive through message
   /// processing.
-  /// \param[in] size raw data size.
-  /// \return Status
+  /// :param size: raw data size.
+  /// :return: Status
   Status Consume(const uint8_t* data, int64_t size);
 
-  /// \brief Feed data to the decoder as a Buffer.
+  /// Feed data to the decoder as a Buffer.
   ///
   /// If the decoder can decode one or more messages by the Buffer,
   /// the decoder calls listener->OnMessageDecoded() with a decoded
   /// message multiple times.
   ///
-  /// \param[in] buffer a Buffer to be processed.
-  /// \return Status
+  /// :param buffer: a Buffer to be processed.
+  /// :return: Status
   Status Consume(std::shared_ptr<Buffer> buffer);
 
-  /// \brief Return the number of bytes needed to advance the state of
+  /// Return the number of bytes needed to advance the state of
   /// the decoder.
   ///
   /// This method is provided for users who want to optimize performance.
@@ -382,11 +383,11 @@ class ARROW_EXPORT MessageDecoder {
   /// }
   /// ~~~
   ///
-  /// \return the number of bytes needed to advance the state of the
+  /// :return: the number of bytes needed to advance the state of the
   /// decoder
   int64_t next_required_size() const;
 
-  /// \brief Return the current state of the decoder.
+  /// Return the current state of the decoder.
   ///
   /// This method is provided for users who want to optimize performance.
   /// Normal users don't need to use this method.
@@ -416,7 +417,7 @@ class ARROW_EXPORT MessageDecoder {
   /// }
   /// ~~~
   ///
-  /// \return the current state
+  /// :return: the current state
   State state() const;
 
  private:
@@ -426,22 +427,23 @@ class ARROW_EXPORT MessageDecoder {
   ARROW_DISALLOW_COPY_AND_ASSIGN(MessageDecoder);
 };
 
-/// \brief Abstract interface for a sequence of messages
-/// \since 0.5.0
+/// Abstract interface for a sequence of messages
+/// ```{versionadded} 0.5.0
+/// ```
 class ARROW_EXPORT MessageReader {
  public:
   virtual ~MessageReader() = default;
 
-  /// \brief Create MessageReader that reads from InputStream
+  /// Create MessageReader that reads from InputStream
   static std::unique_ptr<MessageReader> Open(io::InputStream* stream);
 
-  /// \brief Create MessageReader that reads from owned InputStream
+  /// Create MessageReader that reads from owned InputStream
   static std::unique_ptr<MessageReader> Open(
       const std::shared_ptr<io::InputStream>& owned_stream);
 
-  /// \brief Read next Message from the interface
+  /// Read next Message from the interface
   ///
-  /// \return an arrow::ipc::Message instance
+  /// :return: an arrow::ipc::Message instance
   virtual Result<std::unique_ptr<Message>> ReadNextMessage() = 0;
 };
 
@@ -449,7 +451,7 @@ class ARROW_EXPORT MessageReader {
 // org::apache::arrow::flatbuf::RecordBatch*)
 using FieldsLoaderFunction = std::function<Status(const void*, io::RandomAccessFile*)>;
 
-/// \brief Read encapsulated RPC message from position in file
+/// Read encapsulated RPC message from position in file
 ///
 /// Read a length-prefixed message flatbuffer starting at the indicated file
 /// offset. If the message has a body with non-zero length, it will also be
@@ -457,19 +459,19 @@ using FieldsLoaderFunction = std::function<Status(const void*, io::RandomAccessF
 ///
 /// The metadata_length includes at least the length prefix and the flatbuffer
 ///
-/// \param[in] offset the position in the file where the message starts. The
+/// :param offset: the position in the file where the message starts. The
 /// first 4 bytes after the offset are the message length
-/// \param[in] metadata_length the total number of bytes to read from file
-/// \param[in] file the seekable file interface to read from
-/// \param[in] fields_loader the function for loading subset of fields from the given file
-/// \return the message read
+/// :param metadata_length: the total number of bytes to read from file
+/// :param file: the seekable file interface to read from
+/// :param fields_loader: the function for loading subset of fields from the given file
+/// :return: the message read
 
 ARROW_EXPORT
 Result<std::unique_ptr<Message>> ReadMessage(
     const int64_t offset, const int32_t metadata_length, io::RandomAccessFile* file,
     const FieldsLoaderFunction& fields_loader = {});
 
-/// \brief Read encapsulated RPC message from cached buffers
+/// Read encapsulated RPC message from cached buffers
 ///
 /// The buffers should contain an entire message.  Partial reads are not handled.
 ///
@@ -482,9 +484,9 @@ Result<std::unique_ptr<Message>> ReadMessage(
 /// to see that the metadata length is correct and that the body is the size the metadata
 /// expected)
 ///
-/// \param metadata The bytes for the metadata
-/// \param body The bytes for the body
-/// \return The message represented by the buffers
+/// :param metadata: The bytes for the metadata
+/// :param body: The bytes for the body
+/// :return: The message represented by the buffers
 ARROW_EXPORT Result<std::unique_ptr<Message>> ReadMessage(
     std::shared_ptr<Buffer> metadata, std::shared_ptr<Buffer> body);
 
@@ -493,51 +495,52 @@ Future<std::shared_ptr<Message>> ReadMessageAsync(
     const int64_t offset, const int32_t metadata_length, const int64_t body_length,
     io::RandomAccessFile* file, const io::IOContext& context = io::default_io_context());
 
-/// \brief Advance stream to an 8-byte offset if its position is not a multiple
+/// Advance stream to an 8-byte offset if its position is not a multiple
 /// of 8 already
-/// \param[in] stream an input stream
-/// \param[in] alignment the byte multiple for the metadata prefix, usually 8
+/// :param stream: an input stream
+/// :param alignment: the byte multiple for the metadata prefix, usually 8
 /// or 64, to ensure the body starts on a multiple of that alignment
-/// \return Status
+/// :return: Status
 ARROW_EXPORT
 Status AlignStream(io::InputStream* stream, int32_t alignment = 8);
 
-/// \brief Advance stream to an 8-byte offset if its position is not a multiple
+/// Advance stream to an 8-byte offset if its position is not a multiple
 /// of 8 already
-/// \param[in] stream an output stream
-/// \param[in] alignment the byte multiple for the metadata prefix, usually 8
+/// :param stream: an output stream
+/// :param alignment: the byte multiple for the metadata prefix, usually 8
 /// or 64, to ensure the body starts on a multiple of that alignment
-/// \return Status
+/// :return: Status
 ARROW_EXPORT
 Status AlignStream(io::OutputStream* stream, int32_t alignment = 8);
 
-/// \brief Return error Status if file position is not a multiple of the
+/// Return error Status if file position is not a multiple of the
 /// indicated alignment
 ARROW_EXPORT
 Status CheckAligned(io::FileInterface* stream, int32_t alignment = 8);
 
-/// \brief Read encapsulated IPC message (metadata and body) from InputStream
+/// Read encapsulated IPC message (metadata and body) from InputStream
 ///
 /// Returns null if there are not enough bytes available or the
 /// message length is 0 (e.g. EOS in a stream)
 ///
-/// \param[in] stream an input stream
-/// \param[in] pool an optional MemoryPool to copy metadata on the CPU, if required
-/// \return Message
+/// :param stream: an input stream
+/// :param pool: an optional MemoryPool to copy metadata on the CPU, if required
+/// :return: Message
 ARROW_EXPORT
 Result<std::unique_ptr<Message>> ReadMessage(io::InputStream* stream,
                                              MemoryPool* pool = default_memory_pool());
 
-/// \brief Feed data from InputStream to MessageDecoder to decode an
+/// Feed data from InputStream to MessageDecoder to decode an
 /// encapsulated IPC message (metadata and body)
 ///
 /// This API is EXPERIMENTAL.
 ///
-/// \param[in] decoder a decoder
-/// \param[in] stream an input stream
-/// \return Status
+/// :param decoder: a decoder
+/// :param stream: an input stream
+/// :return: Status
 ///
-/// \since 0.17.0
+/// ```{versionadded} 0.17.0
+/// ```
 ARROW_EXPORT
 Status DecodeMessage(MessageDecoder* decoder, io::InputStream* stream);
 
@@ -551,13 +554,13 @@ Status DecodeMessage(MessageDecoder* decoder, io::InputStream* stream);
 /// padding
 ///
 ///
-/// \param[in] message a buffer containing the metadata to write
-/// \param[in] options IPC writing options, including alignment and
+/// :param message: a buffer containing the metadata to write
+/// :param options: IPC writing options, including alignment and
 /// legacy message support
-/// \param[in,out] file the OutputStream to write to
-/// \param[out] message_length the total size of the payload written including
+/// :param file[in,out]: the OutputStream to write to
+/// :param message_length[out]: the total size of the payload written including
 /// padding
-/// \return Status
+/// :return: Status
 Status WriteMessage(const Buffer& message, const IpcWriteOptions& options,
                     io::OutputStream* file, int32_t* message_length);
 

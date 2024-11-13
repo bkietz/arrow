@@ -41,7 +41,7 @@ struct Id;
 
 namespace internal {
 
-/// \brief Create a scan->project->sink plan for tests
+/// Create a scan->project->sink plan for tests
 ///
 /// The plan will project one additional column using the function
 /// defined by `function_id`, `arguments`, and data_types.  `arguments`
@@ -61,7 +61,7 @@ ARROW_ENGINE_EXPORT Result<std::shared_ptr<Buffer>> CreateScanProjectSubstrait(
     const std::vector<std::shared_ptr<DataType>>& data_types,
     const DataType& output_type);
 
-/// \brief Create a scan->aggregate->sink plan for tests
+/// Create a scan->aggregate->sink plan for tests
 ///
 /// The plan will create an aggregate with one grouping set (defined by
 /// key_idxs) and one measure.  The measure will be a function

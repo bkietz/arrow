@@ -31,16 +31,16 @@ namespace example {
 
 class SqliteStatementBatchReader : public RecordBatchReader {
  public:
-  /// \brief Creates a RecordBatchReader backed by a SQLite statement.
-  /// \param[in] statement    SQLite statement to be read.
-  /// \return                 A SqliteStatementBatchReader.
+  /// Creates a RecordBatchReader backed by a SQLite statement.
+  /// :param statement:    SQLite statement to be read.
+  /// :return:                 A SqliteStatementBatchReader.
   static arrow::Result<std::shared_ptr<SqliteStatementBatchReader>> Create(
       const std::shared_ptr<SqliteStatement>& statement);
 
-  /// \brief Creates a RecordBatchReader backed by a SQLite statement.
-  /// \param[in] statement    SQLite statement to be read.
-  /// \param[in] schema       Schema to be used on results.
-  /// \return                 A SqliteStatementBatchReader..
+  /// Creates a RecordBatchReader backed by a SQLite statement.
+  /// :param statement:    SQLite statement to be read.
+  /// :param schema:       Schema to be used on results.
+  /// :return:                 A SqliteStatementBatchReader..
   static arrow::Result<std::shared_ptr<SqliteStatementBatchReader>> Create(
       const std::shared_ptr<SqliteStatement>& statement,
       const std::shared_ptr<Schema>& schema);

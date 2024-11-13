@@ -31,21 +31,21 @@
 namespace arrow {
 namespace flight {
 
-/// \brief A write-only wrapper around headers for an RPC call.
+/// A write-only wrapper around headers for an RPC call.
 class ARROW_FLIGHT_EXPORT AddCallHeaders {
  public:
   virtual ~AddCallHeaders() = default;
 
-  /// \brief Add a header to be sent to the client.
+  /// Add a header to be sent to the client.
   ///
-  /// \param[in] key The header name. Must be lowercase ASCII; some
+  /// :param key: The header name. Must be lowercase ASCII; some
   ///   transports may reject invalid header names.
-  /// \param[in] value The header value. Some transports may only
+  /// :param value: The header value. Some transports may only
   ///   accept binary header values if the header name ends in "-bin".
   virtual void AddHeader(const std::string& key, const std::string& value) = 0;
 };
 
-/// \brief An enumeration of the RPC methods Flight implements.
+/// An enumeration of the RPC methods Flight implements.
 enum class FlightMethod : char {
   Invalid = 0,
   Handshake = 1,
@@ -60,14 +60,14 @@ enum class FlightMethod : char {
   PollFlightInfo = 10,
 };
 
-/// \brief Get a human-readable name for a Flight method.
+/// Get a human-readable name for a Flight method.
 ARROW_FLIGHT_EXPORT
 std::string ToString(FlightMethod method);
 
-/// \brief Information about an instance of a Flight RPC.
+/// Information about an instance of a Flight RPC.
 struct ARROW_FLIGHT_EXPORT CallInfo {
  public:
-  /// \brief The RPC method of this call.
+  /// The RPC method of this call.
   FlightMethod method;
 };
 

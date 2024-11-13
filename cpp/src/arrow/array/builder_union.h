@@ -37,7 +37,7 @@ namespace arrow {
 ///
 /// @{
 
-/// \brief Base class for union array builds.
+/// Base class for union array builds.
 ///
 /// Note that while we subclass ArrayBuilder, as union types do not have a
 /// validity bitmap, the bitmap builder member of ArrayBuilder is not used.
@@ -45,18 +45,16 @@ class ARROW_EXPORT BasicUnionBuilder : public ArrayBuilder {
  public:
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<UnionArray>* out) { return FinishTyped(out); }
 
-  /// \brief Make a new child builder available to the UnionArray
+  /// Make a new child builder available to the UnionArray
   ///
-  /// \param[in] new_child the child builder
-  /// \param[in] field_name the name of the field in the union array type
+  /// :param new_child: the child builder
+  /// :param field_name: the name of the field in the union array type
   /// if type inference is used
-  /// \return child index, which is the "type" argument that needs
+  /// :return: child index, which is the "type" argument that needs
   /// to be passed to the "Append" method to add a new element to
   /// the union array.
   int8_t AppendChild(const std::shared_ptr<ArrayBuilder>& new_child,
@@ -84,7 +82,6 @@ class ARROW_EXPORT BasicUnionBuilder : public ArrayBuilder {
   TypedBufferBuilder<int8_t> types_builder_;
 };
 
-/// \class DenseUnionBuilder
 ///
 /// This API is EXPERIMENTAL.
 class ARROW_EXPORT DenseUnionBuilder : public BasicUnionBuilder {
@@ -146,10 +143,10 @@ class ARROW_EXPORT DenseUnionBuilder : public BasicUnionBuilder {
     return child_builder->AppendEmptyValue();
   }
 
-  /// \brief Append an element to the UnionArray. This must be followed
+  /// Append an element to the UnionArray. This must be followed
   ///        by an append to the appropriate child builder.
   ///
-  /// \param[in] next_type type_id of the child to which the next value will be appended.
+  /// :param next_type: type_id of the child to which the next value will be appended.
   ///
   /// The corresponding child builder must be appended to independently after this method
   /// is called.
@@ -173,7 +170,6 @@ class ARROW_EXPORT DenseUnionBuilder : public BasicUnionBuilder {
   TypedBufferBuilder<int32_t> offsets_builder_;
 };
 
-/// \class SparseUnionBuilder
 ///
 /// This API is EXPERIMENTAL.
 class ARROW_EXPORT SparseUnionBuilder : public BasicUnionBuilder {
@@ -193,7 +189,7 @@ class ARROW_EXPORT SparseUnionBuilder : public BasicUnionBuilder {
                      int64_t alignment = kDefaultBufferAlignment)
       : BasicUnionBuilder(pool, alignment, children, type) {}
 
-  /// \brief Append a null value.
+  /// Append a null value.
   ///
   /// A null is appended to the first child, empty values to the other children.
   Status AppendNull() final {
@@ -206,7 +202,7 @@ class ARROW_EXPORT SparseUnionBuilder : public BasicUnionBuilder {
     return Status::OK();
   }
 
-  /// \brief Append multiple null values.
+  /// Append multiple null values.
   ///
   /// Nulls are appended to the first child, empty values to the other children.
   Status AppendNulls(int64_t length) final {
@@ -236,10 +232,10 @@ class ARROW_EXPORT SparseUnionBuilder : public BasicUnionBuilder {
     return Status::OK();
   }
 
-  /// \brief Append an element to the UnionArray. This must be followed
+  /// Append an element to the UnionArray. This must be followed
   ///        by an append to the appropriate child builder.
   ///
-  /// \param[in] next_type type_id of the child to which the next value will be appended.
+  /// :param next_type: type_id of the child to which the next value will be appended.
   ///
   /// The corresponding child builder must be appended to independently after this method
   /// is called, and all other child builders must have null or empty value appended.

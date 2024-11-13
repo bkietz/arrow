@@ -34,7 +34,7 @@ namespace gandiva {
 class FunctionRegistry;
 class Annotator;
 
-/// \brief Decomposes an expression tree to separate out the validity and
+/// Decomposes an expression tree to separate out the validity and
 /// value expressions.
 class GANDIVA_EXPORT ExprDecomposer : public NodeVisitor {
  public:

@@ -32,7 +32,7 @@ namespace skyhook {
 /// @{
 
 /// \struct RadosConnCtx
-/// \brief A struct to hold the parameters required
+/// A struct to hold the parameters required
 /// for connecting to a RADOS cluster.
 struct RadosConnCtx {
   std::string ceph_config_path;
@@ -51,8 +51,7 @@ struct RadosConnCtx {
         ceph_cls_name(std::move(ceph_cls_name)) {}
 };
 
-/// \class SkyhookFileFormat
-/// \brief A FileFormat implementation that offloads fragment
+/// A FileFormat implementation that offloads fragment
 /// scan operations to the Ceph OSDs. For more details, see the
 /// Skyhook paper, https://arxiv.org/pdf/2105.09894.pdf.
 class SkyhookFileFormat : public arrow::dataset::FileFormat {
@@ -74,9 +73,9 @@ class SkyhookFileFormat : public arrow::dataset::FileFormat {
     return true;
   }
 
-  /// \brief Return the schema of the file fragment.
-  /// \param[in] source The source of the file fragment.
-  /// \return The schema of the file fragment.
+  /// Return the schema of the file fragment.
+  /// :param source: The source of the file fragment.
+  /// :return: The schema of the file fragment.
   arrow::Result<std::shared_ptr<arrow::Schema>> Inspect(
       const arrow::dataset::FileSource& source) const override;
 
@@ -84,21 +83,21 @@ class SkyhookFileFormat : public arrow::dataset::FileFormat {
       const std::shared_ptr<arrow::dataset::ScanOptions>& options,
       const std::shared_ptr<arrow::dataset::FileFragment>& file) const override;
 
-  /// \brief Create a writer for this format.
+  /// Create a writer for this format.
   arrow::Result<std::shared_ptr<arrow::dataset::FileWriter>> MakeWriter(
       std::shared_ptr<arrow::io::OutputStream> destination,
       std::shared_ptr<arrow::Schema> schema,
       std::shared_ptr<arrow::dataset::FileWriteOptions> options,
       arrow::fs::FileLocator destination_locator) const override;
 
-  /// \brief Get default write options for this format.
+  /// Get default write options for this format.
   std::shared_ptr<arrow::dataset::FileWriteOptions> DefaultWriteOptions() override;
 
  private:
   class Impl;
   std::unique_ptr<Impl> impl_;
 
-  /// \brief Initialize the SkyhookFileFormat by connecting to RADOS.
+  /// Initialize the SkyhookFileFormat by connecting to RADOS.
   arrow::Status Init();
 };
 

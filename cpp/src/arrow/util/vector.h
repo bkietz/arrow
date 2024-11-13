@@ -105,7 +105,7 @@ std::vector<To> MapVector(Fn&& map, std::vector<From>&& source) {
   return out;
 }
 
-/// \brief Like MapVector, but where the function can fail.
+/// Like MapVector, but where the function can fail.
 template <typename Fn, typename From = internal::call_traits::argument_type<0, Fn>,
           typename To = typename internal::call_traits::return_type<Fn>::ValueType>
 Result<std::vector<To>> MaybeMapVector(Fn&& map, const std::vector<From>& source) {

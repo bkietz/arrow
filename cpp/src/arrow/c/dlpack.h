@@ -22,7 +22,7 @@
 
 namespace arrow::dlpack {
 
-/// \brief Export Arrow array as DLPack tensor.
+/// Export Arrow array as DLPack tensor.
 ///
 /// DLMangedTensor is produced as defined by the DLPack protocol,
 /// see https://dmlc.github.io/dlpack/latest/.
@@ -34,17 +34,17 @@ namespace arrow::dlpack {
 /// memory region which means Arrow Arrays with validity buffers
 /// are not supported.
 ///
-/// \param[in] arr Arrow array
-/// \return DLManagedTensor struct
+/// :param arr: Arrow array
+/// :return: DLManagedTensor struct
 ARROW_EXPORT
 Result<DLManagedTensor*> ExportArray(const std::shared_ptr<Array>& arr);
 
-/// \brief Get DLDevice with enumerator specifying the
+/// Get DLDevice with enumerator specifying the
 /// type of the device data is stored on and index of the
 /// device which is 0 by default for CPU.
 ///
-/// \param[in] arr Arrow array
-/// \return DLDevice struct
+/// :param arr: Arrow array
+/// :return: DLDevice struct
 ARROW_EXPORT
 Result<DLDevice> ExportDevice(const std::shared_ptr<Array>& arr);
 

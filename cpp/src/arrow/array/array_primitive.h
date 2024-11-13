@@ -56,11 +56,11 @@ class ARROW_EXPORT BooleanArray : public PrimitiveArray {
 
   std::optional<bool> operator[](int64_t i) const { return *IteratorType(*this, i); }
 
-  /// \brief Return the number of false (0) values among the valid
+  /// Return the number of false (0) values among the valid
   /// values. Result is not cached.
   int64_t false_count() const;
 
-  /// \brief Return the number of true (1) values among the valid
+  /// Return the number of true (1) values among the valid
   /// values. Result is not cached.
   int64_t true_count() const;
 
@@ -76,7 +76,7 @@ class ARROW_EXPORT BooleanArray : public PrimitiveArray {
 ///
 /// @{
 
-/// \brief Concrete Array class for numeric data with a corresponding C type
+/// Concrete Array class for numeric data with a corresponding C type
 ///
 /// This class is templated on the corresponding DataType subclass for the
 /// given data, for example NumericArray<Int8Type> or NumericArray<Date32Type>.
@@ -143,7 +143,7 @@ class NumericArray : public PrimitiveArray {
 
 /// DayTimeArray
 /// ---------------------
-/// \brief Array of Day and Millisecond values.
+/// Array of Day and Millisecond values.
 class ARROW_EXPORT DayTimeIntervalArray : public PrimitiveArray {
  public:
   using TypeClass = DayTimeIntervalType;
@@ -179,7 +179,7 @@ class ARROW_EXPORT DayTimeIntervalArray : public PrimitiveArray {
   const uint8_t* raw_values() const { return raw_values_ + data_->offset * byte_width(); }
 };
 
-/// \brief Array of Month, Day and nanosecond values.
+/// Array of Month, Day and nanosecond values.
 class ARROW_EXPORT MonthDayNanoIntervalArray : public PrimitiveArray {
  public:
   using TypeClass = MonthDayNanoIntervalType;

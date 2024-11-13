@@ -33,21 +33,21 @@ class ARROW_EXPORT DeviceAllocationTypeSet {
   std::bitset<kDeviceAllocationTypeMax + 1> device_type_bitset_;
 
  public:
-  /// \brief Construct an empty set of device types.
+  /// Construct an empty set of device types.
   DeviceAllocationTypeSet() = default;
 
-  /// \brief Construct a set of device types with a single device type.
+  /// Construct a set of device types with a single device type.
   DeviceAllocationTypeSet(  // NOLINT implicit construction
       DeviceAllocationType accepted_device_type) {
     add(accepted_device_type);
   }
 
-  /// \brief Construct a set of device types containing only "kCPU".
+  /// Construct a set of device types containing only "kCPU".
   static DeviceAllocationTypeSet CpuOnly() {
     return DeviceAllocationTypeSet{DeviceAllocationType::kCPU};
   }
 
-  /// \brief Construct a set of device types containing all device types.
+  /// Construct a set of device types containing all device types.
   static DeviceAllocationTypeSet All() {
     DeviceAllocationTypeSet all;
     all.device_type_bitset_.set();
@@ -58,33 +58,33 @@ class ARROW_EXPORT DeviceAllocationTypeSet {
     return all;
   }
 
-  /// \brief Add a device type to the set of device types.
+  /// Add a device type to the set of device types.
   void add(DeviceAllocationType device_type) {
     device_type_bitset_.set(static_cast<int>(device_type));
   }
 
-  /// \brief Remove a device type from the set of device types.
+  /// Remove a device type from the set of device types.
   void remove(DeviceAllocationType device_type) {
     device_type_bitset_.reset(static_cast<int>(device_type));
   }
 
-  /// \brief Return true iff the set only contains the CPU device type.
+  /// Return true iff the set only contains the CPU device type.
   bool is_cpu_only() const {
     return device_type_bitset_ == CpuOnly().device_type_bitset_;
   }
 
-  /// \brief Return true if the set of accepted device types includes the
+  /// Return true if the set of accepted device types includes the
   /// device type.
   bool contains(DeviceAllocationType device_type) const {
     return device_type_bitset_.test(static_cast<int>(device_type));
   }
 
-  /// \brief Add all device types from another set to this set.
+  /// Add all device types from another set to this set.
   void Add(DeviceAllocationTypeSet other) {
     device_type_bitset_ |= other.device_type_bitset_;
   }
 
-  /// \brief Return true if the set of accepted device types includes all the
+  /// Return true if the set of accepted device types includes all the
   /// device types in the other set.
   bool Contains(DeviceAllocationTypeSet other) const {
     // other \subseteq this <==> (other \intersect this == other)

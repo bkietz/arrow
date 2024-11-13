@@ -99,9 +99,9 @@ class FirstTimeBitmapWriter {
 
   /// Appends number_of_bits from word to valid_bits and valid_bits_offset.
   ///
-  /// \param[in] word The LSB bitmap to append. Any bits past number_of_bits are assumed
+  /// :param word: The LSB bitmap to append. Any bits past number_of_bits are assumed
   ///            to be unset (i.e. 0).
-  /// \param[in] number_of_bits The number of bits to append from word.
+  /// :param number_of_bits: The number of bits to append from word.
   void AppendWord(uint64_t word, int64_t number_of_bits) {
     if (ARROW_PREDICT_FALSE(number_of_bits == 0)) {
       return;

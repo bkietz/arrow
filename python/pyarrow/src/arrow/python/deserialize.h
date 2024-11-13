@@ -52,26 +52,26 @@ struct ARROW_PYTHON_EXPORT SparseTensorCounts {
   }
 };
 
-/// \brief Read serialized Python sequence from file interface using Arrow IPC
-/// \param[in] src a RandomAccessFile
-/// \param[out] out the reconstructed data
-/// \return Status
+/// Read serialized Python sequence from file interface using Arrow IPC
+/// :param src: a RandomAccessFile
+/// :param out[out]: the reconstructed data
+/// :return: Status
 ARROW_DEPRECATED("Deprecated in 18.0.0. Will be removed in 20.0.0")
 ARROW_PYTHON_EXPORT
 Status ReadSerializedObject(io::RandomAccessFile* src, SerializedPyObject* out);
 
-/// \brief Reconstruct SerializedPyObject from representation produced by
+/// Reconstruct SerializedPyObject from representation produced by
 /// SerializedPyObject::GetComponents.
 ///
-/// \param[in] num_tensors number of tensors in the object
-/// \param[in] num_sparse_tensors number of sparse tensors in the object
-/// \param[in] num_ndarrays number of numpy Ndarrays in the object
-/// \param[in] num_buffers number of buffers in the object
-/// \param[in] data a list containing pyarrow.Buffer instances. It must be 1 +
+/// :param num_tensors: number of tensors in the object
+/// :param num_sparse_tensors: number of sparse tensors in the object
+/// :param num_ndarrays: number of numpy Ndarrays in the object
+/// :param num_buffers: number of buffers in the object
+/// :param data: a list containing pyarrow.Buffer instances. It must be 1 +
 /// num_tensors * 2 + num_coo_tensors * 3 + num_csr_tensors * 4 + num_csc_tensors * 4 +
 /// num_csf_tensors * (2 * ndim_csf + 3) + num_buffers in length
-/// \param[out] out the reconstructed object
-/// \return Status
+/// :param out[out]: the reconstructed object
+/// :return: Status
 ARROW_DEPRECATED("Deprecated in 18.0.0. Will be removed in 20.0.0")
 ARROW_PYTHON_EXPORT
 Status GetSerializedFromComponents(int num_tensors,
@@ -79,27 +79,27 @@ Status GetSerializedFromComponents(int num_tensors,
                                    int num_ndarrays, int num_buffers, PyObject* data,
                                    SerializedPyObject* out);
 
-/// \brief Reconstruct Python object from Arrow-serialized representation
-/// \param[in] context Serialization context which contains custom serialization
+/// Reconstruct Python object from Arrow-serialized representation
+/// :param context: Serialization context which contains custom serialization
 /// and deserialization callbacks. Can be any Python object with a
 /// _serialize_callback method for serialization and a _deserialize_callback
 /// method for deserialization. If context is None, no custom serialization
 /// will be attempted.
-/// \param[in] object Object to deserialize
-/// \param[in] base a Python object holding the underlying data that any NumPy
+/// :param object: Object to deserialize
+/// :param base: a Python object holding the underlying data that any NumPy
 /// arrays will reference, to avoid premature deallocation
-/// \param[out] out The returned object
-/// \return Status
+/// :param out[out]: The returned object
+/// :return: Status
 /// This acquires the GIL
 ARROW_DEPRECATED("Deprecated in 18.0.0. Will be removed in 20.0.0")
 ARROW_PYTHON_EXPORT
 Status DeserializeObject(PyObject* context, const SerializedPyObject& object,
                          PyObject* base, PyObject** out);
 
-/// \brief Reconstruct Ndarray from Arrow-serialized representation
-/// \param[in] object Object to deserialize
-/// \param[out] out The deserialized tensor
-/// \return Status
+/// Reconstruct Ndarray from Arrow-serialized representation
+/// :param object: Object to deserialize
+/// :param out[out]: The deserialized tensor
+/// :return: Status
 ARROW_DEPRECATED("Deprecated in 18.0.0. Will be removed in 20.0.0")
 ARROW_PYTHON_EXPORT
 Status DeserializeNdarray(const SerializedPyObject& object, std::shared_ptr<Tensor>* out);

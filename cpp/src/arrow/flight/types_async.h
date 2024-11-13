@@ -30,13 +30,13 @@ namespace arrow::flight {
 /// Common types used for asynchronous Flight APIs.
 /// @{
 
-/// \brief Non-templated state for an async RPC.
+/// Non-templated state for an async RPC.
 class ARROW_FLIGHT_EXPORT AsyncListenerBase {
  public:
   AsyncListenerBase();
   virtual ~AsyncListenerBase();
 
-  /// \brief Request cancellation of the RPC.
+  /// Request cancellation of the RPC.
   ///
   /// The RPC is not cancelled until AsyncListener::OnFinish is called.
   void TryCancel();
@@ -50,7 +50,7 @@ class ARROW_FLIGHT_EXPORT AsyncListenerBase {
   std::unique_ptr<internal::AsyncRpc> rpc_state_;
 };
 
-/// \brief Callbacks for results from async RPCs.
+/// Callbacks for results from async RPCs.
 ///
 /// A single listener may not be used for multiple concurrent RPC
 /// calls.  The application MUST hold the listener alive until
@@ -58,11 +58,11 @@ class ARROW_FLIGHT_EXPORT AsyncListenerBase {
 template <typename T>
 class ARROW_FLIGHT_EXPORT AsyncListener : public AsyncListenerBase {
  public:
-  /// \brief Get the next server result.
+  /// Get the next server result.
   ///
   /// This will never be called concurrently with itself or OnFinish.
   virtual void OnNext(T message) = 0;
-  /// \brief Get the final status.
+  /// Get the final status.
   ///
   /// This will never be called concurrently with itself or OnNext.  If the
   /// error comes from the remote server, then a TransportStatusDetail will be

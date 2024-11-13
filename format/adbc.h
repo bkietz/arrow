@@ -172,34 +172,34 @@ struct ArrowArrayStream {
 ///
 /// @{
 
-/// \brief Error codes for operations that may fail.
+/// Error codes for operations that may fail.
 typedef uint8_t AdbcStatusCode;
 
-/// \brief No error.
+/// No error.
 #define ADBC_STATUS_OK 0
-/// \brief An unknown error occurred.
+/// An unknown error occurred.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_UNKNOWN 1
-/// \brief The operation is not implemented or supported.
+/// The operation is not implemented or supported.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_NOT_IMPLEMENTED 2
-/// \brief A requested resource was not found.
+/// A requested resource was not found.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_NOT_FOUND 3
-/// \brief A requested resource already exists.
+/// A requested resource already exists.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_ALREADY_EXISTS 4
-/// \brief The arguments are invalid, likely a programming error.
+/// The arguments are invalid, likely a programming error.
 ///
 /// For instance, they may be of the wrong format, or out of range.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_INVALID_ARGUMENT 5
-/// \brief The preconditions for the operation are not met, likely a
+/// The preconditions for the operation are not met, likely a
 ///   programming error.
 ///
 /// For instance, the object may be uninitialized, or may have not
@@ -207,61 +207,61 @@ typedef uint8_t AdbcStatusCode;
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_INVALID_STATE 6
-/// \brief Invalid data was processed (not a programming error).
+/// Invalid data was processed (not a programming error).
 ///
 /// For instance, a division by zero may have occurred during query
 /// execution.
 ///
 /// May indicate a database-side error only.
 #define ADBC_STATUS_INVALID_DATA 7
-/// \brief The database's integrity was affected.
+/// The database's integrity was affected.
 ///
 /// For instance, a foreign key check may have failed, or a uniqueness
 /// constraint may have been violated.
 ///
 /// May indicate a database-side error only.
 #define ADBC_STATUS_INTEGRITY 8
-/// \brief An error internal to the driver or database occurred.
+/// An error internal to the driver or database occurred.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_INTERNAL 9
-/// \brief An I/O error occurred.
+/// An I/O error occurred.
 ///
 /// For instance, a remote service may be unavailable.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_IO 10
-/// \brief The operation was cancelled, not due to a timeout.
+/// The operation was cancelled, not due to a timeout.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_CANCELLED 11
-/// \brief The operation was cancelled due to a timeout.
+/// The operation was cancelled due to a timeout.
 ///
 /// May indicate a driver-side or database-side error.
 #define ADBC_STATUS_TIMEOUT 12
-/// \brief Authentication failed.
+/// Authentication failed.
 ///
 /// May indicate a database-side error only.
 #define ADBC_STATUS_UNAUTHENTICATED 13
-/// \brief The client is not authorized to perform the given operation.
+/// The client is not authorized to perform the given operation.
 ///
 /// May indicate a database-side error only.
 #define ADBC_STATUS_UNAUTHORIZED 14
 
-/// \brief A detailed error message for an operation.
+/// A detailed error message for an operation.
 struct ADBC_EXPORT AdbcError {
-  /// \brief The error message.
+  /// The error message.
   char* message;
 
-  /// \brief A vendor-specific error code, if applicable.
+  /// A vendor-specific error code, if applicable.
   int32_t vendor_code;
 
-  /// \brief A SQLSTATE error code, if provided, as defined by the
+  /// A SQLSTATE error code, if provided, as defined by the
   ///   SQL:2003 standard.  If not set, it should be set to
   ///   "\0\0\0\0\0".
   char sqlstate[5];
 
-  /// \brief Release the contained error.
+  /// Release the contained error.
   ///
   /// Unlike other structures, this is an embedded callback to make it
   /// easier for the driver manager and driver to cooperate.
@@ -273,83 +273,109 @@ struct ADBC_EXPORT AdbcError {
 /// \defgroup adbc-constants Constants
 /// @{
 
-/// \brief ADBC revision 1.0.0.
+/// ADBC revision 1.0.0.
 ///
 /// When passed to an AdbcDriverInitFunc(), the driver parameter must
 /// point to an AdbcDriver.
 #define ADBC_VERSION_1_0_0 1000000
 
-/// \brief Canonical option value for enabling an option.
+/// Canonical option value for enabling an option.
 ///
 /// For use as the value in SetOption calls.
 #define ADBC_OPTION_VALUE_ENABLED "true"
-/// \brief Canonical option value for disabling an option.
+/// Canonical option value for disabling an option.
 ///
 /// For use as the value in SetOption calls.
 #define ADBC_OPTION_VALUE_DISABLED "false"
 
-/// \brief The database vendor/product name (e.g. the server name).
+/// The database vendor/product name (e.g. the server name).
 ///   (type: utf8).
 ///
-/// \see AdbcConnectionGetInfo
+/// ```{seealso}
+/// AdbcConnectionGetInfo
+/// ```
 #define ADBC_INFO_VENDOR_NAME 0
-/// \brief The database vendor/product version (type: utf8).
+/// The database vendor/product version (type: utf8).
 ///
-/// \see AdbcConnectionGetInfo
+/// ```{seealso}
+/// AdbcConnectionGetInfo
+/// ```
 #define ADBC_INFO_VENDOR_VERSION 1
-/// \brief The database vendor/product Arrow library version (type:
+/// The database vendor/product Arrow library version (type:
 ///   utf8).
 ///
-/// \see AdbcConnectionGetInfo
+/// ```{seealso}
+/// AdbcConnectionGetInfo
+/// ```
 #define ADBC_INFO_VENDOR_ARROW_VERSION 2
 
-/// \brief The driver name (type: utf8).
+/// The driver name (type: utf8).
 ///
-/// \see AdbcConnectionGetInfo
+/// ```{seealso}
+/// AdbcConnectionGetInfo
+/// ```
 #define ADBC_INFO_DRIVER_NAME 100
-/// \brief The driver version (type: utf8).
+/// The driver version (type: utf8).
 ///
-/// \see AdbcConnectionGetInfo
+/// ```{seealso}
+/// AdbcConnectionGetInfo
+/// ```
 #define ADBC_INFO_DRIVER_VERSION 101
-/// \brief The driver Arrow library version (type: utf8).
+/// The driver Arrow library version (type: utf8).
 ///
-/// \see AdbcConnectionGetInfo
+/// ```{seealso}
+/// AdbcConnectionGetInfo
+/// ```
 #define ADBC_INFO_DRIVER_ARROW_VERSION 102
 
-/// \brief Return metadata on catalogs, schemas, tables, and columns.
+/// Return metadata on catalogs, schemas, tables, and columns.
 ///
-/// \see AdbcConnectionGetObjects
+/// ```{seealso}
+/// AdbcConnectionGetObjects
+/// ```
 #define ADBC_OBJECT_DEPTH_ALL 0
-/// \brief Return metadata on catalogs only.
+/// Return metadata on catalogs only.
 ///
-/// \see AdbcConnectionGetObjects
+/// ```{seealso}
+/// AdbcConnectionGetObjects
+/// ```
 #define ADBC_OBJECT_DEPTH_CATALOGS 1
-/// \brief Return metadata on catalogs and schemas.
+/// Return metadata on catalogs and schemas.
 ///
-/// \see AdbcConnectionGetObjects
+/// ```{seealso}
+/// AdbcConnectionGetObjects
+/// ```
 #define ADBC_OBJECT_DEPTH_DB_SCHEMAS 2
-/// \brief Return metadata on catalogs, schemas, and tables.
+/// Return metadata on catalogs, schemas, and tables.
 ///
-/// \see AdbcConnectionGetObjects
+/// ```{seealso}
+/// AdbcConnectionGetObjects
+/// ```
 #define ADBC_OBJECT_DEPTH_TABLES 3
-/// \brief Return metadata on catalogs, schemas, tables, and columns.
+/// Return metadata on catalogs, schemas, tables, and columns.
 ///
-/// \see AdbcConnectionGetObjects
+/// ```{seealso}
+/// AdbcConnectionGetObjects
+/// ```
 #define ADBC_OBJECT_DEPTH_COLUMNS ADBC_OBJECT_DEPTH_ALL
 
-/// \brief The name of the canonical option for whether autocommit is
+/// The name of the canonical option for whether autocommit is
 ///   enabled.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_CONNECTION_OPTION_AUTOCOMMIT "adbc.connection.autocommit"
 
-/// \brief The name of the canonical option for whether the current
+/// The name of the canonical option for whether the current
 ///   connection should be restricted to being read-only.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_CONNECTION_OPTION_READ_ONLY "adbc.connection.readonly"
 
-/// \brief The name of the canonical option for setting the isolation
+/// The name of the canonical option for setting the isolation
 ///   level of a transaction.
 ///
 /// Should only be used in conjunction with autocommit disabled and
@@ -357,24 +383,30 @@ struct ADBC_EXPORT AdbcError {
 /// isolation level is not supported by a driver, it should return an
 /// appropriate error.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_CONNECTION_OPTION_ISOLATION_LEVEL \
   "adbc.connection.transaction.isolation_level"
 
-/// \brief Use database or driver default isolation level
+/// Use database or driver default isolation level
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_OPTION_ISOLATION_LEVEL_DEFAULT \
   "adbc.connection.transaction.isolation.default"
 
-/// \brief The lowest isolation level. Dirty reads are allowed, so one
+/// The lowest isolation level. Dirty reads are allowed, so one
 ///   transaction may see not-yet-committed changes made by others.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_OPTION_ISOLATION_LEVEL_READ_UNCOMMITTED \
   "adbc.connection.transaction.isolation.read_uncommitted"
 
-/// \brief Lock-based concurrency control keeps write locks until the
+/// Lock-based concurrency control keeps write locks until the
 ///   end of the transaction, but read locks are released as soon as a
 ///   SELECT is performed. Non-repeatable reads can occur in this
 ///   isolation level.
@@ -386,39 +418,47 @@ struct ADBC_EXPORT AdbcError {
 /// re-issues the read, it will find the same data; data is free to change
 /// after it is read.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_OPTION_ISOLATION_LEVEL_READ_COMMITTED \
   "adbc.connection.transaction.isolation.read_committed"
 
-/// \brief Lock-based concurrency control keeps read AND write locks
+/// Lock-based concurrency control keeps read AND write locks
 ///   (acquired on selection data) until the end of the transaction.
 ///
 /// However, range-locks are not managed, so phantom reads can occur.
 /// Write skew is possible at this isolation level in some systems.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_OPTION_ISOLATION_LEVEL_REPEATABLE_READ \
   "adbc.connection.transaction.isolation.repeatable_read"
 
-/// \brief This isolation guarantees that all reads in the transaction
+/// This isolation guarantees that all reads in the transaction
 ///   will see a consistent snapshot of the database and the transaction
 ///   should only successfully commit if no updates conflict with any
 ///   concurrent updates made since that snapshot.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_OPTION_ISOLATION_LEVEL_SNAPSHOT \
   "adbc.connection.transaction.isolation.snapshot"
 
-/// \brief Serializability requires read and write locks to be released
+/// Serializability requires read and write locks to be released
 ///   only at the end of the transaction. This includes acquiring range-
 ///   locks when a select query uses a ranged WHERE clause to avoid
 ///   phantom reads.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_OPTION_ISOLATION_LEVEL_SERIALIZABLE \
   "adbc.connection.transaction.isolation.serializable"
 
-/// \brief The central distinction between serializability and linearizability
+/// The central distinction between serializability and linearizability
 ///   is that serializability is a global property; a property of an entire
 ///   history of operations and transactions. Linearizability is a local
 ///   property; a property of a single operation/transaction.
@@ -427,7 +467,9 @@ struct ADBC_EXPORT AdbcError {
 /// where transactions are restricted to consist of a single operation applied
 /// to a single object.
 ///
-/// \see AdbcConnectionSetOption
+/// ```{seealso}
+/// AdbcConnectionSetOption
+/// ```
 #define ADBC_OPTION_ISOLATION_LEVEL_LINEARIZABLE \
   "adbc.connection.transaction.isolation.linearizable"
 
@@ -443,18 +485,18 @@ struct ADBC_EXPORT AdbcError {
 ///
 /// @{
 
-/// \brief The name of the target table for a bulk insert.
+/// The name of the target table for a bulk insert.
 ///
 /// The driver should attempt to create the table if it does not
 /// exist.  If the table exists but has a different schema,
 /// ADBC_STATUS_ALREADY_EXISTS should be raised.  Else, data should be
 /// appended to the target table.
 #define ADBC_INGEST_OPTION_TARGET_TABLE "adbc.ingest.target_table"
-/// \brief Whether to create (the default) or append.
+/// Whether to create (the default) or append.
 #define ADBC_INGEST_OPTION_MODE "adbc.ingest.mode"
-/// \brief Create the table and insert data; error if the table exists.
+/// Create the table and insert data; error if the table exists.
 #define ADBC_INGEST_OPTION_MODE_CREATE "adbc.ingest.mode.create"
-/// \brief Do not create the table, and insert data; error if the
+/// Do not create the table, and insert data; error if the
 ///   table does not exist (ADBC_STATUS_NOT_FOUND) or does not match
 ///   the schema of the data to append (ADBC_STATUS_ALREADY_EXISTS).
 #define ADBC_INGEST_OPTION_MODE_APPEND "adbc.ingest.mode.append"
@@ -470,14 +512,14 @@ struct ADBC_EXPORT AdbcError {
 /// can place ownership of the actual database in this object.
 /// @{
 
-/// \brief An instance of a database.
+/// An instance of a database.
 ///
 /// Must be kept alive as long as any connections exist.
 struct ADBC_EXPORT AdbcDatabase {
-  /// \brief Opaque implementation-defined state.
+  /// Opaque implementation-defined state.
   /// This field is NULLPTR iff the connection is uninitialized/freed.
   void* private_data;
-  /// \brief The associated driver (used by the driver manager to help
+  /// The associated driver (used by the driver manager to help
   ///   track state).
   struct AdbcDriver* private_driver;
 };
@@ -488,7 +530,7 @@ struct ADBC_EXPORT AdbcDatabase {
 /// Functions for creating, using, and releasing database connections.
 /// @{
 
-/// \brief An active database connection.
+/// An active database connection.
 ///
 /// Provides methods for query execution, managing prepared
 /// statements, using transactions, and so on.
@@ -497,10 +539,10 @@ struct ADBC_EXPORT AdbcDatabase {
 /// used from multiple threads so long as clients take care to
 /// serialize accesses to a connection.
 struct ADBC_EXPORT AdbcConnection {
-  /// \brief Opaque implementation-defined state.
+  /// Opaque implementation-defined state.
   /// This field is NULLPTR iff the connection is uninitialized/freed.
   void* private_data;
-  /// \brief The associated driver (used by the driver manager to help
+  /// The associated driver (used by the driver manager to help
   ///   track state).
   struct AdbcDriver* private_driver;
 };
@@ -516,7 +558,7 @@ struct ADBC_EXPORT AdbcConnection {
 /// to turn it into a prepared statement instead).
 /// @{
 
-/// \brief A container for all state needed to execute a database
+/// A container for all state needed to execute a database
 /// query, such as the query itself, parameters for prepared
 /// statements, driver parameters, etc.
 ///
@@ -535,11 +577,11 @@ struct ADBC_EXPORT AdbcConnection {
 /// used from multiple threads so long as clients take care to
 /// serialize accesses to a statement.
 struct ADBC_EXPORT AdbcStatement {
-  /// \brief Opaque implementation-defined state.
+  /// Opaque implementation-defined state.
   /// This field is NULLPTR iff the connection is uninitialized/freed.
   void* private_data;
 
-  /// \brief The associated driver (used by the driver manager to help
+  /// The associated driver (used by the driver manager to help
   ///   track state).
   struct AdbcDriver* private_driver;
 };
@@ -561,24 +603,24 @@ struct ADBC_EXPORT AdbcStatement {
 ///
 /// @{
 
-/// \brief The partitions of a distributed/partitioned result set.
+/// The partitions of a distributed/partitioned result set.
 struct AdbcPartitions {
-  /// \brief The number of partitions.
+  /// The number of partitions.
   size_t num_partitions;
 
-  /// \brief The partitions of the result set, where each entry (up to
+  /// The partitions of the result set, where each entry (up to
   ///   num_partitions entries) is an opaque identifier that can be
   ///   passed to AdbcConnectionReadPartition.
   const uint8_t** partitions;
 
-  /// \brief The length of each corresponding entry in partitions.
+  /// The length of each corresponding entry in partitions.
   const size_t* partition_lengths;
 
-  /// \brief Opaque implementation-defined state.
+  /// Opaque implementation-defined state.
   /// This field is NULLPTR iff the connection is uninitialized/freed.
   void* private_data;
 
-  /// \brief Release the contained partitions.
+  /// Release the contained partitions.
   ///
   /// Unlike other structures, this is an embedded callback to make it
   /// easier for the driver manager and driver to cooperate.
@@ -595,23 +637,23 @@ struct AdbcPartitions {
 /// driver and the driver manager.
 /// @{
 
-/// \brief An instance of an initialized database driver.
+/// An instance of an initialized database driver.
 ///
 /// This provides a common interface for vendor-specific driver
 /// initialization routines. Drivers should populate this struct, and
 /// applications can call ADBC functions through this struct, without
 /// worrying about multiple definitions of the same symbol.
 struct ADBC_EXPORT AdbcDriver {
-  /// \brief Opaque driver-defined state.
+  /// Opaque driver-defined state.
   /// This field is NULL if the driver is uninitialized/freed (but
   /// it need not have a value even if the driver is initialized).
   void* private_data;
-  /// \brief Opaque driver manager-defined state.
+  /// Opaque driver manager-defined state.
   /// This field is NULL if the driver is uninitialized/freed (but
   /// it need not have a value even if the driver is initialized).
   void* private_manager;
 
-  /// \brief Release the driver and perform any cleanup.
+  /// Release the driver and perform any cleanup.
   ///
   /// This is an embedded callback to make it easier for the driver
   /// manager and driver to cooperate.
@@ -674,30 +716,30 @@ struct ADBC_EXPORT AdbcDriver {
 /// \addtogroup adbc-database
 /// @{
 
-/// \brief Allocate a new (but uninitialized) database.
+/// Allocate a new (but uninitialized) database.
 ADBC_EXPORT
 AdbcStatusCode AdbcDatabaseNew(struct AdbcDatabase* database, struct AdbcError* error);
 
-/// \brief Set a char* option.
+/// Set a char* option.
 ///
 /// Options may be set before AdbcDatabaseInit.  Some drivers may
 /// support setting options after initialization as well.
 ///
-/// \return ADBC_STATUS_NOT_IMPLEMENTED if the option is not recognized
+/// :return: ADBC_STATUS_NOT_IMPLEMENTED if the option is not recognized
 ADBC_EXPORT
 AdbcStatusCode AdbcDatabaseSetOption(struct AdbcDatabase* database, const char* key,
                                      const char* value, struct AdbcError* error);
 
-/// \brief Finish setting options and initialize the database.
+/// Finish setting options and initialize the database.
 ///
 /// Some drivers may support setting options after initialization
 /// as well.
 ADBC_EXPORT
 AdbcStatusCode AdbcDatabaseInit(struct AdbcDatabase* database, struct AdbcError* error);
 
-/// \brief Destroy this database. No connections may exist.
-/// \param[in] database The database to release.
-/// \param[out] error An optional location to return an error
+/// Destroy this database. No connections may exist.
+/// :param database: The database to release.
+/// :param error[out]: An optional location to return an error
 ///   message if necessary.
 ADBC_EXPORT
 AdbcStatusCode AdbcDatabaseRelease(struct AdbcDatabase* database,
@@ -708,22 +750,22 @@ AdbcStatusCode AdbcDatabaseRelease(struct AdbcDatabase* database,
 /// \addtogroup adbc-connection
 /// @{
 
-/// \brief Allocate a new (but uninitialized) connection.
+/// Allocate a new (but uninitialized) connection.
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionNew(struct AdbcConnection* connection,
                                  struct AdbcError* error);
 
-/// \brief Set a char* option.
+/// Set a char* option.
 ///
 /// Options may be set before AdbcConnectionInit.  Some drivers may
 /// support setting options after initialization as well.
 ///
-/// \return ADBC_STATUS_NOT_IMPLEMENTED if the option is not recognized
+/// :return: ADBC_STATUS_NOT_IMPLEMENTED if the option is not recognized
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionSetOption(struct AdbcConnection* connection, const char* key,
                                        const char* value, struct AdbcError* error);
 
-/// \brief Finish setting options and initialize the connection.
+/// Finish setting options and initialize the connection.
 ///
 /// Some drivers may support setting options after initialization
 /// as well.
@@ -731,10 +773,10 @@ ADBC_EXPORT
 AdbcStatusCode AdbcConnectionInit(struct AdbcConnection* connection,
                                   struct AdbcDatabase* database, struct AdbcError* error);
 
-/// \brief Destroy this connection.
+/// Destroy this connection.
 ///
-/// \param[in] connection The connection to release.
-/// \param[out] error An optional location to return an error
+/// :param connection: The connection to release.
+/// :param error[out]: An optional location to return an error
 ///   message if necessary.
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionRelease(struct AdbcConnection* connection,
@@ -762,7 +804,7 @@ AdbcStatusCode AdbcConnectionRelease(struct AdbcConnection* connection,
 ///
 /// @{
 
-/// \brief Get metadata about the database/driver.
+/// Get metadata about the database/driver.
 ///
 /// The result is an Arrow dataset with the following schema:
 ///
@@ -787,20 +829,20 @@ AdbcStatusCode AdbcConnectionRelease(struct AdbcConnection* connection,
 /// for ADBC usage.  Drivers/vendors will ignore requests for
 /// unrecognized codes (the row will be omitted from the result).
 ///
-/// \param[in] connection The connection to query.
-/// \param[in] info_codes A list of metadata codes to fetch, or NULL
+/// :param connection: The connection to query.
+/// :param info_codes: A list of metadata codes to fetch, or NULL
 ///   to fetch all.
-/// \param[in] info_codes_length The length of the info_codes
+/// :param info_codes_length: The length of the info_codes
 ///   parameter.  Ignored if info_codes is NULL.
-/// \param[out] out The result set.
-/// \param[out] error Error details, if an error occurs.
+/// :param out[out]: The result set.
+/// :param error[out]: Error details, if an error occurs.
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionGetInfo(struct AdbcConnection* connection,
                                      uint32_t* info_codes, size_t info_codes_length,
                                      struct ArrowArrayStream* out,
                                      struct AdbcError* error);
 
-/// \brief Get a hierarchical view of all catalogs, database schemas,
+/// Get a hierarchical view of all catalogs, database schemas,
 ///   tables, and columns.
 ///
 /// The result is an Arrow dataset with the following schema:
@@ -879,29 +921,29 @@ AdbcStatusCode AdbcConnectionGetInfo(struct AdbcConnection* connection,
 /// | fk_table                 | utf8 not null           |
 /// | fk_column_name           | utf8 not null           |
 ///
-/// \param[in] connection The database connection.
-/// \param[in] depth The level of nesting to display. If 0, display
+/// :param connection: The database connection.
+/// :param depth: The level of nesting to display. If 0, display
 ///   all levels. If 1, display only catalogs (i.e.  catalog_schemas
 ///   will be null). If 2, display only catalogs and schemas
 ///   (i.e. db_schema_tables will be null), and so on.
-/// \param[in] catalog Only show tables in the given catalog. If NULL,
+/// :param catalog: Only show tables in the given catalog. If NULL,
 ///   do not filter by catalog. If an empty string, only show tables
 ///   without a catalog.  May be a search pattern (see section
 ///   documentation).
-/// \param[in] db_schema Only show tables in the given database schema. If
+/// :param db_schema: Only show tables in the given database schema. If
 ///   NULL, do not filter by database schema. If an empty string, only show
 ///   tables without a database schema. May be a search pattern (see section
 ///   documentation).
-/// \param[in] table_name Only show tables with the given name. If NULL, do not
+/// :param table_name: Only show tables with the given name. If NULL, do not
 ///   filter by name. May be a search pattern (see section documentation).
-/// \param[in] table_type Only show tables matching one of the given table
+/// :param table_type: Only show tables matching one of the given table
 ///   types. If NULL, show tables of any type. Valid table types can be fetched
 ///   from GetTableTypes.  Terminate the list with a NULL entry.
-/// \param[in] column_name Only show columns with the given name. If
+/// :param column_name: Only show columns with the given name. If
 ///   NULL, do not filter by name.  May be a search pattern (see
 ///   section documentation).
-/// \param[out] out The result set.
-/// \param[out] error Error details, if an error occurs.
+/// :param out[out]: The result set.
+/// :param error[out]: Error details, if an error occurs.
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionGetObjects(struct AdbcConnection* connection, int depth,
                                         const char* catalog, const char* db_schema,
@@ -910,14 +952,14 @@ AdbcStatusCode AdbcConnectionGetObjects(struct AdbcConnection* connection, int d
                                         struct ArrowArrayStream* out,
                                         struct AdbcError* error);
 
-/// \brief Get the Arrow schema of a table.
+/// Get the Arrow schema of a table.
 ///
-/// \param[in] connection The database connection.
-/// \param[in] catalog The catalog (or nullptr if not applicable).
-/// \param[in] db_schema The database schema (or nullptr if not applicable).
-/// \param[in] table_name The table name.
-/// \param[out] schema The table schema.
-/// \param[out] error Error details, if an error occurs.
+/// :param connection: The database connection.
+/// :param catalog: The catalog (or nullptr if not applicable).
+/// :param db_schema: The database schema (or nullptr if not applicable).
+/// :param table_name: The table name.
+/// :param schema[out]: The table schema.
+/// :param error[out]: Error details, if an error occurs.
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionGetTableSchema(struct AdbcConnection* connection,
                                             const char* catalog, const char* db_schema,
@@ -925,7 +967,7 @@ AdbcStatusCode AdbcConnectionGetTableSchema(struct AdbcConnection* connection,
                                             struct ArrowSchema* schema,
                                             struct AdbcError* error);
 
-/// \brief Get a list of table types in the database.
+/// Get a list of table types in the database.
 ///
 /// The result is an Arrow dataset with the following schema:
 ///
@@ -933,9 +975,9 @@ AdbcStatusCode AdbcConnectionGetTableSchema(struct AdbcConnection* connection,
 /// ---------------|--------------
 /// table_type     | utf8 not null
 ///
-/// \param[in] connection The database connection.
-/// \param[out] out The result set.
-/// \param[out] error Error details, if an error occurs.
+/// :param connection: The database connection.
+/// :param out[out]: The result set.
+/// :param error[out]: Error details, if an error occurs.
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionGetTableTypes(struct AdbcConnection* connection,
                                            struct ArrowArrayStream* out,
@@ -956,17 +998,17 @@ AdbcStatusCode AdbcConnectionGetTableTypes(struct AdbcConnection* connection,
 ///
 /// @{
 
-/// \brief Construct a statement for a partition of a query. The
+/// Construct a statement for a partition of a query. The
 ///   results can then be read independently.
 ///
 /// A partition can be retrieved from AdbcPartitions.
 ///
-/// \param[in] connection The connection to use.  This does not have
+/// :param connection: The connection to use.  This does not have
 ///   to be the same connection that the partition was created on.
-/// \param[in] serialized_partition The partition descriptor.
-/// \param[in] serialized_length The partition descriptor length.
-/// \param[out] out The result set.
-/// \param[out] error Error details, if an error occurs.
+/// :param serialized_partition: The partition descriptor.
+/// :param serialized_length: The partition descriptor length.
+/// :param out[out]: The result set.
+/// :param error[out]: Error details, if an error occurs.
 ADBC_EXPORT
 AdbcStatusCode AdbcConnectionReadPartition(struct AdbcConnection* connection,
                                            const uint8_t* serialized_partition,
@@ -984,7 +1026,7 @@ AdbcStatusCode AdbcConnectionReadPartition(struct AdbcConnection* connection,
 ///
 /// @{
 
-/// \brief Commit any pending transactions. Only used if autocommit is
+/// Commit any pending transactions. Only used if autocommit is
 ///   disabled.
 ///
 /// Behavior is undefined if this is mixed with SQL transaction
@@ -993,7 +1035,7 @@ ADBC_EXPORT
 AdbcStatusCode AdbcConnectionCommit(struct AdbcConnection* connection,
                                     struct AdbcError* error);
 
-/// \brief Roll back any pending transactions. Only used if autocommit
+/// Roll back any pending transactions. Only used if autocommit
 ///   is disabled.
 ///
 /// Behavior is undefined if this is mixed with SQL transaction
@@ -1009,7 +1051,7 @@ AdbcStatusCode AdbcConnectionRollback(struct AdbcConnection* connection,
 /// \addtogroup adbc-statement
 /// @{
 
-/// \brief Create a new statement for a given connection.
+/// Create a new statement for a given connection.
 ///
 /// Set options on the statement, then call AdbcStatementExecuteQuery
 /// or AdbcStatementPrepare.
@@ -1017,31 +1059,31 @@ ADBC_EXPORT
 AdbcStatusCode AdbcStatementNew(struct AdbcConnection* connection,
                                 struct AdbcStatement* statement, struct AdbcError* error);
 
-/// \brief Destroy a statement.
-/// \param[in] statement The statement to release.
-/// \param[out] error An optional location to return an error
+/// Destroy a statement.
+/// :param statement: The statement to release.
+/// :param error[out]: An optional location to return an error
 ///   message if necessary.
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementRelease(struct AdbcStatement* statement,
                                     struct AdbcError* error);
 
-/// \brief Execute a statement and get the results.
+/// Execute a statement and get the results.
 ///
 /// This invalidates any prior result sets.
 ///
-/// \param[in] statement The statement to execute.
-/// \param[out] out The results. Pass NULL if the client does not
+/// :param statement: The statement to execute.
+/// :param out[out]: The results. Pass NULL if the client does not
 ///   expect a result set.
-/// \param[out] rows_affected The number of rows affected if known,
+/// :param rows_affected[out]: The number of rows affected if known,
 ///   else -1. Pass NULL if the client does not want this information.
-/// \param[out] error An optional location to return an error
+/// :param error[out]: An optional location to return an error
 ///   message if necessary.
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementExecuteQuery(struct AdbcStatement* statement,
                                          struct ArrowArrayStream* out,
                                          int64_t* rows_affected, struct AdbcError* error);
 
-/// \brief Turn this statement into a prepared statement to be
+/// Turn this statement into a prepared statement to be
 ///   executed multiple times.
 ///
 /// This invalidates any prior result sets.
@@ -1056,15 +1098,15 @@ AdbcStatusCode AdbcStatementPrepare(struct AdbcStatement* statement,
 /// between representations internally.
 /// @{
 
-/// \brief Set the SQL query to execute.
+/// Set the SQL query to execute.
 ///
 /// The query can then be executed with AdbcStatementExecute.  For
 /// queries expected to be executed repeatedly, AdbcStatementPrepare
 /// the statement first.
 ///
-/// \param[in] statement The statement.
-/// \param[in] query The query to execute.
-/// \param[out] error Error details, if an error occurs.
+/// :param statement: The statement.
+/// :param query: The query to execute.
+/// :param error[out]: Error details, if an error occurs.
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementSetSqlQuery(struct AdbcStatement* statement,
                                         const char* query, struct AdbcError* error);
@@ -1078,16 +1120,16 @@ AdbcStatusCode AdbcStatementSetSqlQuery(struct AdbcStatement* statement,
 /// converting between representations internally.
 /// @{
 
-/// \brief Set the Substrait plan to execute.
+/// Set the Substrait plan to execute.
 ///
 /// The query can then be executed with AdbcStatementExecute.  For
 /// queries expected to be executed repeatedly, AdbcStatementPrepare
 /// the statement first.
 ///
-/// \param[in] statement The statement.
-/// \param[in] plan The serialized substrait.Plan to execute.
-/// \param[in] length The length of the serialized plan.
-/// \param[out] error Error details, if an error occurs.
+/// :param statement: The statement.
+/// :param plan: The serialized substrait.Plan to execute.
+/// :param length: The length of the serialized plan.
+/// :param error[out]: Error details, if an error occurs.
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementSetSubstraitPlan(struct AdbcStatement* statement,
                                              const uint8_t* plan, size_t length,
@@ -1095,35 +1137,35 @@ AdbcStatusCode AdbcStatementSetSubstraitPlan(struct AdbcStatement* statement,
 
 /// @}
 
-/// \brief Bind Arrow data. This can be used for bulk inserts or
+/// Bind Arrow data. This can be used for bulk inserts or
 ///   prepared statements.
 ///
-/// \param[in] statement The statement to bind to.
-/// \param[in] values The values to bind. The driver will call the
+/// :param statement: The statement to bind to.
+/// :param values: The values to bind. The driver will call the
 ///   release callback itself, although it may not do this until the
 ///   statement is released.
-/// \param[in] schema The schema of the values to bind.
-/// \param[out] error An optional location to return an error message
+/// :param schema: The schema of the values to bind.
+/// :param error[out]: An optional location to return an error message
 ///   if necessary.
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementBind(struct AdbcStatement* statement,
                                  struct ArrowArray* values, struct ArrowSchema* schema,
                                  struct AdbcError* error);
 
-/// \brief Bind Arrow data. This can be used for bulk inserts or
+/// Bind Arrow data. This can be used for bulk inserts or
 ///   prepared statements.
-/// \param[in] statement The statement to bind to.
-/// \param[in] stream The values to bind. The driver will call the
+/// :param statement: The statement to bind to.
+/// :param stream: The values to bind. The driver will call the
 ///   release callback itself, although it may not do this until the
 ///   statement is released.
-/// \param[out] error An optional location to return an error message
+/// :param error[out]: An optional location to return an error message
 ///   if necessary.
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementBindStream(struct AdbcStatement* statement,
                                        struct ArrowArrayStream* stream,
                                        struct AdbcError* error);
 
-/// \brief Get the schema for bound parameters.
+/// Get the schema for bound parameters.
 ///
 /// This retrieves an Arrow schema describing the number, names, and
 /// types of the parameters in a parameterized statement.  The fields
@@ -1137,13 +1179,13 @@ AdbcStatusCode AdbcStatementBindStream(struct AdbcStatement* statement,
 ///
 /// This should be called after AdbcStatementPrepare.
 ///
-/// \return ADBC_STATUS_NOT_IMPLEMENTED if the schema cannot be determined.
+/// :return: ADBC_STATUS_NOT_IMPLEMENTED if the schema cannot be determined.
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementGetParameterSchema(struct AdbcStatement* statement,
                                                struct ArrowSchema* schema,
                                                struct AdbcError* error);
 
-/// \brief Set a string option on a statement.
+/// Set a string option on a statement.
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementSetOption(struct AdbcStatement* statement, const char* key,
                                       const char* value, struct AdbcError* error);
@@ -1151,17 +1193,17 @@ AdbcStatusCode AdbcStatementSetOption(struct AdbcStatement* statement, const cha
 /// \addtogroup adbc-statement-partition
 /// @{
 
-/// \brief Execute a statement and get the results as a partitioned
+/// Execute a statement and get the results as a partitioned
 ///   result set.
 ///
-/// \param[in] statement The statement to execute.
-/// \param[out] schema The schema of the result set.
-/// \param[out] partitions The result partitions.
-/// \param[out] rows_affected The number of rows affected if known,
+/// :param statement: The statement to execute.
+/// :param schema[out]: The schema of the result set.
+/// :param partitions[out]: The result partitions.
+/// :param rows_affected[out]: The number of rows affected if known,
 ///   else -1. Pass NULL if the client does not want this information.
-/// \param[out] error An optional location to return an error
+/// :param error[out]: An optional location to return an error
 ///   message if necessary.
-/// \return ADBC_STATUS_NOT_IMPLEMENTED if the driver does not support
+/// :return: ADBC_STATUS_NOT_IMPLEMENTED if the driver does not support
 ///   partitioned results
 ADBC_EXPORT
 AdbcStatusCode AdbcStatementExecutePartitions(struct AdbcStatement* statement,
@@ -1177,7 +1219,7 @@ AdbcStatusCode AdbcStatementExecutePartitions(struct AdbcStatement* statement,
 /// \addtogroup adbc-driver
 /// @{
 
-/// \brief Common entry point for drivers via the driver manager
+/// Common entry point for drivers via the driver manager
 ///   (which uses dlopen(3)/LoadLibrary). The driver manager is told
 ///   to load a library and call a function of this type to load the
 ///   driver.
@@ -1185,14 +1227,14 @@ AdbcStatusCode AdbcStatementExecutePartitions(struct AdbcStatement* statement,
 /// Although drivers may choose any name for this function, the
 /// recommended name is "AdbcDriverInit".
 ///
-/// \param[in] version The ADBC revision to attempt to initialize (see
+/// :param version: The ADBC revision to attempt to initialize (see
 ///   ADBC_VERSION_1_0_0).
-/// \param[out] driver The table of function pointers to
+/// :param driver[out]: The table of function pointers to
 ///   initialize. Should be a pointer to the appropriate struct for
 ///   the given version (see the documentation for the version).
-/// \param[out] error An optional location to return an error message
+/// :param error[out]: An optional location to return an error message
 ///   if necessary.
-/// \return ADBC_STATUS_OK if the driver was initialized, or
+/// :return: ADBC_STATUS_OK if the driver was initialized, or
 ///   ADBC_STATUS_NOT_IMPLEMENTED if the version is not supported.  In
 ///   that case, clients may retry with a different version.
 typedef AdbcStatusCode (*AdbcDriverInitFunc)(int version, void* driver,

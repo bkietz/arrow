@@ -73,7 +73,7 @@ class SimpleRandomArrayGenerator {
     return offsets;
   }
 
-  /// \param[in] random_offsets Random offsets in [0, values_size] and no particular order
+  /// :param random_offsets: Random offsets in [0, values_size] and no particular order
   template <typename offset_type>
   std::vector<offset_type> ListViewSizes(const std::vector<offset_type>& random_offsets,
                                          int64_t values_size, double avg_size,

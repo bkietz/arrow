@@ -93,53 +93,53 @@ struct FlightData {
   ::arrow::Result<std::unique_ptr<ipc::Message>> OpenMessage();
 };
 
-/// \brief A transport-specific interface for reading/writing Arrow data.
+/// A transport-specific interface for reading/writing Arrow data.
 ///
 /// New transports will implement this to read/write IPC payloads to
 /// the underlying stream.
 class ARROW_FLIGHT_EXPORT TransportDataStream {
  public:
   virtual ~TransportDataStream() = default;
-  /// \brief Attempt to read the next FlightData message.
+  /// Attempt to read the next FlightData message.
   ///
-  /// \return success true if data was populated, false if there was
+  /// :return: success true if data was populated, false if there was
   ///   an error. For clients, the error can be retrieved from
   ///   Finish(Status).
   virtual bool ReadData(FlightData* data);
-  /// \brief Attempt to write a FlightPayload.
+  /// Attempt to write a FlightPayload.
   ///
-  /// \param[in] payload The data to write.
-  /// \return true if the message was accepted by the transport, false
+  /// :param payload: The data to write.
+  /// :return: true if the message was accepted by the transport, false
   ///   if not (e.g. due to client/server disconnect), Status if there
   ///   was an error (e.g. with the payload itself).
   virtual arrow::Result<bool> WriteData(const FlightPayload& payload);
-  /// \brief Indicate that there are no more writes on this stream.
+  /// Indicate that there are no more writes on this stream.
   ///
   /// This is only a hint for the underlying transport and may not
   /// actually do anything.
   virtual Status WritesDone();
 };
 
-/// \brief A transport-specific interface for reading/writing Arrow
+/// A transport-specific interface for reading/writing Arrow
 ///   data for a client.
 class ARROW_FLIGHT_EXPORT ClientDataStream : public TransportDataStream {
  public:
-  /// \brief Attempt to read a non-data message.
+  /// Attempt to read a non-data message.
   ///
   /// Only implemented for DoPut; mutually exclusive with
   /// ReadData(FlightData*).
   virtual bool ReadPutMetadata(std::shared_ptr<Buffer>* out);
-  /// \brief Attempt to cancel the call.
+  /// Attempt to cancel the call.
   ///
   /// This is only a hint and may not take effect immediately. The
   /// client should still finish the call with Finish(Status) as usual.
   virtual void TryCancel() {}
-  /// \brief Finish the call, reporting the server-sent status and/or
+  /// Finish the call, reporting the server-sent status and/or
   ///   any client-side errors as appropriate.
   ///
   /// Implies WritesDone() and DoFinish().
   ///
-  /// \param[in] st A client-side status to combine with the
+  /// :param st: A client-side status to combine with the
   ///   server-side error. That is, if an error occurs on the
   ///   client-side, call Finish(Status) to finish the server-side
   ///   call, get the server-side status, and merge the statuses
@@ -147,7 +147,7 @@ class ARROW_FLIGHT_EXPORT ClientDataStream : public TransportDataStream {
   Status Finish(Status st);
 
  protected:
-  /// \brief End the call, returning the final server status.
+  /// End the call, returning the final server status.
   ///
   /// For implementors: should imply WritesDone() (even if it does not
   /// directly call it).
@@ -234,14 +234,14 @@ class ARROW_FLIGHT_EXPORT TransportRegistry {
   std::unique_ptr<Impl> impl_;
 };
 
-/// \brief Get the registry of transport implementations.
+/// Get the registry of transport implementations.
 ARROW_FLIGHT_EXPORT
 TransportRegistry* GetDefaultTransportRegistry();
 
 //------------------------------------------------------------
 // Async APIs
 
-/// \brief Transport-specific state for an async RPC.
+/// Transport-specific state for an async RPC.
 ///
 /// Transport implementations may subclass this to store their own
 /// state, and stash an instance in a user-supplied AsyncListener via
@@ -249,7 +249,7 @@ TransportRegistry* GetDefaultTransportRegistry();
 class ARROW_FLIGHT_EXPORT AsyncRpc {
  public:
   virtual ~AsyncRpc() = default;
-  /// \brief Request cancellation of the RPC.
+  /// Request cancellation of the RPC.
   virtual void TryCancel() {}
 
   /// Only needed for DoPut/DoExchange
@@ -264,7 +264,7 @@ class ARROW_FLIGHT_EXPORT AsyncRpc {
 //------------------------------------------------------------
 // Error propagation helpers
 
-/// \brief Abstract error status.
+/// Abstract error status.
 ///
 /// Transport implementations may use side channels (e.g. HTTP
 /// trailers) to convey additional information to reconstruct the
@@ -273,18 +273,18 @@ struct ARROW_FLIGHT_EXPORT TransportStatus {
   TransportStatusCode code;
   std::string message;
 
-  /// \brief Convert a C++ status to an abstract transport status.
+  /// Convert a C++ status to an abstract transport status.
   static TransportStatus FromStatus(const Status& arrow_status);
 
-  /// \brief Reconstruct a string-encoded TransportStatus.
+  /// Reconstruct a string-encoded TransportStatus.
   static TransportStatus FromCodeStringAndMessage(const std::string& code_str,
                                                   std::string message);
 
-  /// \brief Convert an abstract transport status to a C++ status.
+  /// Convert an abstract transport status to a C++ status.
   Status ToStatus() const;
 };
 
-/// \brief Convert the string representation of an Arrow status code
+/// Convert the string representation of an Arrow status code
 ///   back to an Arrow status.
 ARROW_FLIGHT_EXPORT
 Status ReconstructStatus(const std::string& code_str, const Status& current_status,

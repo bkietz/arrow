@@ -75,7 +75,7 @@ using StopProducingFunc = std::function<void(ExecNode*)>;
 
 ExecBatch ExecBatchFromJSON(const std::vector<TypeHolder>& types, std::string_view json);
 
-/// \brief Shape qualifier for value types. In certain instances
+/// Shape qualifier for value types. In certain instances
 /// (e.g. "map_lookup" kernel), an argument may only be a scalar, where in
 /// other kernels arguments can be arrays or scalars
 enum class ArgShape { ANY, ARRAY, SCALAR };
@@ -155,7 +155,7 @@ using compute::project;
 
 using fs::internal::GetAbstractPathExtension;
 
-/// \brief Assert a dataset produces data with the schema
+/// Assert a dataset produces data with the schema
 inline void AssertDatasetHasSchema(std::shared_ptr<Dataset> ds,
                                    std::shared_ptr<Schema> schema) {
   ASSERT_OK_AND_ASSIGN(auto scanner_builder, ds->NewScan());
@@ -210,7 +210,7 @@ inline void EnsureRecordBatchReaderDrained(RecordBatchReader* reader) {
 
 class DatasetFixtureMixin : public ::testing::Test {
  public:
-  /// \brief Ensure that record batches found in reader are equals to the
+  /// Ensure that record batches found in reader are equals to the
   /// record batches yielded by the data fragment.
   void AssertScanTaskEquals(RecordBatchReader* expected, RecordBatchGenerator batch_gen,
                             bool ensure_drained = true) {
@@ -228,7 +228,7 @@ class DatasetFixtureMixin : public ::testing::Test {
     }
   }
 
-  /// \brief Assert the value of the next batch yielded by the reader
+  /// Assert the value of the next batch yielded by the reader
   void AssertBatchEquals(RecordBatchReader* expected, const RecordBatch& batch) {
     std::shared_ptr<RecordBatch> lhs;
     ASSERT_OK(expected->ReadNext(&lhs));
@@ -236,7 +236,7 @@ class DatasetFixtureMixin : public ::testing::Test {
     AssertBatchesEqual(*lhs, batch);
   }
 
-  /// \brief Ensure that record batches found in reader are equals to the
+  /// Ensure that record batches found in reader are equals to the
   /// record batches yielded by the data fragment.
   void AssertFragmentEquals(RecordBatchReader* expected, Fragment* fragment,
                             bool ensure_drained = true) {
@@ -248,7 +248,7 @@ class DatasetFixtureMixin : public ::testing::Test {
     }
   }
 
-  /// \brief Ensure that record batches found in reader are equals to the
+  /// Ensure that record batches found in reader are equals to the
   /// record batches yielded by the data fragments of a dataset.
   void AssertDatasetFragmentsEqual(RecordBatchReader* expected, Dataset* dataset,
                                    bool ensure_drained = true) {
@@ -281,7 +281,7 @@ class DatasetFixtureMixin : public ::testing::Test {
     }
   }
 
-  /// \brief Ensure that record batches found in reader are equals to the
+  /// Ensure that record batches found in reader are equals to the
   /// record batches yielded by a scanner.
   void AssertScannerEquals(RecordBatchReader* expected, Scanner* scanner,
                            bool ensure_drained = true) {
@@ -300,7 +300,7 @@ class DatasetFixtureMixin : public ::testing::Test {
     }
   }
 
-  /// \brief Ensure that record batches found in reader are equals to the
+  /// Ensure that record batches found in reader are equals to the
   /// record batches yielded by a scanner.
   void AssertScanBatchesEquals(RecordBatchReader* expected, Scanner* scanner,
                                bool ensure_drained = true) {
@@ -316,7 +316,7 @@ class DatasetFixtureMixin : public ::testing::Test {
     }
   }
 
-  /// \brief Ensure that record batches found in reader are equals to the
+  /// Ensure that record batches found in reader are equals to the
   /// record batches yielded by a scanner.
   void AssertScanBatchesUnorderedEquals(RecordBatchReader* expected, Scanner* scanner,
                                         int expected_batches_per_fragment,
@@ -367,7 +367,7 @@ class DatasetFixtureMixin : public ::testing::Test {
     }
   }
 
-  /// \brief Ensure that record batches found in reader are equals to the
+  /// Ensure that record batches found in reader are equals to the
   /// record batches yielded by a dataset.
   void AssertDatasetEquals(RecordBatchReader* expected, Dataset* dataset,
                            bool ensure_drained = true) {
@@ -1584,7 +1584,7 @@ class FileFormatScanNodeMixin : public FileFormatFixtureMixinV2<FormatHelper>,
   using FileFormatFixtureMixinV2<FormatHelper>::dataset_schema_;
 };
 
-/// \brief A dummy FileFormat implementation
+/// A dummy FileFormat implementation
 class DummyFileFormat : public FileFormat {
  public:
   explicit DummyFileFormat(std::shared_ptr<Schema> schema = NULLPTR)
@@ -1604,7 +1604,7 @@ class DummyFileFormat : public FileFormat {
     return schema_;
   }
 
-  /// \brief Open a file for scanning (always returns an empty generator)
+  /// Open a file for scanning (always returns an empty generator)
   Result<RecordBatchGenerator> ScanBatchesAsync(
       const std::shared_ptr<ScanOptions>& options,
       const std::shared_ptr<FileFragment>& fragment) const override {
@@ -1640,7 +1640,7 @@ class JSONRecordBatchFileFormat : public FileFormat {
 
   std::string type_name() const override { return "json_record_batch"; }
 
-  /// \brief Return true if the given file extension
+  /// Return true if the given file extension
   Result<bool> IsSupported(const FileSource& source) const override { return true; }
 
   Result<std::shared_ptr<Schema>> Inspect(const FileSource& source) const override {
@@ -1806,7 +1806,7 @@ struct ArithmeticDatasetFixture {
     });
   }
 
-  /// \brief Creates a single JSON record templated with n as follow.
+  /// Creates a single JSON record templated with n as follow.
   ///
   /// {"i64": n, "struct": {"i32": n, "str": "n"}, "u8": n "list": [n,n], "bool": n %
   /// 2},
@@ -1830,7 +1830,7 @@ struct ArithmeticDatasetFixture {
     return ss.str();
   }
 
-  /// \brief Creates a JSON RecordBatch
+  /// Creates a JSON RecordBatch
   static std::string JSONRecordBatch(int64_t n) {
     DCHECK_GT(n, 0);
 

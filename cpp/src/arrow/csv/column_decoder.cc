@@ -64,7 +64,7 @@ class ConcreteColumnDecoder : public ColumnDecoder {
   int32_t col_index_;
 };
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Null column decoder implementation (for a column not in the CSV file)
 
 class NullColumnDecoder : public ConcreteColumnDecoder {
@@ -87,7 +87,7 @@ Future<std::shared_ptr<Array>> NullColumnDecoder::Decode(
   return WrapConversionError(MakeArrayOfNull(type_, parser->num_rows(), pool_));
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Pre-typed column decoder implementation
 
 class TypedColumnDecoder : public ConcreteColumnDecoder {
@@ -124,7 +124,7 @@ Future<std::shared_ptr<Array>> TypedColumnDecoder::Decode(
       WrapConversionError(converter_->Convert(*parser, col_index_)));
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Type-inferring column builder implementation
 
 class InferringColumnDecoder : public ConcreteColumnDecoder {
@@ -218,7 +218,7 @@ Future<std::shared_ptr<Array>> InferringColumnDecoder::Decode(
   });
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Factory functions
 
 Result<std::shared_ptr<ColumnDecoder>> ColumnDecoder::Make(

@@ -26,7 +26,7 @@
 
 namespace gandiva {
 
-/// \brief Tracks validity/value builders in LLVM.
+/// Tracks validity/value builders in LLVM.
 class GANDIVA_EXPORT LValue {
  public:
   explicit LValue(llvm::Value* data, llvm::Value* length = NULLPTR,

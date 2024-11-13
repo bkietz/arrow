@@ -256,7 +256,7 @@ class BitmapWordReader {
   }
 };
 
-/// \brief Index into a possibly nonexistent bitmap
+/// Index into a possibly nonexistent bitmap
 struct OptionalBitIndexer {
   const uint8_t* bitmap;
   const int64_t offset;

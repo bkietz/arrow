@@ -23,22 +23,22 @@
 namespace arrow {
 namespace csv {
 
-/// \brief Description of an invalid row
+/// Description of an invalid row
 struct InvalidRow {
-  /// \brief Number of columns expected in the row
+  /// Number of columns expected in the row
   int32_t expected_columns;
-  /// \brief Actual number of columns found in the row
+  /// Actual number of columns found in the row
   int32_t actual_columns;
-  /// \brief The physical row number if known or -1
+  /// The physical row number if known or -1
   ///
   /// This number is one-based and also accounts for non-data rows (such as
   /// CSV header rows).
   int64_t number;
-  /// \brief View of the entire row. Memory will be freed after callback returns
+  /// View of the entire row. Memory will be freed after callback returns
   const std::string_view text;
 };
 
-/// \brief Result returned by an InvalidRowHandler
+/// Result returned by an InvalidRowHandler
 enum class InvalidRowResult {
   // Generate an error describing this row
   Error,
@@ -46,8 +46,8 @@ enum class InvalidRowResult {
   Skip
 };
 
-/// \brief callback for handling a row with an invalid number of columns while parsing
-/// \return result indicating if an error should be returned from the parser or the row is
+/// callback for handling a row with an invalid number of columns while parsing
+/// :return: result indicating if an error should be returned from the parser or the row is
 /// skipped
 using InvalidRowHandler = std::function<InvalidRowResult(const InvalidRow&)>;
 

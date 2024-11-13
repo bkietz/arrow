@@ -24,13 +24,13 @@ namespace flight {
 namespace sql {
 namespace example {
 
-/// \brief Gets the hard-coded type info from Sqlite for all data types.
-/// \return A record batch.
+/// Gets the hard-coded type info from Sqlite for all data types.
+/// :return: A record batch.
 arrow::Result<std::shared_ptr<RecordBatch>> DoGetTypeInfoResult();
 
-/// \brief Gets the hard-coded type info from Sqlite filtering
+/// Gets the hard-coded type info from Sqlite filtering
 ///        for a specific data type.
-/// \return A record batch.
+/// :return: A record batch.
 arrow::Result<std::shared_ptr<RecordBatch>> DoGetTypeInfoResult(int data_type_filter);
 }  // namespace example
 }  // namespace sql

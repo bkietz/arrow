@@ -85,17 +85,17 @@ Status RecordBatchToTensor(const RecordBatch& batch, bool null_to_nan, bool row_
 
 class ARROW_EXPORT Tensor {
  public:
-  /// \brief Create a Tensor with full parameters
+  /// Create a Tensor with full parameters
   ///
   /// This factory function will return Status::Invalid when the parameters are
   /// inconsistent
   ///
-  /// \param[in] type The data type of the tensor values
-  /// \param[in] data The buffer of the tensor content
-  /// \param[in] shape The shape of the tensor
-  /// \param[in] strides The strides of the tensor
+  /// :param type: The data type of the tensor values
+  /// :param data: The buffer of the tensor content
+  /// :param shape: The shape of the tensor
+  /// :param strides: The strides of the tensor
   ///            (if this is empty, the data assumed to be row-major)
-  /// \param[in] dim_names The names of the tensor dimensions
+  /// :param dim_names: The names of the tensor dimensions
   static inline Result<std::shared_ptr<Tensor>> Make(
       const std::shared_ptr<DataType>& type, const std::shared_ptr<Buffer>& data,
       const std::vector<int64_t>& shape, const std::vector<int64_t>& strides = {},
@@ -208,16 +208,16 @@ class NumericTensor : public Tensor {
   using TypeClass = TYPE;
   using value_type = typename TypeClass::c_type;
 
-  /// \brief Create a NumericTensor with full parameters
+  /// Create a NumericTensor with full parameters
   ///
   /// This factory function will return Status::Invalid when the parameters are
   /// inconsistent
   ///
-  /// \param[in] data The buffer of the tensor content
-  /// \param[in] shape The shape of the tensor
-  /// \param[in] strides The strides of the tensor
+  /// :param data: The buffer of the tensor content
+  /// :param shape: The shape of the tensor
+  /// :param strides: The strides of the tensor
   ///            (if this is empty, the data assumed to be row-major)
-  /// \param[in] dim_names The names of the tensor dimensions
+  /// :param dim_names: The names of the tensor dimensions
   static Result<std::shared_ptr<NumericTensor<TYPE>>> Make(
       const std::shared_ptr<Buffer>& data, const std::vector<int64_t>& shape,
       const std::vector<int64_t>& strides = {},

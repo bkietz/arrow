@@ -35,7 +35,7 @@
 
 namespace gandiva {
 
-/// \brief Decomposed expression : the validity and value are separated.
+/// Decomposed expression : the validity and value are separated.
 class GANDIVA_EXPORT Dex {
  public:
   /// Derived classes should simply invoke the Visit api of the visitor.

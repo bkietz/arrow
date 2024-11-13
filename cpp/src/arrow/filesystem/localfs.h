@@ -57,7 +57,7 @@ struct ARROW_EXPORT LocalFileSystemOptions {
   /// from the FileInfoGenerator with less initial latency.
   int32_t file_info_batch_size = kDefaultFileInfoBatchSize;
 
-  /// \brief Initialize with defaults
+  /// Initialize with defaults
   static LocalFileSystemOptions Defaults();
 
   bool Equals(const LocalFileSystemOptions& other) const;
@@ -66,7 +66,7 @@ struct ARROW_EXPORT LocalFileSystemOptions {
                                                 std::string* out_path);
 };
 
-/// \brief A FileSystem implementation accessing files on the local machine.
+/// A FileSystem implementation accessing files on the local machine.
 ///
 /// This class handles only `/`-separated paths.  If desired, conversion
 /// from Windows backslash-separated paths should be done by the caller.
@@ -89,13 +89,11 @@ class ARROW_EXPORT LocalFileSystem : public FileSystem {
 
   LocalFileSystemOptions options() const { return options_; }
 
-  /// \cond FALSE
   using FileSystem::CreateDir;
   using FileSystem::DeleteDirContents;
   using FileSystem::GetFileInfo;
   using FileSystem::OpenAppendStream;
   using FileSystem::OpenOutputStream;
-  /// \endcond
 
   Result<FileInfo> GetFileInfo(const std::string& path) override;
   Result<std::vector<FileInfo>> GetFileInfo(const FileSelector& select) override;

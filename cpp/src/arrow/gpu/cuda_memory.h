@@ -31,8 +31,7 @@ namespace cuda {
 class CudaContext;
 class CudaIpcMemHandle;
 
-/// \class CudaBuffer
-/// \brief An Arrow buffer located on a GPU device
+/// An Arrow buffer located on a GPU device
 ///
 /// Be careful using this in any Arrow code which may not be GPU-aware
 class ARROW_EXPORT CudaBuffer : public Buffer {
@@ -49,52 +48,52 @@ class ARROW_EXPORT CudaBuffer : public Buffer {
 
   ~CudaBuffer();
 
-  /// \brief Convert back generic buffer into CudaBuffer
-  /// \param[in] buffer buffer to convert
-  /// \return CudaBuffer or Status
+  /// Convert back generic buffer into CudaBuffer
+  /// :param buffer: buffer to convert
+  /// :return: CudaBuffer or Status
   ///
-  /// \note This function returns an error if the buffer isn't backed
-  /// by GPU memory
+  /// ```{note}
+  /// This function returns an error if the buffer isn't backed
   static Result<std::shared_ptr<CudaBuffer>> FromBuffer(std::shared_ptr<Buffer> buffer);
 
-  /// \brief Copy memory from GPU device to CPU host
-  /// \param[in] position start position inside buffer to copy bytes from
-  /// \param[in] nbytes number of bytes to copy
-  /// \param[out] out start address of the host memory area to copy to
-  /// \return Status
+  /// Copy memory from GPU device to CPU host
+  /// :param position: start position inside buffer to copy bytes from
+  /// :param nbytes: number of bytes to copy
+  /// :param out[out]: start address of the host memory area to copy to
+  /// :return: Status
   Status CopyToHost(const int64_t position, const int64_t nbytes, void* out) const;
 
-  /// \brief Copy memory to device at position
-  /// \param[in] position start position to copy bytes to
-  /// \param[in] data the host data to copy
-  /// \param[in] nbytes number of bytes to copy
-  /// \return Status
+  /// Copy memory to device at position
+  /// :param position: start position to copy bytes to
+  /// :param data: the host data to copy
+  /// :param nbytes: number of bytes to copy
+  /// :return: Status
   Status CopyFromHost(const int64_t position, const void* data, int64_t nbytes);
 
-  /// \brief Copy memory from device to device at position
-  /// \param[in] position start position inside buffer to copy bytes to
-  /// \param[in] data start address of the device memory area to copy from
-  /// \param[in] nbytes number of bytes to copy
-  /// \return Status
+  /// Copy memory from device to device at position
+  /// :param position: start position inside buffer to copy bytes to
+  /// :param data: start address of the device memory area to copy from
+  /// :param nbytes: number of bytes to copy
+  /// :return: Status
   ///
-  /// \note It is assumed that both source and destination device
-  /// memories have been allocated within the same context.
+  /// ```{note}
+  /// It is assumed that both source and destination device
   Status CopyFromDevice(const int64_t position, const void* data, int64_t nbytes);
 
-  /// \brief Copy memory from another device to device at position
-  /// \param[in] src_ctx context of the source device memory
-  /// \param[in] position start position inside buffer to copy bytes to
-  /// \param[in] data start address of the another device memory area to copy from
-  /// \param[in] nbytes number of bytes to copy
-  /// \return Status
+  /// Copy memory from another device to device at position
+  /// :param src_ctx: context of the source device memory
+  /// :param position: start position inside buffer to copy bytes to
+  /// :param data: start address of the another device memory area to copy from
+  /// :param nbytes: number of bytes to copy
+  /// :return: Status
   Status CopyFromAnotherDevice(const std::shared_ptr<CudaContext>& src_ctx,
                                const int64_t position, const void* data, int64_t nbytes);
 
-  /// \brief Expose this device buffer as IPC memory which can be used in other processes
-  /// \return Handle or Status
+  /// Expose this device buffer as IPC memory which can be used in other processes
+  /// :return: Handle or Status
   ///
-  /// \note After calling this function, this device memory will not be freed
-  /// when the CudaBuffer is destructed
+  /// ```{note}
+  /// After calling this function, this device memory will not be freed
   virtual Result<std::shared_ptr<CudaIpcMemHandle>> ExportForIpc();
 
   const std::shared_ptr<CudaContext>& context() const { return context_; }
@@ -107,32 +106,30 @@ class ARROW_EXPORT CudaBuffer : public Buffer {
   virtual Status Close();
 };
 
-/// \class CudaHostBuffer
-/// \brief Device-accessible CPU memory created using cudaHostAlloc
+/// Device-accessible CPU memory created using cudaHostAlloc
 class ARROW_EXPORT CudaHostBuffer : public MutableBuffer {
  public:
   CudaHostBuffer(uint8_t* data, const int64_t size);
 
   ~CudaHostBuffer();
 
-  /// \brief Return a device address the GPU can read this memory from.
+  /// Return a device address the GPU can read this memory from.
   Result<uintptr_t> GetDeviceAddress(const std::shared_ptr<CudaContext>& ctx);
 };
 
-/// \class CudaIpcHandle
-/// \brief A container for a CUDA IPC handle
+/// A container for a CUDA IPC handle
 class ARROW_EXPORT CudaIpcMemHandle {
  public:
   ~CudaIpcMemHandle();
 
-  /// \brief Create CudaIpcMemHandle from opaque buffer (e.g. from another process)
-  /// \param[in] opaque_handle a CUipcMemHandle as a const void*
-  /// \return Handle or Status
+  /// Create CudaIpcMemHandle from opaque buffer (e.g. from another process)
+  /// :param opaque_handle: a CUipcMemHandle as a const void*
+  /// :return: Handle or Status
   static Result<std::shared_ptr<CudaIpcMemHandle>> FromBuffer(const void* opaque_handle);
 
-  /// \brief Write CudaIpcMemHandle to a Buffer
-  /// \param[in] pool a MemoryPool to allocate memory from
-  /// \return Buffer or Status
+  /// Write CudaIpcMemHandle to a Buffer
+  /// :param pool: a MemoryPool to allocate memory from
+  /// :return: Buffer or Status
   Result<std::shared_ptr<Buffer>> Serialize(
       MemoryPool* pool = default_memory_pool()) const;
 
@@ -150,8 +147,7 @@ class ARROW_EXPORT CudaIpcMemHandle {
   friend CudaContext;
 };
 
-/// \class CudaBufferReader
-/// \brief File interface for zero-copy read from CUDA buffers
+/// File interface for zero-copy read from CUDA buffers
 ///
 /// CAUTION: reading to a Buffer returns a Buffer pointing to device memory.
 /// It will generally not be compatible with Arrow code expecting a buffer
@@ -198,19 +194,18 @@ class ARROW_EXPORT CudaBufferReader
   bool is_open_;
 };
 
-/// \class CudaBufferWriter
-/// \brief File interface for writing to CUDA buffers, with optional buffering
+/// File interface for writing to CUDA buffers, with optional buffering
 class ARROW_EXPORT CudaBufferWriter : public io::WritableFile {
  public:
   explicit CudaBufferWriter(const std::shared_ptr<CudaBuffer>& buffer);
   ~CudaBufferWriter() override;
 
-  /// \brief Close writer and flush buffered bytes to GPU
+  /// Close writer and flush buffered bytes to GPU
   Status Close() override;
 
   bool closed() const override;
 
-  /// \brief Flush buffered bytes to GPU
+  /// Flush buffered bytes to GPU
   Status Flush() override;
 
   Status Seek(int64_t position) override;
@@ -221,17 +216,17 @@ class ARROW_EXPORT CudaBufferWriter : public io::WritableFile {
 
   Result<int64_t> Tell() const override;
 
-  /// \brief Set CPU buffer size to limit calls to cudaMemcpy
-  /// \param[in] buffer_size the size of CPU buffer to allocate
-  /// \return Status
+  /// Set CPU buffer size to limit calls to cudaMemcpy
+  /// :param buffer_size: the size of CPU buffer to allocate
+  /// :return: Status
   ///
   /// By default writes are unbuffered
   Status SetBufferSize(const int64_t buffer_size);
 
-  /// \brief Returns size of host (CPU) buffer, 0 for unbuffered
+  /// Returns size of host (CPU) buffer, 0 for unbuffered
   int64_t buffer_size() const;
 
-  /// \brief Returns number of bytes buffered on host
+  /// Returns number of bytes buffered on host
   int64_t num_bytes_buffered() const;
 
  private:
@@ -239,14 +234,14 @@ class ARROW_EXPORT CudaBufferWriter : public io::WritableFile {
   std::unique_ptr<CudaBufferWriterImpl> impl_;
 };
 
-/// \brief Allocate CUDA-accessible memory on CPU host
+/// Allocate CUDA-accessible memory on CPU host
 ///
 /// The GPU will benefit from fast access to this CPU-located buffer,
 /// including fast memory copy.
 ///
-/// \param[in] device_number device to expose host memory
-/// \param[in] size number of bytes
-/// \return Host buffer or Status
+/// :param device_number: device to expose host memory
+/// :param size: number of bytes
+/// :return: Host buffer or Status
 ARROW_EXPORT
 Result<std::shared_ptr<CudaHostBuffer>> AllocateCudaHostBuffer(int device_number,
                                                                const int64_t size);

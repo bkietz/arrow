@@ -89,9 +89,9 @@ std::string_view RemoveLeadingSlash(std::string_view s);
 ARROW_EXPORT
 std::string EnsureTrailingSlash(std::string_view s);
 
-/// \brief remove the forward slash (if any) from the given path
-/// \param s the input path
-/// \param preserve_root if true, allow a path of just "/" to remain unchanged
+/// remove the forward slash (if any) from the given path
+/// :param s: the input path
+/// :param preserve_root: if true, allow a path of just "/" to remain unchanged
 ARROW_EXPORT
 std::string_view RemoveTrailingSlash(std::string_view s, bool preserve_root = false);
 

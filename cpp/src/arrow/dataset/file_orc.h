@@ -37,7 +37,7 @@ namespace dataset {
 
 constexpr char kOrcTypeName[] = "orc";
 
-/// \brief A FileFormat implementation that reads from and writes to ORC files
+/// A FileFormat implementation that reads from and writes to ORC files
 class ARROW_DS_EXPORT OrcFileFormat : public FileFormat {
  public:
   OrcFileFormat();
@@ -50,7 +50,7 @@ class ARROW_DS_EXPORT OrcFileFormat : public FileFormat {
 
   Result<bool> IsSupported(const FileSource& source) const override;
 
-  /// \brief Return the schema of the file if possible.
+  /// Return the schema of the file if possible.
   Result<std::shared_ptr<Schema>> Inspect(const FileSource& source) const override;
 
   Result<RecordBatchGenerator> ScanBatchesAsync(

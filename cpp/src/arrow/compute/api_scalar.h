@@ -470,14 +470,14 @@ struct ARROW_EXPORT DayOfWeekOptions : public FunctionOptions {
 /// times.
 struct ARROW_EXPORT AssumeTimezoneOptions : public FunctionOptions {
  public:
-  /// \brief How to interpret ambiguous local times that can be interpreted as
+  /// How to interpret ambiguous local times that can be interpreted as
   /// multiple instants (normally two) due to DST shifts.
   ///
   /// AMBIGUOUS_EARLIEST emits the earliest instant amongst possible interpretations.
   /// AMBIGUOUS_LATEST emits the latest instant amongst possible interpretations.
   enum Ambiguous { AMBIGUOUS_RAISE, AMBIGUOUS_EARLIEST, AMBIGUOUS_LATEST };
 
-  /// \brief How to handle local times that do not exist due to DST shifts.
+  /// How to handle local times that do not exist due to DST shifts.
   ///
   /// NONEXISTENT_EARLIEST emits the instant "just before" the DST shift instant
   /// in the given timestamp precision (for example, for a nanoseconds precision
@@ -583,350 +583,350 @@ class ARROW_EXPORT MapLookupOptions : public FunctionOptions {
 
 /// @}
 
-/// \brief Get the absolute value of a value.
+/// Get the absolute value of a value.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the value transformed
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise absolute value
+/// :param arg: the value transformed
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise absolute value
 ARROW_EXPORT
 Result<Datum> AbsoluteValue(const Datum& arg,
                             ArithmeticOptions options = ArithmeticOptions(),
                             ExecContext* ctx = NULLPTR);
 
-/// \brief Add two values together. Array values must be the same length. If
+/// Add two values together. Array values must be the same length. If
 /// either addend is null the result will be null.
 ///
-/// \param[in] left the first addend
-/// \param[in] right the second addend
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise sum
+/// :param left: the first addend
+/// :param right: the second addend
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise sum
 ARROW_EXPORT
 Result<Datum> Add(const Datum& left, const Datum& right,
                   ArithmeticOptions options = ArithmeticOptions(),
                   ExecContext* ctx = NULLPTR);
 
-/// \brief Subtract two values. Array values must be the same length. If the
+/// Subtract two values. Array values must be the same length. If the
 /// minuend or subtrahend is null the result will be null.
 ///
-/// \param[in] left the value subtracted from (minuend)
-/// \param[in] right the value by which the minuend is reduced (subtrahend)
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise difference
+/// :param left: the value subtracted from (minuend)
+/// :param right: the value by which the minuend is reduced (subtrahend)
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise difference
 ARROW_EXPORT
 Result<Datum> Subtract(const Datum& left, const Datum& right,
                        ArithmeticOptions options = ArithmeticOptions(),
                        ExecContext* ctx = NULLPTR);
 
-/// \brief Multiply two values. Array values must be the same length. If either
+/// Multiply two values. Array values must be the same length. If either
 /// factor is null the result will be null.
 ///
-/// \param[in] left the first factor
-/// \param[in] right the second factor
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise product
+/// :param left: the first factor
+/// :param right: the second factor
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise product
 ARROW_EXPORT
 Result<Datum> Multiply(const Datum& left, const Datum& right,
                        ArithmeticOptions options = ArithmeticOptions(),
                        ExecContext* ctx = NULLPTR);
 
-/// \brief Divide two values. Array values must be the same length. If either
+/// Divide two values. Array values must be the same length. If either
 /// argument is null the result will be null. For integer types, if there is
 /// a zero divisor, an error will be raised.
 ///
-/// \param[in] left the dividend
-/// \param[in] right the divisor
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise quotient
+/// :param left: the dividend
+/// :param right: the divisor
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise quotient
 ARROW_EXPORT
 Result<Datum> Divide(const Datum& left, const Datum& right,
                      ArithmeticOptions options = ArithmeticOptions(),
                      ExecContext* ctx = NULLPTR);
 
-/// \brief Negate values.
+/// Negate values.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the value negated
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise negation
+/// :param arg: the value negated
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise negation
 ARROW_EXPORT
 Result<Datum> Negate(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                      ExecContext* ctx = NULLPTR);
 
-/// \brief Raise the values of base array to the power of the exponent array values.
+/// Raise the values of base array to the power of the exponent array values.
 /// Array values must be the same length. If either base or exponent is null the result
 /// will be null.
 ///
-/// \param[in] left the base
-/// \param[in] right the exponent
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise base value raised to the power of exponent
+/// :param left: the base
+/// :param right: the exponent
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise base value raised to the power of exponent
 ARROW_EXPORT
 Result<Datum> Power(const Datum& left, const Datum& right,
                     ArithmeticOptions options = ArithmeticOptions(),
                     ExecContext* ctx = NULLPTR);
 
-/// \brief Raise Euler's number to the power of specified exponent, element-wise.
+/// Raise Euler's number to the power of specified exponent, element-wise.
 /// If the exponent value is null the result will be null.
 ///
-/// \param[in] arg the exponent
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise Euler's number raised to the power of exponent
+/// :param arg: the exponent
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise Euler's number raised to the power of exponent
 ARROW_EXPORT
 Result<Datum> Exp(const Datum& arg, ExecContext* ctx = NULLPTR);
 
-/// \brief Left shift the left array by the right array. Array values must be the
+/// Left shift the left array by the right array. Array values must be the
 /// same length. If either operand is null, the result will be null.
 ///
-/// \param[in] left the value to shift
-/// \param[in] right the value to shift by
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise left value shifted left by the right value
+/// :param left: the value to shift
+/// :param right: the value to shift by
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise left value shifted left by the right value
 ARROW_EXPORT
 Result<Datum> ShiftLeft(const Datum& left, const Datum& right,
                         ArithmeticOptions options = ArithmeticOptions(),
                         ExecContext* ctx = NULLPTR);
 
-/// \brief Right shift the left array by the right array. Array values must be the
+/// Right shift the left array by the right array. Array values must be the
 /// same length. If either operand is null, the result will be null. Performs a
 /// logical shift for unsigned values, and an arithmetic shift for signed values.
 ///
-/// \param[in] left the value to shift
-/// \param[in] right the value to shift by
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise left value shifted right by the right value
+/// :param left: the value to shift
+/// :param right: the value to shift by
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise left value shifted right by the right value
 ARROW_EXPORT
 Result<Datum> ShiftRight(const Datum& left, const Datum& right,
                          ArithmeticOptions options = ArithmeticOptions(),
                          ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the sine of the array values.
-/// \param[in] arg The values to compute the sine for.
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise sine of the values
+/// Compute the sine of the array values.
+/// :param arg: The values to compute the sine for.
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise sine of the values
 ARROW_EXPORT
 Result<Datum> Sin(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                   ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the cosine of the array values.
-/// \param[in] arg The values to compute the cosine for.
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise cosine of the values
+/// Compute the cosine of the array values.
+/// :param arg: The values to compute the cosine for.
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise cosine of the values
 ARROW_EXPORT
 Result<Datum> Cos(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                   ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the inverse sine (arcsine) of the array values.
-/// \param[in] arg The values to compute the inverse sine for.
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise inverse sine of the values
+/// Compute the inverse sine (arcsine) of the array values.
+/// :param arg: The values to compute the inverse sine for.
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise inverse sine of the values
 ARROW_EXPORT
 Result<Datum> Asin(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                    ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the inverse cosine (arccosine) of the array values.
-/// \param[in] arg The values to compute the inverse cosine for.
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise inverse cosine of the values
+/// Compute the inverse cosine (arccosine) of the array values.
+/// :param arg: The values to compute the inverse cosine for.
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise inverse cosine of the values
 ARROW_EXPORT
 Result<Datum> Acos(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                    ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the tangent of the array values.
-/// \param[in] arg The values to compute the tangent for.
-/// \param[in] options arithmetic options (enable/disable overflow checking), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise tangent of the values
+/// Compute the tangent of the array values.
+/// :param arg: The values to compute the tangent for.
+/// :param options: arithmetic options (enable/disable overflow checking), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise tangent of the values
 ARROW_EXPORT
 Result<Datum> Tan(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                   ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the inverse tangent (arctangent) of the array values.
-/// \param[in] arg The values to compute the inverse tangent for.
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise inverse tangent of the values
+/// Compute the inverse tangent (arctangent) of the array values.
+/// :param arg: The values to compute the inverse tangent for.
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise inverse tangent of the values
 ARROW_EXPORT
 Result<Datum> Atan(const Datum& arg, ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the inverse tangent (arctangent) of y/x, using the
+/// Compute the inverse tangent (arctangent) of y/x, using the
 /// argument signs to determine the correct quadrant.
-/// \param[in] y The y-values to compute the inverse tangent for.
-/// \param[in] x The x-values to compute the inverse tangent for.
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise inverse tangent of the values
+/// :param y: The y-values to compute the inverse tangent for.
+/// :param x: The x-values to compute the inverse tangent for.
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise inverse tangent of the values
 ARROW_EXPORT
 Result<Datum> Atan2(const Datum& y, const Datum& x, ExecContext* ctx = NULLPTR);
 
-/// \brief Get the natural log of a value.
+/// Get the natural log of a value.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg The values to compute the logarithm for.
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise natural log
+/// :param arg: The values to compute the logarithm for.
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise natural log
 ARROW_EXPORT
 Result<Datum> Ln(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                  ExecContext* ctx = NULLPTR);
 
-/// \brief Get the log base 10 of a value.
+/// Get the log base 10 of a value.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg The values to compute the logarithm for.
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise log base 10
+/// :param arg: The values to compute the logarithm for.
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise log base 10
 ARROW_EXPORT
 Result<Datum> Log10(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                     ExecContext* ctx = NULLPTR);
 
-/// \brief Get the log base 2 of a value.
+/// Get the log base 2 of a value.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg The values to compute the logarithm for.
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise log base 2
+/// :param arg: The values to compute the logarithm for.
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise log base 2
 ARROW_EXPORT
 Result<Datum> Log2(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                    ExecContext* ctx = NULLPTR);
 
-/// \brief Get the natural log of (1 + value).
+/// Get the natural log of (1 + value).
 ///
 /// If argument is null the result will be null.
 /// This function may be more accurate than Log(1 + value) for values close to zero.
 ///
-/// \param[in] arg The values to compute the logarithm for.
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise natural log
+/// :param arg: The values to compute the logarithm for.
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise natural log
 ARROW_EXPORT
 Result<Datum> Log1p(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                     ExecContext* ctx = NULLPTR);
 
-/// \brief Get the log of a value to the given base.
+/// Get the log of a value to the given base.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg The values to compute the logarithm for.
-/// \param[in] base The given base.
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise log to the given base
+/// :param arg: The values to compute the logarithm for.
+/// :param base: The given base.
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise log to the given base
 ARROW_EXPORT
 Result<Datum> Logb(const Datum& arg, const Datum& base,
                    ArithmeticOptions options = ArithmeticOptions(),
                    ExecContext* ctx = NULLPTR);
 
-/// \brief Get the square-root of a value.
+/// Get the square-root of a value.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg The values to compute the square-root for.
-/// \param[in] options arithmetic options (overflow handling), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the elementwise square-root
+/// :param arg: The values to compute the square-root for.
+/// :param options: arithmetic options (overflow handling), optional
+/// :param ctx: the function execution context, optional
+/// :return: the elementwise square-root
 ARROW_EXPORT
 Result<Datum> Sqrt(const Datum& arg, ArithmeticOptions options = ArithmeticOptions(),
                    ExecContext* ctx = NULLPTR);
 
-/// \brief Round to the nearest integer less than or equal in magnitude to the
+/// Round to the nearest integer less than or equal in magnitude to the
 /// argument.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the value to round
-/// \param[in] ctx the function execution context, optional
-/// \return the rounded value
+/// :param arg: the value to round
+/// :param ctx: the function execution context, optional
+/// :return: the rounded value
 ARROW_EXPORT
 Result<Datum> Floor(const Datum& arg, ExecContext* ctx = NULLPTR);
 
-/// \brief Round to the nearest integer greater than or equal in magnitude to the
+/// Round to the nearest integer greater than or equal in magnitude to the
 /// argument.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the value to round
-/// \param[in] ctx the function execution context, optional
-/// \return the rounded value
+/// :param arg: the value to round
+/// :param ctx: the function execution context, optional
+/// :return: the rounded value
 ARROW_EXPORT
 Result<Datum> Ceil(const Datum& arg, ExecContext* ctx = NULLPTR);
 
-/// \brief Get the integral part without fractional digits.
+/// Get the integral part without fractional digits.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the value to truncate
-/// \param[in] ctx the function execution context, optional
-/// \return the truncated value
+/// :param arg: the value to truncate
+/// :param ctx: the function execution context, optional
+/// :return: the truncated value
 ARROW_EXPORT
 Result<Datum> Trunc(const Datum& arg, ExecContext* ctx = NULLPTR);
 
-/// \brief Find the element-wise maximum of any number of arrays or scalars.
+/// Find the element-wise maximum of any number of arrays or scalars.
 /// Array values must be the same length.
 ///
-/// \param[in] args arrays or scalars to operate on.
-/// \param[in] options options for handling nulls, optional
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise maximum
+/// :param args: arrays or scalars to operate on.
+/// :param options: options for handling nulls, optional
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise maximum
 ARROW_EXPORT
 Result<Datum> MaxElementWise(
     const std::vector<Datum>& args,
     ElementWiseAggregateOptions options = ElementWiseAggregateOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Find the element-wise minimum of any number of arrays or scalars.
+/// Find the element-wise minimum of any number of arrays or scalars.
 /// Array values must be the same length.
 ///
-/// \param[in] args arrays or scalars to operate on.
-/// \param[in] options options for handling nulls, optional
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise minimum
+/// :param args: arrays or scalars to operate on.
+/// :param options: options for handling nulls, optional
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise minimum
 ARROW_EXPORT
 Result<Datum> MinElementWise(
     const std::vector<Datum>& args,
     ElementWiseAggregateOptions options = ElementWiseAggregateOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Get the sign of a value. Array values can be of arbitrary length. If argument
+/// Get the sign of a value. Array values can be of arbitrary length. If argument
 /// is null the result will be null.
 ///
-/// \param[in] arg the value to extract sign from
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise sign function
+/// :param arg: the value to extract sign from
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise sign function
 ARROW_EXPORT
 Result<Datum> Sign(const Datum& arg, ExecContext* ctx = NULLPTR);
 
-/// \brief Round a value to a given precision.
+/// Round a value to a given precision.
 ///
 /// If arg is null the result will be null.
 ///
-/// \param[in] arg the value to be rounded
-/// \param[in] options rounding options (rounding mode and number of digits), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise rounded value
+/// :param arg: the value to be rounded
+/// :param options: rounding options (rounding mode and number of digits), optional
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise rounded value
 ARROW_EXPORT
 Result<Datum> Round(const Datum& arg, RoundOptions options = RoundOptions::Defaults(),
                     ExecContext* ctx = NULLPTR);
 
-/// \brief Round a value to a given precision.
+/// Round a value to a given precision.
 ///
 /// If arg1 is null the result will be null.
 /// If arg2 is null then the result will be null. If arg2 is negative, then the rounding
@@ -934,190 +934,214 @@ Result<Datum> Round(const Datum& arg, RoundOptions options = RoundOptions::Defau
 /// ten).  If positive, the rounding place will shift to the right (and +1 would
 /// correspond to rounding to the nearest tenth).
 ///
-/// \param[in] arg1 the value to be rounded
-/// \param[in] arg2 the number of significant digits to round to
-/// \param[in] options rounding options, optional
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise rounded value
+/// :param arg1: the value to be rounded
+/// :param arg2: the number of significant digits to round to
+/// :param options: rounding options, optional
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise rounded value
 ARROW_EXPORT
 Result<Datum> RoundBinary(const Datum& arg1, const Datum& arg2,
                           RoundBinaryOptions options = RoundBinaryOptions::Defaults(),
                           ExecContext* ctx = NULLPTR);
 
-/// \brief Round a value to a given multiple.
+/// Round a value to a given multiple.
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the value to round
-/// \param[in] options rounding options (rounding mode and multiple), optional
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise rounded value
+/// :param arg: the value to round
+/// :param options: rounding options (rounding mode and multiple), optional
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise rounded value
 ARROW_EXPORT
 Result<Datum> RoundToMultiple(
     const Datum& arg, RoundToMultipleOptions options = RoundToMultipleOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Ceil a temporal value to a given frequency
+/// Ceil a temporal value to a given frequency
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the temporal value to ceil
-/// \param[in] options temporal rounding options, optional
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise rounded value
+/// :param arg: the temporal value to ceil
+/// :param options: temporal rounding options, optional
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise rounded value
 ///
-/// \since 7.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 7.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> CeilTemporal(
     const Datum& arg, RoundTemporalOptions options = RoundTemporalOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Floor a temporal value to a given frequency
+/// Floor a temporal value to a given frequency
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the temporal value to floor
-/// \param[in] options temporal rounding options, optional
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise rounded value
+/// :param arg: the temporal value to floor
+/// :param options: temporal rounding options, optional
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise rounded value
 ///
-/// \since 7.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 7.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> FloorTemporal(
     const Datum& arg, RoundTemporalOptions options = RoundTemporalOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Round a temporal value to a given frequency
+/// Round a temporal value to a given frequency
 ///
 /// If argument is null the result will be null.
 ///
-/// \param[in] arg the temporal value to round
-/// \param[in] options temporal rounding options, optional
-/// \param[in] ctx the function execution context, optional
-/// \return the element-wise rounded value
+/// :param arg: the temporal value to round
+/// :param options: temporal rounding options, optional
+/// :param ctx: the function execution context, optional
+/// :return: the element-wise rounded value
 ///
-/// \since 7.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 7.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> RoundTemporal(
     const Datum& arg, RoundTemporalOptions options = RoundTemporalOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Invert the values of a boolean datum
-/// \param[in] value datum to invert
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// Invert the values of a boolean datum
+/// :param value: datum to invert
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Invert(const Datum& value, ExecContext* ctx = NULLPTR);
 
-/// \brief Element-wise AND of two boolean datums which always propagates nulls
+/// Element-wise AND of two boolean datums which always propagates nulls
 /// (null and false is null).
 ///
-/// \param[in] left left operand
-/// \param[in] right right operand
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: left operand
+/// :param right: right operand
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> And(const Datum& left, const Datum& right, ExecContext* ctx = NULLPTR);
 
-/// \brief Element-wise AND of two boolean datums with a Kleene truth table
+/// Element-wise AND of two boolean datums with a Kleene truth table
 /// (null and false is false).
 ///
-/// \param[in] left left operand
-/// \param[in] right right operand
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: left operand
+/// :param right: right operand
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> KleeneAnd(const Datum& left, const Datum& right,
                         ExecContext* ctx = NULLPTR);
 
-/// \brief Element-wise OR of two boolean datums which always propagates nulls
+/// Element-wise OR of two boolean datums which always propagates nulls
 /// (null and true is null).
 ///
-/// \param[in] left left operand
-/// \param[in] right right operand
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: left operand
+/// :param right: right operand
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Or(const Datum& left, const Datum& right, ExecContext* ctx = NULLPTR);
 
-/// \brief Element-wise OR of two boolean datums with a Kleene truth table
+/// Element-wise OR of two boolean datums with a Kleene truth table
 /// (null or true is true).
 ///
-/// \param[in] left left operand
-/// \param[in] right right operand
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: left operand
+/// :param right: right operand
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> KleeneOr(const Datum& left, const Datum& right, ExecContext* ctx = NULLPTR);
 
-/// \brief Element-wise XOR of two boolean datums
-/// \param[in] left left operand
-/// \param[in] right right operand
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// Element-wise XOR of two boolean datums
+/// :param left: left operand
+/// :param right: right operand
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Xor(const Datum& left, const Datum& right, ExecContext* ctx = NULLPTR);
 
-/// \brief Element-wise AND NOT of two boolean datums which always propagates nulls
+/// Element-wise AND NOT of two boolean datums which always propagates nulls
 /// (null and not true is null).
 ///
-/// \param[in] left left operand
-/// \param[in] right right operand
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: left operand
+/// :param right: right operand
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 3.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 3.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> AndNot(const Datum& left, const Datum& right, ExecContext* ctx = NULLPTR);
 
-/// \brief Element-wise AND NOT of two boolean datums with a Kleene truth table
+/// Element-wise AND NOT of two boolean datums with a Kleene truth table
 /// (false and not null is false, null and not true is false).
 ///
-/// \param[in] left left operand
-/// \param[in] right right operand
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: left operand
+/// :param right: right operand
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 3.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 3.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> KleeneAndNot(const Datum& left, const Datum& right,
                            ExecContext* ctx = NULLPTR);
 
-/// \brief IsIn returns true for each element of `values` that is contained in
+/// IsIn returns true for each element of `values` that is contained in
 /// `value_set`
 ///
 /// Behaviour of nulls is governed by SetLookupOptions::skip_nulls.
 ///
-/// \param[in] values array-like input to look up in value_set
-/// \param[in] options SetLookupOptions
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: array-like input to look up in value_set
+/// :param options: SetLookupOptions
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> IsIn(const Datum& values, const SetLookupOptions& options,
                    ExecContext* ctx = NULLPTR);
@@ -1125,7 +1149,7 @@ ARROW_EXPORT
 Result<Datum> IsIn(const Datum& values, const Datum& value_set,
                    ExecContext* ctx = NULLPTR);
 
-/// \brief IndexIn examines each slot in the values against a value_set array.
+/// IndexIn examines each slot in the values against a value_set array.
 /// If the value is not found in value_set, null will be output.
 /// If found, the index of occurrence within value_set (ignoring duplicates)
 /// will be output.
@@ -1135,13 +1159,15 @@ Result<Datum> IsIn(const Datum& values, const Datum& value_set,
 ///
 /// Behaviour of nulls is governed by SetLookupOptions::skip_nulls.
 ///
-/// \param[in] values array-like input
-/// \param[in] options SetLookupOptions
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: array-like input
+/// :param options: SetLookupOptions
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> IndexIn(const Datum& values, const SetLookupOptions& options,
                       ExecContext* ctx = NULLPTR);
@@ -1149,573 +1175,663 @@ ARROW_EXPORT
 Result<Datum> IndexIn(const Datum& values, const Datum& value_set,
                       ExecContext* ctx = NULLPTR);
 
-/// \brief IsValid returns true for each element of `values` that is not null,
+/// IsValid returns true for each element of `values` that is not null,
 /// false otherwise
 ///
-/// \param[in] values input to examine for validity
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to examine for validity
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> IsValid(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief IsNull returns true for each element of `values` that is null,
+/// IsNull returns true for each element of `values` that is null,
 /// false otherwise
 ///
-/// \param[in] values input to examine for nullity
-/// \param[in] options NullOptions
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to examine for nullity
+/// :param options: NullOptions
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> IsNull(const Datum& values, NullOptions options = NullOptions::Defaults(),
                      ExecContext* ctx = NULLPTR);
 
-/// \brief IsNan returns true for each element of `values` that is NaN,
+/// IsNan returns true for each element of `values` that is NaN,
 /// false otherwise
 ///
-/// \param[in] values input to look for NaN
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to look for NaN
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 3.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 3.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> IsNan(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief IfElse returns elements chosen from `left` or `right`
+/// IfElse returns elements chosen from `left` or `right`
 /// depending on `cond`. `null` values in `cond` will be promoted to the result
 ///
-/// \param[in] cond `Boolean` condition Scalar/ Array
-/// \param[in] left Scalar/ Array
-/// \param[in] right Scalar/ Array
-/// \param[in] ctx the function execution context, optional
+/// :param cond: `Boolean` condition Scalar/ Array
+/// :param left: Scalar/ Array
+/// :param right: Scalar/ Array
+/// :param ctx: the function execution context, optional
 ///
-/// \return the resulting datum
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> IfElse(const Datum& cond, const Datum& left, const Datum& right,
                      ExecContext* ctx = NULLPTR);
 
-/// \brief CaseWhen behaves like a switch/case or if-else if-else statement: for
+/// CaseWhen behaves like a switch/case or if-else if-else statement: for
 /// each row, select the first value for which the corresponding condition is
 /// true, or (if given) select the 'else' value, else emit null. Note that a
 /// null condition is the same as false.
 ///
-/// \param[in] cond Conditions (Boolean)
-/// \param[in] cases Values (any type), along with an optional 'else' value.
-/// \param[in] ctx the function execution context, optional
+/// :param cond: Conditions (Boolean)
+/// :param cases: Values (any type), along with an optional 'else' value.
+/// :param ctx: the function execution context, optional
 ///
-/// \return the resulting datum
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> CaseWhen(const Datum& cond, const std::vector<Datum>& cases,
                        ExecContext* ctx = NULLPTR);
 
-/// \brief Year returns year for each element of `values`
+/// Year returns year for each element of `values`
 ///
-/// \param[in] values input to extract year from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract year from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Year(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief IsLeapYear returns if a year is a leap year for each element of `values`
+/// IsLeapYear returns if a year is a leap year for each element of `values`
 ///
-/// \param[in] values input to extract leap year indicator from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract leap year indicator from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> IsLeapYear(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Month returns month for each element of `values`.
+/// Month returns month for each element of `values`.
 /// Month is encoded as January=1, December=12
 ///
-/// \param[in] values input to extract month from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract month from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Month(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Day returns day number for each element of `values`
+/// Day returns day number for each element of `values`
 ///
-/// \param[in] values input to extract day from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract day from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Day(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief YearMonthDay returns a struct containing the Year, Month and Day value for
+/// YearMonthDay returns a struct containing the Year, Month and Day value for
 /// each element of `values`.
 ///
-/// \param[in] values input to extract (year, month, day) struct from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract (year, month, day) struct from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 7.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 7.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> YearMonthDay(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief DayOfWeek returns number of the day of the week value for each element of
+/// DayOfWeek returns number of the day of the week value for each element of
 /// `values`.
 ///
 /// By default week starts on Monday denoted by 0 and ends on Sunday denoted
 /// by 6. Start day of the week (Monday=1, Sunday=7) and numbering base (0 or 1) can be
 /// set using DayOfWeekOptions
 ///
-/// \param[in] values input to extract number of the day of the week from
-/// \param[in] options for setting start of the week and day numbering
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract number of the day of the week from
+/// :param options: for setting start of the week and day numbering
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> DayOfWeek(const Datum& values,
                                      DayOfWeekOptions options = DayOfWeekOptions(),
                                      ExecContext* ctx = NULLPTR);
 
-/// \brief DayOfYear returns number of day of the year for each element of `values`.
+/// DayOfYear returns number of day of the year for each element of `values`.
 /// January 1st maps to day number 1, February 1st to 32, etc.
 ///
-/// \param[in] values input to extract number of day of the year from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract number of day of the year from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> DayOfYear(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief ISOYear returns ISO year number for each element of `values`.
+/// ISOYear returns ISO year number for each element of `values`.
 /// First week of an ISO year has the majority (4 or more) of its days in January.
 ///
-/// \param[in] values input to extract ISO year from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract ISO year from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> ISOYear(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief USYear returns US epidemiological year number for each element of `values`.
+/// USYear returns US epidemiological year number for each element of `values`.
 /// First week of US epidemiological year has the majority (4 or more) of it's
 /// days in January. Last week of US epidemiological year has the year's last
 /// Wednesday in it. US epidemiological week starts on Sunday.
 ///
-/// \param[in] values input to extract US epidemiological year from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract US epidemiological year from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> USYear(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief ISOWeek returns ISO week of year number for each element of `values`.
+/// ISOWeek returns ISO week of year number for each element of `values`.
 /// First ISO week has the majority (4 or more) of its days in January.
 /// ISO week starts on Monday. Year can have 52 or 53 weeks.
 /// Week numbering can start with 1.
 ///
-/// \param[in] values input to extract ISO week of year from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract ISO week of year from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> ISOWeek(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief USWeek returns US week of year number for each element of `values`.
+/// USWeek returns US week of year number for each element of `values`.
 /// First US week has the majority (4 or more) of its days in January.
 /// US week starts on Sunday. Year can have 52 or 53 weeks.
 /// Week numbering starts with 1.
 ///
-/// \param[in] values input to extract US week of year from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract US week of year from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 6.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 6.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> USWeek(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Week returns week of year number for each element of `values`.
+/// Week returns week of year number for each element of `values`.
 /// First ISO week has the majority (4 or more) of its days in January.
 /// Year can have 52 or 53 weeks. Week numbering can start with 0 or 1
 /// depending on DayOfWeekOptions.count_from_zero.
 ///
-/// \param[in] values input to extract week of year from
-/// \param[in] options for setting numbering start
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract week of year from
+/// :param options: for setting numbering start
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 6.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 6.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> Week(const Datum& values, WeekOptions options = WeekOptions(),
                                 ExecContext* ctx = NULLPTR);
 
-/// \brief ISOCalendar returns a (ISO year, ISO week, ISO day of week) struct for
+/// ISOCalendar returns a (ISO year, ISO week, ISO day of week) struct for
 /// each element of `values`.
 /// ISO week starts on Monday denoted by 1 and ends on Sunday denoted by 7.
 ///
-/// \param[in] values input to ISO calendar struct from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to ISO calendar struct from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> ISOCalendar(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Quarter returns the quarter of year number for each element of `values`
+/// Quarter returns the quarter of year number for each element of `values`
 /// First quarter maps to 1 and fourth quarter maps to 4.
 ///
-/// \param[in] values input to extract quarter of year from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract quarter of year from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> Quarter(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Hour returns hour value for each element of `values`
+/// Hour returns hour value for each element of `values`
 ///
-/// \param[in] values input to extract hour from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract hour from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Hour(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Minute returns minutes value for each element of `values`
+/// Minute returns minutes value for each element of `values`
 ///
-/// \param[in] values input to extract minutes from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract minutes from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Minute(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Second returns seconds value for each element of `values`
+/// Second returns seconds value for each element of `values`
 ///
-/// \param[in] values input to extract seconds from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract seconds from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Second(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Millisecond returns number of milliseconds since the last full second
+/// Millisecond returns number of milliseconds since the last full second
 /// for each element of `values`
 ///
-/// \param[in] values input to extract milliseconds from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract milliseconds from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Millisecond(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Microsecond returns number of microseconds since the last full millisecond
+/// Microsecond returns number of microseconds since the last full millisecond
 /// for each element of `values`
 ///
-/// \param[in] values input to extract microseconds from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract microseconds from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Microsecond(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Nanosecond returns number of nanoseconds since the last full millisecond
+/// Nanosecond returns number of nanoseconds since the last full millisecond
 /// for each element of `values`
 ///
-/// \param[in] values input to extract nanoseconds from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract nanoseconds from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> Nanosecond(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Subsecond returns the fraction of second elapsed since last full second
+/// Subsecond returns the fraction of second elapsed since last full second
 /// as a float for each element of `values`
 ///
-/// \param[in] values input to extract subsecond from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract subsecond from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> Subsecond(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Format timestamps according to a format string
+/// Format timestamps according to a format string
 ///
 /// Return formatted time strings according to the format string
 /// `StrftimeOptions::format` and to the locale specifier `Strftime::locale`.
 ///
-/// \param[in] values input timestamps
-/// \param[in] options for setting format string and locale
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input timestamps
+/// :param options: for setting format string and locale
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 6.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 6.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> Strftime(const Datum& values, StrftimeOptions options,
                                     ExecContext* ctx = NULLPTR);
 
-/// \brief Parse timestamps according to a format string
+/// Parse timestamps according to a format string
 ///
 /// Return parsed timestamps according to the format string
 /// `StrptimeOptions::format` at time resolution `Strftime::unit`. Parse errors are
 /// raised depending on the `Strftime::error_is_null` setting.
 ///
-/// \param[in] values input strings
-/// \param[in] options for setting format string, unit and error_is_null
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input strings
+/// :param options: for setting format string, unit and error_is_null
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> Strptime(const Datum& values, StrptimeOptions options,
                                     ExecContext* ctx = NULLPTR);
 
-/// \brief Converts timestamps from local timestamp without a timezone to a timestamp with
+/// Converts timestamps from local timestamp without a timezone to a timestamp with
 /// timezone, interpreting the local timestamp as being in the specified timezone for each
 /// element of `values`
 ///
-/// \param[in] values input to convert
-/// \param[in] options for setting source timezone, exception and ambiguous timestamp
+/// :param values: input to convert
+/// :param options: for setting source timezone, exception and ambiguous timestamp
 /// handling.
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 6.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 6.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> AssumeTimezone(const Datum& values,
                                           AssumeTimezoneOptions options,
                                           ExecContext* ctx = NULLPTR);
 
-/// \brief IsDaylightSavings extracts if currently observing daylight savings for each
+/// IsDaylightSavings extracts if currently observing daylight savings for each
 /// element of `values`
 ///
-/// \param[in] values input to extract daylight savings indicator from
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to extract daylight savings indicator from
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> IsDaylightSavings(const Datum& values,
                                              ExecContext* ctx = NULLPTR);
 
-/// \brief LocalTimestamp converts timestamp to timezone naive local timestamp
+/// LocalTimestamp converts timestamp to timezone naive local timestamp
 ///
-/// \param[in] values input to convert to local time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: input to convert to local time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 12.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 12.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> LocalTimestamp(const Datum& values,
                                           ExecContext* ctx = NULLPTR);
 
-/// \brief Years Between finds the number of years between two values
+/// Years Between finds the number of years between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> YearsBetween(const Datum& left, const Datum& right,
                                         ExecContext* ctx = NULLPTR);
 
-/// \brief Quarters Between finds the number of quarters between two values
+/// Quarters Between finds the number of quarters between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> QuartersBetween(const Datum& left, const Datum& right,
                                            ExecContext* ctx = NULLPTR);
 
-/// \brief Months Between finds the number of month between two values
+/// Months Between finds the number of month between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> MonthsBetween(const Datum& left, const Datum& right,
                                          ExecContext* ctx = NULLPTR);
 
-/// \brief Weeks Between finds the number of weeks between two values
+/// Weeks Between finds the number of weeks between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> WeeksBetween(const Datum& left, const Datum& right,
                                         ExecContext* ctx = NULLPTR);
 
-/// \brief Month Day Nano Between finds the number of months, days, and nanoseconds
+/// Month Day Nano Between finds the number of months, days, and nanoseconds
 /// between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> MonthDayNanoBetween(const Datum& left, const Datum& right,
                                                ExecContext* ctx = NULLPTR);
 
-/// \brief DayTime Between finds the number of days and milliseconds between two values
+/// DayTime Between finds the number of days and milliseconds between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> DayTimeBetween(const Datum& left, const Datum& right,
                                           ExecContext* ctx = NULLPTR);
 
-/// \brief Days Between finds the number of days between two values
+/// Days Between finds the number of days between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> DaysBetween(const Datum& left, const Datum& right,
                                        ExecContext* ctx = NULLPTR);
 
-/// \brief Hours Between finds the number of hours between two values
+/// Hours Between finds the number of hours between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> HoursBetween(const Datum& left, const Datum& right,
                                         ExecContext* ctx = NULLPTR);
 
-/// \brief Minutes Between finds the number of minutes between two values
+/// Minutes Between finds the number of minutes between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> MinutesBetween(const Datum& left, const Datum& right,
                                           ExecContext* ctx = NULLPTR);
 
-/// \brief Seconds Between finds the number of hours between two values
+/// Seconds Between finds the number of hours between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> SecondsBetween(const Datum& left, const Datum& right,
                                           ExecContext* ctx = NULLPTR);
 
-/// \brief Milliseconds Between finds the number of milliseconds between two values
+/// Milliseconds Between finds the number of milliseconds between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> MillisecondsBetween(const Datum& left, const Datum& right,
                                                ExecContext* ctx = NULLPTR);
 
-/// \brief Microseconds Between finds the number of microseconds between two values
+/// Microseconds Between finds the number of microseconds between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> MicrosecondsBetween(const Datum& left, const Datum& right,
                                                ExecContext* ctx = NULLPTR);
 
-/// \brief Nanoseconds Between finds the number of nanoseconds between two values
+/// Nanoseconds Between finds the number of nanoseconds between two values
 ///
-/// \param[in] left input treated as the start time
-/// \param[in] right input treated as the end time
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param left: input treated as the start time
+/// :param right: input treated as the end time
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> NanosecondsBetween(const Datum& left, const Datum& right,
                                               ExecContext* ctx = NULLPTR);
 
-/// \brief Finds either the FIRST, LAST, or ALL items with a key that matches the given
+/// Finds either the FIRST, LAST, or ALL items with a key that matches the given
 /// query key in a map.
 ///
 /// Returns an array of items for FIRST and LAST, and an array of list of items for ALL.
 ///
-/// \param[in] map to look in
-/// \param[in] options to pass a query key and choose which matching keys to return
+/// :param map: to look in
+/// :param options: to pass a query key and choose which matching keys to return
 /// (FIRST, LAST or ALL)
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ///
-/// \since 8.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 8.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT Result<Datum> MapLookup(const Datum& map, MapLookupOptions options,
                                      ExecContext* ctx = NULLPTR);
 }  // namespace compute

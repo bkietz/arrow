@@ -124,7 +124,7 @@ class ARROW_FLIGHT_EXPORT DataTest : public FlightTest {
   TEST_F(FIXTURE, TestDoExchangeUndrained) { TestDoExchangeUndrained(); }             \
   TEST_F(FIXTURE, TestIssue5095) { TestIssue5095(); }
 
-/// \brief Specific tests of DoPut.
+/// Specific tests of DoPut.
 class ARROW_FLIGHT_EXPORT DoPutTest : public FlightTest {
  public:
   void SetUpTest() override;
@@ -171,7 +171,7 @@ class ARROW_FLIGHT_EXPORT AppMetadataTestServer : public FlightServerBase {
                std::unique_ptr<FlightMetadataWriter> writer) override;
 };
 
-/// \brief Tests of app_metadata in data plane methods.
+/// Tests of app_metadata in data plane methods.
 class ARROW_FLIGHT_EXPORT AppMetadataTest : public FlightTest {
  public:
   void SetUpTest() override;
@@ -198,7 +198,7 @@ class ARROW_FLIGHT_EXPORT AppMetadataTest : public FlightTest {
   TEST_F(FIXTURE, TestDoPutDictionaries) { TestDoPutDictionaries(); }           \
   TEST_F(FIXTURE, TestDoPutReadMetadata) { TestDoPutReadMetadata(); }
 
-/// \brief Tests of IPC options in data plane methods.
+/// Tests of IPC options in data plane methods.
 class ARROW_FLIGHT_EXPORT IpcOptionsTest : public FlightTest {
  public:
   void SetUpTest() override;
@@ -231,7 +231,7 @@ class ARROW_FLIGHT_EXPORT IpcOptionsTest : public FlightTest {
     TestDoExchangeServerWriteOptions();                                        \
   }
 
-/// \brief Tests of data plane methods with CUDA memory.
+/// Tests of data plane methods with CUDA memory.
 ///
 /// If not built with ARROW_CUDA, tests are no-ops.
 class ARROW_FLIGHT_EXPORT CudaDataTest : public FlightTest {
@@ -258,7 +258,7 @@ class ARROW_FLIGHT_EXPORT CudaDataTest : public FlightTest {
   TEST_F(FIXTURE, TestDoPut) { TestDoPut(); }                                \
   TEST_F(FIXTURE, TestDoExchange) { TestDoExchange(); }
 
-/// \brief Tests of error handling.
+/// Tests of error handling.
 class ARROW_FLIGHT_EXPORT ErrorHandlingTest : public FlightTest {
  public:
   void SetUpTest() override;
@@ -290,7 +290,7 @@ class ARROW_FLIGHT_EXPORT ErrorHandlingTest : public FlightTest {
   TEST_F(FIXTURE, TestDoPut) { TestDoPut(); }                                     \
   TEST_F(FIXTURE, TestDoExchange) { TestDoExchange(); }
 
-/// \brief Tests of the async client.
+/// Tests of the async client.
 class ARROW_FLIGHT_EXPORT AsyncClientTest : public FlightTest {
  public:
   void SetUpTest() override;

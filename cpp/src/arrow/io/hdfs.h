@@ -157,16 +157,16 @@ class ARROW_EXPORT HadoopFileSystem : public FileSystem {
 
   /// Change
   ///
-  /// @param path file path to change
-  /// @param owner pass null for no change
-  /// @param group pass null for no change
+  /// :param path: file path to change
+  /// :param owner: pass null for no change
+  /// :param group: pass null for no change
   Status Chown(const std::string& path, const char* owner, const char* group);
 
   /// Change path permissions
   ///
-  /// \param path Absolute path in file system
-  /// \param mode Mode bitset
-  /// \return Status
+  /// :param path: Absolute path in file system
+  /// :param mode: Mode bitset
+  /// :return: Status
   Status Chmod(const std::string& path, int mode);
 
   // Move file or directory from source path to destination path within the

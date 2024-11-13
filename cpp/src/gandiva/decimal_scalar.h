@@ -39,7 +39,7 @@ class DecimalScalar128 : public BasicDecimalScalar128 {
   DecimalScalar128(const std::string& value, int32_t precision, int32_t scale)
       : BasicDecimalScalar128(Decimal128(value), precision, scale) {}
 
-  /// \brief constructor creates a DecimalScalar128 from a BasicDecimalScalar128.
+  /// constructor creates a DecimalScalar128 from a BasicDecimalScalar128.
   constexpr DecimalScalar128(
       const BasicDecimalScalar128& scalar) noexcept  // NOLINT(runtime/explicit)
       : BasicDecimalScalar128(scalar) {}

@@ -39,25 +39,25 @@ static constexpr int64_t kDefaultMaxChunksize = std::numeric_limits<int64_t>::ma
 
 namespace detail {
 
-/// \brief Break std::vector<Datum> into a sequence of non-owning
+/// Break std::vector<Datum> into a sequence of non-owning
 /// ExecSpan for kernel execution. The lifetime of the Datum vector
 /// must be longer than the lifetime of this object
 class ARROW_EXPORT ExecSpanIterator {
  public:
   ExecSpanIterator() = default;
 
-  /// \brief Initialize iterator and do basic argument validation
+  /// Initialize iterator and do basic argument validation
   ///
-  /// \param[in] batch the input ExecBatch
-  /// \param[in] max_chunksize the maximum length of each ExecSpan. Depending
+  /// :param batch: the input ExecBatch
+  /// :param max_chunksize: the maximum length of each ExecSpan. Depending
   /// on the chunk layout of ChunkedArray.
-  /// \param[in] promote_if_all_scalars if all of the values are scalars,
+  /// :param promote_if_all_scalars: if all of the values are scalars,
   /// return them in each ExecSpan as ArraySpan of length 1. This must be set
   /// to true for Scalar and Vector executors but false for Aggregators
   Status Init(const ExecBatch& batch, int64_t max_chunksize = kDefaultMaxChunksize,
               bool promote_if_all_scalars = true);
 
-  /// \brief Compute the next span by updating the state of the
+  /// Compute the next span by updating the state of the
   /// previous span object. You must keep passing in the previous
   /// value for the results to be consistent. If you need to process
   /// in parallel, make a copy of the in-use ExecSpan while it's being
@@ -140,7 +140,7 @@ class ARROW_EXPORT KernelExecutor {
   virtual Datum WrapResults(const std::vector<Datum>& args,
                             const std::vector<Datum>& outputs) = 0;
 
-  /// \brief Check the actual result type against the resolved output type
+  /// Check the actual result type against the resolved output type
   virtual Status CheckResultType(const Datum& out, const char* function_name) = 0;
 
   static std::unique_ptr<KernelExecutor> MakeScalar();
@@ -150,15 +150,15 @@ class ARROW_EXPORT KernelExecutor {
 
 int64_t InferBatchLength(const std::vector<Datum>& values, bool* all_same);
 
-/// \brief Populate validity bitmap with the intersection of the nullity of the
+/// Populate validity bitmap with the intersection of the nullity of the
 /// arguments. If a preallocated bitmap is not provided, then one will be
 /// allocated if needed (in some cases a bitmap can be zero-copied from the
 /// arguments). If any Scalar value is null, then the entire validity bitmap
 /// will be set to null.
 ///
-/// \param[in] ctx kernel execution context, for memory allocation etc.
-/// \param[in] batch the data batch
-/// \param[in] out the output ArrayData, must not be null
+/// :param ctx: kernel execution context, for memory allocation etc.
+/// :param batch: the data batch
+/// :param out: the output ArrayData, must not be null
 ARROW_EXPORT
 Status PropagateNulls(KernelContext* ctx, const ExecSpan& batch, ArrayData* out);
 

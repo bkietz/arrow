@@ -23,7 +23,7 @@
 
 namespace arrow {
 
-/// \brief Abstract array visitor class
+/// Abstract array visitor class
 ///
 /// Subclass this to create a visitor that can be used with the Array::Accept()
 /// method.
@@ -78,7 +78,7 @@ class ARROW_EXPORT ArrayVisitor {
   virtual Status Visit(const ExtensionArray& array);
 };
 
-/// \brief Abstract type visitor class
+/// Abstract type visitor class
 ///
 /// Subclass this to create a visitor that can be used with the DataType::Accept()
 /// method.
@@ -133,7 +133,7 @@ class ARROW_EXPORT TypeVisitor {
   virtual Status Visit(const ExtensionType& type);
 };
 
-/// \brief Abstract scalar visitor class
+/// Abstract scalar visitor class
 ///
 /// Subclass this to create a visitor that can be used with the Scalar::Accept()
 /// method.

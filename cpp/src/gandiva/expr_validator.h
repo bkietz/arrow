@@ -33,7 +33,7 @@ namespace gandiva {
 
 class FunctionRegistry;
 
-/// \brief Validates the entire expression tree including
+/// Validates the entire expression tree including
 /// data types, signatures and return types
 class ExprValidator : public NodeVisitor {
  public:
@@ -45,7 +45,7 @@ class ExprValidator : public NodeVisitor {
     }
   }
 
-  /// \brief Validates the root node
+  /// Validates the root node
   /// of an expression.
   /// 1. Data type of fields and literals.
   /// 2. Function signature is supported.

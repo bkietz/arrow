@@ -39,8 +39,8 @@ using arrow::internal::checked_cast;
 using arrow::internal::ReverseSetBitRunReader;
 using arrow::internal::SetBitRunReader;
 
-/// \pre input.length() > 0 && input.null_count() != input.length()
-/// \param input A LIST_VIEW or LARGE_LIST_VIEW array
+/// :precondition: input.length() > 0 && input.null_count() != input.length()
+/// :param input: A LIST_VIEW or LARGE_LIST_VIEW array
 template <typename offset_type>
 std::optional<int64_t> MinViewOffset(const ArraySpan& input) {
   const uint8_t* validity = input.buffers[0].data;
@@ -88,8 +88,8 @@ std::optional<int64_t> MinViewOffset(const ArraySpan& input) {
 #undef MINIMIZE_MIN_VIEW_OFFSET
 }
 
-/// \pre input.length() > 0 && input.null_count() != input.length()
-/// \param input A LIST_VIEW or LARGE_LIST_VIEW array
+/// :precondition: input.length() > 0 && input.null_count() != input.length()
+/// :param input: A LIST_VIEW or LARGE_LIST_VIEW array
 template <typename offset_type>
 int64_t MaxViewEnd(const ArraySpan& input) {
   const auto values_length = input.child_data[0].length;

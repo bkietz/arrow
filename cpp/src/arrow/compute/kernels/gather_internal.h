@@ -225,13 +225,13 @@ class Gather : public GatherBaseCRTP<Gather<kValueWidthInBits, IndexCType, kWith
 
   ARROW_FORCE_INLINE int64_t Execute() { return this->ExecuteNoNulls(idx_length_); }
 
-  /// \pre If kOutputIsZeroInitialized, then this->out_ has to be zero initialized.
-  /// \pre Bits in out_is_valid have to always be zero initialized.
-  /// \post The bits for the valid elements (and only those) are set in out_is_valid.
-  /// \post If !kOutputIsZeroInitialized, then positions in this->_out containing null
+  /// :precondition: If kOutputIsZeroInitialized, then this->out_ has to be zero initialized.
+  /// :precondition: Bits in out_is_valid have to always be zero initialized.
+  /// :postcondition: The bits for the valid elements (and only those) are set in out_is_valid.
+  /// :postcondition: If !kOutputIsZeroInitialized, then positions in this->_out containing null
   ///       elements have 0s written to them. This might be less efficient than
   ///       zero-initializing first and calling this->Execute() afterwards.
-  /// \return The number of valid elements in out.
+  /// :return: The number of valid elements in out.
   template <bool kOutputIsZeroInitialized = false>
   ARROW_FORCE_INLINE int64_t Execute(const ArraySpan& src_validity,
                                      const ArraySpan& idx_validity,
@@ -284,13 +284,13 @@ class Gather</*kValueWidthInBits=*/1, IndexCType, /*kWithFactor=*/false>
 
   ARROW_FORCE_INLINE int64_t Execute() { return this->ExecuteNoNulls(idx_length_); }
 
-  /// \pre If kOutputIsZeroInitialized, then this->out_ has to be zero initialized.
-  /// \pre Bits in out_is_valid have to always be zero initialized.
-  /// \post The bits for the valid elements (and only those) are set in out_is_valid.
-  /// \post If !kOutputIsZeroInitialized, then positions in this->_out containing null
+  /// :precondition: If kOutputIsZeroInitialized, then this->out_ has to be zero initialized.
+  /// :precondition: Bits in out_is_valid have to always be zero initialized.
+  /// :postcondition: The bits for the valid elements (and only those) are set in out_is_valid.
+  /// :postcondition: If !kOutputIsZeroInitialized, then positions in this->_out containing null
   ///       elements have 0s written to them. This might be less efficient than
   ///       zero-initializing first and calling this->Execute() afterwards.
-  /// \return The number of valid elements in out.
+  /// :return: The number of valid elements in out.
   template <bool kOutputIsZeroInitialized = false>
   ARROW_FORCE_INLINE int64_t Execute(const ArraySpan& src_validity,
                                      const ArraySpan& idx_validity,

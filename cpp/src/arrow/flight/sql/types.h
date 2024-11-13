@@ -36,17 +36,17 @@ namespace sql {
 ///
 /// @{
 
-/// \brief Variant supporting all possible types on SQL info.
+/// Variant supporting all possible types on SQL info.
 using SqlInfoResult =
     std::variant<std::string, bool, int64_t, int32_t, std::vector<std::string>,
                  std::unordered_map<int32_t, std::vector<int32_t>>>;
 
-/// \brief Map SQL info identifier to its value.
+/// Map SQL info identifier to its value.
 using SqlInfoResultMap = std::unordered_map<int32_t, SqlInfoResult>;
 
-/// \brief Options to be set in the SqlInfo.
+/// Options to be set in the SqlInfo.
 struct ARROW_FLIGHT_SQL_EXPORT SqlInfoOptions {
-  /// \brief Predefined info values for GetSqlInfo.
+  /// Predefined info values for GetSqlInfo.
   enum SqlInfo {
     /// \name Server Information
     /// Values [0-500): Provides basic information about the Flight SQL Server.
@@ -902,25 +902,25 @@ struct ARROW_FLIGHT_SQL_EXPORT SqlInfoOptions {
   };
 };
 
-/// \brief A SQL %table reference, optionally containing table's catalog and db_schema.
+/// A SQL %table reference, optionally containing table's catalog and db_schema.
 struct ARROW_FLIGHT_SQL_EXPORT TableRef {
-  /// \brief The table's catalog.
+  /// The table's catalog.
   std::optional<std::string> catalog;
-  /// \brief The table's database schema.
+  /// The table's database schema.
   std::optional<std::string> db_schema;
-  /// \brief The table name.
+  /// The table name.
   std::string table;
 };
 
-/// \brief A Substrait plan to be executed, along with associated metadata.
+/// A Substrait plan to be executed, along with associated metadata.
 struct ARROW_FLIGHT_SQL_EXPORT SubstraitPlan {
-  /// \brief The serialized plan.
+  /// The serialized plan.
   std::string plan;
-  /// \brief The Substrait release, e.g. "0.12.0".
+  /// The Substrait release, e.g. "0.12.0".
   std::string version;
 };
 
-/// \brief The result of cancelling a query.
+/// The result of cancelling a query.
 enum class CancelResult : int8_t {
   kUnspecified,
   kCancelled,
@@ -928,14 +928,14 @@ enum class CancelResult : int8_t {
   kNotCancellable,
 };
 
-/// \brief The action to take if the target table of an ingestion does not exist.
+/// The action to take if the target table of an ingestion does not exist.
 enum class TableDefinitionOptionsTableNotExistOption {
   kUnspecified,
   kCreate,
   kFail,
 };
 
-/// \brief The action to take if the target table of an ingestion already exists.
+/// The action to take if the target table of an ingestion already exists.
 enum class TableDefinitionOptionsTableExistsOption {
   kUnspecified,
   kFail,
@@ -943,11 +943,11 @@ enum class TableDefinitionOptionsTableExistsOption {
   kReplace,
 };
 
-/// \brief Options for table definition behavior of bulk ingestion.
+/// Options for table definition behavior of bulk ingestion.
 struct TableDefinitionOptions {
-  /// \brief Behavior when the table does not exist.
+  /// Behavior when the table does not exist.
   TableDefinitionOptionsTableNotExistOption if_not_exist;
-  /// \brief Behavior when the table exists.
+  /// Behavior when the table exists.
   TableDefinitionOptionsTableExistsOption if_exists;
 };
 

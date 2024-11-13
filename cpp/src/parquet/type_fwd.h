@@ -19,7 +19,7 @@
 
 namespace parquet {
 
-/// \brief Feature selection when writing Parquet files
+/// Feature selection when writing Parquet files
 ///
 /// `ParquetVersion::type` governs which data types are allowed and how they
 /// are represented. For example, uint32_t data will be written differently

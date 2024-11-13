@@ -916,7 +916,7 @@ std::vector<Expression> GuaranteeConjunctionMembers(
   return FlattenedAssociativeChain(guaranteed_true_predicate).fringe;
 }
 
-/// \brief Extract an equality from an expression.
+/// Extract an equality from an expression.
 ///
 /// Recognizes expressions of the form:
 /// equal(a, 2)
@@ -1251,8 +1251,8 @@ struct Inequality {
   /// predicate pushdown use case because the overall aim is to simplify to an
   /// unsatisfiable expression.
   ///
-  /// \pre `is_in_call` is a call to the `is_in` function
-  /// \return a simplified expression, or nullopt if no simplification occurred
+  /// :precondition: `is_in_call` is a call to the `is_in` function
+  /// :return: a simplified expression, or nullopt if no simplification occurred
   static Result<std::optional<Expression>> SimplifyIsIn(
       const Inequality& guarantee, const Expression::Call* is_in_call) {
     DCHECK_EQ(is_in_call->function_name, "is_in");
@@ -1309,7 +1309,7 @@ struct Inequality {
     return simplified_expr;
   }
 
-  /// \brief Simplify the given expression given this inequality as a guarantee.
+  /// Simplify the given expression given this inequality as a guarantee.
   Result<Expression> Simplify(Expression expr) {
     const auto& guarantee = *this;
 
@@ -1392,7 +1392,7 @@ struct Inequality {
   }
 };
 
-/// \brief Simplify an expression given a guarantee, if the guarantee
+/// Simplify an expression given a guarantee, if the guarantee
 ///   is is_valid().
 Result<Expression> SimplifyIsValidGuarantee(Expression expr,
                                             const Expression::Call& guarantee) {

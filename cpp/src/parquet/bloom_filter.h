@@ -40,24 +40,24 @@ class PARQUET_EXPORT BloomFilter {
 
   /// Determine whether an element exist in set or not.
   ///
-  /// @param hash the element to contain.
-  /// @return false if value is definitely not in set, and true means PROBABLY
+  /// :param hash: the element to contain.
+  /// :return: false if value is definitely not in set, and true means PROBABLY
   /// in set.
   virtual bool FindHash(uint64_t hash) const = 0;
 
   /// Insert element to set represented by Bloom filter bitset.
-  /// @param hash the hash of value to insert into Bloom filter.
+  /// :param hash: the hash of value to insert into Bloom filter.
   virtual void InsertHash(uint64_t hash) = 0;
 
   /// Insert elements to set represented by Bloom filter bitset.
-  /// @param hashes the hash values to insert into Bloom filter.
-  /// @param num_values the number of hash values to insert.
+  /// :param hashes: the hash values to insert into Bloom filter.
+  /// :param num_values: the number of hash values to insert.
   virtual void InsertHashes(const uint64_t* hashes, int num_values) = 0;
 
   /// Write this Bloom filter to an output stream. A Bloom filter structure should
   /// include bitset length, hash strategy, algorithm, and bitset.
   ///
-  /// @param sink the output stream to write
+  /// :param sink: the output stream to write
   virtual void WriteTo(ArrowOutputStream* sink) const = 0;
 
   /// Get the number of bytes of bitset
@@ -65,102 +65,102 @@ class PARQUET_EXPORT BloomFilter {
 
   /// Compute hash for 32 bits value by using its plain encoding result.
   ///
-  /// @param value the value to hash.
-  /// @return hash result.
+  /// :param value: the value to hash.
+  /// :return: hash result.
   virtual uint64_t Hash(int32_t value) const = 0;
 
   /// Compute hash for 64 bits value by using its plain encoding result.
   ///
-  /// @param value the value to hash.
-  /// @return hash result.
+  /// :param value: the value to hash.
+  /// :return: hash result.
   virtual uint64_t Hash(int64_t value) const = 0;
 
   /// Compute hash for float value by using its plain encoding result.
   ///
-  /// @param value the value to hash.
-  /// @return hash result.
+  /// :param value: the value to hash.
+  /// :return: hash result.
   virtual uint64_t Hash(float value) const = 0;
 
   /// Compute hash for double value by using its plain encoding result.
   ///
-  /// @param value the value to hash.
-  /// @return hash result.
+  /// :param value: the value to hash.
+  /// :return: hash result.
   virtual uint64_t Hash(double value) const = 0;
 
   /// Compute hash for Int96 value by using its plain encoding result.
   ///
-  /// @param value the value to hash.
-  /// @return hash result.
+  /// :param value: the value to hash.
+  /// :return: hash result.
   virtual uint64_t Hash(const Int96* value) const = 0;
 
   /// Compute hash for ByteArray value by using its plain encoding result.
   ///
-  /// @param value the value to hash.
-  /// @return hash result.
+  /// :param value: the value to hash.
+  /// :return: hash result.
   virtual uint64_t Hash(const ByteArray* value) const = 0;
 
   /// Compute hash for fixed byte array value by using its plain encoding result.
   ///
-  /// @param value the value address.
-  /// @param len the value length.
-  /// @return hash result.
+  /// :param value: the value address.
+  /// :param len: the value length.
+  /// :return: hash result.
   virtual uint64_t Hash(const FLBA* value, uint32_t len) const = 0;
 
   /// Batch compute hashes for 32 bits values by using its plain encoding result.
   ///
-  /// @param values values a pointer to the values to hash.
-  /// @param num_values the number of values to hash.
-  /// @param hashes a pointer to the output hash values, its length should be equal to
+  /// :param values: values a pointer to the values to hash.
+  /// :param num_values: the number of values to hash.
+  /// :param hashes: a pointer to the output hash values, its length should be equal to
   /// num_values.
   virtual void Hashes(const int32_t* values, int num_values, uint64_t* hashes) const = 0;
 
   /// Batch compute hashes for 64 bits values by using its plain encoding result.
   ///
-  /// @param values values a pointer to the values to hash.
-  /// @param num_values the number of values to hash.
-  /// @param hashes a pointer to the output hash values, its length should be equal to
+  /// :param values: values a pointer to the values to hash.
+  /// :param num_values: the number of values to hash.
+  /// :param hashes: a pointer to the output hash values, its length should be equal to
   /// num_values.
   virtual void Hashes(const int64_t* values, int num_values, uint64_t* hashes) const = 0;
 
   /// Batch compute hashes for float values by using its plain encoding result.
   ///
-  /// @param values values a pointer to the values to hash.
-  /// @param num_values the number of values to hash.
-  /// @param hashes a pointer to the output hash values, its length should be equal to
+  /// :param values: values a pointer to the values to hash.
+  /// :param num_values: the number of values to hash.
+  /// :param hashes: a pointer to the output hash values, its length should be equal to
   /// num_values.
   virtual void Hashes(const float* values, int num_values, uint64_t* hashes) const = 0;
 
   /// Batch compute hashes for double values by using its plain encoding result.
   ///
-  /// @param values values a pointer to the values to hash.
-  /// @param num_values the number of values to hash.
-  /// @param hashes a pointer to the output hash values, its length should be equal to
+  /// :param values: values a pointer to the values to hash.
+  /// :param num_values: the number of values to hash.
+  /// :param hashes: a pointer to the output hash values, its length should be equal to
   /// num_values.
   virtual void Hashes(const double* values, int num_values, uint64_t* hashes) const = 0;
 
   /// Batch compute hashes for Int96 values by using its plain encoding result.
   ///
-  /// @param values values a pointer to the values to hash.
-  /// @param num_values the number of values to hash.
-  /// @param hashes a pointer to the output hash values, its length should be equal to
+  /// :param values: values a pointer to the values to hash.
+  /// :param num_values: the number of values to hash.
+  /// :param hashes: a pointer to the output hash values, its length should be equal to
   /// num_values.
   virtual void Hashes(const Int96* values, int num_values, uint64_t* hashes) const = 0;
 
   /// Batch compute hashes for ByteArray values by using its plain encoding result.
   ///
-  /// @param values values a pointer to the values to hash.
-  /// @param num_values the number of values to hash.
-  /// @param hashes a pointer to the output hash values, its length should be equal to
+  /// :param values: values a pointer to the values to hash.
+  /// :param num_values: the number of values to hash.
+  /// :param hashes: a pointer to the output hash values, its length should be equal to
   /// num_values.
   virtual void Hashes(const ByteArray* values, int num_values,
                       uint64_t* hashes) const = 0;
 
   /// Batch compute hashes for fixed byte array values by using its plain encoding result.
   ///
-  /// @param values values a pointer to the values to hash.
-  /// @param type_len the value length.
-  /// @param num_values the number of values to hash.
-  /// @param hashes a pointer to the output hash values, its length should be equal to
+  /// :param values: values a pointer to the values to hash.
+  /// :param type_len: the value length.
+  /// :param num_values: the number of values to hash.
+  /// :param hashes: a pointer to the output hash values, its length should be equal to
   /// num_values.
   virtual void Hashes(const FLBA* values, uint32_t type_len, int num_values,
                       uint64_t* hashes) const = 0;
@@ -187,7 +187,7 @@ class PARQUET_EXPORT BlockSplitBloomFilter : public BloomFilter {
  public:
   /// The constructor of BlockSplitBloomFilter. It uses XXH64 as hash function.
   ///
-  /// \param pool memory pool to use.
+  /// :param pool: memory pool to use.
   explicit BlockSplitBloomFilter(
       ::arrow::MemoryPool* pool = ::arrow::default_memory_pool());
 
@@ -196,7 +196,7 @@ class PARQUET_EXPORT BlockSplitBloomFilter : public BloomFilter {
   /// rounded up/down to lower/upper bound if num_bytes is out of range and also
   /// will be rounded up to a power of 2.
   ///
-  /// @param num_bytes The number of bytes to store Bloom filter bitset.
+  /// :param num_bytes: The number of bytes to store Bloom filter bitset.
   void Init(uint32_t num_bytes);
 
   /// Initialize the BlockSplitBloomFilter. It copies the bitset as underlying
@@ -205,8 +205,8 @@ class PARQUET_EXPORT BlockSplitBloomFilter : public BloomFilter {
   /// responsibility to free the bitset passed in. This is used when reconstructing
   /// a Bloom filter from a parquet file.
   ///
-  /// @param bitset The given bitset to initialize the Bloom filter.
-  /// @param num_bytes  The number of bytes of given bitset.
+  /// :param bitset: The given bitset to initialize the Bloom filter.
+  /// :param num_bytes:  The number of bytes of given bitset.
   void Init(const uint8_t* bitset, uint32_t num_bytes);
 
   /// Minimum Bloom filter size, it sets to 32 bytes to fit a tiny Bloom filter.
@@ -215,9 +215,9 @@ class PARQUET_EXPORT BlockSplitBloomFilter : public BloomFilter {
   /// Calculate optimal size according to the number of distinct values and false
   /// positive probability.
   ///
-  /// @param ndv The number of distinct values.
-  /// @param fpp The false positive probability.
-  /// @return it always return a value between kMinimumBloomFilterBytes and
+  /// :param ndv: The number of distinct values.
+  /// :param fpp: The false positive probability.
+  /// :return: it always return a value between kMinimumBloomFilterBytes and
   /// kMaximumBloomFilterBytes, and the return value is always a power of 2
   static uint32_t OptimalNumOfBytes(uint32_t ndv, double fpp) {
     uint32_t optimal_num_of_bits = OptimalNumOfBits(ndv, fpp);
@@ -228,9 +228,9 @@ class PARQUET_EXPORT BlockSplitBloomFilter : public BloomFilter {
   /// Calculate optimal size according to the number of distinct values and false
   /// positive probability.
   ///
-  /// @param ndv The number of distinct values.
-  /// @param fpp The false positive probability.
-  /// @return it always return a value between kMinimumBloomFilterBytes * 8 and
+  /// :param ndv: The number of distinct values.
+  /// :param fpp: The false positive probability.
+  /// :return: it always return a value between kMinimumBloomFilterBytes * 8 and
   /// kMaximumBloomFilterBytes * 8, and the return value is always a power of 16
   static uint32_t OptimalNumOfBits(uint32_t ndv, double fpp) {
     ARROW_DCHECK(fpp > 0.0 && fpp < 1.0);
@@ -309,11 +309,11 @@ class PARQUET_EXPORT BlockSplitBloomFilter : public BloomFilter {
   /// Deserialize the Bloom filter from an input stream. It is used when reconstructing
   /// a Bloom filter from a parquet filter.
   ///
-  /// @param properties The parquet reader properties.
-  /// @param input_stream The input stream from which to construct the bloom filter.
-  /// @param bloom_filter_length The length of the serialized bloom filter including
+  /// :param properties: The parquet reader properties.
+  /// :param input_stream: The input stream from which to construct the bloom filter.
+  /// :param bloom_filter_length: The length of the serialized bloom filter including
   /// header.
-  /// @return The BlockSplitBloomFilter.
+  /// :return: The BlockSplitBloomFilter.
   static BlockSplitBloomFilter Deserialize(
       const ReaderProperties& properties, ArrowInputStream* input_stream,
       std::optional<int64_t> bloom_filter_length = std::nullopt);

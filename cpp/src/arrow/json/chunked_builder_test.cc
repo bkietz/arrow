@@ -171,7 +171,7 @@ TEST(ChunkedArrayBuilder, MultipleChunksParallel) {
   AssertFieldEqual({"a"}, actual, *expected);
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Tests for type-inferring chunked array builders
 
 TEST(InferringChunkedArrayBuilder, Empty) {

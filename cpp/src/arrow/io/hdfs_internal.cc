@@ -294,7 +294,7 @@ Status ConnectLibHdfs(LibHdfsShim** driver) {
   return shim->GetRequiredSymbols();
 }
 
-///////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////
 // HDFS thin wrapper methods
 
 hdfsBuilder* LibHdfsShim::NewBuilder() { return this->hdfsNewBuilder(); }

@@ -436,7 +436,7 @@ class PageIndexReaderImpl : public PageIndexReader {
   std::unordered_map<int32_t, RowGroupIndexReadRange> index_read_ranges_;
 };
 
-/// \brief Internal state of page index builder.
+/// Internal state of page index builder.
 enum class BuilderState {
   /// Created but not yet write any data.
   kCreated,

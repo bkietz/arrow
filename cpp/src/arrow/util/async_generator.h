@@ -69,7 +69,7 @@ namespace arrow {
 //   up.
 template <typename T>
 struct IterationTraits<AsyncGenerator<T>> {
-  /// \brief by default when iterating through a sequence of AsyncGenerator<T>,
+  /// by default when iterating through a sequence of AsyncGenerator<T>,
   /// an empty function indicates the end of iteration.
   static AsyncGenerator<T> End() { return AsyncGenerator<T>(); }
 
@@ -115,14 +115,14 @@ Future<> VisitAsyncGenerator(AsyncGenerator<T> generator, Visitor visitor) {
   return Loop(LoopBody{std::move(generator), std::move(visitor)});
 }
 
-/// \brief Wait for an async generator to complete, discarding results.
+/// Wait for an async generator to complete, discarding results.
 template <typename T>
 Future<> DiscardAllFromAsyncGenerator(AsyncGenerator<T> generator) {
   std::function<Status(T)> visitor = [](const T&) { return Status::OK(); };
   return VisitAsyncGenerator(generator, visitor);
 }
 
-/// \brief Collect the results of an async generator into a vector
+/// Collect the results of an async generator into a vector
 template <typename T>
 Future<std::vector<T>> CollectAsyncGenerator(AsyncGenerator<T> generator) {
   auto vec = std::make_shared<std::vector<T>>();
@@ -141,7 +141,9 @@ Future<std::vector<T>> CollectAsyncGenerator(AsyncGenerator<T> generator) {
   return Loop(std::move(loop_body));
 }
 
-/// \see MakeMappedGenerator
+/// ```{seealso}
+/// MakeMappedGenerator
+/// ```
 template <typename T, typename V>
 class MappingGenerator {
  public:
@@ -258,7 +260,7 @@ class MappingGenerator {
   std::shared_ptr<State> state_;
 };
 
-/// \brief Create a generator that will apply the map function to each element of
+/// Create a generator that will apply the map function to each element of
 /// source.  The map function is not called on the end token.
 ///
 /// Note: This function makes a copy of `map` for each item
@@ -275,7 +277,7 @@ AsyncGenerator<V> MakeMappedGenerator(AsyncGenerator<T> source_generator, MapFn 
   return MappingGenerator<T, V>(std::move(source_generator), std::move(map_callback));
 }
 
-/// \brief Create a generator that will apply the map function to
+/// Create a generator that will apply the map function to
 /// each element of source.  The map function is not called on the end
 /// token.  The result of the map function should be another
 /// generator; all these generators will then be flattened to produce
@@ -293,7 +295,9 @@ AsyncGenerator<T> MakeFlatMappedGenerator(AsyncGenerator<T> source_generator, Ma
       MakeMappedGenerator(std::move(source_generator), std::move(map)));
 }
 
-/// \see MakeSequencingGenerator
+/// ```{seealso}
+/// MakeSequencingGenerator
+/// ```
 template <typename T, typename ComesAfter, typename IsNext>
 class SequencingGenerator {
  public:
@@ -414,7 +418,7 @@ class SequencingGenerator {
   const std::shared_ptr<State> state_;
 };
 
-/// \brief Buffer an AsyncGenerator to return values in sequence order  ComesAfter
+/// Buffer an AsyncGenerator to return values in sequence order  ComesAfter
 /// and IsNext determine the sequence order.
 ///
 /// ComesAfter should be a BinaryPredicate that only returns true if a comes after b
@@ -442,7 +446,9 @@ AsyncGenerator<T> MakeSequencingGenerator(AsyncGenerator<T> source_generator,
       std::move(initial_value));
 }
 
-/// \see MakeTransformedGenerator
+/// ```{seealso}
+/// MakeTransformedGenerator
+/// ```
 template <typename T, typename V>
 class TransformingGenerator {
   // The transforming generator state will be referenced as an async generator but will
@@ -529,7 +535,7 @@ class TransformingGenerator {
   std::shared_ptr<TransformingGeneratorState> state_;
 };
 
-/// \brief Transform an async generator using a transformer function returning a new
+/// Transform an async generator using a transformer function returning a new
 /// AsyncGenerator
 ///
 /// The transform function here behaves exactly the same as the transform function in
@@ -545,7 +551,9 @@ AsyncGenerator<V> MakeTransformedGenerator(AsyncGenerator<T> generator,
   return TransformingGenerator<T, V>(generator, transformer);
 }
 
-/// \see MakeSerialReadaheadGenerator
+/// ```{seealso}
+/// MakeSerialReadaheadGenerator
+/// ```
 template <typename T>
 class SerialReadaheadGenerator {
  public:
@@ -653,7 +661,9 @@ class SerialReadaheadGenerator {
   std::shared_ptr<State> state_;
 };
 
-/// \see MakeFromFuture
+/// ```{seealso}
+/// MakeFromFuture
+/// ```
 template <typename T>
 class FutureFirstGenerator {
  public:
@@ -683,7 +693,7 @@ class FutureFirstGenerator {
   std::shared_ptr<State> state_;
 };
 
-/// \brief Transform a Future<AsyncGenerator<T>> into an AsyncGenerator<T>
+/// Transform a Future<AsyncGenerator<T>> into an AsyncGenerator<T>
 /// that waits for the future to complete as part of the first item.
 ///
 /// This generator is not async-reentrant (even if the generator yielded by future is)
@@ -694,7 +704,7 @@ AsyncGenerator<T> MakeFromFuture(Future<AsyncGenerator<T>> future) {
   return FutureFirstGenerator<T>(std::move(future));
 }
 
-/// \brief Create a generator that will pull from the source into a queue.  Unlike
+/// Create a generator that will pull from the source into a queue.  Unlike
 /// MakeReadaheadGenerator this will not pull reentrantly from the source.
 ///
 /// The source generator does not need to be async-reentrant
@@ -708,7 +718,7 @@ AsyncGenerator<T> MakeSerialReadaheadGenerator(AsyncGenerator<T> source_generato
   return SerialReadaheadGenerator<T>(std::move(source_generator), max_readahead);
 }
 
-/// \brief Create a generator that immediately pulls from the source
+/// Create a generator that immediately pulls from the source
 ///
 /// Typical generators do not pull from their source until they themselves
 /// are pulled.  This generator does not follow that convention and will call
@@ -737,7 +747,9 @@ AsyncGenerator<T> MakeAutoStartingGenerator(AsyncGenerator<T> generator) {
   return AutostartGenerator{std::move(first_future), std::move(generator)};
 }
 
-/// \see MakeReadaheadGenerator
+/// ```{seealso}
+/// MakeReadaheadGenerator
+/// ```
 template <typename T>
 class ReadaheadGenerator {
  public:
@@ -816,7 +828,7 @@ class ReadaheadGenerator {
   std::shared_ptr<State> state_;
 };
 
-/// \brief A generator where the producer pushes items on a queue.
+/// A generator where the producer pushes items on a queue.
 ///
 /// No back-pressure is applied, so this generator is mostly useful when
 /// producing the values is neither CPU- nor memory-expensive (e.g. fetching
@@ -840,7 +852,7 @@ class PushGenerator {
    public:
     explicit Producer(const std::shared_ptr<State>& state) : weak_state_(state) {}
 
-    /// \brief Push a value on the queue
+    /// Push a value on the queue
     ///
     /// True is returned if the value was pushed, false if the generator is
     /// already closed or destroyed.  If the latter, it is recommended to stop
@@ -867,7 +879,7 @@ class PushGenerator {
       return true;
     }
 
-    /// \brief Tell the consumer we have finished producing
+    /// Tell the consumer we have finished producing
     ///
     /// It is allowed to call this and later call Push() again ("early close").
     /// In this case, calls to Push() after the queue is closed are silently
@@ -930,7 +942,7 @@ class PushGenerator {
     return fut;
   }
 
-  /// \brief Return producer-side interface
+  /// Return producer-side interface
   ///
   /// The returned object must be used by the producer to push values on the queue.
   /// Only a single Producer object should be instantiated.
@@ -940,7 +952,7 @@ class PushGenerator {
   const std::shared_ptr<State> state_;
 };
 
-/// \brief Create a generator that pulls reentrantly from a source
+/// Create a generator that pulls reentrantly from a source
 /// This generator will pull reentrantly from a source, ensuring that max_readahead
 /// requests are active at any given time.
 ///
@@ -955,7 +967,7 @@ AsyncGenerator<T> MakeReadaheadGenerator(AsyncGenerator<T> source_generator,
   return ReadaheadGenerator<T>(std::move(source_generator), max_readahead);
 }
 
-/// \brief Creates a generator that will yield finished futures from a vector
+/// Creates a generator that will yield finished futures from a vector
 ///
 /// This generator is async-reentrant
 template <typename T>
@@ -979,7 +991,9 @@ AsyncGenerator<T> MakeVectorGenerator(std::vector<T> vec) {
   };
 }
 
-/// \see MakeMergedGenerator
+/// ```{seealso}
+/// MakeMergedGenerator
+/// ```
 template <typename T>
 class MergedGenerator {
   // Note, the implementation of this class is quite complex at the moment (PRs to
@@ -1437,7 +1451,7 @@ class MergedGenerator {
   std::shared_ptr<State> state_;
 };
 
-/// \brief Create a generator that takes in a stream of generators and pulls from up to
+/// Create a generator that takes in a stream of generators and pulls from up to
 /// max_subscriptions at a time
 ///
 /// Note: This may deliver items out of sequence. For example, items from the third
@@ -1473,7 +1487,7 @@ Result<AsyncGenerator<T>> MakeSequencedMergedGenerator(
   return MakeConcatenatedGenerator(std::move(sub_readahead));
 }
 
-/// \brief Create a generator that takes in a stream of generators and pulls from each
+/// Create a generator that takes in a stream of generators and pulls from each
 /// one in sequence.
 ///
 /// This generator is async-reentrant but will never pull from source reentrantly and
@@ -1502,7 +1516,9 @@ struct IterationTraits<Enumerated<T>> {
   static bool IsEnd(const Enumerated<T>& val) { return val.index < 0; }
 };
 
-/// \see MakeEnumeratedGenerator
+/// ```{seealso}
+/// MakeEnumeratedGenerator
+/// ```
 template <typename T>
 class EnumeratingGenerator {
  public:
@@ -1550,7 +1566,9 @@ class EnumeratingGenerator {
 ///
 /// TODO(ARROW-12371) Would require this generator be async-reentrant
 ///
-/// \see MakeSequencingGenerator for an example of putting items back in order
+/// ```{seealso}
+/// MakeSequencingGenerator for an example of putting items back in order
+/// ```
 ///
 /// This generator is not async-reentrant
 ///
@@ -1563,7 +1581,9 @@ AsyncGenerator<Enumerated<T>> MakeEnumeratedGenerator(AsyncGenerator<T> source) 
       }));
 }
 
-/// \see MakeTransferredGenerator
+/// ```{seealso}
+/// MakeTransferredGenerator
+/// ```
 template <typename T>
 class TransferringGenerator {
  public:
@@ -1577,7 +1597,7 @@ class TransferringGenerator {
   internal::Executor* executor_;
 };
 
-/// \brief Transfer a future to an underlying executor.
+/// Transfer a future to an underlying executor.
 ///
 /// Continuations run on the returned future will be run on the given executor
 /// if they cannot be run synchronously.
@@ -1598,7 +1618,9 @@ AsyncGenerator<T> MakeTransferredGenerator(AsyncGenerator<T> source,
   return TransferringGenerator<T>(std::move(source), executor);
 }
 
-/// \see MakeBackgroundGenerator
+/// ```{seealso}
+/// MakeBackgroundGenerator
+/// ```
 template <typename T>
 class BackgroundGenerator {
  public:
@@ -1823,7 +1845,7 @@ class BackgroundGenerator {
 constexpr int kDefaultBackgroundMaxQ = 32;
 constexpr int kDefaultBackgroundQRestart = 16;
 
-/// \brief Create an AsyncGenerator<T> by iterating over an Iterator<T> on a background
+/// Create an AsyncGenerator<T> by iterating over an Iterator<T> on a background
 /// thread
 ///
 /// The parameter max_q and q_restart control queue size and background thread task
@@ -1859,7 +1881,7 @@ static Result<AsyncGenerator<T>> MakeBackgroundGenerator(
   return BackgroundGenerator<T>(std::move(iterator), io_executor, max_q, q_restart);
 }
 
-/// \brief Create an AsyncGenerator<T> by iterating over an Iterator<T> synchronously
+/// Create an AsyncGenerator<T> by iterating over an Iterator<T> synchronously
 ///
 /// This should only be used if you know the source iterator does not involve any
 /// I/O (or other blocking calls).  Otherwise a CPU thread will be blocked and, depending
@@ -1886,7 +1908,9 @@ static Result<AsyncGenerator<T>> MakeBlockingGenerator(Iterator<T> iterator) {
   return MakeBlockingGenerator(std::make_shared<Iterator<T>>(std::move(iterator)));
 }
 
-/// \see MakeGeneratorIterator
+/// ```{seealso}
+/// MakeGeneratorIterator
+/// ```
 template <typename T>
 class GeneratorIterator {
  public:
@@ -1898,14 +1922,14 @@ class GeneratorIterator {
   AsyncGenerator<T> source_;
 };
 
-/// \brief Convert an AsyncGenerator<T> to an Iterator<T> which blocks until each future
+/// Convert an AsyncGenerator<T> to an Iterator<T> which blocks until each future
 /// is finished
 template <typename T>
 Iterator<T> MakeGeneratorIterator(AsyncGenerator<T> source) {
   return Iterator<T>(GeneratorIterator<T>(std::move(source)));
 }
 
-/// \brief Add readahead to an iterator using a background thread.
+/// Add readahead to an iterator using a background thread.
 ///
 /// Under the hood this is converting the iterator to a generator using
 /// MakeBackgroundGenerator, adding readahead to the converted generator with
@@ -1927,7 +1951,7 @@ Result<Iterator<T>> MakeReadaheadIterator(Iterator<T> it, int readahead_queue_si
   return MakeGeneratorIterator(std::move(owned_bg_generator));
 }
 
-/// \brief Make a generator that returns a single pre-generated future
+/// Make a generator that returns a single pre-generated future
 ///
 /// This generator is async-reentrant.
 template <typename T>
@@ -1944,7 +1968,7 @@ std::function<Future<T>()> MakeSingleFutureGenerator(Future<T> future) {
   };
 }
 
-/// \brief Make a generator that immediately ends.
+/// Make a generator that immediately ends.
 ///
 /// This generator is async-reentrant.
 template <typename T>
@@ -1952,7 +1976,7 @@ std::function<Future<T>()> MakeEmptyGenerator() {
   return []() -> Future<T> { return AsyncGeneratorEnd<T>(); };
 }
 
-/// \brief Make a generator that always fails with a given error
+/// Make a generator that always fails with a given error
 ///
 /// This generator is async-reentrant.
 template <typename T>
@@ -1969,7 +1993,7 @@ AsyncGenerator<T> MakeFailingGenerator(Status st) {
   };
 }
 
-/// \brief Make a generator that always fails with a given error
+/// Make a generator that always fails with a given error
 ///
 /// This overload allows inferring the return type from the argument.
 template <typename T>
@@ -1977,7 +2001,7 @@ AsyncGenerator<T> MakeFailingGenerator(const Result<T>& result) {
   return MakeFailingGenerator<T>(result.status());
 }
 
-/// \brief Prepend initial_values onto a generator
+/// Prepend initial_values onto a generator
 ///
 /// This generator is async-reentrant but will buffer requests and will not
 /// pull from following_values async-reentrantly.
@@ -2003,7 +2027,7 @@ struct CancellableGenerator {
   StopToken stop_token;
 };
 
-/// \brief Allow an async generator to be cancelled
+/// Allow an async generator to be cancelled
 ///
 /// This generator is async-reentrant
 template <typename T>
@@ -2047,7 +2071,7 @@ class DefaultIfEmptyGenerator {
   std::shared_ptr<State> state_;
 };
 
-/// \brief If the generator is empty, return the given value, else
+/// If the generator is empty, return the given value, else
 /// forward the values from the generator.
 ///
 /// This generator is async-reentrant.

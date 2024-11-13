@@ -61,15 +61,15 @@ struct PyConversionOptions {
   bool strict = false;
 };
 
-/// \brief Convert sequence (list, generator, NumPy array with dtype object) of
+/// Convert sequence (list, generator, NumPy array with dtype object) of
 /// Python objects.
-/// \param[in] obj the sequence to convert
-/// \param[in] mask a NumPy array of true/false values to indicate whether
+/// :param obj: the sequence to convert
+/// :param mask: a NumPy array of true/false values to indicate whether
 /// values in the sequence are null (true) or not null (false). This parameter
 /// may be null
-/// \param[in] options various conversion options
-/// \param[in] pool MemoryPool to use for allocations
-/// \return Result ChunkedArray
+/// :param options: various conversion options
+/// :param pool: MemoryPool to use for allocations
+/// :return: Result ChunkedArray
 ARROW_PYTHON_EXPORT
 Result<std::shared_ptr<ChunkedArray>> ConvertPySequence(
     PyObject* obj, PyObject* mask, PyConversionOptions options,

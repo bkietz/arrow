@@ -132,7 +132,7 @@ std::string FileInfo::extension() const {
   return internal::GetAbstractPathExtension(path_);
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // FileSystem default method implementations
 
 FileSystem::~FileSystem() = default;
@@ -275,7 +275,7 @@ Result<std::string> FileSystem::MakeUri(std::string path) const {
                                 " filesystems");
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // SubTreeFileSystem implementation
 
 namespace {
@@ -509,7 +509,7 @@ Result<std::string> SubTreeFileSystem::PathFromUri(const std::string& uri_string
   return base_fs_->PathFromUri(uri_string);
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // SlowFileSystem implementation
 
 SlowFileSystem::SlowFileSystem(std::shared_ptr<FileSystem> base_fs,

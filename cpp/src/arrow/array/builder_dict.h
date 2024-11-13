@@ -80,7 +80,7 @@ class ARROW_EXPORT DictionaryMemoTable {
 
   Status GetArrayData(int64_t start_offset, std::shared_ptr<ArrayData>* out);
 
-  /// \brief Insert new memo values
+  /// Insert new memo values
   Status InsertValues(const Array& values);
 
   int32_t size() const;
@@ -134,7 +134,7 @@ class ARROW_EXPORT DictionaryMemoTable {
 
 namespace internal {
 
-/// \brief Array builder for created encoded DictionaryArray from
+/// Array builder for created encoded DictionaryArray from
 /// dense array
 ///
 /// Unlike other builders, dictionary builder does not completely
@@ -247,16 +247,16 @@ class DictionaryBuilderBase : public ArrayBuilder {
 
   ~DictionaryBuilderBase() override = default;
 
-  /// \brief The current number of entries in the dictionary
+  /// The current number of entries in the dictionary
   int64_t dictionary_length() const { return memo_table_->size(); }
 
-  /// \brief The value byte width (for FixedSizeBinaryType)
+  /// The value byte width (for FixedSizeBinaryType)
   template <typename T1 = T>
   enable_if_fixed_size_binary<T1, int32_t> byte_width() const {
     return byte_width_;
   }
 
-  /// \brief Append a scalar value
+  /// Append a scalar value
   Status Append(Value value) {
     ARROW_RETURN_NOT_OK(Reserve(1));
 
@@ -268,44 +268,44 @@ class DictionaryBuilderBase : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Append a fixed-width string (only for FixedSizeBinaryType)
+  /// Append a fixed-width string (only for FixedSizeBinaryType)
   template <typename T1 = T>
   enable_if_fixed_size_binary<T1, Status> Append(const uint8_t* value) {
     return Append(std::string_view(reinterpret_cast<const char*>(value), byte_width_));
   }
 
-  /// \brief Append a fixed-width string (only for FixedSizeBinaryType)
+  /// Append a fixed-width string (only for FixedSizeBinaryType)
   template <typename T1 = T>
   enable_if_fixed_size_binary<T1, Status> Append(const char* value) {
     return Append(std::string_view(value, byte_width_));
   }
 
-  /// \brief Append a string (only for binary types)
+  /// Append a string (only for binary types)
   template <typename T1 = T>
   enable_if_binary_like<T1, Status> Append(const uint8_t* value, int32_t length) {
     return Append(reinterpret_cast<const char*>(value), length);
   }
 
-  /// \brief Append a string (only for binary types)
+  /// Append a string (only for binary types)
   template <typename T1 = T>
   enable_if_binary_like<T1, Status> Append(const char* value, int32_t length) {
     return Append(std::string_view(value, length));
   }
 
-  /// \brief Append a string (only for string types)
+  /// Append a string (only for string types)
   template <typename T1 = T>
   enable_if_string_like<T1, Status> Append(const char* value, int32_t length) {
     return Append(std::string_view(value, length));
   }
 
-  /// \brief Append a decimal (only for Decimal32/64/128/256 Type)
+  /// Append a decimal (only for Decimal32/64/128/256 Type)
   template <typename T1 = T, typename CType = typename TypeTraits<T1>::CType>
   enable_if_decimal<T1, Status> Append(const CType& value) {
     auto bytes = value.ToBytes();
     return Append(bytes.data(), static_cast<int32_t>(bytes.size()));
   }
 
-  /// \brief Append a scalar null value
+  /// Append a scalar null value
   Status AppendNull() final {
     length_ += 1;
     null_count_ += 1;
@@ -400,16 +400,16 @@ class DictionaryBuilderBase : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Insert values into the dictionary's memo, but do not append any
+  /// Insert values into the dictionary's memo, but do not append any
   /// indices. Can be used to initialize a new builder with known dictionary
   /// values
-  /// \param[in] values dictionary values to add to memo. Type must match
+  /// :param values: dictionary values to add to memo. Type must match
   /// builder type
   Status InsertMemoValues(const Array& values) {
     return memo_table_->InsertValues(values);
   }
 
-  /// \brief Append a whole dense array to the builder
+  /// Append a whole dense array to the builder
   template <typename T1 = T>
   enable_if_t<!is_fixed_size_binary_type<T1>::value, Status> AppendArray(
       const Array& array) {
@@ -456,7 +456,7 @@ class DictionaryBuilderBase : public ArrayBuilder {
     indices_builder_.Reset();
   }
 
-  /// \brief Reset and also clear accumulated dictionary values in memo table
+  /// Reset and also clear accumulated dictionary values in memo table
   void ResetFull() {
     Reset();
     memo_table_.reset(new internal::DictionaryMemoTable(pool_, value_type_));
@@ -470,7 +470,7 @@ class DictionaryBuilderBase : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Return dictionary indices and a delta dictionary since the last
+  /// Return dictionary indices and a delta dictionary since the last
   /// time that Finish or FinishDelta were called, and reset state of builder
   /// (except the memo table)
   Status FinishDelta(std::shared_ptr<Array>* out_indices,
@@ -483,9 +483,7 @@ class DictionaryBuilderBase : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<DictionaryArray>* out) { return FinishTyped(out); }
 
@@ -597,7 +595,7 @@ class DictionaryBuilderBase<BuilderType, NullType> : public ArrayBuilder {
                                  MemoryPool* pool = default_memory_pool())
       : ArrayBuilder(pool), indices_builder_(pool) {}
 
-  /// \brief Append a scalar null value
+  /// Append a scalar null value
   Status AppendNull() final {
     length_ += 1;
     null_count_ += 1;
@@ -624,7 +622,7 @@ class DictionaryBuilderBase<BuilderType, NullType> : public ArrayBuilder {
     return indices_builder_.AppendEmptyValues(length);
   }
 
-  /// \brief Append a whole dense array to the builder
+  /// Append a whole dense array to the builder
   Status AppendArray(const Array& array) {
 #ifndef NDEBUG
     ARROW_RETURN_NOT_OK(ArrayBuilder::CheckArrayType(
@@ -652,9 +650,7 @@ class DictionaryBuilderBase<BuilderType, NullType> : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<DictionaryArray>* out) { return FinishTyped(out); }
 
@@ -668,7 +664,7 @@ class DictionaryBuilderBase<BuilderType, NullType> : public ArrayBuilder {
 
 }  // namespace internal
 
-/// \brief A DictionaryArray builder that uses AdaptiveIntBuilder to return the
+/// A DictionaryArray builder that uses AdaptiveIntBuilder to return the
 /// smallest index size that can accommodate the dictionary indices
 template <typename T>
 class DictionaryBuilder : public internal::DictionaryBuilderBase<AdaptiveIntBuilder, T> {
@@ -676,7 +672,7 @@ class DictionaryBuilder : public internal::DictionaryBuilderBase<AdaptiveIntBuil
   using BASE = internal::DictionaryBuilderBase<AdaptiveIntBuilder, T>;
   using BASE::BASE;
 
-  /// \brief Append dictionary indices directly without modifying memo
+  /// Append dictionary indices directly without modifying memo
   ///
   /// NOTE: Experimental API
   Status AppendIndices(const int64_t* values, int64_t length,
@@ -690,7 +686,7 @@ class DictionaryBuilder : public internal::DictionaryBuilderBase<AdaptiveIntBuil
   }
 };
 
-/// \brief A DictionaryArray builder that always returns int32 dictionary
+/// A DictionaryArray builder that always returns int32 dictionary
 /// indices so that data cast to dictionary form will have a consistent index
 /// type, e.g. for creating a ChunkedArray
 template <typename T>
@@ -699,7 +695,7 @@ class Dictionary32Builder : public internal::DictionaryBuilderBase<Int32Builder,
   using BASE = internal::DictionaryBuilderBase<Int32Builder, T>;
   using BASE::BASE;
 
-  /// \brief Append dictionary indices directly without modifying memo
+  /// Append dictionary indices directly without modifying memo
   ///
   /// NOTE: Experimental API
   Status AppendIndices(const int32_t* values, int64_t length,

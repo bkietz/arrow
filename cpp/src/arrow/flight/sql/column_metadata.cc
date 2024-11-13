@@ -29,10 +29,10 @@ namespace flight {
 namespace sql {
 namespace {
 
-/// \brief Constant variable used to convert boolean true value
+/// Constant variable used to convert boolean true value
 ///        to a string.
 const char* BOOLEAN_TRUE_STR = "1";
-/// \brief Constant variable used to convert boolean false value
+/// Constant variable used to convert boolean false value
 ///        to a string.
 const char* BOOLEAN_FALSE_STR = "0";
 

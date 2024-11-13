@@ -27,11 +27,11 @@
 namespace parquet::internal::PARQUET_IMPL_NAMESPACE {
 /// Builds a bitmap by applying predicate to the level vector provided.
 ///
-/// \param[in] levels Rep or def level array.
-/// \param[in] num_levels The number of levels to process (must be [0, 64])
-/// \param[in] predicate The predicate to apply (must have the signature `bool
+/// :param levels: Rep or def level array.
+/// :param num_levels: The number of levels to process (must be [0, 64])
+/// :param predicate: The predicate to apply (must have the signature `bool
 /// predicate(int16_t)`.
-/// \returns The bitmap using least significant "bit" ordering.
+/// :return: The bitmap using least significant "bit" ordering.
 ///
 template <typename Predicate>
 inline uint64_t LevelsToBitmap(const int16_t* levels, int64_t num_levels,

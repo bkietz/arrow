@@ -33,7 +33,7 @@
 
 namespace gandiva {
 
-/// \brief Represents a node in the expression tree. Validity and value are
+/// Represents a node in the expression tree. Validity and value are
 /// in a joined state.
 class GANDIVA_EXPORT Node {
  public:
@@ -52,7 +52,7 @@ class GANDIVA_EXPORT Node {
   DataTypePtr return_type_;
 };
 
-/// \brief Node in the expression tree, representing a literal.
+/// Node in the expression tree, representing a literal.
 class GANDIVA_EXPORT LiteralNode : public Node {
  public:
   LiteralNode(DataTypePtr type, const LiteralHolder& holder, bool is_null)
@@ -104,7 +104,7 @@ class GANDIVA_EXPORT LiteralNode : public Node {
   bool is_null_;
 };
 
-/// \brief Node in the expression tree, representing an arrow field.
+/// Node in the expression tree, representing an arrow field.
 class GANDIVA_EXPORT FieldNode : public Node {
  public:
   explicit FieldNode(FieldPtr field) : Node(field->type()), field_(field) {}
@@ -121,7 +121,7 @@ class GANDIVA_EXPORT FieldNode : public Node {
   FieldPtr field_;
 };
 
-/// \brief Node in the expression tree, representing a function.
+/// Node in the expression tree, representing a function.
 class GANDIVA_EXPORT FunctionNode : public Node {
  public:
   FunctionNode(const std::string& name, const NodeVector& children, DataTypePtr retType);
@@ -165,7 +165,7 @@ inline FunctionNode::FunctionNode(const std::string& name, const NodeVector& chi
   descriptor_ = FuncDescriptorPtr(new FuncDescriptor(name, param_types, return_type));
 }
 
-/// \brief Node in the expression tree, representing an if-else expression.
+/// Node in the expression tree, representing an if-else expression.
 class GANDIVA_EXPORT IfNode : public Node {
  public:
   IfNode(NodePtr condition, NodePtr then_node, NodePtr else_node, DataTypePtr result_type)
@@ -194,7 +194,7 @@ class GANDIVA_EXPORT IfNode : public Node {
   NodePtr else_node_;
 };
 
-/// \brief Node in the expression tree, representing an and/or boolean expression.
+/// Node in the expression tree, representing an and/or boolean expression.
 class GANDIVA_EXPORT BooleanNode : public Node {
  public:
   enum ExprType : char { AND, OR };
@@ -230,7 +230,7 @@ class GANDIVA_EXPORT BooleanNode : public Node {
   NodeVector children_;
 };
 
-/// \brief Node in expression tree, representing an in expression.
+/// Node in expression tree, representing an in expression.
 template <typename Type>
 class InExpressionNode : public Node {
  public:

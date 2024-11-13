@@ -69,7 +69,7 @@ Status MergeStatuses(Status server_status, Status transport_status) {
                                    ". Transport context: ", transport_status.ToString());
 }
 
-/// \brief An individual connection to the server.
+/// An individual connection to the server.
 class ClientConnection {
  public:
   ClientConnection() = default;

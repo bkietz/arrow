@@ -108,7 +108,7 @@ class ARROW_ACERO_EXPORT ThreadIndexer {
   std::unordered_map<std::thread::id, size_t> id_to_index_;
 };
 
-/// \brief A consumer that collects results into an in-memory table
+/// A consumer that collects results into an in-memory table
 struct ARROW_ACERO_EXPORT TableSinkNodeConsumer : public SinkNodeConsumer {
  public:
   TableSinkNodeConsumer(std::shared_ptr<Table>* out, MemoryPool* pool)

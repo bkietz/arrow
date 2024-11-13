@@ -58,7 +58,7 @@ class Page {
   PageType::type type_;
 };
 
-/// \brief Base type for DataPageV1 and DataPageV2 including common attributes
+/// Base type for DataPageV1 and DataPageV2 including common attributes
 class DataPage : public Page {
  public:
   int32_t num_values() const { return num_values_; }

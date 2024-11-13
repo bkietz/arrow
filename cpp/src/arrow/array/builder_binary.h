@@ -138,7 +138,7 @@ class BaseBinaryBuilder
     return Status::OK();
   }
 
-  /// \brief Append without checking capacity
+  /// Append without checking capacity
   ///
   /// Offsets and data should have been presized using Reserve() and
   /// ReserveData(), respectively.
@@ -182,12 +182,12 @@ class BaseBinaryBuilder
     UnsafeAppendToBitmap(true);
   }
 
-  /// \brief Append a sequence of strings in one shot.
+  /// Append a sequence of strings in one shot.
   ///
-  /// \param[in] values a vector of strings
-  /// \param[in] valid_bytes an optional sequence of bytes where non-zero
+  /// :param values: a vector of strings
+  /// :param valid_bytes: an optional sequence of bytes where non-zero
   /// indicates a valid (non-null) value
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const std::vector<std::string>& values,
                       const uint8_t* valid_bytes = NULLPTR) {
     std::size_t total_length = std::accumulate(
@@ -216,15 +216,15 @@ class BaseBinaryBuilder
     return Status::OK();
   }
 
-  /// \brief Append a sequence of nul-terminated strings in one shot.
+  /// Append a sequence of nul-terminated strings in one shot.
   ///        If one of the values is NULL, it is processed as a null
   ///        value even if the corresponding valid_bytes entry is 1.
   ///
-  /// \param[in] values a contiguous C array of nul-terminated char *
-  /// \param[in] length the number of values to append
-  /// \param[in] valid_bytes an optional sequence of bytes where non-zero
+  /// :param values: a contiguous C array of nul-terminated char *
+  /// :param length: the number of values to append
+  /// :param valid_bytes: an optional sequence of bytes where non-zero
   /// indicates a valid (non-null) value
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const char** values, int64_t length,
                       const uint8_t* valid_bytes = NULLPTR) {
     std::size_t total_length = 0;
@@ -326,7 +326,7 @@ class BaseBinaryBuilder
     return ArrayBuilder::Resize(capacity);
   }
 
-  /// \brief Ensures there is enough allocated capacity to append the indicated
+  /// Ensures there is enough allocated capacity to append the indicated
   /// number of bytes to the value data buffer without additional allocations
   Status ReserveData(int64_t elements) {
     ARROW_RETURN_NOT_OK(ValidateOverflow(elements));
@@ -349,14 +349,14 @@ class BaseBinaryBuilder
     return Status::OK();
   }
 
-  /// \return data pointer of the value date builder
+  /// :return: data pointer of the value date builder
   const uint8_t* value_data() const { return value_data_builder_.data(); }
-  /// \return size of values buffer so far
+  /// :return: size of values buffer so far
   int64_t value_data_length() const { return value_data_builder_.length(); }
-  /// \return capacity of values buffer
+  /// :return: capacity of values buffer
   int64_t value_data_capacity() const { return value_data_builder_.capacity(); }
 
-  /// \return data pointer of the value date builder
+  /// :return: data pointer of the value date builder
   const offset_type* offsets_data() const { return offsets_builder_.data(); }
 
   /// Temporary access to a value.
@@ -404,60 +404,48 @@ class BaseBinaryBuilder
   }
 };
 
-/// \class BinaryBuilder
-/// \brief Builder class for variable-length binary data
+/// Builder class for variable-length binary data
 class ARROW_EXPORT BinaryBuilder : public BaseBinaryBuilder<BinaryType> {
  public:
   using BaseBinaryBuilder::BaseBinaryBuilder;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<BinaryArray>* out) { return FinishTyped(out); }
 
   std::shared_ptr<DataType> type() const override { return binary(); }
 };
 
-/// \class StringBuilder
-/// \brief Builder class for UTF8 strings
+/// Builder class for UTF8 strings
 class ARROW_EXPORT StringBuilder : public BinaryBuilder {
  public:
   using BinaryBuilder::BinaryBuilder;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<StringArray>* out) { return FinishTyped(out); }
 
   std::shared_ptr<DataType> type() const override { return utf8(); }
 };
 
-/// \class LargeBinaryBuilder
-/// \brief Builder class for large variable-length binary data
+/// Builder class for large variable-length binary data
 class ARROW_EXPORT LargeBinaryBuilder : public BaseBinaryBuilder<LargeBinaryType> {
  public:
   using BaseBinaryBuilder::BaseBinaryBuilder;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<LargeBinaryArray>* out) { return FinishTyped(out); }
 
   std::shared_ptr<DataType> type() const override { return large_binary(); }
 };
 
-/// \class LargeStringBuilder
-/// \brief Builder class for large UTF8 strings
+/// Builder class for large UTF8 strings
 class ARROW_EXPORT LargeStringBuilder : public LargeBinaryBuilder {
  public:
   using LargeBinaryBuilder::LargeBinaryBuilder;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<LargeStringArray>* out) { return FinishTyped(out); }
 
@@ -515,7 +503,7 @@ class ARROW_EXPORT StringHeapBuilder {
     return std::numeric_limits<int32_t>::max();
   }
 
-  /// \brief Ensure that the indicated number of bytes can be appended via
+  /// Ensure that the indicated number of bytes can be appended via
   /// UnsafeAppend operations without the need to allocate more memory
   Status Reserve(int64_t num_bytes) {
     if (ARROW_PREDICT_FALSE(num_bytes > ValueSizeLimit())) {
@@ -623,7 +611,7 @@ class ARROW_EXPORT BinaryViewBuilder : public ArrayBuilder {
     return Append(value.data(), static_cast<int64_t>(value.size()));
   }
 
-  /// \brief Append without checking capacity
+  /// Append without checking capacity
   ///
   /// Builder should have been presized using Reserve() and ReserveData(),
   /// respectively, and the value must not be larger than 2GB
@@ -645,7 +633,7 @@ class ARROW_EXPORT BinaryViewBuilder : public ArrayBuilder {
     UnsafeAppend(value.data(), static_cast<int64_t>(value.size()));
   }
 
-  /// \brief Ensures there is enough allocated available capacity in the
+  /// Ensures there is enough allocated available capacity in the
   /// out-of-line data heap to append the indicated number of bytes without
   /// additional allocations
   Status ReserveData(int64_t length);
@@ -657,7 +645,7 @@ class ARROW_EXPORT BinaryViewBuilder : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Append a single null element
+  /// Append a single null element
   Status AppendNull() final {
     ARROW_RETURN_NOT_OK(Reserve(1));
     data_builder_.UnsafeAppend(BinaryViewType::c_type{});
@@ -665,7 +653,7 @@ class ARROW_EXPORT BinaryViewBuilder : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Append a empty element (length-0 inline string)
+  /// Append a empty element (length-0 inline string)
   Status AppendEmptyValue() final {
     ARROW_RETURN_NOT_OK(Reserve(1));
     data_builder_.UnsafeAppend(BinaryViewType::c_type{});
@@ -673,7 +661,7 @@ class ARROW_EXPORT BinaryViewBuilder : public ArrayBuilder {
     return Status::OK();
   }
 
-  /// \brief Append several empty elements
+  /// Append several empty elements
   Status AppendEmptyValues(int64_t length) final {
     ARROW_RETURN_NOT_OK(Reserve(length));
     data_builder_.UnsafeAppend(length, BinaryViewType::c_type{});
@@ -691,7 +679,7 @@ class ARROW_EXPORT BinaryViewBuilder : public ArrayBuilder {
     UnsafeAppendToBitmap(true);
   }
 
-  /// \brief Append a slice of a BinaryViewArray passed as an ArraySpan. Copies
+  /// Append a slice of a BinaryViewArray passed as an ArraySpan. Copies
   /// the underlying out-of-line string memory to avoid memory lifetime issues
   Status AppendArraySlice(const ArraySpan& array, int64_t offset,
                           int64_t length) override;
@@ -828,7 +816,7 @@ class ARROW_EXPORT FixedSizeBinaryBuilder : public ArrayBuilder {
     }
   }
 
-  /// \brief Ensures there is enough allocated capacity to append the indicated
+  /// Ensures there is enough allocated capacity to append the indicated
   /// number of bytes to the value data buffer without additional allocations
   Status ReserveData(int64_t elements) {
     ARROW_RETURN_NOT_OK(ValidateOverflow(elements));
@@ -839,13 +827,11 @@ class ARROW_EXPORT FixedSizeBinaryBuilder : public ArrayBuilder {
   Status Resize(int64_t capacity) override;
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<FixedSizeBinaryArray>* out) { return FinishTyped(out); }
 
-  /// \return size of values buffer so far
+  /// :return: size of values buffer so far
   int64_t value_data_length() const { return byte_builder_.length(); }
 
   int32_t byte_width() const { return byte_width_; }

@@ -21,10 +21,10 @@
 namespace arrow {
 namespace union_util {
 
-/// \brief Compute the number of of logical nulls in a sparse union array
+/// Compute the number of of logical nulls in a sparse union array
 int64_t LogicalSparseUnionNullCount(const ArraySpan& span);
 
-/// \brief Compute the number of of logical nulls in a dense union array
+/// Compute the number of of logical nulls in a dense union array
 int64_t LogicalDenseUnionNullCount(const ArraySpan& span);
 
 }  // namespace union_util

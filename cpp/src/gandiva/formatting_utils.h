@@ -23,7 +23,7 @@
 
 namespace gandiva {
 
-/// \brief The entry point for conversion to strings.
+/// The entry point for conversion to strings.
 template <typename ARROW_TYPE, typename Enable = void>
 class GdvStringFormatter;
 

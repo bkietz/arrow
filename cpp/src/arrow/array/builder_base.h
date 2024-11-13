@@ -41,13 +41,13 @@ namespace internal {
 template <class Builder, class V>
 class ArrayBuilderExtraOps {
  public:
-  /// \brief Append a value from an optional or null if it has no value.
+  /// Append a value from an optional or null if it has no value.
   Status AppendOrNull(const std::optional<V>& value) {
     auto* self = static_cast<Builder*>(this);
     return value.has_value() ? self->Append(*value) : self->AppendNull();
   }
 
-  /// \brief Append a value from an optional or null if it has no value.
+  /// Append a value from an optional or null if it has no value.
   ///
   /// Unsafe methods don't check existing size.
   void UnsafeAppendOrNull(const std::optional<V>& value) {
@@ -92,8 +92,8 @@ constexpr int64_t kListMaximumElements = std::numeric_limits<int32_t>::max() - 1
 /// (see Append methods) and as a side effect the current number of slots and
 /// the null count.
 ///
-/// \note Users are expected to use builders as one of the concrete types below.
-/// For example, ArrayBuilder* pointing to BinaryBuilder should be downcast before use.
+/// ```{note}
+/// Users are expected to use builders as one of the concrete types below.
 class ARROW_EXPORT ArrayBuilder {
  public:
   explicit ArrayBuilder(MemoryPool* pool, int64_t alignment = kDefaultBufferAlignment)
@@ -115,26 +115,26 @@ class ARROW_EXPORT ArrayBuilder {
   int64_t null_count() const { return null_count_; }
   int64_t capacity() const { return capacity_; }
 
-  /// \brief Ensure that enough memory has been allocated to fit the indicated
+  /// Ensure that enough memory has been allocated to fit the indicated
   /// number of total elements in the builder, including any that have already
   /// been appended. Does not account for reallocations that may be due to
   /// variable size data, like binary values. To make space for incremental
   /// appends, use Reserve instead.
   ///
-  /// \param[in] capacity the minimum number of total array values to
+  /// :param capacity: the minimum number of total array values to
   ///            accommodate. Must be greater than the current capacity.
-  /// \return Status
+  /// :return: Status
   virtual Status Resize(int64_t capacity);
 
-  /// \brief Ensure that there is enough space allocated to append the indicated
+  /// Ensure that there is enough space allocated to append the indicated
   /// number of elements without any further reallocation. Overallocation is
   /// used in order to minimize the impact of incremental Reserve() calls.
   /// Note that additional_capacity is relative to the current number of elements
   /// rather than to the current capacity, so calls to Reserve() which are not
   /// interspersed with addition of new elements may not increase the capacity.
   ///
-  /// \param[in] additional_capacity the number of additional array values
-  /// \return Status
+  /// :param additional_capacity: the number of additional array values
+  /// :return: Status
   Status Reserve(int64_t additional_capacity) {
     auto current_capacity = capacity();
     auto min_capacity = length() + additional_capacity;
@@ -148,31 +148,31 @@ class ARROW_EXPORT ArrayBuilder {
   /// Reset the builder.
   virtual void Reset();
 
-  /// \brief Append a null value to builder
+  /// Append a null value to builder
   virtual Status AppendNull() = 0;
-  /// \brief Append a number of null values to builder
+  /// Append a number of null values to builder
   virtual Status AppendNulls(int64_t length) = 0;
 
-  /// \brief Append a non-null value to builder
+  /// Append a non-null value to builder
   ///
   /// The appended value is an implementation detail, but the corresponding
   /// memory slot is guaranteed to be initialized.
   /// This method is useful when appending a null value to a parent nested type.
   virtual Status AppendEmptyValue() = 0;
 
-  /// \brief Append a number of non-null values to builder
+  /// Append a number of non-null values to builder
   ///
   /// The appended values are an implementation detail, but the corresponding
   /// memory slot is guaranteed to be initialized.
   /// This method is useful when appending null values to a parent nested type.
   virtual Status AppendEmptyValues(int64_t length) = 0;
 
-  /// \brief Append a value from a scalar
+  /// Append a value from a scalar
   Status AppendScalar(const Scalar& scalar) { return AppendScalar(scalar, 1); }
   virtual Status AppendScalar(const Scalar& scalar, int64_t n_repeats);
   virtual Status AppendScalars(const ScalarVector& scalars);
 
-  /// \brief Append a range of values from an array.
+  /// Append a range of values from an array.
   ///
   /// The given array must be the same type as the builder.
   virtual Status AppendArraySlice(const ArraySpan& ARROW_ARG_UNUSED(array),
@@ -181,29 +181,29 @@ class ARROW_EXPORT ArrayBuilder {
     return Status::NotImplemented("AppendArraySlice for builder for ", *type());
   }
 
-  /// \brief Return result of builder as an internal generic ArrayData
+  /// Return result of builder as an internal generic ArrayData
   /// object. Resets builder except for dictionary builder
   ///
-  /// \param[out] out the finalized ArrayData object
-  /// \return Status
+  /// :param out[out]: the finalized ArrayData object
+  /// :return: Status
   virtual Status FinishInternal(std::shared_ptr<ArrayData>* out) = 0;
 
-  /// \brief Return result of builder as an Array object.
+  /// Return result of builder as an Array object.
   ///
   /// The builder is reset except for DictionaryBuilder.
   ///
-  /// \param[out] out the finalized Array object
-  /// \return Status
+  /// :param out[out]: the finalized Array object
+  /// :return: Status
   Status Finish(std::shared_ptr<Array>* out);
 
-  /// \brief Return result of builder as an Array object.
+  /// Return result of builder as an Array object.
   ///
   /// The builder is reset except for DictionaryBuilder.
   ///
-  /// \return The finalized Array object
+  /// :return: The finalized Array object
   Result<std::shared_ptr<Array>> Finish();
 
-  /// \brief Return the type of the built Array
+  /// Return the type of the built Array
   virtual std::shared_ptr<DataType> type() const = 0;
 
  protected:
@@ -272,7 +272,7 @@ class ARROW_EXPORT ArrayBuilder {
 
   static Status TrimBuffer(const int64_t bytes_filled, ResizableBuffer* buffer);
 
-  /// \brief Finish to an array of the specified ArrayType
+  /// Finish to an array of the specified ArrayType
   template <typename ArrayType>
   Status FinishTyped(std::shared_ptr<ArrayType>* out) {
     std::shared_ptr<Array> out_untyped;
@@ -319,11 +319,11 @@ class ARROW_EXPORT ArrayBuilder {
   ARROW_DISALLOW_COPY_AND_ASSIGN(ArrayBuilder);
 };
 
-/// \brief Construct an empty ArrayBuilder corresponding to the data
+/// Construct an empty ArrayBuilder corresponding to the data
 /// type
-/// \param[in] pool the MemoryPool to use for allocations
-/// \param[in] type the data type to create the builder for
-/// \param[out] out the created ArrayBuilder
+/// :param pool: the MemoryPool to use for allocations
+/// :param type: the data type to create the builder for
+/// :param out[out]: the created ArrayBuilder
 ARROW_EXPORT
 Status MakeBuilder(MemoryPool* pool, const std::shared_ptr<DataType>& type,
                    std::unique_ptr<ArrayBuilder>* out);
@@ -335,7 +335,7 @@ inline Result<std::unique_ptr<ArrayBuilder>> MakeBuilder(
   return out;
 }
 
-/// \brief Construct an empty ArrayBuilder corresponding to the data
+/// Construct an empty ArrayBuilder corresponding to the data
 /// type, where any top-level or nested dictionary builders return the
 /// exact index type specified by the type.
 ARROW_EXPORT
@@ -349,12 +349,12 @@ inline Result<std::unique_ptr<ArrayBuilder>> MakeBuilderExactIndex(
   return out;
 }
 
-/// \brief Construct an empty DictionaryBuilder initialized optionally
+/// Construct an empty DictionaryBuilder initialized optionally
 /// with a preexisting dictionary
-/// \param[in] pool the MemoryPool to use for allocations
-/// \param[in] type the dictionary type to create the builder for
-/// \param[in] dictionary the initial dictionary, if any. May be nullptr
-/// \param[out] out the created ArrayBuilder
+/// :param pool: the MemoryPool to use for allocations
+/// :param type: the dictionary type to create the builder for
+/// :param dictionary: the initial dictionary, if any. May be nullptr
+/// :param out[out]: the created ArrayBuilder
 ARROW_EXPORT
 Status MakeDictionaryBuilder(MemoryPool* pool, const std::shared_ptr<DataType>& type,
                              const std::shared_ptr<Array>& dictionary,

@@ -58,7 +58,7 @@ Result<std::unique_ptr<arrow::adapters::orc::ORCFileReader>> OpenORCReader(
   return reader;
 }
 
-/// \brief A ScanTask backed by an ORC file.
+/// A ScanTask backed by an ORC file.
 class OrcScanTask {
  public:
   OrcScanTask(std::shared_ptr<FileFragment> fragment,

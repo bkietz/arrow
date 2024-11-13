@@ -34,7 +34,7 @@ namespace arrow {
 
 namespace internal {
 
-/// \brief An ArrayBuilder that deduplicates repeated values as they are
+/// An ArrayBuilder that deduplicates repeated values as they are
 /// appended to the inner-ArrayBuilder and reports the length of the current run
 /// of identical values.
 ///
@@ -66,29 +66,29 @@ class RunCompressorBuilder : public ArrayBuilder {
 
   ARROW_DISALLOW_COPY_AND_ASSIGN(RunCompressorBuilder);
 
-  /// \brief Called right before a run is being closed
+  /// Called right before a run is being closed
   ///
   /// Subclasses can override this function to perform an additional action when
   /// a run is closed (i.e. run-length is known and value is appended to the
   /// inner builder).
   ///
-  /// \param value can be NULLPTR if closing a run of NULLs
-  /// \param length the greater than 0 length of the value run being closed
+  /// :param value: can be NULLPTR if closing a run of NULLs
+  /// :param length: the greater than 0 length of the value run being closed
   virtual Status WillCloseRun(const std::shared_ptr<const Scalar>& value,
                               int64_t length) {
     return Status::OK();
   }
 
-  /// \brief Called right before a run of empty values is being closed
+  /// Called right before a run of empty values is being closed
   ///
   /// Subclasses can override this function to perform an additional action when
   /// a run of empty values is appended (i.e. run-length is known and a single
   /// empty value is appended to the inner builder).
   ///
-  /// \param length the greater than 0 length of the value run being closed
+  /// :param length: the greater than 0 length of the value run being closed
   virtual Status WillCloseRunOfEmptyValues(int64_t length) { return Status::OK(); }
 
-  /// \brief Allocate enough memory for a given number of array elements.
+  /// Allocate enough memory for a given number of array elements.
   ///
   /// NOTE: Conservatively resizing a run-length compressed array for a given
   /// number of logical elements is not possible, since the physical length will
@@ -97,7 +97,7 @@ class RunCompressorBuilder : public ArrayBuilder {
   /// allocate that number of runs.
   Status Resize(int64_t capacity) override { return ResizePhysical(capacity); }
 
-  /// \brief Allocate enough memory for a given number of runs.
+  /// Allocate enough memory for a given number of runs.
   ///
   /// Like Resize on non-encoded builders, it does not account for variable size
   /// data.
@@ -120,7 +120,7 @@ class RunCompressorBuilder : public ArrayBuilder {
 
   // AppendArraySlice() is not implemented.
 
-  /// \brief Append a slice of an array containing values from already
+  /// Append a slice of an array containing values from already
   /// compressed runs.
   ///
   /// NOTE: WillCloseRun() is not called as the length of each run cannot be
@@ -131,7 +131,7 @@ class RunCompressorBuilder : public ArrayBuilder {
   Status AppendRunCompressedArraySlice(const ArraySpan& array, int64_t offset,
                                        int64_t length);
 
-  /// \brief Forces the closing of the current run if one is currently open.
+  /// Forces the closing of the current run if one is currently open.
   ///
   /// This can be called when one wants to ensure the current run will not be
   /// extended. This may cause identical values to appear close to each other in
@@ -168,7 +168,7 @@ class RunCompressorBuilder : public ArrayBuilder {
 // ----------------------------------------------------------------------
 // RunEndEncoded builder
 
-/// \brief Run-end encoded array builder.
+/// Run-end encoded array builder.
 ///
 /// NOTE: the value returned by and capacity() is related to the
 /// compressed array (physical) and not the decoded array (logical) that is
@@ -204,7 +204,7 @@ class ARROW_EXPORT RunEndEncodedBuilder : public ArrayBuilder {
                        const std::shared_ptr<ArrayBuilder>& value_builder,
                        std::shared_ptr<DataType> type);
 
-  /// \brief Allocate enough memory for a given number of array elements.
+  /// Allocate enough memory for a given number of array elements.
   ///
   /// NOTE: Conservatively resizing an REE for a given number of logical
   /// elements is not possible, since the physical length will vary depending on
@@ -213,18 +213,18 @@ class ARROW_EXPORT RunEndEncodedBuilder : public ArrayBuilder {
   /// runs.
   Status Resize(int64_t capacity) override { return ResizePhysical(capacity); }
 
-  /// \brief Allocate enough memory for a given number of runs.
+  /// Allocate enough memory for a given number of runs.
   Status ResizePhysical(int64_t capacity);
 
-  /// \brief Ensure that there is enough space allocated to append the indicated
+  /// Ensure that there is enough space allocated to append the indicated
   /// number of run without any further reallocation. Overallocation is
   /// used in order to minimize the impact of incremental ReservePhysical() calls.
   /// Note that additional_capacity is relative to the current number of elements
   /// rather than to the current capacity, so calls to Reserve() which are not
   /// interspersed with addition of new elements may not increase the capacity.
   ///
-  /// \param[in] additional_capacity the number of additional runs
-  /// \return Status
+  /// :param additional_capacity: the number of additional runs
+  /// :return: Status
   Status ReservePhysical(int64_t additional_capacity) {
     return Reserve(additional_capacity);
   }
@@ -242,13 +242,11 @@ class ARROW_EXPORT RunEndEncodedBuilder : public ArrayBuilder {
                           int64_t length) override;
   Status FinishInternal(std::shared_ptr<ArrayData>* out) override;
 
-  /// \cond FALSE
   using ArrayBuilder::Finish;
-  /// \endcond
 
   Status Finish(std::shared_ptr<RunEndEncodedArray>* out) { return FinishTyped(out); }
 
-  /// \brief Forces the closing of the current run if one is currently open.
+  /// Forces the closing of the current run if one is currently open.
   ///
   /// This can be called when one wants to ensure the current run will not be
   /// extended. This may cause identical values to appear close to each other in
@@ -259,11 +257,11 @@ class ARROW_EXPORT RunEndEncodedBuilder : public ArrayBuilder {
   std::shared_ptr<DataType> type() const override;
 
  private:
-  /// \brief Update physical capacity and logical length
+  /// Update physical capacity and logical length
   ///
-  /// \param committed_logical_length number of logical values that have been
+  /// :param committed_logical_length: number of logical values that have been
   ///                                 committed to the values array
-  /// \param open_run_length number of logical values in the currently open run if any
+  /// :param open_run_length: number of logical values in the currently open run if any
   inline void UpdateDimensions(int64_t committed_logical_length,
                                int64_t open_run_length) {
     capacity_ = run_end_builder().capacity();
@@ -278,11 +276,11 @@ class ARROW_EXPORT RunEndEncodedBuilder : public ArrayBuilder {
   template <typename RunEndCType>
   Status DoAppendRunEnd(int64_t run_end);
 
-  /// \brief Cast run_end to the appropriate type and appends it to the run_ends
+  /// Cast run_end to the appropriate type and appends it to the run_ends
   /// array.
   Status AppendRunEnd(int64_t run_end);
 
-  /// \brief Close a run by appending a value to the run_ends array and updating
+  /// Close a run by appending a value to the run_ends array and updating
   /// length_ to reflect the new run.
   ///
   /// Pre-condition: run_length > 0.

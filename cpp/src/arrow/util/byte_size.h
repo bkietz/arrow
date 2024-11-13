@@ -25,7 +25,7 @@ namespace arrow {
 
 namespace util {
 
-/// \brief The sum of bytes in each buffer referenced by the array
+/// The sum of bytes in each buffer referenced by the array
 ///
 /// Note: An array may only reference a portion of a buffer.
 ///       This method will overestimate in this case and return the
@@ -33,20 +33,28 @@ namespace util {
 /// Note: If a buffer is referenced multiple times then it will
 ///       only be counted once.
 ARROW_EXPORT int64_t TotalBufferSize(const ArrayData& array_data);
-/// \brief The sum of bytes in each buffer referenced by the array
-/// \see TotalBufferSize(const ArrayData& array_data) for details
+/// The sum of bytes in each buffer referenced by the array
+/// ```{seealso}
+/// TotalBufferSize(const ArrayData& array_data) for details
+/// ```
 ARROW_EXPORT int64_t TotalBufferSize(const Array& array);
-/// \brief The sum of bytes in each buffer referenced by the array
-/// \see TotalBufferSize(const ArrayData& array_data) for details
+/// The sum of bytes in each buffer referenced by the array
+/// ```{seealso}
+/// TotalBufferSize(const ArrayData& array_data) for details
+/// ```
 ARROW_EXPORT int64_t TotalBufferSize(const ChunkedArray& chunked_array);
-/// \brief The sum of bytes in each buffer referenced by the batch
-/// \see TotalBufferSize(const ArrayData& array_data) for details
+/// The sum of bytes in each buffer referenced by the batch
+/// ```{seealso}
+/// TotalBufferSize(const ArrayData& array_data) for details
+/// ```
 ARROW_EXPORT int64_t TotalBufferSize(const RecordBatch& record_batch);
-/// \brief The sum of bytes in each buffer referenced by the table
-/// \see TotalBufferSize(const ArrayData& array_data) for details
+/// The sum of bytes in each buffer referenced by the table
+/// ```{seealso}
+/// TotalBufferSize(const ArrayData& array_data) for details
+/// ```
 ARROW_EXPORT int64_t TotalBufferSize(const Table& table);
 
-/// \brief Calculate the buffer ranges referenced by the array
+/// Calculate the buffer ranges referenced by the array
 ///
 /// These ranges will take into account array offsets
 ///
@@ -59,7 +67,7 @@ ARROW_EXPORT int64_t TotalBufferSize(const Table& table);
 /// uint64()))
 ARROW_EXPORT Result<std::shared_ptr<Array>> ReferencedRanges(const ArrayData& array_data);
 
-/// \brief Returns the sum of bytes from all buffer ranges referenced
+/// Returns the sum of bytes from all buffer ranges referenced
 ///
 /// Unlike TotalBufferSize this method will account for array
 /// offsets.
@@ -70,17 +78,25 @@ ARROW_EXPORT Result<std::shared_ptr<Array>> ReferencedRanges(const ArrayData& ar
 /// Dictionary arrays will always be counted in their entirety
 /// even if the array only references a portion of the dictionary.
 ARROW_EXPORT Result<int64_t> ReferencedBufferSize(const ArrayData& array_data);
-/// \brief Returns the sum of bytes from all buffer ranges referenced
-/// \see ReferencedBufferSize(const ArrayData& array_data) for details
+/// Returns the sum of bytes from all buffer ranges referenced
+/// ```{seealso}
+/// ReferencedBufferSize(const ArrayData& array_data) for details
+/// ```
 ARROW_EXPORT Result<int64_t> ReferencedBufferSize(const Array& array_data);
-/// \brief Returns the sum of bytes from all buffer ranges referenced
-/// \see ReferencedBufferSize(const ArrayData& array_data) for details
+/// Returns the sum of bytes from all buffer ranges referenced
+/// ```{seealso}
+/// ReferencedBufferSize(const ArrayData& array_data) for details
+/// ```
 ARROW_EXPORT Result<int64_t> ReferencedBufferSize(const ChunkedArray& array_data);
-/// \brief Returns the sum of bytes from all buffer ranges referenced
-/// \see ReferencedBufferSize(const ArrayData& array_data) for details
+/// Returns the sum of bytes from all buffer ranges referenced
+/// ```{seealso}
+/// ReferencedBufferSize(const ArrayData& array_data) for details
+/// ```
 ARROW_EXPORT Result<int64_t> ReferencedBufferSize(const RecordBatch& array_data);
-/// \brief Returns the sum of bytes from all buffer ranges referenced
-/// \see ReferencedBufferSize(const ArrayData& array_data) for details
+/// Returns the sum of bytes from all buffer ranges referenced
+/// ```{seealso}
+/// ReferencedBufferSize(const ArrayData& array_data) for details
+/// ```
 ARROW_EXPORT Result<int64_t> ReferencedBufferSize(const Table& array_data);
 
 }  // namespace util

@@ -203,7 +203,7 @@ Status GatedMockFilesystem::UnlockOpenOutputStream(uint32_t num_waiters) {
   return open_output_sem_.Release(num_waiters);
 }
 
-////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////
 // GenericFileSystemTest implementation
 
 // XXX is there a way we can test mtimes reliably and precisely?

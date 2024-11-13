@@ -35,7 +35,7 @@ class ARROW_EXPORT BoundaryFinder {
 
   virtual ~BoundaryFinder();
 
-  /// \brief Find the position of the first delimiter inside block
+  /// Find the position of the first delimiter inside block
   ///
   /// `partial` is taken to be the beginning of the block, and `block`
   /// its continuation.  Also, `partial` doesn't contain a delimiter.
@@ -46,14 +46,14 @@ class ARROW_EXPORT BoundaryFinder {
   virtual Status FindFirst(std::string_view partial, std::string_view block,
                            int64_t* out_pos) = 0;
 
-  /// \brief Find the position of the last delimiter inside block
+  /// Find the position of the last delimiter inside block
   ///
   /// The returned `out_pos` is relative to `block`'s start and should point
   /// to the first character after the last delimiter.
   /// `out_pos` will be -1 if no delimiter is found.
   virtual Status FindLast(std::string_view block, int64_t* out_pos) = 0;
 
-  /// \brief Find the position of the Nth delimiter inside the block
+  /// Find the position of the Nth delimiter inside the block
   ///
   /// `partial` is taken to be the beginning of the block, and `block`
   /// its continuation.  Also, `partial` doesn't contain a delimiter.
@@ -75,7 +75,7 @@ class ARROW_EXPORT BoundaryFinder {
 ARROW_EXPORT
 std::shared_ptr<BoundaryFinder> MakeNewlineBoundaryFinder();
 
-/// \brief A reusable block-based chunker for delimited data
+/// A reusable block-based chunker for delimited data
 ///
 /// The chunker takes a block of delimited data and helps carve a sub-block
 /// which begins and ends on delimiters (suitable for consumption by parsers
@@ -85,7 +85,7 @@ class ARROW_EXPORT Chunker {
   explicit Chunker(std::shared_ptr<BoundaryFinder> delimiter);
   ~Chunker();
 
-  /// \brief Carve up a chunk in a block of data to contain only whole objects
+  /// Carve up a chunk in a block of data to contain only whole objects
   ///
   /// Pre-conditions:
   /// - `block` is the start of a valid block of delimited data
@@ -101,13 +101,13 @@ class ARROW_EXPORT Chunker {
   /// This method will look for the last delimiter in `block` and may
   /// therefore be costly.
   ///
-  /// \param[in] block data to be chunked
-  /// \param[out] whole subrange of block containing whole delimited objects
-  /// \param[out] partial subrange of block starting with a partial delimited object
+  /// :param block: data to be chunked
+  /// :param whole[out]: subrange of block containing whole delimited objects
+  /// :param partial[out]: subrange of block starting with a partial delimited object
   Status Process(std::shared_ptr<Buffer> block, std::shared_ptr<Buffer>* whole,
                  std::shared_ptr<Buffer>* partial);
 
-  /// \brief Carve the completion of a partial object out of a block
+  /// Carve the completion of a partial object out of a block
   ///
   /// Pre-conditions:
   /// - `partial` is the start of a valid block of delimited data
@@ -124,16 +124,16 @@ class ARROW_EXPORT Chunker {
   /// This method will look for the first delimiter in `block` and should
   /// therefore be reasonably cheap.
   ///
-  /// \param[in] partial incomplete delimited data
-  /// \param[in] block delimited data following partial
-  /// \param[out] completion subrange of block containing the completion of partial
-  /// \param[out] rest subrange of block containing what completion does not cover
+  /// :param partial: incomplete delimited data
+  /// :param block: delimited data following partial
+  /// :param completion[out]: subrange of block containing the completion of partial
+  /// :param rest[out]: subrange of block containing what completion does not cover
   Status ProcessWithPartial(std::shared_ptr<Buffer> partial,
                             std::shared_ptr<Buffer> block,
                             std::shared_ptr<Buffer>* completion,
                             std::shared_ptr<Buffer>* rest);
 
-  /// \brief Like ProcessWithPartial, but for the last block of a file
+  /// Like ProcessWithPartial, but for the last block of a file
   ///
   /// This method allows for a final delimited object without a trailing delimiter
   /// (ProcessWithPartial would return an error in that case).
@@ -151,7 +151,7 @@ class ARROW_EXPORT Chunker {
   Status ProcessFinal(std::shared_ptr<Buffer> partial, std::shared_ptr<Buffer> block,
                       std::shared_ptr<Buffer>* completion, std::shared_ptr<Buffer>* rest);
 
-  /// \brief Skip count number of rows
+  /// Skip count number of rows
   /// Pre-conditions:
   /// - `partial` is the start of a valid block of delimited data
   ///   (i.e. starts just after a delimiter)
@@ -164,11 +164,11 @@ class ARROW_EXPORT Chunker {
   /// - Else `rest` could be one or more valid blocks of delimited data which need to be
   /// parsed
   ///
-  /// \param[in] partial incomplete delimited data
-  /// \param[in] block delimited data following partial
-  /// \param[in] final whether this is the final chunk
-  /// \param[in,out] count number of rows that need to be skipped
-  /// \param[out] rest subrange of block containing what was not skipped
+  /// :param partial: incomplete delimited data
+  /// :param block: delimited data following partial
+  /// :param final: whether this is the final chunk
+  /// :param count[in,out]: number of rows that need to be skipped
+  /// :param rest[out]: subrange of block containing what was not skipped
   Status ProcessSkip(std::shared_ptr<Buffer> partial, std::shared_ptr<Buffer> block,
                      bool final, int64_t* count, std::shared_ptr<Buffer>* rest);
 

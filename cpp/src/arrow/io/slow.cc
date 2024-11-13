@@ -74,7 +74,7 @@ std::shared_ptr<LatencyGenerator> LatencyGenerator::Make(double average_latency,
   return std::make_shared<LatencyGeneratorImpl>(average_latency, seed);
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // SlowInputStream implementation
 
 SlowInputStream::~SlowInputStream() { internal::CloseFromDestructor(this); }
@@ -101,7 +101,7 @@ Result<std::string_view> SlowInputStream::Peek(int64_t nbytes) {
   return stream_->Peek(nbytes);
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // SlowRandomAccessFile implementation
 
 SlowRandomAccessFile::~SlowRandomAccessFile() { internal::CloseFromDestructor(this); }

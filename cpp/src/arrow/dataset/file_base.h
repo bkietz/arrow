@@ -45,7 +45,7 @@ namespace dataset {
 ///
 /// @{
 
-/// \brief The path and filesystem where an actual file is located or a buffer which can
+/// The path and filesystem where an actual file is located or a buffer which can
 /// be read like a file
 class ARROW_DS_EXPORT FileSource : public util::EqualityComparable<FileSource> {
  public:
@@ -97,37 +97,37 @@ class ARROW_DS_EXPORT FileSource : public util::EqualityComparable<FileSource> {
     return sources;
   }
 
-  /// \brief Return the type of raw compression on the file, if any.
+  /// Return the type of raw compression on the file, if any.
   Compression::type compression() const { return compression_; }
 
-  /// \brief Return the file path, if any. Only valid when file source wraps a path.
+  /// Return the file path, if any. Only valid when file source wraps a path.
   const std::string& path() const {
     static std::string buffer_path = "<Buffer>";
     static std::string custom_open_path = "<Buffer>";
     return filesystem_ ? file_info_.path() : buffer_ ? buffer_path : custom_open_path;
   }
 
-  /// \brief Return the filesystem, if any. Otherwise returns nullptr
+  /// Return the filesystem, if any. Otherwise returns nullptr
   const std::shared_ptr<fs::FileSystem>& filesystem() const { return filesystem_; }
 
-  /// \brief Return the buffer containing the file, if any. Otherwise returns nullptr
+  /// Return the buffer containing the file, if any. Otherwise returns nullptr
   const std::shared_ptr<Buffer>& buffer() const { return buffer_; }
 
-  /// \brief Get a RandomAccessFile which views this file source
+  /// Get a RandomAccessFile which views this file source
   Result<std::shared_ptr<io::RandomAccessFile>> Open() const;
   Future<std::shared_ptr<io::RandomAccessFile>> OpenAsync() const;
 
-  /// \brief Get the size (in bytes) of the file or buffer
+  /// Get the size (in bytes) of the file or buffer
   /// If the file is compressed this should be the compressed (on-disk) size.
   int64_t Size() const;
 
-  /// \brief Get an InputStream which views this file source (and decompresses if needed)
-  /// \param[in] compression If nullopt, guess the compression scheme from the
+  /// Get an InputStream which views this file source (and decompresses if needed)
+  /// :param compression: If nullopt, guess the compression scheme from the
   ///     filename, else decompress with the given codec
   Result<std::shared_ptr<io::InputStream>> OpenCompressed(
       std::optional<Compression::type> compression = std::nullopt) const;
 
-  /// \brief equality comparison with another FileSource
+  /// equality comparison with another FileSource
   bool Equals(const FileSource& other) const;
 
  private:
@@ -143,7 +143,7 @@ class ARROW_DS_EXPORT FileSource : public util::EqualityComparable<FileSource> {
   Compression::type compression_ = Compression::UNCOMPRESSED;
 };
 
-/// \brief Base class for file format implementation
+/// Base class for file format implementation
 class ARROW_DS_EXPORT FileFormat : public std::enable_shared_from_this<FileFormat> {
  public:
   /// Options affecting how this format is scanned.
@@ -153,18 +153,18 @@ class ARROW_DS_EXPORT FileFormat : public std::enable_shared_from_this<FileForma
 
   virtual ~FileFormat() = default;
 
-  /// \brief The name identifying the kind of file format
+  /// The name identifying the kind of file format
   virtual std::string type_name() const = 0;
 
   virtual bool Equals(const FileFormat& other) const = 0;
 
-  /// \brief Indicate if the FileSource is supported/readable by this format.
+  /// Indicate if the FileSource is supported/readable by this format.
   virtual Result<bool> IsSupported(const FileSource& source) const = 0;
 
-  /// \brief Return the schema of the file if possible.
+  /// Return the schema of the file if possible.
   virtual Result<std::shared_ptr<Schema>> Inspect(const FileSource& source) const = 0;
 
-  /// \brief Learn what we need about the file before we start scanning it
+  /// Learn what we need about the file before we start scanning it
   virtual Future<std::shared_ptr<InspectedFragment>> InspectFragment(
       const FileSource& source, const FragmentScanOptions* format_options,
       compute::ExecContext* exec_context) const;
@@ -182,26 +182,26 @@ class ARROW_DS_EXPORT FileFormat : public std::enable_shared_from_this<FileForma
       const FragmentScanOptions* format_options,
       compute::ExecContext* exec_context) const;
 
-  /// \brief Open a fragment
+  /// Open a fragment
   virtual Result<std::shared_ptr<FileFragment>> MakeFragment(
       FileSource source, compute::Expression partition_expression,
       std::shared_ptr<Schema> physical_schema);
 
-  /// \brief Create a FileFragment for a FileSource.
+  /// Create a FileFragment for a FileSource.
   Result<std::shared_ptr<FileFragment>> MakeFragment(
       FileSource source, compute::Expression partition_expression);
 
-  /// \brief Create a FileFragment for a FileSource.
+  /// Create a FileFragment for a FileSource.
   Result<std::shared_ptr<FileFragment>> MakeFragment(
       FileSource source, std::shared_ptr<Schema> physical_schema = NULLPTR);
 
-  /// \brief Create a writer for this format.
+  /// Create a writer for this format.
   virtual Result<std::shared_ptr<FileWriter>> MakeWriter(
       std::shared_ptr<io::OutputStream> destination, std::shared_ptr<Schema> schema,
       std::shared_ptr<FileWriteOptions> options,
       fs::FileLocator destination_locator) const = 0;
 
-  /// \brief Get default write options for this format.
+  /// Get default write options for this format.
   ///
   /// May return null shared_ptr if this file format does not yet support
   /// writing datasets.
@@ -212,7 +212,7 @@ class ARROW_DS_EXPORT FileFormat : public std::enable_shared_from_this<FileForma
       : default_fragment_scan_options(std::move(default_fragment_scan_options)) {}
 };
 
-/// \brief A Fragment that is stored in a file with a known format
+/// A Fragment that is stored in a file with a known format
 class ARROW_DS_EXPORT FileFragment : public Fragment,
                                      public util::EqualityComparable<FileFragment> {
  public:
@@ -253,55 +253,55 @@ class ARROW_DS_EXPORT FileFragment : public Fragment,
   friend class FileFormat;
 };
 
-/// \brief A Dataset of FileFragments.
+/// A Dataset of FileFragments.
 ///
 /// A FileSystemDataset is composed of one or more FileFragment. The fragments
 /// are independent and don't need to share the same format and/or filesystem.
 class ARROW_DS_EXPORT FileSystemDataset : public Dataset {
  public:
-  /// \brief Create a FileSystemDataset.
+  /// Create a FileSystemDataset.
   ///
-  /// \param[in] schema the schema of the dataset
-  /// \param[in] root_partition the partition expression of the dataset
-  /// \param[in] format the format of each FileFragment.
-  /// \param[in] filesystem the filesystem of each FileFragment, or nullptr if the
+  /// :param schema: the schema of the dataset
+  /// :param root_partition: the partition expression of the dataset
+  /// :param format: the format of each FileFragment.
+  /// :param filesystem: the filesystem of each FileFragment, or nullptr if the
   ///            fragments wrap buffers.
-  /// \param[in] fragments list of fragments to create the dataset from.
-  /// \param[in] partitioning the Partitioning object in case the dataset is created
+  /// :param fragments: list of fragments to create the dataset from.
+  /// :param partitioning: the Partitioning object in case the dataset is created
   ///            with a known partitioning (e.g. from a discovered partitioning
   ///            through a DatasetFactory), or nullptr if not known.
   ///
   /// Note that fragments wrapping files resident in differing filesystems are not
   /// permitted; to work with multiple filesystems use a UnionDataset.
   ///
-  /// \return A constructed dataset.
+  /// :return: A constructed dataset.
   static Result<std::shared_ptr<FileSystemDataset>> Make(
       std::shared_ptr<Schema> schema, compute::Expression root_partition,
       std::shared_ptr<FileFormat> format, std::shared_ptr<fs::FileSystem> filesystem,
       std::vector<std::shared_ptr<FileFragment>> fragments,
       std::shared_ptr<Partitioning> partitioning = NULLPTR);
 
-  /// \brief Write a dataset.
+  /// Write a dataset.
   static Status Write(const FileSystemDatasetWriteOptions& write_options,
                       std::shared_ptr<Scanner> scanner);
 
-  /// \brief Return the type name of the dataset.
+  /// Return the type name of the dataset.
   std::string type_name() const override { return "filesystem"; }
 
-  /// \brief Replace the schema of the dataset.
+  /// Replace the schema of the dataset.
   Result<std::shared_ptr<Dataset>> ReplaceSchema(
       std::shared_ptr<Schema> schema) const override;
 
-  /// \brief Return the path of files.
+  /// Return the path of files.
   std::vector<std::string> files() const;
 
-  /// \brief Return the format.
+  /// Return the format.
   const std::shared_ptr<FileFormat>& format() const { return format_; }
 
-  /// \brief Return the filesystem. May be nullptr if the fragments wrap buffers.
+  /// Return the filesystem. May be nullptr if the fragments wrap buffers.
   const std::shared_ptr<fs::FileSystem>& filesystem() const { return filesystem_; }
 
-  /// \brief Return the partitioning. May be nullptr if the dataset was not constructed
+  /// Return the partitioning. May be nullptr if the dataset was not constructed
   /// with a partitioning.
   const std::shared_ptr<Partitioning>& partitioning() const { return partitioning_; }
 
@@ -329,7 +329,7 @@ class ARROW_DS_EXPORT FileSystemDataset : public Dataset {
   std::shared_ptr<FragmentSubtrees> subtrees_;
 };
 
-/// \brief Options for writing a file of this format.
+/// Options for writing a file of this format.
 class ARROW_DS_EXPORT FileWriteOptions {
  public:
   virtual ~FileWriteOptions() = default;
@@ -345,18 +345,18 @@ class ARROW_DS_EXPORT FileWriteOptions {
   std::shared_ptr<FileFormat> format_;
 };
 
-/// \brief A writer for this format.
+/// A writer for this format.
 class ARROW_DS_EXPORT FileWriter {
  public:
   virtual ~FileWriter() = default;
 
-  /// \brief Write the given batch.
+  /// Write the given batch.
   virtual Status Write(const std::shared_ptr<RecordBatch>& batch) = 0;
 
-  /// \brief Write all batches from the reader.
+  /// Write all batches from the reader.
   Status Write(RecordBatchReader* batches);
 
-  /// \brief Indicate that writing is done.
+  /// Indicate that writing is done.
   virtual Future<> Finish();
 
   const std::shared_ptr<FileFormat>& format() const { return options_->format(); }
@@ -364,7 +364,7 @@ class ARROW_DS_EXPORT FileWriter {
   const std::shared_ptr<FileWriteOptions>& options() const { return options_; }
   const fs::FileLocator& destination() const { return destination_locator_; }
 
-  /// \brief After Finish() is called, provides number of bytes written to file.
+  /// After Finish() is called, provides number of bytes written to file.
   Result<int64_t> GetBytesWritten() const;
 
  protected:
@@ -385,7 +385,7 @@ class ARROW_DS_EXPORT FileWriter {
   std::optional<int64_t> bytes_written_;
 };
 
-/// \brief Options for writing a dataset.
+/// Options for writing a dataset.
 struct ARROW_DS_EXPORT FileSystemDatasetWriteOptions {
   /// Options for individual fragment writing.
   std::shared_ptr<FileWriteOptions> file_write_options;
@@ -441,7 +441,7 @@ struct ARROW_DS_EXPORT FileSystemDatasetWriteOptions {
   /// Controls what happens if an output directory already exists.
   ExistingDataBehavior existing_data_behavior = ExistingDataBehavior::kError;
 
-  /// \brief If false the dataset writer will not create directories
+  /// If false the dataset writer will not create directories
   /// This is mainly intended for filesystems that do not require directories such as S3.
   bool create_dir = true;
 
@@ -462,7 +462,7 @@ struct ARROW_DS_EXPORT FileSystemDatasetWriteOptions {
   }
 };
 
-/// \brief Wraps FileSystemDatasetWriteOptions for consumption as compute::ExecNodeOptions
+/// Wraps FileSystemDatasetWriteOptions for consumption as compute::ExecNodeOptions
 class ARROW_DS_EXPORT WriteNodeOptions : public acero::ExecNodeOptions {
  public:
   explicit WriteNodeOptions(
@@ -470,9 +470,9 @@ class ARROW_DS_EXPORT WriteNodeOptions : public acero::ExecNodeOptions {
       std::shared_ptr<const KeyValueMetadata> custom_metadata = NULLPTR)
       : write_options(std::move(options)), custom_metadata(std::move(custom_metadata)) {}
 
-  /// \brief Options to control how to write the dataset
+  /// Options to control how to write the dataset
   FileSystemDatasetWriteOptions write_options;
-  /// \brief Optional schema to attach to all written batches
+  /// Optional schema to attach to all written batches
   ///
   /// By default, we will use the output schema of the input.
   ///
@@ -481,7 +481,7 @@ class ARROW_DS_EXPORT WriteNodeOptions : public acero::ExecNodeOptions {
   /// not have the same number of fields and the same data types as the input then the
   /// plan will fail.
   std::shared_ptr<Schema> custom_schema;
-  /// \brief Optional metadata to attach to written batches
+  /// Optional metadata to attach to written batches
   std::shared_ptr<const KeyValueMetadata> custom_metadata;
 };
 

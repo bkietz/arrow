@@ -847,7 +847,7 @@ class S3ClientLock {
 
 class S3ClientHolder {
  public:
-  /// \brief Return a RAII guard guaranteeing a S3Client is safe for use
+  /// Return a RAII guard guaranteeing a S3Client is safe for use
   ///
   /// S3 finalization will be deferred until the returned S3ClientLock
   /// goes out of scope.

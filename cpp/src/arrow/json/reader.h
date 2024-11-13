@@ -51,7 +51,7 @@ class ARROW_EXPORT TableReader {
 ARROW_EXPORT Result<std::shared_ptr<RecordBatch>> ParseOne(ParseOptions options,
                                                            std::shared_ptr<Buffer> json);
 
-/// \brief A class that reads a JSON file incrementally
+/// A class that reads a JSON file incrementally
 ///
 /// JSON data is read from a stream in fixed-size blocks (configurable with
 /// `ReadOptions::block_size`). Each block is converted to a `RecordBatch`. Yielded
@@ -74,7 +74,7 @@ class ARROW_EXPORT StreamingReader : public RecordBatchReader {
  public:
   virtual ~StreamingReader() = default;
 
-  /// \brief Read the next `RecordBatch` asynchronously
+  /// Read the next `RecordBatch` asynchronously
   /// This function is async-reentrant (but not synchronously reentrant). However, if
   /// threading is disabled, this will block until completion.
   virtual Future<std::shared_ptr<RecordBatch>> ReadNextAsync() = 0;
@@ -83,30 +83,30 @@ class ARROW_EXPORT StreamingReader : public RecordBatchReader {
   /// and consumed
   [[nodiscard]] virtual int64_t bytes_processed() const = 0;
 
-  /// \brief Create a `StreamingReader` from an `InputStream`
+  /// Create a `StreamingReader` from an `InputStream`
   /// Blocks until the initial batch is loaded
   ///
-  /// \param[in] stream JSON source stream
-  /// \param[in] read_options Options for reading
-  /// \param[in] parse_options Options for chunking, parsing, and conversion
-  /// \param[in] io_context Context for IO operations (optional)
-  /// \param[in] cpu_executor Executor for computation tasks (optional)
-  /// \return The initialized reader
+  /// :param stream: JSON source stream
+  /// :param read_options: Options for reading
+  /// :param parse_options: Options for chunking, parsing, and conversion
+  /// :param io_context: Context for IO operations (optional)
+  /// :param cpu_executor: Executor for computation tasks (optional)
+  /// :return: The initialized reader
   static Result<std::shared_ptr<StreamingReader>> Make(
       std::shared_ptr<io::InputStream> stream, const ReadOptions& read_options,
       const ParseOptions& parse_options,
       const io::IOContext& io_context = io::default_io_context(),
       ::arrow::internal::Executor* cpu_executor = NULLPTR);
 
-  /// \brief Create a `StreamingReader` from an `InputStream` asynchronously
+  /// Create a `StreamingReader` from an `InputStream` asynchronously
   /// Returned future completes after loading the first batch
   ///
-  /// \param[in] stream JSON source stream
-  /// \param[in] read_options Options for reading
-  /// \param[in] parse_options Options for chunking, parsing, and conversion
-  /// \param[in] io_context Context for IO operations (optional)
-  /// \param[in] cpu_executor Executor for computation tasks (optional)
-  /// \return Future for the initialized reader
+  /// :param stream: JSON source stream
+  /// :param read_options: Options for reading
+  /// :param parse_options: Options for chunking, parsing, and conversion
+  /// :param io_context: Context for IO operations (optional)
+  /// :param cpu_executor: Executor for computation tasks (optional)
+  /// :return: Future for the initialized reader
   static Future<std::shared_ptr<StreamingReader>> MakeAsync(
       std::shared_ptr<io::InputStream> stream, const ReadOptions& read_options,
       const ParseOptions& parse_options,

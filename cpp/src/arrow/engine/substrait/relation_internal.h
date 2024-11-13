@@ -34,12 +34,12 @@
 namespace arrow {
 namespace engine {
 
-/// \brief Convert a Substrait Rel object to an Acero declaration
+/// Convert a Substrait Rel object to an Acero declaration
 ARROW_ENGINE_EXPORT
 Result<DeclarationInfo> FromProto(const substrait::Rel&, const ExtensionSet&,
                                   const ConversionOptions&);
 
-/// \brief Convert an Acero Declaration to a Substrait Rel
+/// Convert an Acero Declaration to a Substrait Rel
 ///
 /// Note that, in order to provide a generic interface for ToProto,
 /// the ExecNode or ExecPlan are not used in this context as Declaration
@@ -50,26 +50,26 @@ ARROW_ENGINE_EXPORT Result<std::unique_ptr<substrait::Rel>> ToProto(
 
 namespace internal {
 
-/// \brief Parse an aggregate relation's measure
+/// Parse an aggregate relation's measure
 ///
-/// \param[in] agg_measure the measure
-/// \param[in] ext_set an extension mapping to use in parsing
-/// \param[in] conversion_options options to control how the conversion is done
-/// \param[in] input_schema the schema to which field refs apply
-/// \param[in] is_hash whether the measure is a hash one (i.e., aggregation keys exist)
+/// :param agg_measure: the measure
+/// :param ext_set: an extension mapping to use in parsing
+/// :param conversion_options: options to control how the conversion is done
+/// :param input_schema: the schema to which field refs apply
+/// :param is_hash: whether the measure is a hash one (i.e., aggregation keys exist)
 ARROW_ENGINE_EXPORT
 Result<compute::Aggregate> ParseAggregateMeasure(
     const substrait::AggregateRel::Measure& agg_measure, const ExtensionSet& ext_set,
     const ConversionOptions& conversion_options, bool is_hash,
     const std::shared_ptr<Schema> input_schema);
 
-/// \brief Make an aggregate declaration info
+/// Make an aggregate declaration info
 ///
-/// \param[in] input_decl the input declaration to use
-/// \param[in] output_schema the schema to which field refs apply
-/// \param[in] aggregates the aggregates to use
-/// \param[in] keys the field-refs for grouping keys to use
-/// \param[in] segment_keys the field-refs for segment keys to use
+/// :param input_decl: the input declaration to use
+/// :param output_schema: the schema to which field refs apply
+/// :param aggregates: the aggregates to use
+/// :param keys: the field-refs for grouping keys to use
+/// :param segment_keys: the field-refs for segment keys to use
 ARROW_ENGINE_EXPORT Result<DeclarationInfo> MakeAggregateDeclaration(
     acero::Declaration input_decl, std::shared_ptr<Schema> output_schema,
     std::vector<compute::Aggregate> aggregates, std::vector<FieldRef> keys,

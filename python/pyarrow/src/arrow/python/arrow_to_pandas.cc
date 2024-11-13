@@ -385,12 +385,12 @@ class PandasWriter {
         reinterpret_cast<uint8_t*>(PyArray_DATA(reinterpret_cast<PyArrayObject*>(arr)));
   }
 
-  /// \brief Either copy or wrap single array to create pandas-compatible array
+  /// Either copy or wrap single array to create pandas-compatible array
   /// for Series or DataFrame. num_columns_ can only be 1. Will try to zero
   /// copy if possible (or error if not possible and zero_copy_only=True)
   virtual Status TransferSingle(std::shared_ptr<ChunkedArray> data, PyObject* py_ref) = 0;
 
-  /// \brief Copy ChunkedArray into a multi-column block
+  /// Copy ChunkedArray into a multi-column block
   virtual Status CopyInto(std::shared_ptr<ChunkedArray> data, int64_t rel_placement) = 0;
 
   Status EnsurePlacementAllocated() {
@@ -2461,7 +2461,7 @@ class ConsolidatedBlockCreator : public PandasBlockCreator {
   WriterMap singleton_blocks_;
 };
 
-/// \brief Create blocks for pandas.DataFrame block manager using one block per
+/// Create blocks for pandas.DataFrame block manager using one block per
 /// column strategy. This permits some zero-copy optimizations as well as the
 /// ability for the table to "self-destruct" if selected by the user.
 class SplitBlockCreator : public PandasBlockCreator {

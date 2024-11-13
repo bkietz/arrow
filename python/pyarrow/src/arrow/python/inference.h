@@ -39,11 +39,11 @@ namespace py {
 
 // These functions take a sequence input, not arbitrary iterables
 
-/// \brief Infer Arrow type from a Python sequence
-/// \param[in] obj the sequence of values
-/// \param[in] mask an optional mask where True values are null. May
+/// Infer Arrow type from a Python sequence
+/// :param obj: the sequence of values
+/// :param mask: an optional mask where True values are null. May
 /// be nullptr
-/// \param[in] pandas_null_sentinels use pandas's null value markers
+/// :param pandas_null_sentinels: use pandas's null value markers
 ARROW_PYTHON_EXPORT
 Result<std::shared_ptr<arrow::DataType>> InferArrowType(PyObject* obj, PyObject* mask,
                                                         bool pandas_null_sentinels);

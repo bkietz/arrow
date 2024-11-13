@@ -133,7 +133,7 @@ class ColumnDecoderTest : public ::testing::Test {
   ConvertOptions default_options = ConvertOptions::Defaults();
 };
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Tests for null column decoder
 
 class NullColumnDecoderTest : public ColumnDecoderTest {
@@ -197,7 +197,7 @@ TEST_F(NullColumnDecoderTest, OtherType) { this->TestOtherType(); }
 
 TEST_F(NullColumnDecoderTest, Threaded) { this->TestThreaded(); }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Tests for fixed-type column decoder
 
 class TypedColumnDecoderTest : public ColumnDecoderTest {
@@ -288,7 +288,7 @@ TEST_F(TypedColumnDecoderTest, Errors) { this->TestErrors(); }
 
 TEST_F(TypedColumnDecoderTest, Threaded) { this->TestThreaded(); }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Tests for type-inferring column decoder
 
 class InferringColumnDecoderTest : public ColumnDecoderTest {

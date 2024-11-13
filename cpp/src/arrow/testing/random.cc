@@ -677,12 +677,12 @@ enable_if_parameter_free<ArrowType, T> GetMetadata(const KeyValueMetadata* metad
   return output;
 }
 
-/// \brief Shuffle a list-view array in place using the Fisher–Yates algorithm [1].
+/// Shuffle a list-view array in place using the Fisher–Yates algorithm [1].
 ///
 /// [1] https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
 ///
-/// \param[in] seed The seed for the random number generator
-/// \param[in,out] data The array to shuffle
+/// :param seed: The seed for the random number generator
+/// :param data[in,out]: The array to shuffle
 template <typename ListViewType>
 void ShuffleListViewDataInPlace(SeedType seed, ArrayData* data) {
   DCHECK_EQ(data->type->id(), ListViewType::type_id);
@@ -714,17 +714,17 @@ void ShuffleListViewDataInPlace(SeedType seed, ArrayData* data) {
   }
 }
 
-/// \brief Generate the list-view offsets based on a random buffer of sizes.
+/// Generate the list-view offsets based on a random buffer of sizes.
 ///
 /// The sizes buffer is an input of this function, but when force_empty_nulls is true,
 /// some values on the sizes buffer can be set to 0.
 ///
-/// \param[in] seed The seed for the random number generator
-/// \param[in,out] mutable_sizes_array The array of sizes to use
-/// \param[in] force_empty_nulls Whether to force null list-view sizes to be 0
-/// \param[in] zero_undefined_offsets Whether to zero the offsets of list-views that have
+/// :param seed: The seed for the random number generator
+/// :param mutable_sizes_array[in,out]: The array of sizes to use
+/// :param force_empty_nulls: Whether to force null list-view sizes to be 0
+/// :param zero_undefined_offsets: Whether to zero the offsets of list-views that have
 /// 0 set as the size
-/// \param[out] out_max_view_end The maximum value of the end of a list-view
+/// :param out_max_view_end[out]: The maximum value of the end of a list-view
 template <typename OffsetArrayType, typename offset_type>
 std::shared_ptr<Array> ViewOffsetsFromLengthsArray(
     SeedType seed, OffsetArrayType& mutable_sizes_array, bool force_empty_nulls,

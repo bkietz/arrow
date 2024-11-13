@@ -53,8 +53,7 @@ struct ArrayData;
 // ----------------------------------------------------------------------
 // Table methods
 
-/// \class SimpleTable
-/// \brief A basic, non-lazy in-memory table, like SimpleRecordBatch
+/// A basic, non-lazy in-memory table, like SimpleRecordBatch
 class SimpleTable : public Table {
  public:
   SimpleTable(std::shared_ptr<Schema> schema,

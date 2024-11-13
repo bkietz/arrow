@@ -25,25 +25,25 @@
 namespace arrow {
 namespace util {
 
-/// \brief Simple mutex-based counting semaphore with timeout
+/// Simple mutex-based counting semaphore with timeout
 class ARROW_EXPORT CountingSemaphore {
  public:
-  /// \brief Create an instance with initial_avail starting permits
+  /// Create an instance with initial_avail starting permits
   ///
-  /// \param[in] initial_avail The semaphore will start with this many permits available
-  /// \param[in] timeout_seconds A timeout to be applied to all operations.  Operations
+  /// :param initial_avail: The semaphore will start with this many permits available
+  /// :param timeout_seconds: A timeout to be applied to all operations.  Operations
   ///            will return Status::Invalid if this timeout elapses
   explicit CountingSemaphore(uint32_t initial_avail = 0, double timeout_seconds = 10);
   ~CountingSemaphore();
-  /// \brief Block until num_permits permits are available
+  /// Block until num_permits permits are available
   Status Acquire(uint32_t num_permits);
-  /// \brief Make num_permits permits available
+  /// Make num_permits permits available
   Status Release(uint32_t num_permits);
-  /// \brief Wait until num_waiters are waiting on permits
+  /// Wait until num_waiters are waiting on permits
   ///
   /// This method is non-standard but useful in unit tests to ensure sequencing
   Status WaitForWaiters(uint32_t num_waiters);
-  /// \brief Immediately time out any waiters
+  /// Immediately time out any waiters
   ///
   /// This method will return Status::OK only if there were no waiters to time out.
   /// Once closed any operation on this instance will return an invalid status.

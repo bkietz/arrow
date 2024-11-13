@@ -25,7 +25,7 @@
 
 namespace gandiva {
 
-/// \brief Signature for a function : includes the base name, input param types and
+/// Signature for a function : includes the base name, input param types and
 /// output types.
 class GANDIVA_EXPORT FunctionSignature {
  public:

@@ -100,7 +100,7 @@ class ARROW_EXPORT S3RetryStrategy {
 
 /// Options for the S3FileSystem implementation.
 struct ARROW_EXPORT S3Options {
-  /// \brief AWS region to connect to.
+  /// AWS region to connect to.
   ///
   /// If unset, the AWS SDK will choose a default value.  The exact algorithm
   /// depends on the SDK version.  Before 1.8, the default is hardcoded
@@ -109,12 +109,12 @@ struct ARROW_EXPORT S3Options {
   /// server).
   std::string region;
 
-  /// \brief Socket connection timeout, in seconds
+  /// Socket connection timeout, in seconds
   ///
   /// If negative, the AWS SDK default value is used (typically 1 second).
   double connect_timeout = -1;
 
-  /// \brief Socket read timeout on Windows and macOS, in seconds
+  /// Socket read timeout on Windows and macOS, in seconds
   ///
   /// If negative, the AWS SDK default value is used (typically 3 seconds).
   /// This option is ignored on non-Windows, non-macOS systems.
@@ -187,7 +187,7 @@ struct ARROW_EXPORT S3Options {
   /// when attempting to close the file).
   bool allow_delayed_open = false;
 
-  /// \brief Default metadata for OpenOutputStream.
+  /// Default metadata for OpenOutputStream.
   ///
   /// This will be ignored if non-empty metadata is passed to OpenOutputStream.
   std::shared_ptr<const KeyValueMetadata> default_metadata;
@@ -254,18 +254,18 @@ struct ARROW_EXPORT S3Options {
 
   bool Equals(const S3Options& other) const;
 
-  /// \brief Initialize with default credentials provider chain
+  /// Initialize with default credentials provider chain
   ///
   /// This is recommended if you use the standard AWS environment variables
   /// and/or configuration file.
   static S3Options Defaults();
 
-  /// \brief Initialize with anonymous credentials.
+  /// Initialize with anonymous credentials.
   ///
   /// This will only let you access public buckets.
   static S3Options Anonymous();
 
-  /// \brief Initialize with explicit access and secret key.
+  /// Initialize with explicit access and secret key.
   ///
   /// Optionally, a session token may also be provided for temporary credentials
   /// (from STS).
@@ -273,13 +273,13 @@ struct ARROW_EXPORT S3Options {
                                  const std::string& secret_key,
                                  const std::string& session_token = "");
 
-  /// \brief Initialize from an assumed role.
+  /// Initialize from an assumed role.
   static S3Options FromAssumeRole(
       const std::string& role_arn, const std::string& session_name = "",
       const std::string& external_id = "", int load_frequency = 900,
       const std::shared_ptr<Aws::STS::STSClient>& stsClient = NULLPTR);
 
-  /// \brief Initialize from an assumed role with web-identity.
+  /// Initialize from an assumed role with web-identity.
   /// Uses the AWS SDK which uses environment variables to
   /// generate temporary credentials.
   static S3Options FromAssumeRoleWithWebIdentity();
@@ -309,14 +309,12 @@ class ARROW_EXPORT S3FileSystem : public FileSystem {
   bool Equals(const FileSystem& other) const override;
   Result<std::string> PathFromUri(const std::string& uri_string) const override;
 
-  /// \cond FALSE
   using FileSystem::CreateDir;
   using FileSystem::DeleteDirContents;
   using FileSystem::DeleteDirContentsAsync;
   using FileSystem::GetFileInfo;
   using FileSystem::OpenAppendStream;
   using FileSystem::OpenOutputStream;
-  /// \endcond
 
   Result<FileInfo> GetFileInfo(const std::string& path) override;
   Result<std::vector<FileInfo>> GetFileInfo(const FileSelector& select) override;
@@ -398,14 +396,14 @@ struct ARROW_EXPORT S3GlobalOptions {
   /// For more details see Aws::Crt::Io::EventLoopGroup
   int num_event_loop_threads = 1;
 
-  /// \brief Initialize with default options
+  /// Initialize with default options
   ///
   /// For log_level, this method first tries to extract a suitable value from the
   /// environment variable ARROW_S3_LOG_LEVEL.
   static S3GlobalOptions Defaults();
 };
 
-/// \brief Initialize the S3 APIs with the specified set of options.
+/// Initialize the S3 APIs with the specified set of options.
 ///
 /// It is required to call this function at least once before using S3FileSystem.
 ///
@@ -414,7 +412,7 @@ struct ARROW_EXPORT S3GlobalOptions {
 ARROW_EXPORT
 Status InitializeS3(const S3GlobalOptions& options);
 
-/// \brief Ensure the S3 APIs are initialized, but only if not already done.
+/// Ensure the S3 APIs are initialized, but only if not already done.
 ///
 /// If necessary, this will call InitializeS3() with some default options.
 ARROW_EXPORT
@@ -428,7 +426,7 @@ bool IsS3Initialized();
 ARROW_EXPORT
 bool IsS3Finalized();
 
-/// \brief Shutdown the S3 APIs.
+/// Shutdown the S3 APIs.
 ///
 /// This can wait for some S3 concurrent calls to finish so as to avoid
 /// race conditions.
@@ -440,7 +438,7 @@ bool IsS3Finalized();
 ARROW_EXPORT
 Status FinalizeS3();
 
-/// \brief Ensure the S3 APIs are shutdown, but only if not already done.
+/// Ensure the S3 APIs are shutdown, but only if not already done.
 ///
 /// If necessary, this will call FinalizeS3().
 ARROW_EXPORT

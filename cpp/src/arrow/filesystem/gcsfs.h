@@ -36,7 +36,7 @@ struct GcsCredentialsHolder;
 
 class GcsFileSystem;
 
-/// \brief Container for GCS Credentials and information necessary to recreate them.
+/// Container for GCS Credentials and information necessary to recreate them.
 class ARROW_EXPORT GcsCredentials {
  public:
   bool Equals(const GcsCredentials& other) const;
@@ -63,27 +63,27 @@ class ARROW_EXPORT GcsCredentials {
 
 /// Options for the GcsFileSystem implementation.
 struct ARROW_EXPORT GcsOptions {
-  /// \brief Equivalent to GcsOptions::Defaults().
+  /// Equivalent to GcsOptions::Defaults().
   GcsOptions();
   GcsCredentials credentials;
 
   std::string endpoint_override;
   std::string scheme;
-  /// \brief Location to use for creating buckets.
+  /// Location to use for creating buckets.
   std::string default_bucket_location;
 
-  /// \brief If set used to control total time allowed for retrying underlying
+  /// If set used to control total time allowed for retrying underlying
   /// errors.
   ///
   /// The default policy is to retry for up to 15 minutes.
   std::optional<double> retry_limit_seconds;
 
-  /// \brief Default metadata for OpenOutputStream.
+  /// Default metadata for OpenOutputStream.
   ///
   /// This will be ignored if non-empty metadata is passed to OpenOutputStream.
   std::shared_ptr<const KeyValueMetadata> default_metadata;
 
-  /// \brief The project to use for creating buckets.
+  /// The project to use for creating buckets.
   ///
   /// If not set, the library uses the GOOGLE_CLOUD_PROJECT environment
   /// variable. Most I/O operations do not need a project id, only applications
@@ -92,7 +92,7 @@ struct ARROW_EXPORT GcsOptions {
 
   bool Equals(const GcsOptions& other) const;
 
-  /// \brief Initialize with Google Default Credentials
+  /// Initialize with Google Default Credentials
   ///
   /// Create options configured to use [Application Default Credentials][aip/4110]. The
   /// details of this mechanism are too involved to describe here, but suffice is to say
@@ -101,15 +101,17 @@ struct ARROW_EXPORT GcsOptions {
   /// Cloud Platform deployment environments (GCE, GKE, Cloud Run, etc.), and that have
   /// the same behavior as the `gcloud` CLI tool on your workstation.
   ///
-  /// \see https://cloud.google.com/docs/authentication
+  /// ```{seealso}
+  /// https://cloud.google.com/docs/authentication
+  /// ```
   ///
   /// [aip/4110]: https://google.aip.dev/auth/4110
   static GcsOptions Defaults();
 
-  /// \brief Initialize with anonymous credentials
+  /// Initialize with anonymous credentials
   static GcsOptions Anonymous();
 
-  /// \brief Initialize with access token
+  /// Initialize with access token
   ///
   /// These credentials are useful when using an out-of-band mechanism to fetch access
   /// tokens. Note that access tokens are time limited, you will need to manually refresh
@@ -117,7 +119,7 @@ struct ARROW_EXPORT GcsOptions {
   static GcsOptions FromAccessToken(const std::string& access_token,
                                     TimePoint expiration);
 
-  /// \brief Initialize with service account impersonation
+  /// Initialize with service account impersonation
   ///
   /// Service account impersonation allows one principal (a user or service account) to
   /// impersonate a service account. It requires that the calling principal has the
@@ -150,7 +152,7 @@ struct ARROW_EXPORT GcsOptions {
   static Result<GcsOptions> FromUri(const std::string& uri, std::string* out_path);
 };
 
-/// \brief GCS-backed FileSystem implementation.
+/// GCS-backed FileSystem implementation.
 ///
 /// GCS (Google Cloud Storage - https://cloud.google.com/storage) is a scalable object
 /// storage system for any amount of data. The main abstractions in GCS are buckets and

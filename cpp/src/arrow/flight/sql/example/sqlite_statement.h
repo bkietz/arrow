@@ -30,44 +30,44 @@ namespace flight {
 namespace sql {
 namespace example {
 
-/// \brief Create an object ColumnMetadata using the column type and
+/// Create an object ColumnMetadata using the column type and
 ///        table name.
-/// \param column_type  The SQLite type.
-/// \param table        The table name.
-/// \return             A Column Metadata object.
+/// :param column_type:  The SQLite type.
+/// :param table:        The table name.
+/// :return:             A Column Metadata object.
 ColumnMetadata GetColumnMetadata(int column_type, const char* table);
 
 class SqliteStatement {
  public:
-  /// \brief Creates a SQLite3 statement.
-  /// \param[in] db        SQLite3 database instance.
-  /// \param[in] sql       SQL statement.
-  /// \return              A SqliteStatement object.
+  /// Creates a SQLite3 statement.
+  /// :param db:        SQLite3 database instance.
+  /// :param sql:       SQL statement.
+  /// :return:              A SqliteStatement object.
   static arrow::Result<std::shared_ptr<SqliteStatement>> Create(sqlite3* db,
                                                                 const std::string& sql);
 
   ~SqliteStatement();
 
-  /// \brief Creates an Arrow Schema based on the results of this statement.
-  /// \return              The resulting Schema.
+  /// Creates an Arrow Schema based on the results of this statement.
+  /// :return:              The resulting Schema.
   arrow::Result<std::shared_ptr<Schema>> GetSchema() const;
 
-  /// \brief Steps on underlying sqlite3_stmt.
-  /// \return          The resulting return code from SQLite.
+  /// Steps on underlying sqlite3_stmt.
+  /// :return:          The resulting return code from SQLite.
   arrow::Result<int> Step();
 
-  /// \brief Reset the state of the sqlite3_stmt.
-  /// \return          The resulting return code from SQLite.
+  /// Reset the state of the sqlite3_stmt.
+  /// :return:          The resulting return code from SQLite.
   arrow::Result<int> Reset();
 
-  /// \brief Returns the underlying sqlite3_stmt.
-  /// \return A sqlite statement.
+  /// Returns the underlying sqlite3_stmt.
+  /// :return: A sqlite statement.
   sqlite3_stmt* GetSqlite3Stmt() const;
 
   sqlite3* db() const { return db_; }
 
-  /// \brief Executes an UPDATE, INSERT or DELETE statement.
-  /// \return              The number of rows changed by execution.
+  /// Executes an UPDATE, INSERT or DELETE statement.
+  /// :return:              The number of rows changed by execution.
   arrow::Result<int64_t> ExecuteUpdate();
 
   const std::vector<std::shared_ptr<arrow::RecordBatch>>& parameters() const {

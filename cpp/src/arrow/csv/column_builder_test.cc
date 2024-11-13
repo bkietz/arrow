@@ -114,7 +114,7 @@ class ColumnBuilderTest : public ::testing::Test {
   ConvertOptions default_options = ConvertOptions::Defaults();
 };
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Tests for null column builder
 
 class NullColumnBuilderTest : public ColumnBuilderTest {};
@@ -210,7 +210,7 @@ TEST_F(NullColumnBuilderTest, EmptyChunks) {
   AssertChunkedEqual(*actual, *expected);
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Tests for fixed-type column builder
 
 class TypedColumnBuilderTest : public ColumnBuilderTest {};
@@ -286,7 +286,7 @@ TEST_F(TypedColumnBuilderTest, EmptyChunks) {
                   ArrayFromJSON(int16(), "[]")});
 }
 
-//////////////////////////////////////////////////////////////////////////
+/// //////////////////////////////////////////////////////////////////////
 // Tests for type-inferring column builder
 
 class InferringColumnBuilderTest : public ColumnBuilderTest {

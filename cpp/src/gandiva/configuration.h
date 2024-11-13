@@ -27,7 +27,7 @@
 namespace gandiva {
 
 class ConfigurationBuilder;
-/// \brief runtime config for gandiva
+/// runtime config for gandiva
 ///
 /// It contains elements to customize gandiva execution
 /// at run time.
@@ -74,7 +74,7 @@ class GANDIVA_EXPORT Configuration {
   bool dump_ir_ = false;
 };
 
-/// \brief configuration builder for gandiva
+/// configuration builder for gandiva
 ///
 /// Provides a default configuration and convenience methods
 /// to override specific values and build a custom instance

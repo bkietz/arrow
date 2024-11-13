@@ -131,7 +131,7 @@ std::string ToString(const std::optional<T>& o) {
   return o.has_value() ? ToChars(*o) : "(nullopt)";
 }
 
-/// \param stop User-provided stop or the length of the input list
+/// :param stop: User-provided stop or the length of the input list
 int64_t ListSliceLength(int64_t start, int64_t step, int64_t stop) {
   DCHECK_GE(step, 1);
   const auto size = std::max<int64_t>(stop - start, 0);
@@ -235,7 +235,7 @@ struct ListSlice {
     return Status::OK();
   }
 
-  /// \brief Builds the array of list slices from the input list array
+  /// Builds the array of list slices from the input list array
   template <typename BuilderType>
   static Status BuildArray(MemoryPool* pool, const ListSliceOptions& opts,
                            const ExecSpan& batch,
@@ -366,9 +366,9 @@ struct ListSlice {
     }
   }
 
-  /// \param value_count The pre-validated number of values to append starting
+  /// :param value_count: The pre-validated number of values to append starting
   ///                    from `start_offset` with a step of `step`
-  /// \param null_padding The number of nulls to append after the values
+  /// :param null_padding: The number of nulls to append after the values
   static Status AppendListSliceValues(int64_t start_offset, int64_t step,
                                       int64_t value_count, int64_t null_padding,
                                       const ArraySpan& values_array,

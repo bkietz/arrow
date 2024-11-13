@@ -33,18 +33,18 @@ namespace flight {
 namespace sql {
 namespace example {
 
-/// \brief Convert a column type to a ArrowType.
-/// \param sqlite_type the sqlite type.
-/// \return            The equivalent ArrowType.
+/// Convert a column type to a ArrowType.
+/// :param sqlite_type: the sqlite type.
+/// :return:            The equivalent ArrowType.
 arrow::Result<std::shared_ptr<DataType>> GetArrowType(const char* sqlite_type);
 
-/// \brief Convert a column type name to SQLite type.
-/// \param type_name the type name.
-/// \return          The equivalent SQLite type.
+/// Convert a column type name to SQLite type.
+/// :param type_name: the type name.
+/// :return:          The equivalent SQLite type.
 int32_t GetSqlTypeFromTypeName(const char* type_name);
 
-/// \brief  Get the DataType used when parameter type is not known.
-/// \return DataType used when parameter type is not known.
+///  Get the DataType used when parameter type is not known.
+/// :return: DataType used when parameter type is not known.
 inline std::shared_ptr<DataType> GetUnknownColumnDataType() {
   return dense_union({
       field("string", utf8()),
@@ -54,7 +54,7 @@ inline std::shared_ptr<DataType> GetUnknownColumnDataType() {
   });
 }
 
-/// \brief Example implementation of FlightSqlServerBase backed by an in-memory SQLite3
+/// Example implementation of FlightSqlServerBase backed by an in-memory SQLite3
 ///        database.
 class SQLiteFlightSqlServer : public FlightSqlServerBase {
  public:
@@ -62,7 +62,7 @@ class SQLiteFlightSqlServer : public FlightSqlServerBase {
 
   static arrow::Result<std::shared_ptr<SQLiteFlightSqlServer>> Create();
 
-  /// \brief Auxiliary method used to execute an arbitrary SQL statement on the underlying
+  /// Auxiliary method used to execute an arbitrary SQL statement on the underlying
   ///        SQLite database.
   Status ExecuteSql(const std::string& sql);
 

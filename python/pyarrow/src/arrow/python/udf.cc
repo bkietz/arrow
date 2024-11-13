@@ -560,8 +560,8 @@ Status RegisterScalarAggregateFunction(PyObject* function, UdfWrapperCallback cb
   return Status::OK();
 }
 
-/// \brief Create a new UdfOptions with adjustment for hash kernel
-/// \param options User provided udf options
+/// Create a new UdfOptions with adjustment for hash kernel
+/// :param options: User provided udf options
 UdfOptions AdjustForHashAggregate(const UdfOptions& options) {
   UdfOptions hash_options;
   // Append hash_ before the function name to separate from the scalar

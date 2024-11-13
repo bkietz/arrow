@@ -52,7 +52,7 @@ ARROW_EXPORT std::ostream& operator<<(std::ostream& os, FileType);
 static const int64_t kNoSize = -1;
 static const TimePoint kNoTime = TimePoint(TimePoint::duration(-1));
 
-/// \brief FileSystem entry info
+/// FileSystem entry info
 struct ARROW_EXPORT FileInfo : public util::EqualityComparable<FileInfo> {
   FileInfo() = default;
   FileInfo(FileInfo&&) = default;
@@ -122,7 +122,7 @@ struct ARROW_EXPORT FileInfo : public util::EqualityComparable<FileInfo> {
 
 ARROW_EXPORT std::ostream& operator<<(std::ostream& os, const FileInfo&);
 
-/// \brief File selector for filesystem APIs
+/// File selector for filesystem APIs
 struct ARROW_EXPORT FileSelector {
   /// The directory in which to select files.
   /// If the path exists but doesn't point to a directory, this should be an error.
@@ -138,7 +138,7 @@ struct ARROW_EXPORT FileSelector {
   FileSelector() : allow_not_found(false), recursive(false), max_recursion(INT32_MAX) {}
 };
 
-/// \brief FileSystem, path pair
+/// FileSystem, path pair
 struct ARROW_EXPORT FileLocator {
   std::shared_ptr<FileSystem> filesystem;
   std::string path;
@@ -157,11 +157,9 @@ struct IterationTraits<fs::FileInfoVector> {
 
 namespace fs {
 
-/// \brief Abstract file system API
+/// Abstract file system API
 class ARROW_EXPORT FileSystem
-    /// \cond false
     : public std::enable_shared_from_this<FileSystem>
-/// \endcond
 {  // NOLINT
  public:
   virtual ~FileSystem();
@@ -177,10 +175,10 @@ class ARROW_EXPORT FileSystem
   /// may allow normalizing irregular path forms (such as Windows local paths).
   virtual Result<std::string> NormalizePath(std::string path);
 
-  /// \brief Ensure a URI (or path) is compatible with the given filesystem and return the
+  /// Ensure a URI (or path) is compatible with the given filesystem and return the
   ///        path
   ///
-  /// \param uri_string A URI representing a resource in the given filesystem.
+  /// :param uri_string: A URI representing a resource in the given filesystem.
   ///
   /// This method will check to ensure the given filesystem is compatible with the
   /// URI. This can be useful when the user provides both a URI and a filesystem or
@@ -194,12 +192,12 @@ class ARROW_EXPORT FileSystem
   /// Note, this method only checks to ensure the URI scheme is valid.  It will not detect
   /// inconsistencies like a mismatching region or endpoint override.
   ///
-  /// \return The path inside the filesystem that is indicated by the URI.
+  /// :return: The path inside the filesystem that is indicated by the URI.
   virtual Result<std::string> PathFromUri(const std::string& uri_string) const;
 
-  /// \brief Make a URI from which FileSystemFromUri produces an equivalent filesystem
-  /// \param path The path component to use in the resulting URI
-  /// \return A URI string, or an error if an equivalent URI cannot be produced
+  /// Make a URI from which FileSystemFromUri produces an equivalent filesystem
+  /// :param path: The path component to use in the resulting URI
+  /// :return: A URI string, or an error if an equivalent URI cannot be produced
   virtual Result<std::string> MakeUri(std::string path) const;
 
   virtual bool Equals(const FileSystem& other) const = 0;
@@ -375,7 +373,7 @@ struct FileSystemFactory {
   }
 };
 
-/// \brief A FileSystem implementation that delegates to another
+/// A FileSystem implementation that delegates to another
 /// implementation after prepending a fixed base path.
 ///
 /// This is useful to expose a logical view of a subtree of a filesystem,
@@ -400,13 +398,11 @@ class ARROW_EXPORT SubTreeFileSystem : public FileSystem {
 
   bool Equals(const FileSystem& other) const override;
 
-  /// \cond FALSE
   using FileSystem::CreateDir;
   using FileSystem::DeleteDirContents;
   using FileSystem::GetFileInfo;
   using FileSystem::OpenAppendStream;
   using FileSystem::OpenOutputStream;
-  /// \endcond
 
   Result<FileInfo> GetFileInfo(const std::string& path) override;
   Result<FileInfoVector> GetFileInfo(const FileSelector& select) override;
@@ -464,7 +460,7 @@ class ARROW_EXPORT SubTreeFileSystem : public FileSystem {
       std::string base_path, const std::shared_ptr<FileSystem>& base_fs);
 };
 
-/// \brief A FileSystem implementation that delegates to another
+/// A FileSystem implementation that delegates to another
 /// implementation but inserts latencies at various points.
 class ARROW_EXPORT SlowFileSystem : public FileSystem {
  public:
@@ -478,13 +474,11 @@ class ARROW_EXPORT SlowFileSystem : public FileSystem {
   bool Equals(const FileSystem& other) const override;
   Result<std::string> PathFromUri(const std::string& uri_string) const override;
 
-  /// \cond FALSE
   using FileSystem::CreateDir;
   using FileSystem::DeleteDirContents;
   using FileSystem::GetFileInfo;
   using FileSystem::OpenAppendStream;
   using FileSystem::OpenOutputStream;
-  /// \endcond
 
   Result<FileInfo> GetFileInfo(const std::string& path) override;
   Result<FileInfoVector> GetFileInfo(const FileSelector& select) override;
@@ -520,7 +514,7 @@ class ARROW_EXPORT SlowFileSystem : public FileSystem {
   std::shared_ptr<io::LatencyGenerator> latencies_;
 };
 
-/// \brief Ensure all registered filesystem implementations are finalized.
+/// Ensure all registered filesystem implementations are finalized.
 ///
 /// Individual finalizers may wait for concurrent calls to finish so as to avoid
 /// race conditions. After this function has been called, all filesystem APIs
@@ -533,37 +527,37 @@ void EnsureFinalized();
 ///
 /// @{
 
-/// \brief Create a new FileSystem by URI
+/// Create a new FileSystem by URI
 ///
 /// Recognized schemes are "file", "mock", "hdfs", "viewfs", "s3",
 /// "gs" and "gcs".
 ///
 /// Support for other schemes can be added using RegisterFileSystemFactory.
 ///
-/// \param[in] uri a URI-based path, ex: file:///some/local/path
-/// \param[out] out_path (optional) Path inside the filesystem.
-/// \return out_fs FileSystem instance.
+/// :param uri: a URI-based path, ex: file:///some/local/path
+/// :param out_path[out]: (optional) Path inside the filesystem.
+/// :return: out_fs FileSystem instance.
 ARROW_EXPORT
 Result<std::shared_ptr<FileSystem>> FileSystemFromUri(const std::string& uri,
                                                       std::string* out_path = NULLPTR);
 
-/// \brief Create a new FileSystem by URI with a custom IO context
+/// Create a new FileSystem by URI with a custom IO context
 ///
 /// Recognized schemes are "file", "mock", "hdfs", "viewfs", "s3",
 /// "gs" and "gcs".
 ///
 /// Support for other schemes can be added using RegisterFileSystemFactory.
 ///
-/// \param[in] uri a URI-based path, ex: file:///some/local/path
-/// \param[in] io_context an IOContext which will be associated with the filesystem
-/// \param[out] out_path (optional) Path inside the filesystem.
-/// \return out_fs FileSystem instance.
+/// :param uri: a URI-based path, ex: file:///some/local/path
+/// :param io_context: an IOContext which will be associated with the filesystem
+/// :param out_path[out]: (optional) Path inside the filesystem.
+/// :return: out_fs FileSystem instance.
 ARROW_EXPORT
 Result<std::shared_ptr<FileSystem>> FileSystemFromUri(const std::string& uri,
                                                       const io::IOContext& io_context,
                                                       std::string* out_path = NULLPTR);
 
-/// \brief Create a new FileSystem by URI
+/// Create a new FileSystem by URI
 ///
 /// Support for other schemes can be added using RegisterFileSystemFactory.
 ///
@@ -574,7 +568,7 @@ ARROW_EXPORT
 Result<std::shared_ptr<FileSystem>> FileSystemFromUriOrPath(
     const std::string& uri, std::string* out_path = NULLPTR);
 
-/// \brief Create a new FileSystem by URI with a custom IO context
+/// Create a new FileSystem by URI with a custom IO context
 ///
 /// Support for other schemes can be added using RegisterFileSystemFactory.
 ///
@@ -592,24 +586,24 @@ Result<std::shared_ptr<FileSystem>> FileSystemFromUriOrPath(
 ///
 /// @{
 
-/// \brief Register a FileSystem factory
+/// Register a FileSystem factory
 ///
 /// Support for custom URI schemes can be added by registering a factory
 /// for the corresponding FileSystem.
 ///
-/// \param[in] scheme a Uri scheme which the factory will handle.
+/// :param scheme: a Uri scheme which the factory will handle.
 ///            If a factory has already been registered for a scheme,
 ///            the new factory will be ignored.
-/// \param[in] factory a function which can produce a FileSystem for Uris which match
+/// :param factory: a function which can produce a FileSystem for Uris which match
 ///            scheme.
-/// \param[in] finalizer a function which must be called to finalize the factory before
+/// :param finalizer: a function which must be called to finalize the factory before
 ///            the process exits, or nullptr if no finalization is necessary.
-/// \return raises KeyError if a name collision occurs.
+/// :return: raises KeyError if a name collision occurs.
 ARROW_EXPORT Status RegisterFileSystemFactory(std::string scheme,
                                               FileSystemFactory factory,
                                               std::function<void()> finalizer = {});
 
-/// \brief Register FileSystem factories from a shared library
+/// Register FileSystem factories from a shared library
 ///
 /// FileSystem implementations may be housed in separate shared libraries and only
 /// registered when the shared library is explicitly loaded. FileSystemRegistrar is
@@ -621,7 +615,7 @@ ARROW_EXPORT Status RegisterFileSystemFactory(std::string scheme,
 ARROW_EXPORT Status LoadFileSystemFactories(const char* libpath);
 
 struct ARROW_EXPORT FileSystemRegistrar {
-  /// \brief Register a FileSystem factory at load time
+  /// Register a FileSystem factory at load time
   ///
   /// Support for custom URI schemes can be added by registering a factory for the
   /// corresponding FileSystem. An instance of this helper can be defined at namespace
@@ -631,7 +625,7 @@ struct ARROW_EXPORT FileSystemRegistrar {
   /// linked into the same binary as main(), or before dlopen()/LoadLibrary() returns if
   /// the library in which the registrar is defined is dynamically loaded.
   ///
-  /// \code
+  /// ```
   ///     FileSystemRegistrar kSlowFileSystemModule{
   ///       "slowfile",
   ///       [](const Uri& uri, const io::IOContext& io_context, std::string* out_path)
@@ -652,14 +646,14 @@ struct ARROW_EXPORT FileSystemRegistrar {
   ///         }
   ///         return std::make_shared<SlowFileSystem>(base_fs, average_latency, seed);
   ///     }));
-  /// \endcode
+  /// ```
   ///
-  /// \param[in] scheme a Uri scheme which the factory will handle.
+  /// :param scheme: a Uri scheme which the factory will handle.
   ///            If a factory has already been registered for a scheme, the
   ///            new factory will be ignored.
-  /// \param[in] factory a function which can produce a FileSystem for Uris which match
+  /// :param factory: a function which can produce a FileSystem for Uris which match
   ///            scheme.
-  /// \param[in] finalizer a function which must be called to finalize the factory before
+  /// :param finalizer: a function which must be called to finalize the factory before
   ///            the process exits, or nullptr if no finalization is necessary.
   FileSystemRegistrar(std::string scheme, FileSystemFactory factory,
                       std::function<void()> finalizer = {});
@@ -677,7 +671,7 @@ namespace internal {
 ARROW_EXPORT void* GetFileSystemRegistry();
 }  // namespace internal
 
-/// \brief Copy files, including from one FileSystem to another
+/// Copy files, including from one FileSystem to another
 ///
 /// If a source and destination are resident in the same FileSystem FileSystem::CopyFile
 /// will be used, otherwise the file will be opened as a stream in both FileSystems and
@@ -688,7 +682,7 @@ Status CopyFiles(const std::vector<FileLocator>& sources,
                  const io::IOContext& io_context = io::default_io_context(),
                  int64_t chunk_size = 1024 * 1024, bool use_threads = true);
 
-/// \brief Copy selected files, including from one FileSystem to another
+/// Copy selected files, including from one FileSystem to another
 ///
 /// Directories will be created under the destination base directory as needed.
 ARROW_EXPORT

@@ -229,7 +229,7 @@ enum class FutureState : int8_t { PENDING, SUCCESS, FAILURE };
 
 inline bool IsFutureFinished(FutureState state) { return state != FutureState::PENDING; }
 
-/// \brief Describe whether the callback should be scheduled or run synchronously
+/// Describe whether the callback should be scheduled or run synchronously
 enum class ShouldSchedule {
   /// Always run the callback synchronously (the default)
   Never = 0,
@@ -243,7 +243,7 @@ enum class ShouldSchedule {
   IfDifferentExecutor = 3,
 };
 
-/// \brief Options that control how a continuation is run
+/// Options that control how a continuation is run
 struct CallbackOptions {
   /// Describe whether the callback should be run synchronously or scheduled
   ShouldSchedule should_schedule = ShouldSchedule::Never;
@@ -304,7 +304,7 @@ class ARROW_EXPORT FutureImpl : public std::enable_shared_from_this<FutureImpl> 
 // ---------------------------------------------------------------------
 // Public API
 
-/// \brief EXPERIMENTAL A std::future-like class with more functionality.
+/// EXPERIMENTAL A std::future-like class with more functionality.
 ///
 /// A Future represents the results of a past or future computation.
 /// The Future API has two sides: a producer side and a consumer side.
@@ -333,7 +333,7 @@ class [[nodiscard]] Future {
 
   bool is_valid() const { return impl_ != NULLPTR; }
 
-  /// \brief Return the Future's current state
+  /// Return the Future's current state
   ///
   /// A return value of PENDING is only indicative, as the Future can complete
   /// concurrently.  A return value of FAILURE or SUCCESS is definitive, though.
@@ -342,7 +342,7 @@ class [[nodiscard]] Future {
     return impl_->state();
   }
 
-  /// \brief Whether the Future is finished
+  /// Whether the Future is finished
   ///
   /// A false return value is only indicative, as the Future can complete
   /// concurrently.  A true return value is definitive, though.
@@ -351,13 +351,13 @@ class [[nodiscard]] Future {
     return IsFutureFinished(impl_->state());
   }
 
-  /// \brief Wait for the Future to complete and return its Result
+  /// Wait for the Future to complete and return its Result
   const Result<ValueType>& result() const& {
     Wait();
     return *GetResult();
   }
 
-  /// \brief Returns an rvalue to the result.  This method is potentially unsafe
+  /// Returns an rvalue to the result.  This method is potentially unsafe
   ///
   /// The future is not the unique owner of the result, copies of a future will
   /// also point to the same result.  You must make sure that no other copies
@@ -368,10 +368,10 @@ class [[nodiscard]] Future {
     return std::move(*GetResult());
   }
 
-  /// \brief Wait for the Future to complete and return its Status
+  /// Wait for the Future to complete and return its Status
   const Status& status() const { return result().status(); }
 
-  /// \brief Future<T> is convertible to Future<>, which views only the
+  /// Future<T> is convertible to Future<>, which views only the
   /// Status of the original. Marking the returned Future Finished is not supported.
   explicit operator Future<>() const {
     Future<> status_future;
@@ -379,13 +379,13 @@ class [[nodiscard]] Future {
     return status_future;
   }
 
-  /// \brief Wait for the Future to complete
+  /// Wait for the Future to complete
   void Wait() const {
     CheckValid();
     impl_->Wait();
   }
 
-  /// \brief Wait for the Future to complete, or for the timeout to expire
+  /// Wait for the Future to complete, or for the timeout to expire
   ///
   /// `true` is returned if the Future completed, `false` if the timeout expired.
   /// Note a `false` value is only indicative, as the Future can complete
@@ -397,19 +397,19 @@ class [[nodiscard]] Future {
 
   // Producer API
 
-  /// \brief Producer API: mark Future finished
+  /// Producer API: mark Future finished
   ///
   /// The Future's result is set to `res`.
   void MarkFinished(Result<ValueType> res) { DoMarkFinished(std::move(res)); }
 
-  /// \brief Mark a Future<> completed with the provided Status.
+  /// Mark a Future<> completed with the provided Status.
   template <typename E = ValueType, typename = typename std::enable_if<
                                         std::is_same<E, internal::Empty>::value>::type>
   void MarkFinished(Status s = Status::OK()) {
     return DoMarkFinished(E::ToResult(std::move(s)));
   }
 
-  /// \brief Producer API: instantiate a valid Future
+  /// Producer API: instantiate a valid Future
   ///
   /// The Future's state is initialized with PENDING.  If you are creating a future with
   /// this method you must ensure that future is eventually completed (with success or
@@ -421,14 +421,14 @@ class [[nodiscard]] Future {
     return fut;
   }
 
-  /// \brief Producer API: instantiate a finished Future
+  /// Producer API: instantiate a finished Future
   static Future<ValueType> MakeFinished(Result<ValueType> res) {
     Future<ValueType> fut;
     fut.InitializeFromResult(std::move(res));
     return fut;
   }
 
-  /// \brief Make a finished Future<> with the provided Status.
+  /// Make a finished Future<> with the provided Status.
   template <typename E = ValueType, typename = typename std::enable_if<
                                         std::is_same<E, internal::Empty>::value>::type>
   static Future<> MakeFinished(Status s = Status::OK()) {
@@ -463,7 +463,7 @@ class [[nodiscard]] Future {
       detail::first_arg_is_status<OnComplete>::value, WrapStatusyOnComplete,
       WrapResultOnComplete>::type::template Callback<OnComplete>;
 
-  /// \brief Consumer API: Register a callback to run when this future completes
+  /// Consumer API: Register a callback to run when this future completes
   ///
   /// The callback should receive the result of the future (const Result<T>&)
   /// For a void or statusy future this should be (const Status&)
@@ -493,7 +493,7 @@ class [[nodiscard]] Future {
     impl_->AddCallback(Callback{std::move(on_complete)}, opts);
   }
 
-  /// \brief Overload of AddCallback that will return false instead of running
+  /// Overload of AddCallback that will return false instead of running
   /// synchronously
   ///
   /// This overload will guarantee the callback is never run synchronously.  If the future
@@ -564,7 +564,7 @@ class [[nodiscard]] Future {
     Result<typename ContinuedFuture::ValueType> operator()(const Status& s) { return s; }
   };
 
-  /// \brief Consumer API: Register a continuation to run when this future completes
+  /// Consumer API: Register a continuation to run when this future completes
   ///
   /// The continuation will run in the same thread that called MarkFinished (whatever
   /// callback is registered with this function will run before MarkFinished returns).
@@ -610,13 +610,13 @@ class [[nodiscard]] Future {
     return next;
   }
 
-  /// \brief Implicit constructor to create a finished future from a value
+  /// Implicit constructor to create a finished future from a value
   Future(ValueType val) : Future() {  // NOLINT runtime/explicit
     impl_ = FutureImpl::MakeFinished(FutureState::SUCCESS);
     SetResult(std::move(val));
   }
 
-  /// \brief Implicit constructor to create a future from a Result, enabling use
+  /// Implicit constructor to create a future from a Result, enabling use
   ///     of macros like ARROW_ASSIGN_OR_RAISE.
   Future(Result<ValueType> res) : Future() {  // NOLINT runtime/explicit
     if (ARROW_PREDICT_TRUE(res.ok())) {
@@ -627,7 +627,7 @@ class [[nodiscard]] Future {
     SetResult(std::move(res));
   }
 
-  /// \brief Implicit constructor to create a future from a Status, enabling use
+  /// Implicit constructor to create a future from a Status, enabling use
   ///     of macros like ARROW_RETURN_NOT_OK.
   Future(Status s)  // NOLINT runtime/explicit
       : Future(Result<ValueType>(std::move(s))) {}
@@ -722,7 +722,7 @@ static Future<T> DeferNotOk(Result<Future<T>> maybe_future) {
   return std::move(maybe_future).MoveValueUnsafe();
 }
 
-/// \brief Create a Future which completes when all of `futures` complete.
+/// Create a Future which completes when all of `futures` complete.
 ///
 /// The future's result is a vector of the results of `futures`.
 /// Note that this future will never be marked "failed"; failed results
@@ -758,7 +758,7 @@ Future<std::vector<Result<T>>> All(std::vector<Future<T>> futures) {
   return out;
 }
 
-/// \brief Create a Future which completes when all of `futures` complete.
+/// Create a Future which completes when all of `futures` complete.
 ///
 /// The future will be marked complete if all `futures` complete
 /// successfully. Otherwise, it will be marked failed with the status of
@@ -766,7 +766,7 @@ Future<std::vector<Result<T>>> All(std::vector<Future<T>> futures) {
 ARROW_EXPORT
 Future<> AllComplete(const std::vector<Future<>>& futures);
 
-/// \brief Create a Future which completes when all of `futures` complete.
+/// Create a Future which completes when all of `futures` complete.
 ///
 /// The future will finish with an ok status if all `futures` finish with
 /// an ok status. Otherwise, it will be marked failed with the status of
@@ -794,13 +794,13 @@ std::optional<T> Break(T break_value = {}) {
 template <typename T = internal::Empty>
 using ControlFlow = std::optional<T>;
 
-/// \brief Loop through an asynchronous sequence
+/// Loop through an asynchronous sequence
 ///
-/// \param[in] iterate A generator of Future<ControlFlow<BreakValue>>. On completion
+/// :param iterate: A generator of Future<ControlFlow<BreakValue>>. On completion
 /// of each yielded future the resulting ControlFlow will be examined. A Break will
 /// terminate the loop, while a Continue will re-invoke `iterate`.
 ///
-/// \return A future which will complete when a Future returned by iterate completes with
+/// :return: A future which will complete when a Future returned by iterate completes with
 /// a Break
 template <typename Iterate,
           typename Control = typename detail::result_of_t<Iterate()>::ValueType,

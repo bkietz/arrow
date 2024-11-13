@@ -31,7 +31,7 @@ class KernelContext;
 
 namespace arrow::util {
 
-/// \brief Checks if the given array has a fixed-width type or if it's an array of
+/// Checks if the given array has a fixed-width type or if it's an array of
 /// fixed-size list that can be flattened to an array of fixed-width values.
 ///
 /// Fixed-width types are the ones defined by the is_fixed_width() predicate in
@@ -59,9 +59,9 @@ namespace arrow::util {
 ///  - Only the top-level array may have nulls, all the inner array have to be completely
 ///    free of nulls so we don't need to manage internal validity bitmaps.
 ///
-/// \param source The array to check
-/// \param force_null_count If true, GetNullCount() is used instead of null_count
-/// \param exclude_bool_and_dictionary If true, BOOL and DICTIONARY are excluded from
+/// :param source: The array to check
+/// :param force_null_count: If true, GetNullCount() is used instead of null_count
+/// :param exclude_bool_and_dictionary: If true, BOOL and DICTIONARY are excluded from
 ///                                    the is_fixed_width() types. Default: false.
 ARROW_EXPORT bool IsFixedWidthLike(const ArraySpan& source, bool force_null_count = false,
                                    bool exclude_bool_and_dictionary = false);
@@ -187,12 +187,12 @@ ARROW_EXPORT bool IsFixedWidthLike(const ArraySpan& source, bool force_null_coun
 // `OffsetPointerOfFixedByteWidthValues()` can calculate this byte offset and return
 // the pointer to the first relevant byte of the innermost values buffer.
 
-/// \brief Checks if the given array has a fixed-width type or if it's an array of
+/// Checks if the given array has a fixed-width type or if it's an array of
 /// fixed-size list that can be flattened to an array of fixed-width values.
 ///
-/// \param source The array to check
-/// \param force_null_count If true, GetNullCount() is used instead of null_count
-/// \param extra_predicate A DataType predicate that can be used to further
+/// :param source: The array to check
+/// :param force_null_count: If true, GetNullCount() is used instead of null_count
+/// :param extra_predicate: A DataType predicate that can be used to further
 ///                        restrict the types that are considered fixed-width
 template <class ExtraPred>
 inline bool IsFixedWidthLike(const ArraySpan& source, bool force_null_count,
@@ -217,7 +217,7 @@ inline bool IsFixedWidthLike(const ArraySpan& source, bool force_null_count,
   return false;
 }
 
-/// \brief Get the fixed-width in bytes of a type if it is a fixed-width like
+/// Get the fixed-width in bytes of a type if it is a fixed-width like
 /// type, but not BOOL.
 ///
 /// If the array is a FixedSizeList (of any level of nesting), the byte width of
@@ -233,27 +233,29 @@ inline bool IsFixedWidthLike(const ArraySpan& source, bool force_null_count,
 /// a valid return value for FIXED_SIZE_LIST with size 0 or `FIXED_SIZE_BINARY` with
 /// size 0.
 ///
-/// \pre The instance of the array where this type is from must pass
+/// :precondition: The instance of the array where this type is from must pass
 ///      `IsFixedWidthLike(array)` and should not be BOOL.
-/// \return The fixed-byte width of the values or -1 if the type is BOOL or not
+/// :return: The fixed-byte width of the values or -1 if the type is BOOL or not
 ///         fixed-width like. 0 is a valid return value as fixed-size-lists
 ///         and fixed-size-binary with size 0 are allowed.
 ARROW_EXPORT int64_t FixedWidthInBytes(const DataType& type);
 
-/// \brief Get the fixed-width in bits of a type if it is a fixed-width like
+/// Get the fixed-width in bits of a type if it is a fixed-width like
 /// type.
 ///
 /// If the array is a FixedSizeList (of any level of nesting), the bit width of
 /// the values is the product of all fixed-list sizes and the bit width of the
 /// innermost fixed-width value type.
 ///
-/// \return The bit-width of the values or -1
-/// \see FixedWidthInBytes
+/// :return: The bit-width of the values or -1
+/// ```{seealso}
+/// FixedWidthInBytes
+/// ```
 ARROW_EXPORT int64_t FixedWidthInBits(const DataType& type);
 
 namespace internal {
 
-/// \brief Allocate an ArrayData for a type that is fixed-width like.
+/// Allocate an ArrayData for a type that is fixed-width like.
 ///
 /// This function performs the same checks performed by
 /// `IsFixedWidthLike(source, false, false)`. If `source.type` is not a simple
@@ -262,12 +264,14 @@ namespace internal {
 /// allocate an array that can serve as a destination for a kernel that writes values
 /// through a single pointer to fixed-width byte blocks.
 ///
-/// \param[in] length The length of the array to allocate (unrelated to the length of
+/// :param length: The length of the array to allocate (unrelated to the length of
 ///                   the source array)
-/// \param[in] source The source array that carries the type information and the
+/// :param source: The source array that carries the type information and the
 ///                   validity bitmaps that are relevant for the type validation
 ///                   when the source is a FixedSizeList.
-/// \see IsFixedWidthLike
+/// ```{seealso}
+/// IsFixedWidthLike
+/// ```
 ARROW_EXPORT Status PreallocateFixedWidthArrayData(::arrow::compute::KernelContext* ctx,
                                                    int64_t length,
                                                    const ArraySpan& source,
@@ -276,33 +280,33 @@ ARROW_EXPORT Status PreallocateFixedWidthArrayData(::arrow::compute::KernelConte
 
 }  // namespace internal
 
-/// \brief Get the 0-7 residual offset in bits and the pointer to the fixed-width
+/// Get the 0-7 residual offset in bits and the pointer to the fixed-width
 /// values of a fixed-width like array.
 ///
 /// For byte-aligned types, the offset is always 0.
 ///
-/// \pre `IsFixedWidthLike(source)` or the more restrictive
+/// :precondition: `IsFixedWidthLike(source)` or the more restrictive
 ///      is_fixed_width(*mutable_array->type) SHOULD be true
-/// \return A pair with the residual offset in bits (0-7) and the pointer
+/// :return: A pair with the residual offset in bits (0-7) and the pointer
 ///         to the fixed-width values.
 ARROW_EXPORT std::pair<int, const uint8_t*> OffsetPointerOfFixedBitWidthValues(
     const ArraySpan& source);
 
-/// \brief Get the pointer to the fixed-width values of a fixed-width like array.
+/// Get the pointer to the fixed-width values of a fixed-width like array.
 ///
-/// \pre `IsFixedWidthLike(source)` should be true and BOOL should be excluded
+/// :precondition: `IsFixedWidthLike(source)` should be true and BOOL should be excluded
 ///      as each bool is 1-bit width making it impossible to produce a
 ///      byte-aligned pointer to the values in the general case.
 ARROW_EXPORT const uint8_t* OffsetPointerOfFixedByteWidthValues(const ArraySpan& source);
 
-/// \brief Get the mutable pointer to the fixed-width values of an array
+/// Get the mutable pointer to the fixed-width values of an array
 ///        allocated by PreallocateFixedWidthArrayData.
 ///
-/// \pre mutable_array->offset and the offset of child array (if it's a
+/// :precondition: mutable_array->offset and the offset of child array (if it's a
 ///      FixedSizeList) MUST be 0 (recursively).
-/// \pre IsFixedWidthLike(ArraySpan(mutable_array)) or the more restrictive
+/// :precondition: IsFixedWidthLike(ArraySpan(mutable_array)) or the more restrictive
 ///      is_fixed_width(*mutable_array->type) MUST be true
-/// \return The mutable pointer to the fixed-width byte blocks of the array. If
+/// :return: The mutable pointer to the fixed-width byte blocks of the array. If
 ///         pre-conditions are not satisfied, the return values is undefined.
 ARROW_EXPORT uint8_t* MutableFixedWidthValuesPointer(ArrayData* mutable_array);
 

@@ -170,7 +170,7 @@ llvm::Value* DecimalIR::ReduceScale(llvm::Value* in_value, llvm::Value* reduce_s
   return BuildIfElse(le_zero, types()->i128_type(), then_lambda, else_lambda);
 }
 
-/// @brief Fast-path for add
+/// Fast-path for add
 /// Adjust x and y to the same scale, and add them.
 llvm::Value* DecimalIR::AddFastPath(const ValueFull& x, const ValueFull& y) {
   auto higher_scale = GetHigherScale(x.scale(), y.scale());

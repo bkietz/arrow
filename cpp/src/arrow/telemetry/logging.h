@@ -36,10 +36,10 @@ namespace telemetry {
 using LogLevel = util::ArrowLogLevel;
 
 struct OtelLoggingOptions {
-  /// \brief Minimum severity required to emit an OpenTelemetry log record
+  /// Minimum severity required to emit an OpenTelemetry log record
   LogLevel severity_threshold = LogLevel::ARROW_INFO;
 
-  /// \brief Minimum severity required to immediately attempt to flush pending log records
+  /// Minimum severity required to immediately attempt to flush pending log records
   LogLevel flush_severity = LogLevel::ARROW_ERROR;
 
   static OtelLoggingOptions Defaults() { return OtelLoggingOptions{}; }
@@ -52,15 +52,13 @@ class ARROW_EXPORT OtelLogger : public util::Logger {
   virtual std::string_view name() const = 0;
 };
 
-/// \brief A wrapper interface for `opentelemetry::logs::Provider`
-/// \details Application authors will typically want to set the global OpenTelemetry
-/// logger provider themselves after configuring an exporter, processor, resource etc.
-/// This API will then defer to the provider returned by
-/// `opentelemetry::logs::Provider::GetLoggerProvider`
+/// A wrapper interface for `opentelemetry::logs::Provider`
+/// ```{note}
+/// Application authors will typically want to set the global OpenTelemetry
 class ARROW_EXPORT OtelLoggerProvider {
  public:
-  /// \brief Attempt to flush the log record processor associated with the provider
-  /// \return `true` if the flush occured
+  /// Attempt to flush the log record processor associated with the provider
+  /// :return: `true` if the flush occured
   static bool Flush(std::chrono::microseconds timeout = std::chrono::microseconds::max());
 
   static Result<std::shared_ptr<OtelLogger>> MakeLogger(
@@ -73,20 +71,21 @@ namespace internal {
 // These utilities are primarily intended for Arrow developers
 
 struct OtelLogExporterOptions {
-  /// \brief Default stream to use for the ostream/arrow_otlp_ostream log record exporters
-  /// \details If null, stderr will be used
+  /// Default stream to use for the ostream/arrow_otlp_ostream log record exporters
+  /// ```{note}
+  /// If null, stderr will be used
   std::ostream* default_stream = NULLPTR;
 
   static OtelLogExporterOptions Defaults() { return OtelLogExporterOptions{}; }
 };
 
-/// \brief Initialize the global OpenTelemetry logger provider with a default exporter
+/// Initialize the global OpenTelemetry logger provider with a default exporter
 /// (based on the ARROW_LOGGING_BACKEND envvar) and batch processor
 ARROW_EXPORT Status InitializeOtelLoggerProvider(
     const OtelLogExporterOptions& exporter_options = OtelLogExporterOptions::Defaults());
 
-/// \brief Attempt to shut down the global OpenTelemetry logger provider
-/// \return `true` if shutdown was successful
+/// Attempt to shut down the global OpenTelemetry logger provider
+/// :return: `true` if shutdown was successful
 ARROW_EXPORT bool ShutdownOtelLoggerProvider();
 
 }  // namespace internal

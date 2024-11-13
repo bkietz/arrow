@@ -36,7 +36,7 @@ namespace acero_example {
 
 namespace {
 
-/// \brief An implementation of a Flight SQL service backed by Acero.
+/// An implementation of a Flight SQL service backed by Acero.
 class AceroFlightSqlServer : public FlightSqlServerBase {
  public:
   AceroFlightSqlServer() {

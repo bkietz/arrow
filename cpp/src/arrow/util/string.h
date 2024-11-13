@@ -64,22 +64,22 @@ inline bool EndsWith(std::string_view s, std::string_view suffix) {
          (s.empty() || s.substr(s.length() - suffix.length()) == suffix);
 }
 
-/// \brief Split a string with a delimiter
+/// Split a string with a delimiter
 ARROW_EXPORT
 std::vector<std::string_view> SplitString(std::string_view v, char delim,
                                           int64_t limit = 0);
 
-/// \brief Join strings with a delimiter
+/// Join strings with a delimiter
 ARROW_EXPORT
 std::string JoinStrings(const std::vector<std::string_view>& strings,
                         std::string_view delimiter);
 
-/// \brief Join strings with a delimiter
+/// Join strings with a delimiter
 ARROW_EXPORT
 std::string JoinStrings(const std::vector<std::string>& strings,
                         std::string_view delimiter);
 
-/// \brief Trim whitespace from left and right sides of string
+/// Trim whitespace from left and right sides of string
 ARROW_EXPORT
 std::string TrimString(std::string value);
 
@@ -92,13 +92,13 @@ std::string AsciiToLower(std::string_view value);
 ARROW_EXPORT
 std::string AsciiToUpper(std::string_view value);
 
-/// \brief Search for the first instance of a token and replace it or return nullopt if
+/// Search for the first instance of a token and replace it or return nullopt if
 /// the token is not found.
 ARROW_EXPORT
 std::optional<std::string> Replace(std::string_view s, std::string_view token,
                                    std::string_view replacement);
 
-/// \brief Get boolean value from string
+/// Get boolean value from string
 ///
 /// If "1", "true" (case-insensitive), returns true
 /// If "0", "false" (case-insensitive), returns false
@@ -119,14 +119,14 @@ struct can_to_chars<
     : public std::true_type {};
 }  // namespace detail
 
-/// \brief Whether std::to_chars exists for the current value type.
+/// Whether std::to_chars exists for the current value type.
 ///
 /// This is useful as some C++ libraries do not implement all specified overloads
 /// for std::to_chars.
 template <typename T>
 inline constexpr bool have_to_chars = detail::can_to_chars<T>::value;
 
-/// \brief An ergonomic wrapper around std::to_chars, returning a std::string
+/// An ergonomic wrapper around std::to_chars, returning a std::string
 ///
 /// For most inputs, the std::string result will not incur any heap allocation
 /// thanks to small string optimization.

@@ -123,7 +123,7 @@ class PARQUET_EXPORT Node {
 
   const std::shared_ptr<const LogicalType>& logical_type() const { return logical_type_; }
 
-  /// \brief The field_id value for the serialized SchemaElement. If the
+  /// The field_id value for the serialized SchemaElement. If the
   /// field_id is less than 0 (e.g. -1), it will not be set when serialized to
   /// Thrift.
   int field_id() const { return field_id_; }
@@ -300,7 +300,7 @@ class PARQUET_EXPORT GroupNode : public Node {
   void Visit(Visitor* visitor) override;
   void VisitConst(ConstVisitor* visitor) const override;
 
-  /// \brief Return true if this node or any child node has REPEATED repetition
+  /// Return true if this node or any child node has REPEATED repetition
   /// type
   bool HasRepeatedFields() const;
 
@@ -451,11 +451,11 @@ class PARQUET_EXPORT SchemaDescriptor {
 
   void updateColumnOrders(const std::vector<ColumnOrder>& column_orders);
 
-  /// \brief Return column index corresponding to a particular
+  /// Return column index corresponding to a particular
   /// PrimitiveNode. Returns -1 if not found
   int GetColumnIndex(const schema::PrimitiveNode& node) const;
 
-  /// \brief Return true if any field or their children have REPEATED repetition
+  /// Return true if any field or their children have REPEATED repetition
   /// type
   bool HasRepeatedFields() const;
 

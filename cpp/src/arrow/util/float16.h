@@ -32,7 +32,7 @@
 namespace arrow {
 namespace util {
 
-/// \brief Class representing an IEEE half-precision float, encoded as a `uint16_t`
+/// Class representing an IEEE half-precision float, encoded as a `uint16_t`
 ///
 /// The exact format is as follows (from LSB to MSB):
 /// - bits 0-10:  mantissa
@@ -48,54 +48,54 @@ class ARROW_EXPORT Float16 {
             typename std::enable_if_t<std::is_convertible_v<T, double>>* = NULLPTR>
   explicit Float16(T v) : Float16(static_cast<double>(v)) {}
 
-  /// \brief Create a `Float16` from its exact binary representation
+  /// Create a `Float16` from its exact binary representation
   constexpr static Float16 FromBits(uint16_t bits) { return Float16{bits, bool{}}; }
-  /// \brief Create a `Float16` from a 32-bit float (may lose precision)
+  /// Create a `Float16` from a 32-bit float (may lose precision)
   static Float16 FromFloat(float f);
-  /// \brief Create a `Float16` from a 64-bit float (may lose precision)
+  /// Create a `Float16` from a 64-bit float (may lose precision)
   static Float16 FromDouble(double d);
 
-  /// \brief Read a `Float16` from memory in native-endian byte order
+  /// Read a `Float16` from memory in native-endian byte order
   static Float16 FromBytes(const uint8_t* src) {
     return FromBits(SafeLoadAs<uint16_t>(src));
   }
 
-  /// \brief Read a `Float16` from memory in little-endian byte order
+  /// Read a `Float16` from memory in little-endian byte order
   static Float16 FromLittleEndian(const uint8_t* src) {
     return FromBits(::arrow::bit_util::FromLittleEndian(SafeLoadAs<uint16_t>(src)));
   }
 
-  /// \brief Read a `Float16` from memory in big-endian byte order
+  /// Read a `Float16` from memory in big-endian byte order
   static Float16 FromBigEndian(const uint8_t* src) {
     return FromBits(::arrow::bit_util::FromBigEndian(SafeLoadAs<uint16_t>(src)));
   }
 
-  /// \brief Return the value's binary representation as a `uint16_t`
+  /// Return the value's binary representation as a `uint16_t`
   constexpr uint16_t bits() const { return bits_; }
 
-  /// \brief Return true if the value is negative (sign bit is set)
+  /// Return true if the value is negative (sign bit is set)
   constexpr bool signbit() const { return (bits_ & 0x8000) != 0; }
 
-  /// \brief Return true if the value is NaN
+  /// Return true if the value is NaN
   constexpr bool is_nan() const { return (bits_ & 0x7fff) > 0x7c00; }
-  /// \brief Return true if the value is positive/negative infinity
+  /// Return true if the value is positive/negative infinity
   constexpr bool is_infinity() const { return (bits_ & 0x7fff) == 0x7c00; }
-  /// \brief Return true if the value is finite and not NaN
+  /// Return true if the value is finite and not NaN
   constexpr bool is_finite() const { return (bits_ & 0x7c00) != 0x7c00; }
-  /// \brief Return true if the value is positive/negative zero
+  /// Return true if the value is positive/negative zero
   constexpr bool is_zero() const { return (bits_ & 0x7fff) == 0; }
 
-  /// \brief Convert to a 32-bit float
+  /// Convert to a 32-bit float
   float ToFloat() const;
-  /// \brief Convert to a 64-bit float
+  /// Convert to a 64-bit float
   double ToDouble() const;
 
   explicit operator float() const { return ToFloat(); }
   explicit operator double() const { return ToDouble(); }
 
-  /// \brief Copy the value's bytes in native-endian byte order
+  /// Copy the value's bytes in native-endian byte order
   void ToBytes(uint8_t* dest) const { std::memcpy(dest, &bits_, sizeof(bits_)); }
-  /// \brief Return the value's bytes in native-endian byte order
+  /// Return the value's bytes in native-endian byte order
   constexpr std::array<uint8_t, 2> ToBytes() const {
 #if ARROW_LITTLE_ENDIAN
     return ToLittleEndian();
@@ -104,12 +104,12 @@ class ARROW_EXPORT Float16 {
 #endif
   }
 
-  /// \brief Copy the value's bytes in little-endian byte order
+  /// Copy the value's bytes in little-endian byte order
   void ToLittleEndian(uint8_t* dest) const {
     const auto bytes = ToLittleEndian();
     std::memcpy(dest, bytes.data(), bytes.size());
   }
-  /// \brief Return the value's bytes in little-endian byte order
+  /// Return the value's bytes in little-endian byte order
   constexpr std::array<uint8_t, 2> ToLittleEndian() const {
 #if ARROW_LITTLE_ENDIAN
     return {uint8_t(bits_ & 0xff), uint8_t(bits_ >> 8)};
@@ -118,12 +118,12 @@ class ARROW_EXPORT Float16 {
 #endif
   }
 
-  /// \brief Copy the value's bytes in big-endian byte order
+  /// Copy the value's bytes in big-endian byte order
   void ToBigEndian(uint8_t* dest) const {
     const auto bytes = ToBigEndian();
     std::memcpy(dest, bytes.data(), bytes.size());
   }
-  /// \brief Return the value's bytes in big-endian byte order
+  /// Return the value's bytes in big-endian byte order
   constexpr std::array<uint8_t, 2> ToBigEndian() const {
 #if ARROW_LITTLE_ENDIAN
     return {uint8_t(bits_ >> 8), uint8_t(bits_ & 0xff)};

@@ -73,7 +73,7 @@ T GetResultValue(Result<T> result) {
   }
 }
 
-/// \brief Wrap a Result and return the corresponding Python object.
+/// Wrap a Result and return the corresponding Python object.
 ///
 /// If the Result is successful, py_wrapper is called with its result value
 /// and should return a PyObject*. If py_wrapper is successful (returns
@@ -82,10 +82,10 @@ T GetResultValue(Result<T> result) {
 /// If either the Result or py_wrapper fails, the associated Python exception
 /// is raised and NULL is returned.
 //
-/// \param result The Result whose value to wrap in a Python object.
-/// \param py_wrapper A function (likely defined in Cython) to convert the C++
+/// :param result: The Result whose value to wrap in a Python object.
+/// :param py_wrapper: A function (likely defined in Cython) to convert the C++
 ///   value of the Result to a Python object.
-/// \return A new Python reference, or NULL if an exception occurred
+/// :return: A new Python reference, or NULL if an exception occurred
 template <typename T, typename PyWrapper = PyObject* (*)(T)>
 PyObject* WrapResult(Result<T> result, PyWrapper&& py_wrapper) {
   static_assert(std::is_same_v<PyObject*, decltype(py_wrapper(std::declval<T>()))>,
@@ -275,11 +275,11 @@ class SmartPtrNoGIL : public SmartPtr<Ts...> {
   }
 };
 
-/// \brief A std::shared_ptr<T, ...> subclass that releases the GIL when destroying T
+/// A std::shared_ptr<T, ...> subclass that releases the GIL when destroying T
 template <typename... Ts>
 using SharedPtrNoGIL = SmartPtrNoGIL<std::shared_ptr, Ts...>;
 
-/// \brief A std::unique_ptr<T, ...> subclass that releases the GIL when destroying T
+/// A std::unique_ptr<T, ...> subclass that releases the GIL when destroying T
 template <typename... Ts>
 using UniquePtrNoGIL = SmartPtrNoGIL<std::unique_ptr, Ts...>;
 

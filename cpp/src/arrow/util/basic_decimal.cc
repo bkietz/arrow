@@ -626,9 +626,9 @@ BasicDecimal128& BasicDecimal128::operator*=(const BasicDecimal128& right) {
 /// Expands the given native endian array of uint64_t into a big endian array of
 /// uint32_t. The value of input array is expected to be non-negative. The result_array
 /// will remove leading zeros from the input array.
-/// \param value_array a native endian array to represent the value
-/// \param result_array a big endian array of length N*2 to set with the value
-/// \result the output length of the array
+/// :param value_array: a native endian array to represent the value
+/// :param result_array: a big endian array of length N*2 to set with the value
+/// :return: the output length of the array
 template <size_t N>
 static int64_t FillInArray(const std::array<uint64_t, N>& value_array,
                            uint32_t* result_array) {
@@ -657,9 +657,9 @@ static int64_t FillInArray(const std::array<uint64_t, N>& value_array,
 /// it. The array will be converted to an absolute value and the was_negative
 /// flag will be set appropriately. The array will remove leading zeros from
 /// the value.
-/// \param array a big endian array of length 4 to set with the value
-/// \param was_negative a flag for whether the value was original negative
-/// \result the output length of the array
+/// :param array: a big endian array of length 4 to set with the value
+/// :param was_negative: a flag for whether the value was original negative
+/// :return: the output length of the array
 static int64_t FillInArray(const BasicDecimal128& value, uint32_t* array,
                            bool& was_negative) {
   BasicDecimal128 abs_value = BasicDecimal128::Abs(value);
@@ -703,9 +703,9 @@ static int64_t FillInArray(const BasicDecimal128& value, uint32_t* array,
 /// it. The array will be converted to an absolute value and the was_negative
 /// flag will be set appropriately. The array will remove leading zeros from
 /// the value.
-/// \param array a big endian array of length 8 to set with the value
-/// \param was_negative a flag for whether the value was original negative
-/// \result the output length of the array
+/// :param array: a big endian array of length 8 to set with the value
+/// :param was_negative: a flag for whether the value was original negative
+/// :return: the output length of the array
 static int64_t FillInArray(const BasicDecimal256& value, uint32_t* array,
                            bool& was_negative) {
   BasicDecimal256 positive_value = value;
@@ -718,9 +718,9 @@ static int64_t FillInArray(const BasicDecimal256& value, uint32_t* array,
 }
 
 /// Shift the number in the array left by bits positions.
-/// \param array the number to shift, must have length elements
-/// \param length the number of entries in the array
-/// \param bits the number of bits to shift (0 <= bits < 32)
+/// :param array: the number to shift, must have length elements
+/// :param length: the number of entries in the array
+/// :param bits: the number of bits to shift (0 <= bits < 32)
 static void ShiftArrayLeft(uint32_t* array, int64_t length, int64_t bits) {
   if (length > 0 && bits != 0) {
     for (int64_t i = 0; i < length - 1; ++i) {
@@ -731,9 +731,9 @@ static void ShiftArrayLeft(uint32_t* array, int64_t length, int64_t bits) {
 }
 
 /// Shift the number in the array right by bits positions.
-/// \param array the number to shift, must have length elements
-/// \param length the number of entries in the array
-/// \param bits the number of bits to shift (0 <= bits < 32)
+/// :param array: the number to shift, must have length elements
+/// :param length: the number of entries in the array
+/// :param bits: the number of bits to shift (0 <= bits < 32)
 static inline void ShiftArrayRight(uint32_t* array, int64_t length, int64_t bits) {
   if (length > 0 && bits != 0) {
     for (int64_t i = length - 1; i > 0; --i) {
@@ -743,7 +743,7 @@ static inline void ShiftArrayRight(uint32_t* array, int64_t length, int64_t bits
   }
 }
 
-/// \brief Fix the signs of the result and remainder at the end of the division based on
+/// Fix the signs of the result and remainder at the end of the division based on
 /// the signs of the dividend and divisor.
 template <class DecimalClass>
 static inline void FixDivisionSigns(DecimalClass* result, DecimalClass* remainder,
@@ -758,7 +758,7 @@ static inline void FixDivisionSigns(DecimalClass* result, DecimalClass* remainde
   }
 }
 
-/// \brief Build a native endian array of uint64_t from a big endian array of uint32_t.
+/// Build a native endian array of uint64_t from a big endian array of uint32_t.
 template <size_t N>
 static DecimalStatus BuildFromArray(std::array<uint64_t, N>* result_array,
                                     const uint32_t* array, int64_t length) {
@@ -783,7 +783,7 @@ static DecimalStatus BuildFromArray(std::array<uint64_t, N>* result_array,
   return DecimalStatus::kSuccess;
 }
 
-/// \brief Build a BasicDecimal128 from a big endian array of uint32_t.
+/// Build a BasicDecimal128 from a big endian array of uint32_t.
 static DecimalStatus BuildFromArray(BasicDecimal128* value, const uint32_t* array,
                                     int64_t length) {
   std::array<uint64_t, 2> result_array;
@@ -796,7 +796,7 @@ static DecimalStatus BuildFromArray(BasicDecimal128* value, const uint32_t* arra
   return DecimalStatus::kSuccess;
 }
 
-/// \brief Build a BasicDecimal256 from a big endian array of uint32_t.
+/// Build a BasicDecimal256 from a big endian array of uint32_t.
 static DecimalStatus BuildFromArray(BasicDecimal256* value, const uint32_t* array,
                                     int64_t length) {
   std::array<uint64_t, 4> result_array;
@@ -808,7 +808,7 @@ static DecimalStatus BuildFromArray(BasicDecimal256* value, const uint32_t* arra
   return DecimalStatus::kSuccess;
 }
 
-/// \brief Do a division where the divisor fits into a single 32 bit value.
+/// Do a division where the divisor fits into a single 32 bit value.
 template <class DecimalClass>
 static inline DecimalStatus SingleDivide(const uint32_t* dividend,
                                          int64_t dividend_length, uint32_t divisor,
@@ -835,7 +835,7 @@ static inline DecimalStatus SingleDivide(const uint32_t* dividend,
   return DecimalStatus::kSuccess;
 }
 
-/// \brief Do a decimal division with remainder.
+/// Do a decimal division with remainder.
 template <class DecimalClass>
 static inline DecimalStatus DecimalDivide(const DecimalClass& dividend,
                                           const DecimalClass& divisor,

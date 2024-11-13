@@ -38,7 +38,7 @@ namespace dataset {
 
 constexpr char kIpcTypeName[] = "ipc";
 
-/// \brief A FileFormat implementation that reads from and writes to Ipc files
+/// A FileFormat implementation that reads from and writes to Ipc files
 class ARROW_DS_EXPORT IpcFileFormat : public FileFormat {
  public:
   std::string type_name() const override { return kIpcTypeName; }
@@ -51,7 +51,7 @@ class ARROW_DS_EXPORT IpcFileFormat : public FileFormat {
 
   Result<bool> IsSupported(const FileSource& source) const override;
 
-  /// \brief Return the schema of the file if possible.
+  /// Return the schema of the file if possible.
   Result<std::shared_ptr<Schema>> Inspect(const FileSource& source) const override;
 
   Result<RecordBatchGenerator> ScanBatchesAsync(
@@ -70,7 +70,7 @@ class ARROW_DS_EXPORT IpcFileFormat : public FileFormat {
   std::shared_ptr<FileWriteOptions> DefaultWriteOptions() override;
 };
 
-/// \brief Per-scan options for IPC fragments
+/// Per-scan options for IPC fragments
 class ARROW_DS_EXPORT IpcFragmentScanOptions : public FragmentScanOptions {
  public:
   std::string type_name() const override { return kIpcTypeName; }

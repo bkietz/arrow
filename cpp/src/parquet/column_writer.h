@@ -114,7 +114,7 @@ class PARQUET_EXPORT PageWriter {
   // Return the number of uncompressed bytes written (including header size)
   virtual int64_t WriteDictionaryPage(const DictionaryPage& page) = 0;
 
-  /// \brief The total number of bytes written as serialized data and
+  /// The total number of bytes written as serialized data and
   /// dictionary pages to the sink so far.
   virtual int64_t total_compressed_bytes_written() const = 0;
 
@@ -131,54 +131,54 @@ class PARQUET_EXPORT ColumnWriter {
                                             std::unique_ptr<PageWriter>,
                                             const WriterProperties* properties);
 
-  /// \brief Closes the ColumnWriter, commits any buffered values to pages.
-  /// \return Total size of the column in bytes
+  /// Closes the ColumnWriter, commits any buffered values to pages.
+  /// :return: Total size of the column in bytes
   virtual int64_t Close() = 0;
 
-  /// \brief The physical Parquet type of the column
+  /// The physical Parquet type of the column
   virtual Type::type type() const = 0;
 
-  /// \brief The schema for the column
+  /// The schema for the column
   virtual const ColumnDescriptor* descr() const = 0;
 
-  /// \brief The number of rows written so far
+  /// The number of rows written so far
   virtual int64_t rows_written() const = 0;
 
-  /// \brief The total size of the compressed pages + page headers. Values
+  /// The total size of the compressed pages + page headers. Values
   /// are still buffered and not written to a pager yet
   ///
   /// So in un-buffered mode, it always returns 0
   virtual int64_t total_compressed_bytes() const = 0;
 
-  /// \brief The total number of bytes written as serialized data and
+  /// The total number of bytes written as serialized data and
   /// dictionary pages to the ColumnChunk so far
   /// These bytes are uncompressed bytes.
   virtual int64_t total_bytes_written() const = 0;
 
-  /// \brief The total number of bytes written as serialized data and
+  /// The total number of bytes written as serialized data and
   /// dictionary pages to the ColumnChunk so far.
   /// If the column is uncompressed, the value would be equal to
   /// total_bytes_written().
   virtual int64_t total_compressed_bytes_written() const = 0;
 
-  /// \brief Estimated size of the values that are not written to a page yet.
+  /// Estimated size of the values that are not written to a page yet.
   virtual int64_t estimated_buffered_value_bytes() const = 0;
 
-  /// \brief The file-level writer properties
+  /// The file-level writer properties
   virtual const WriterProperties* properties() = 0;
 
-  /// \brief Add key-value metadata to the ColumnChunk.
-  /// \param[in] key_value_metadata the metadata to add.
-  /// \note This will overwrite any existing metadata with the same key.
-  /// \throw ParquetException if Close() has been called.
+  /// Add key-value metadata to the ColumnChunk.
+  /// :param key_value_metadata: the metadata to add.
+  /// ```{note}
+  /// This will overwrite any existing metadata with the same key.
   virtual void AddKeyValueMetadata(
       const std::shared_ptr<const ::arrow::KeyValueMetadata>& key_value_metadata) = 0;
 
-  /// \brief Reset the ColumnChunk key-value metadata.
-  /// \throw ParquetException if Close() has been called.
+  /// Reset the ColumnChunk key-value metadata.
+  /// :throws ParquetException: if Close() has been called.
   virtual void ResetKeyValueMetadata() = 0;
 
-  /// \brief Write Apache Arrow columnar data directly to ColumnWriter. Returns
+  /// Write Apache Arrow columnar data directly to ColumnWriter. Returns
   /// error status if the array data type is not compatible with the concrete
   /// writer type.
   ///
@@ -226,14 +226,14 @@ class TypedColumnWriter : public ColumnWriter {
   /// inner-most schema node is optional, the _number of rows in the lowest nesting level_
   /// also includes all values with definition_level == (max_definition_level - 1).
   ///
-  /// @param num_values number of levels to write.
-  /// @param def_levels The Parquet definition levels, length is num_values
-  /// @param rep_levels The Parquet repetition levels, length is num_values
-  /// @param valid_bits Bitmap that indicates if the row is null on the lowest nesting
+  /// :param num_values: number of levels to write.
+  /// :param def_levels: The Parquet definition levels, length is num_values
+  /// :param rep_levels: The Parquet repetition levels, length is num_values
+  /// :param valid_bits: Bitmap that indicates if the row is null on the lowest nesting
   ///   level. The length is number of rows in the lowest nesting level.
-  /// @param valid_bits_offset The offset in bits of the valid_bits where the
+  /// :param valid_bits_offset: The offset in bits of the valid_bits where the
   ///   first relevant bit resides.
-  /// @param values The values in the lowest nested level including
+  /// :param values: The values in the lowest nested level including
   ///   spacing for nulls on the lowest levels; input has the length
   ///   of the number of rows on the lowest nesting level.
   virtual void WriteBatchSpaced(int64_t num_values, const int16_t* def_levels,

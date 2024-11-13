@@ -153,13 +153,13 @@ Result<std::shared_ptr<Array>> GenerateRandomTimestampArray(
   }
 }
 
-/// \brief Construct a random weak composition of a nonnegative integer
+/// Construct a random weak composition of a nonnegative integer
 /// i.e. a way of writing it as the sum of a sequence of n non-negative
 /// integers.
 ///
-/// \param[in] n the number of integers in the weak composition
-/// \param[in] sum the integer of which a random weak composition is generated
-/// \param[out] out The generated weak composition
+/// :param n: the number of integers in the weak composition
+/// :param sum: the integer of which a random weak composition is generated
+/// :param out[out]: The generated weak composition
 template <typename T, typename U>
 void RandWeakComposition(int64_t n, T sum, std::vector<U>* out) {
   const int random_seed = 0;

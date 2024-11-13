@@ -32,7 +32,7 @@
 namespace arrow {
 namespace engine {
 
-/// \brief A helper class for creating simple extension types
+/// A helper class for creating simple extension types
 ///
 /// Extension types can be parameterized by flat structs
 ///
@@ -56,7 +56,7 @@ class SimpleExtensionType : public ExtensionType {
                                                  std::move(params));
   }
 
-  /// \brief Returns the parameters object for the type
+  /// Returns the parameters object for the type
   ///
   /// If the type is not an instance of this extension type then nullptr will be returned
   static const Params* GetIf(const DataType& type) {
@@ -73,7 +73,7 @@ class SimpleExtensionType : public ExtensionType {
   std::string ToString(bool show_metadata = false) const override {
     return "extension<" + this->Serialize() + ">";
   }
-  /// \brief A comparator which returns true iff all parameter properties are equal
+  /// A comparator which returns true iff all parameter properties are equal
   struct ExtensionEqualsImpl {
     ExtensionEqualsImpl(const Params& l, const Params& r) : left_(l), right_(r) {
       kProperties->ForEach(*this);

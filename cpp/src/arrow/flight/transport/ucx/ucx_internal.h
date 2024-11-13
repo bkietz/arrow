@@ -67,7 +67,7 @@ static constexpr char kHeaderStatusDetailBin[] = "flight-status-detail-bin";
 //------------------------------------------------------------
 // UCX Helpers
 
-/// \brief A wrapper around a ucp_context_h.
+/// A wrapper around a ucp_context_h.
 ///
 /// Used so that multiple resources can share ownership of the
 /// context. UCX has zero-copy optimizations where an application can
@@ -91,7 +91,7 @@ class UcpContext final {
   ucp_context_h ucp_context_;
 };
 
-/// \brief A wrapper around a ucp_worker_h.
+/// A wrapper around a ucp_worker_h.
 class UcpWorker final {
  public:
   UcpWorker() : ucp_worker_(nullptr) {}
@@ -115,7 +115,7 @@ class UcpWorker final {
 //------------------------------------------------------------
 // Message Framing
 
-/// \brief The message type.
+/// The message type.
 enum class FrameType : uint8_t {
   /// Key-value headers. Sent at the beginning (client->server) and
   /// end (server->client) of a call. Also, for client-streaming calls
@@ -136,7 +136,7 @@ enum class FrameType : uint8_t {
   kMaxFrameType = kDisconnect,
 };
 
-/// \brief The header of a message frame. Used when sending only.
+/// The header of a message frame. Used when sending only.
 ///
 /// A frame is expected to be sent over UCP Active Messages and
 /// consists of a header (of kFrameHeaderBytes bytes) and a body.
@@ -161,13 +161,13 @@ enum class FrameType : uint8_t {
 /// field in the header lets us know when a payload was meant to be
 /// empty).
 struct FrameHeader {
-  /// \brief The size of a frame header.
+  /// The size of a frame header.
   static constexpr size_t kFrameHeaderBytes = 12;
-  /// \brief The expected version tag in the header.
+  /// The expected version tag in the header.
   static constexpr uint8_t kFrameVersion = 0x01;
 
   FrameHeader() = default;
-  /// \brief Initialize the frame header.
+  /// Initialize the frame header.
   Status Set(FrameType frame_type, uint32_t counter, int64_t body_size);
   void* data() const { return header.data(); }
   size_t size() const { return kFrameHeaderBytes; }
@@ -176,15 +176,15 @@ struct FrameHeader {
   mutable std::array<uint8_t, kFrameHeaderBytes> header = {0};
 };
 
-/// \brief A single message received via UCX. Used when receiving only.
+/// A single message received via UCX. Used when receiving only.
 struct Frame {
-  /// \brief The message type.
+  /// The message type.
   FrameType type;
-  /// \brief The message length.
+  /// The message length.
   uint32_t size;
-  /// \brief An incrementing message counter (may wrap over).
+  /// An incrementing message counter (may wrap over).
   uint32_t counter;
-  /// \brief The message contents.
+  /// The message contents.
   std::unique_ptr<Buffer> buffer;
 
   Frame() = default;
@@ -196,16 +196,16 @@ struct Frame {
     return std::string_view(reinterpret_cast<const char*>(buffer->data()), size);
   }
 
-  /// \brief Parse a UCX active message header. This will not
+  /// Parse a UCX active message header. This will not
   ///   initialize the buffer field.
   static arrow::Result<std::shared_ptr<Frame>> ParseHeader(const void* header,
                                                            size_t header_length);
 };
 
-/// \brief The active message handler callback ID.
+/// The active message handler callback ID.
 static constexpr uint32_t kUcpAmHandlerId = 0x1024;
 
-/// \brief A collection of key-value headers.
+/// A collection of key-value headers.
 ///
 /// This should be stored in a frame of type kHeaders.
 ///
@@ -222,21 +222,21 @@ static constexpr uint32_t kUcpAmHandlerId = 0x1024;
 /// +-------+----------------------------------+
 class HeadersFrame {
  public:
-  /// \brief Get a header value (or an error if it was not found)
+  /// Get a header value (or an error if it was not found)
   arrow::Result<std::string_view> Get(const std::string& key);
-  /// \brief Extract the server-sent status.
+  /// Extract the server-sent status.
   Status GetStatus(Status* out);
-  /// \brief Parse the headers from the buffer.
+  /// Parse the headers from the buffer.
   static arrow::Result<HeadersFrame> Parse(std::unique_ptr<Buffer> buffer);
-  /// \brief Create a new frame with the given headers.
+  /// Create a new frame with the given headers.
   static arrow::Result<HeadersFrame> Make(
       const std::vector<std::pair<std::string, std::string>>& headers);
-  /// \brief Create a new frame with the given headers and the given status.
+  /// Create a new frame with the given headers and the given status.
   static arrow::Result<HeadersFrame> Make(
       const Status& status,
       const std::vector<std::pair<std::string, std::string>>& headers);
 
-  /// \brief Take ownership of the underlying buffer.
+  /// Take ownership of the underlying buffer.
   std::unique_ptr<Buffer> GetBuffer() && { return std::move(buffer_); }
 
  private:
@@ -244,7 +244,7 @@ class HeadersFrame {
   std::vector<std::pair<std::string_view, std::string_view>> headers_;
 };
 
-/// \brief A representation of a kPayloadHeader frame (i.e. all of the
+/// A representation of a kPayloadHeader frame (i.e. all of the
 ///   metadata in a FlightPayload/FlightData).
 ///
 /// Data messages are sent in two parts: one containing all metadata
@@ -271,9 +271,9 @@ class PayloadHeaderFrame {
  public:
   explicit PayloadHeaderFrame(std::unique_ptr<Buffer> buffer)
       : buffer_(std::move(buffer)) {}
-  /// \brief Unpack the internal buffer into a FlightData.
+  /// Unpack the internal buffer into a FlightData.
   Status ToFlightData(internal::FlightData* data);
-  /// \brief Pack a payload into the internal buffer.
+  /// Pack a payload into the internal buffer.
   static arrow::Result<PayloadHeaderFrame> Make(const FlightPayload& payload,
                                                 MemoryPool* memory_pool);
   const uint8_t* data() const { return buffer_->data(); }
@@ -283,7 +283,7 @@ class PayloadHeaderFrame {
   std::unique_ptr<Buffer> buffer_;
 };
 
-/// \brief Manage the state of a UCX connection.
+/// Manage the state of a UCX connection.
 class UcpCallDriver {
  public:
   UcpCallDriver(std::shared_ptr<UcpWorker> worker, ucp_ep_h endpoint);
@@ -295,51 +295,51 @@ class UcpCallDriver {
 
   ~UcpCallDriver();
 
-  /// \brief Start a call by sending a headers frame. Client side only.
+  /// Start a call by sending a headers frame. Client side only.
   ///
-  /// \param[in] method The RPC method.
+  /// :param method: The RPC method.
   Status StartCall(const std::string& method);
 
-  /// \brief Synchronously send a generic message with binary payload.
+  /// Synchronously send a generic message with binary payload.
   Status SendFrame(FrameType frame_type, const uint8_t* data, const int64_t size);
-  /// \brief Asynchronously send a generic message with binary payload.
+  /// Asynchronously send a generic message with binary payload.
   ///
   /// The UCP driver must be manually polled (call MakeProgress()).
   Future<> SendFrameAsync(FrameType frame_type, std::unique_ptr<Buffer> buffer);
-  /// \brief Asynchronously send a data message.
+  /// Asynchronously send a data message.
   ///
   /// The UCP driver must be manually polled (call MakeProgress()).
   Future<> SendFlightPayload(const FlightPayload& payload);
 
-  /// \brief Synchronously read the next frame.
+  /// Synchronously read the next frame.
   arrow::Result<std::shared_ptr<Frame>> ReadNextFrame();
-  /// \brief Asynchronously read the next frame.
+  /// Asynchronously read the next frame.
   ///
   /// The UCP driver must be manually polled (call MakeProgress()).
   Future<std::shared_ptr<Frame>> ReadFrameAsync();
 
-  /// \brief Validate that the frame is of the given type.
+  /// Validate that the frame is of the given type.
   Status ExpectFrameType(const Frame& frame, FrameType type);
 
-  /// \brief Disconnect the other side of the connection. Note, this
+  /// Disconnect the other side of the connection. Note, this
   ///   can cause deadlock.
   Status Close();
 
-  /// \brief Synchronously make progress (to adapt async to sync APIs)
+  /// Synchronously make progress (to adapt async to sync APIs)
   void MakeProgress();
 
-  /// \brief Get the associated memory manager.
+  /// Get the associated memory manager.
   const std::shared_ptr<MemoryManager>& memory_manager() const;
-  /// \brief Set the associated memory manager.
+  /// Set the associated memory manager.
   void set_memory_manager(std::shared_ptr<MemoryManager> memory_manager);
-  /// \brief Set memory pool for scratch space used during reading.
+  /// Set memory pool for scratch space used during reading.
   void set_read_memory_pool(MemoryPool* memory_pool);
-  /// \brief Set memory pool for scratch space used during writing.
+  /// Set memory pool for scratch space used during writing.
   void set_write_memory_pool(MemoryPool* memory_pool);
-  /// \brief Get a debug string naming the peer.
+  /// Get a debug string naming the peer.
   const std::string& peer() const;
 
-  /// \brief Process an incoming active message. This will unblock the
+  /// Process an incoming active message. This will unblock the
   ///   corresponding call to ReadFrameAsync/ReadNextFrame.
   ucs_status_t RecvActiveMessage(const void* header, size_t header_length, void* data,
                                  const size_t data_length,

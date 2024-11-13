@@ -125,7 +125,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// implicitly converted to the appropriate return type as a matter of
   /// convenience.
   ///
-  /// \param status The non-OK Status object to initialize to.
+  /// :param status: The non-OK Status object to initialize to.
   Result(const Status& status) noexcept  // NOLINT(runtime/explicit)
       : status_(status) {
     if (ARROW_PREDICT_FALSE(status.ok())) {
@@ -152,7 +152,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// See http://thbecker.net/articles/rvalue_references/section_08.html for
   /// additional details.
   ///
-  /// \param value The value to initialize to.
+  /// :param value: The value to initialize to.
   template <typename U,
             typename E = typename std::enable_if<
                 std::is_constructible<T, U>::value && std::is_convertible<U, T>::value &&
@@ -171,7 +171,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// `Result<T>` can return an object of type `T`, implicitly converting
   /// it to a `Result<T>` object.
   ///
-  /// \param value The value to initialize to.
+  /// :param value: The value to initialize to.
   // NOTE `Result(U&& value)` above should be sufficient, but some compilers
   // fail matching it.
   Result(T&& value) noexcept {  // NOLINT(runtime/explicit)
@@ -187,7 +187,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// as a copy constructor, and any attempt to copy-construct a `Result`
   /// object results in a compilation error.
   ///
-  /// \param other The value to copy from.
+  /// :param other: The value to copy from.
   Result(const Result& other) noexcept : status_(other.status_) {
     if (ARROW_PREDICT_TRUE(status_.ok())) {
       ConstructValue(other.ValueUnsafe());
@@ -199,7 +199,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   ///
   /// `T` must be implicitly constructible from `const U &`.
   ///
-  /// \param other The value to copy from.
+  /// :param other: The value to copy from.
   template <typename U, typename E = typename std::enable_if<
                             std::is_constructible<T, const U&>::value &&
                             std::is_convertible<U, T>::value>::type>
@@ -211,7 +211,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
 
   /// Copy-assignment operator.
   ///
-  /// \param other The Result object to copy.
+  /// :param other: The Result object to copy.
   Result& operator=(const Result& other) noexcept {
     // Check for self-assignment.
     if (ARROW_PREDICT_FALSE(this == &other)) {
@@ -232,7 +232,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// Sets `other` to contain a non-OK status with a`StatusError::Invalid`
   /// error code.
   ///
-  /// \param other The Result object to move from and set to a non-OK status.
+  /// :param other: The Result object to move from and set to a non-OK status.
   template <typename U,
             typename E = typename std::enable_if<std::is_constructible<T, U&&>::value &&
                                                  std::is_convertible<U, T>::value>::type>
@@ -251,7 +251,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   ///
   /// Sets `other` to an invalid state..
   ///
-  /// \param other The Result object to assign from and set to a non-OK
+  /// :param other: The Result object to assign from and set to a non-OK
   /// status.
   Result& operator=(Result&& other) noexcept {
     // Check for self-assignment.
@@ -282,23 +282,23 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// of accessing this directly you will want to use ASSIGN_OR_RAISE defined
   /// below.
   ///
-  /// \return True if this Result object's status is OK (i.e. a call to ok()
+  /// :return: True if this Result object's status is OK (i.e. a call to ok()
   /// returns true). If this function returns true, then it is safe to access
   /// the wrapped element through a call to ValueOrDie().
   constexpr bool ok() const { return status_.ok(); }
 
-  /// \brief Equivalent to ok().
+  /// Equivalent to ok().
   // operator bool() const { return ok(); }
 
   /// Gets the stored status object, or an OK status if a `T` value is stored.
   ///
-  /// \return The stored non-OK status object, or an OK status if this object
+  /// :return: The stored non-OK status object, or an OK status if this object
   ///         has a value.
   constexpr const Status& status() const& { return status_; }
 
   /// Gets the stored status object, or an OK status if a `T` value is stored.
   ///
-  /// \return The stored non-OK status object, or an OK status if this object
+  /// :return: The stored non-OK status object, or an OK status if this object
   ///         has a value.
   Status status() && {
     if (ok()) return Status::OK();
@@ -312,7 +312,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// This method should only be called if this Result object's status is OK
   /// (i.e. a call to ok() returns true), otherwise this call will abort.
   ///
-  /// \return The stored `T` value.
+  /// :return: The stored `T` value.
   const T& ValueOrDie() const& {
     if (ARROW_PREDICT_FALSE(!ok())) {
       internal::InvalidValueOrDie(status_);
@@ -327,7 +327,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// This method should only be called if this Result object's status is OK
   /// (i.e. a call to ok() returns true), otherwise this call will abort.
   ///
-  /// \return The stored `T` value.
+  /// :return: The stored `T` value.
   T& ValueOrDie() & {
     if (ARROW_PREDICT_FALSE(!ok())) {
       internal::InvalidValueOrDie(status_);
@@ -344,7 +344,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
   /// Result object is invalidated after this call and will be updated to
   /// contain a non-OK status.
   ///
-  /// \return The stored `T` value.
+  /// :return: The stored `T` value.
   T ValueOrDie() && {
     if (ARROW_PREDICT_FALSE(!ok())) {
       internal::InvalidValueOrDie(status_);
@@ -462,7 +462,7 @@ class [[nodiscard]] Result : public util::EqualityComparable<Result<T>> {
 
 #define ARROW_ASSIGN_OR_RAISE_NAME(x, y) ARROW_CONCAT(x, y)
 
-/// \brief Execute an expression that returns a Result, extracting its value
+/// Execute an expression that returns a Result, extracting its value
 /// into the variable defined by `lhs` (or returning a Status on error).
 ///
 /// Example: Assigning to a new value:

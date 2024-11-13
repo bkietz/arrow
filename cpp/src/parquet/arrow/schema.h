@@ -86,7 +86,7 @@ PARQUET_EXPORT
 
 /// @}
 
-/// \brief Bridge between an arrow::Field and parquet column indices.
+/// Bridge between an arrow::Field and parquet column indices.
 struct PARQUET_EXPORT SchemaField {
   std::shared_ptr<::arrow::Field> field;
   std::vector<SchemaField> children;
@@ -99,7 +99,7 @@ struct PARQUET_EXPORT SchemaField {
   bool is_leaf() const { return column_index != -1; }
 };
 
-/// \brief Bridge between a parquet Schema and an arrow Schema.
+/// Bridge between a parquet Schema and an arrow Schema.
 ///
 /// Expose parquet columns as a tree structure. Useful traverse and link
 /// between arrow's Schema and parquet's Schema.

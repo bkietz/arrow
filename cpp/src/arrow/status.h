@@ -27,7 +27,7 @@
 
 #ifdef ARROW_EXTRA_ERROR_CONTEXT
 
-/// \brief Return with given status if condition is met.
+/// Return with given status if condition is met.
 #  define ARROW_RETURN_IF_(condition, status, expr)   \
     do {                                              \
       if (ARROW_PREDICT_FALSE(condition)) {           \
@@ -51,14 +51,14 @@
 #define ARROW_RETURN_IF(condition, status) \
   ARROW_RETURN_IF_(condition, status, ARROW_STRINGIFY(status))
 
-/// \brief Propagate any non-successful Status to the caller
+/// Propagate any non-successful Status to the caller
 #define ARROW_RETURN_NOT_OK(status)                                   \
   do {                                                                \
     ::arrow::Status __s = ::arrow::internal::GenericToStatus(status); \
     ARROW_RETURN_IF_(!__s.ok(), __s, ARROW_STRINGIFY(status));        \
   } while (false)
 
-/// \brief Given `expr` and `warn_msg`; log `warn_msg` if `expr` is a non-ok status
+/// Given `expr` and `warn_msg`; log `warn_msg` if `expr` is a non-ok status
 #define ARROW_WARN_NOT_OK(expr, warn_msg) \
   do {                                    \
     ::arrow::Status _s = (expr);          \
@@ -105,15 +105,15 @@ enum class StatusCode : char {
   AlreadyExists = 45
 };
 
-/// \brief An opaque class that allows subsystems to retain
+/// An opaque class that allows subsystems to retain
 /// additional information inside the Status.
 class ARROW_EXPORT StatusDetail {
  public:
   virtual ~StatusDetail() = default;
-  /// \brief Return a unique id for the type of the StatusDetail
+  /// Return a unique id for the type of the StatusDetail
   /// (effectively a poor man's substitute for RTTI).
   virtual const char* type_id() const = 0;
-  /// \brief Produce a human-readable description of this status.
+  /// Produce a human-readable description of this status.
   virtual std::string ToString() const = 0;
 
   bool operator==(const StatusDetail& other) const noexcept {
@@ -121,7 +121,7 @@ class ARROW_EXPORT StatusDetail {
   }
 };
 
-/// \brief Status outcome object (success or error)
+/// Status outcome object (success or error)
 ///
 /// The Status object is an object holding the outcome of an operation.
 /// The outcome is represented as a StatusCode, either success
@@ -143,7 +143,7 @@ class ARROW_EXPORT [[nodiscard]] Status : public util::EqualityComparable<Status
   }
 
   Status(StatusCode code, const std::string& msg);
-  /// \brief Pluggable constructor for use by sub-systems.  detail cannot be null.
+  /// Pluggable constructor for use by sub-systems.  detail cannot be null.
   Status(StatusCode code, std::string msg, std::shared_ptr<StatusDetail> detail);
 
   // Copy the specified status.
@@ -309,44 +309,44 @@ class ARROW_EXPORT [[nodiscard]] Status : public util::EqualityComparable<Status
   constexpr bool IsExecutionError() const { return code() == StatusCode::ExecutionError; }
   constexpr bool IsAlreadyExists() const { return code() == StatusCode::AlreadyExists; }
 
-  /// \brief Return a string representation of this status suitable for printing.
+  /// Return a string representation of this status suitable for printing.
   ///
   /// The string "OK" is returned for success.
   std::string ToString() const;
 
-  /// \brief Return a string representation of this status without
+  /// Return a string representation of this status without
   /// context lines suitable for printing.
   ///
   /// The string "OK" is returned for success.
   std::string ToStringWithoutContextLines() const;
 
-  /// \brief Return a string representation of the status code, without the message
+  /// Return a string representation of the status code, without the message
   /// text or POSIX code information.
   std::string CodeAsString() const;
   static std::string CodeAsString(StatusCode);
 
-  /// \brief Return the StatusCode value attached to this status.
+  /// Return the StatusCode value attached to this status.
   constexpr StatusCode code() const { return ok() ? StatusCode::OK : state_->code; }
 
-  /// \brief Return the specific error message attached to this status.
+  /// Return the specific error message attached to this status.
   const std::string& message() const {
     static const std::string no_message = "";
     return ok() ? no_message : state_->msg;
   }
 
-  /// \brief Return the status detail attached to this message.
+  /// Return the status detail attached to this message.
   const std::shared_ptr<StatusDetail>& detail() const {
     static std::shared_ptr<StatusDetail> no_detail = NULLPTR;
     return state_ ? state_->detail : no_detail;
   }
 
-  /// \brief Return a new Status copying the existing status, but
+  /// Return a new Status copying the existing status, but
   /// updating with the existing detail.
   Status WithDetail(std::shared_ptr<StatusDetail> new_detail) const {
     return Status(code(), message(), std::move(new_detail));
   }
 
-  /// \brief Return a new Status with changed message, copying the
+  /// Return a new Status with changed message, copying the
   /// existing status code and detail.
   template <typename... Args>
   Status WithMessage(Args&&... args) const {
@@ -425,7 +425,6 @@ bool Status::Equals(const Status& s) const {
   return code() == s.code() && message() == s.message();
 }
 
-/// \cond FALSE
 // (note: emits warnings on Doxygen < 1.8.15,
 //  see https://github.com/doxygen/doxygen/issues/6295)
 Status Status::operator&(const Status& s) const noexcept {
@@ -457,7 +456,6 @@ Status& Status::operator&=(Status&& s) noexcept {
   }
   return *this;
 }
-/// \endcond
 
 namespace internal {
 

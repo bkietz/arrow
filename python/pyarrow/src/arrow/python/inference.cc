@@ -351,8 +351,8 @@ class TypeInferrer {
     ARROW_CHECK_OK(ImportPresentIntervalTypes(&interval_types_));
   }
 
-  /// \param[in] obj a Python object in the sequence
-  /// \param[out] keep_going if sufficient information has been gathered to
+  /// :param obj: a Python object in the sequence
+  /// :param keep_going[out]: if sufficient information has been gathered to
   /// attempt to begin converting the sequence, *keep_going will be set to true
   /// to signal to the calling visitor loop to terminate
   Status Visit(PyObject* obj, bool* keep_going) {

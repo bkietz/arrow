@@ -68,13 +68,13 @@ class CloseSessionResult;
 namespace pb = arrow::flight::protocol;
 namespace internal {
 
-/// \brief The header used for transmitting authentication/authorization data.
+/// The header used for transmitting authentication/authorization data.
 static constexpr char kAuthHeader[] = "authorization";
 
 ARROW_FLIGHT_EXPORT
 Status SchemaToString(const Schema& schema, std::string* out);
 
-/// \brief Wraps a protobuf message representing a Flight command in a FlightDescriptor.
+/// Wraps a protobuf message representing a Flight command in a FlightDescriptor.
 ///
 /// A `FlightDescriptor` can carry a string representing a command in any
 /// format the implementation desires. A common pattern in Flight implementations
@@ -83,7 +83,7 @@ Status SchemaToString(const Schema& schema, std::string* out);
 ARROW_FLIGHT_EXPORT
 Status PackProtoCommand(const google::protobuf::Message& command, FlightDescriptor* out);
 
-/// \brief Wraps a protobuf message representing a Flight action.
+/// Wraps a protobuf message representing a Flight action.
 ///
 /// A Flight action can carry a string representing an action in any format the
 /// implementation desires. A common pattern in Flight implementations is to
@@ -93,7 +93,7 @@ ARROW_FLIGHT_EXPORT
 Status PackProtoAction(std::string action_type, const google::protobuf::Message& action,
                        Action* out);
 
-/// \brief Unpacks a protobuf message packed by PackProtoAction.
+/// Unpacks a protobuf message packed by PackProtoAction.
 ARROW_FLIGHT_EXPORT
 Status UnpackProtoAction(const Action& action, google::protobuf::Message* out);
 
@@ -193,7 +193,7 @@ class PeekableFlightDataReader {
     valid_ = false;
   }
 
-  /// \brief Peek() until the first data message.
+  /// Peek() until the first data message.
   ///
   /// After this is called, either this will return \a false, or the
   /// next result of \a Peek and \a Next will contain Arrow data.

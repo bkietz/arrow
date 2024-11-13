@@ -46,8 +46,8 @@ class ARROW_EXPORT AdaptiveIntBuilderBase : public ArrayBuilder {
                                   int64_t alignment = kDefaultBufferAlignment)
       : AdaptiveIntBuilderBase(sizeof(uint8_t), pool, alignment) {}
 
-  /// \brief Append multiple nulls
-  /// \param[in] length the number of nulls to append
+  /// Append multiple nulls
+  /// :param length: the number of nulls to append
   Status AppendNulls(int64_t length) final {
     ARROW_RETURN_NOT_OK(CommitPendingData());
     if (ARROW_PREDICT_TRUE(length > 0)) {
@@ -147,12 +147,12 @@ class ARROW_EXPORT AdaptiveUIntBuilder : public internal::AdaptiveIntBuilderBase
   /// Scalar append
   Status Append(const uint64_t val) { return AppendInternal(val); }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a contiguous C array of values
-  /// \param[in] length the number of values to append
-  /// \param[in] valid_bytes an optional sequence of bytes where non-zero
+  /// Append a sequence of elements in one shot
+  /// :param values: a contiguous C array of values
+  /// :param length: the number of values to append
+  /// :param valid_bytes: an optional sequence of bytes where non-zero
   /// indicates a valid (non-null) value
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const uint64_t* values, int64_t length,
                       const uint8_t* valid_bytes = NULLPTR);
 
@@ -186,12 +186,12 @@ class ARROW_EXPORT AdaptiveIntBuilder : public internal::AdaptiveIntBuilderBase 
   /// Scalar append
   Status Append(const int64_t val) { return AppendInternal(static_cast<uint64_t>(val)); }
 
-  /// \brief Append a sequence of elements in one shot
-  /// \param[in] values a contiguous C array of values
-  /// \param[in] length the number of values to append
-  /// \param[in] valid_bytes an optional sequence of bytes where non-zero
+  /// Append a sequence of elements in one shot
+  /// :param values: a contiguous C array of values
+  /// :param length: the number of values to append
+  /// :param valid_bytes: an optional sequence of bytes where non-zero
   /// indicates a valid (non-null) value
-  /// \return Status
+  /// :return: Status
   Status AppendValues(const int64_t* values, int64_t length,
                       const uint8_t* valid_bytes = NULLPTR);
 

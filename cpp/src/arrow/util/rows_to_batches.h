@@ -61,7 +61,7 @@ template <class Range, class DataPointConvertor,
     MemoryPool* pool = default_memory_pool(),
     const std::size_t batch_size = 1024) = delete;
 
-/// \brief Utility function for converting any row-based structure into an
+/// Utility function for converting any row-based structure into an
 /// `arrow::RecordBatchReader` (this can be easily converted to an `arrow::Table` using
 /// `arrow::RecordBatchReader::ToTable()`).
 ///
@@ -80,35 +80,35 @@ template <class Range, class DataPointConvertor,
 /// of the default.
 
 /// Example usage:
-/// \code{.cpp}
+/// ```
 /// auto IntConvertor = [](ArrayBuilder& array_builder, int value) {
 ///  return static_cast<Int64Builder&>(array_builder).Append(value);
 /// };
 /// std::vector<std::vector<int>> data = {{1, 2, 4}, {5, 6, 7}};
 /// auto batches = RowsToBatches(kTestSchema, data, IntConvertor);
-/// \endcode
+/// ```
 
-/// \param[in] schema - The schema to be used in the `RecordBatchReader`
+/// :param schema: - The schema to be used in the `RecordBatchReader`
 
-/// \param[in] rows - Iterable row-based structure that will be converted to arrow
+/// :param rows: - Iterable row-based structure that will be converted to arrow
 /// batches
 
-/// \param[in] data_point_convertor - Client provided callable type that will convert
+/// :param data_point_convertor: - Client provided callable type that will convert
 /// the structure’s data points into the corresponding arrow types. The convertor must
 /// return an error `Status` if an error happens during conversion.
 
-/// \param[in] row_accessor - In the common case where the value of each row iterated
+/// :param row_accessor: - In the common case where the value of each row iterated
 /// over is it's self also directly iterable, the client can just use the default.
 /// The provided callable must take the values of the `rows` range and return a
 /// `std::reference_wrapper<Range>` to the data points in a given row. The data points
 /// must be in order of their corresponding fields in the schema.
 /// see: /ref `MakeDefaultRowAccessor`
 
-/// \param[in] pool - The MemoryPool to use for allocations.
+/// :param pool: - The MemoryPool to use for allocations.
 
-/// \param[in] batch_size - Number of rows to insert into each RecordBatch.
+/// :param batch_size: - Number of rows to insert into each RecordBatch.
 
-/// \return `Result<std::shared_ptr<RecordBatchReader>>>` result will be a
+/// :return: `Result<std::shared_ptr<RecordBatchReader>>>` result will be a
 /// `std::shared_ptr<RecordBatchReader>>` if not errors occurred, else an error status.
 template <class Range, class DataPointConvertor,
           class RowAccessor = decltype(detail::MakeDefaultRowAccessor())>

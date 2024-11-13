@@ -142,10 +142,10 @@ Status HandleSegments(RowSegmenter* segmenter, const ExecBatch& batch,
   return Status::OK();
 }
 
-/// @brief Extract values of segment keys from a segment batch
-/// @param[out] values_ptr Vector to store the extracted segment key values
-/// @param[in] input_batch Segment batch. Must have the a constant value for segment key
-/// @param[in] field_ids Segment key field ids
+/// Extract values of segment keys from a segment batch
+/// :param values_ptr[out]: Vector to store the extracted segment key values
+/// :param input_batch: Segment batch. Must have the a constant value for segment key
+/// :param field_ids: Segment key field ids
 Status ExtractSegmenterValues(std::vector<Datum>* values_ptr,
                               const ExecBatch& input_batch,
                               const std::vector<int>& field_ids);
@@ -233,7 +233,7 @@ class ScalarAggregateNode : public ExecNode, public TracedNode {
   std::vector<std::vector<std::unique_ptr<KernelState>>> states_;
 
   AtomicCounter input_counter_;
-  /// \brief Total number of output batches produced
+  /// Total number of output batches produced
   int total_output_batches_ = 0;
 };
 
@@ -328,22 +328,22 @@ class GroupByNode : public ExecNode, public TracedNode {
   }
 
   int output_task_group_id_;
-  /// \brief A segmenter for the segment-keys
+  /// A segmenter for the segment-keys
   std::unique_ptr<RowSegmenter> segmenter_;
-  /// \brief Holds values of the current batch that were selected for the segment-keys
+  /// Holds values of the current batch that were selected for the segment-keys
   std::vector<Datum> segmenter_values_;
 
   const std::vector<int> key_field_ids_;
-  /// \brief Field indices corresponding to the segment-keys
+  /// Field indices corresponding to the segment-keys
   const std::vector<int> segment_key_field_ids_;
-  /// \brief Types of input fields per aggregate
+  /// Types of input fields per aggregate
   const std::vector<std::vector<TypeHolder>> agg_src_types_;
   const std::vector<std::vector<int>> agg_src_fieldsets_;
   const std::vector<Aggregate> aggs_;
   const std::vector<const HashAggregateKernel*> agg_kernels_;
 
   AtomicCounter input_counter_;
-  /// \brief Total number of output batches produced
+  /// Total number of output batches produced
   int total_output_batches_ = 0;
 
   std::vector<ThreadLocalState> local_states_;

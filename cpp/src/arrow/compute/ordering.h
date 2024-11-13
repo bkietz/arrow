@@ -43,7 +43,7 @@ enum class NullPlacement {
   AtEnd,
 };
 
-/// \brief One sort key for PartitionNthIndices (TODO) and SortIndices
+/// One sort key for PartitionNthIndices (TODO) and SortIndices
 class ARROW_EXPORT SortKey : public util::EqualityComparable<SortKey> {
  public:
   explicit SortKey(FieldRef target, SortOrder order = SortOrder::Ascending)

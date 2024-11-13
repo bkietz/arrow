@@ -56,8 +56,7 @@ struct Kind {
   static Status ForType(const DataType& type, Kind::type* kind);
 };
 
-/// \class BlockParser
-/// \brief A reusable block-based parser for JSON data
+/// A reusable block-based parser for JSON data
 ///
 /// The parser takes a block of newline delimited JSON data and extracts Arrays
 /// of unconverted strings which can be fed to a Converter to obtain a usable Array.
@@ -72,23 +71,23 @@ class ARROW_EXPORT BlockParser {
  public:
   virtual ~BlockParser() = default;
 
-  /// \brief Reserve storage for scalars parsed from a block of json
+  /// Reserve storage for scalars parsed from a block of json
   virtual Status ReserveScalarStorage(int64_t nbytes) = 0;
 
-  /// \brief Parse a block of data
+  /// Parse a block of data
   virtual Status Parse(const std::shared_ptr<Buffer>& json) = 0;
 
-  /// \brief Extract parsed data
+  /// Extract parsed data
   virtual Status Finish(std::shared_ptr<Array>* parsed) = 0;
 
-  /// \brief Return the number of parsed rows
+  /// Return the number of parsed rows
   int32_t num_rows() const { return num_rows_; }
 
-  /// \brief Construct a BlockParser
+  /// Construct a BlockParser
   ///
-  /// \param[in] pool MemoryPool to use when constructing parsed array
-  /// \param[in] options ParseOptions to use when parsing JSON
-  /// \param[out] out constructed BlockParser
+  /// :param pool: MemoryPool to use when constructing parsed array
+  /// :param options: ParseOptions to use when parsing JSON
+  /// :param out[out]: constructed BlockParser
   static Status Make(MemoryPool* pool, const ParseOptions& options,
                      std::unique_ptr<BlockParser>* out);
 

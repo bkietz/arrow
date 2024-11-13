@@ -55,7 +55,7 @@ namespace arrow {
 namespace flight {
 namespace integration_tests {
 
-/// \brief Helper to read all batches from a JsonReader
+/// Helper to read all batches from a JsonReader
 Status ReadBatches(std::unique_ptr<IntegrationJsonReader>& reader,
                    std::vector<std::shared_ptr<RecordBatch>>* chunks) {
   for (int i = 0; i < reader->num_record_batches(); i++) {
@@ -66,7 +66,7 @@ Status ReadBatches(std::unique_ptr<IntegrationJsonReader>& reader,
   return Status::OK();
 }
 
-/// \brief Upload the a list of batches to a Flight server, validating
+/// Upload the a list of batches to a Flight server, validating
 /// the application metadata on the side.
 Status UploadBatchesToFlight(const std::vector<std::shared_ptr<RecordBatch>>& chunks,
                              FlightStreamWriter& writer,
@@ -90,7 +90,7 @@ Status UploadBatchesToFlight(const std::vector<std::shared_ptr<RecordBatch>>& ch
   return writer.Close();
 }
 
-/// \brief Retrieve the given Flight and compare to the original expected batches.
+/// Retrieve the given Flight and compare to the original expected batches.
 Status ConsumeFlightLocation(
     FlightClient* read_client, const Ticket& ticket,
     const std::vector<std::shared_ptr<RecordBatch>>& retrieved_data) {

@@ -35,17 +35,17 @@ class Status;
 
 namespace io {
 
-/// \brief An output stream that writes to a resizable buffer
+/// An output stream that writes to a resizable buffer
 class ARROW_EXPORT BufferOutputStream : public OutputStream {
  public:
   explicit BufferOutputStream(const std::shared_ptr<ResizableBuffer>& buffer);
 
-  /// \brief Create in-memory output stream with indicated capacity using a
+  /// Create in-memory output stream with indicated capacity using a
   /// memory pool
-  /// \param[in] initial_capacity the initial allocated internal capacity of
+  /// :param initial_capacity: the initial allocated internal capacity of
   /// the OutputStream
-  /// \param[in,out] pool a MemoryPool to use for allocations
-  /// \return the created stream
+  /// :param pool[in,out]: a MemoryPool to use for allocations
+  /// :return: the created stream
   static Result<std::shared_ptr<BufferOutputStream>> Create(
       int64_t initial_capacity = 4096, MemoryPool* pool = default_memory_pool());
 
@@ -59,18 +59,16 @@ class ARROW_EXPORT BufferOutputStream : public OutputStream {
   Result<int64_t> Tell() const override;
   Status Write(const void* data, int64_t nbytes) override;
 
-  /// \cond FALSE
   using OutputStream::Write;
-  /// \endcond
 
   /// Close the stream and return the buffer
   Result<std::shared_ptr<Buffer>> Finish();
 
-  /// \brief Initialize state of OutputStream with newly allocated memory and
+  /// Initialize state of OutputStream with newly allocated memory and
   /// set position to 0
-  /// \param[in] initial_capacity the starting allocated capacity
-  /// \param[in,out] pool the memory pool to use for allocations
-  /// \return Status
+  /// :param initial_capacity: the starting allocated capacity
+  /// :param pool[in,out]: the memory pool to use for allocations
+  /// :return: Status
   Status Reset(int64_t initial_capacity = 1024, MemoryPool* pool = default_memory_pool());
 
   int64_t capacity() const { return capacity_; }
@@ -88,7 +86,7 @@ class ARROW_EXPORT BufferOutputStream : public OutputStream {
   uint8_t* mutable_data_;
 };
 
-/// \brief A helper class to track the size of allocations
+/// A helper class to track the size of allocations
 ///
 /// Writes to this stream do not copy or retain any data, they just bump
 /// a size counter that can be later used to know exactly which data size
@@ -102,9 +100,7 @@ class ARROW_EXPORT MockOutputStream : public OutputStream {
   bool closed() const override;
   Result<int64_t> Tell() const override;
   Status Write(const void* data, int64_t nbytes) override;
-  /// \cond FALSE
   using Writable::Write;
-  /// \endcond
 
   int64_t GetExtentBytesWritten() const { return extent_bytes_written_; }
 
@@ -113,7 +109,7 @@ class ARROW_EXPORT MockOutputStream : public OutputStream {
   bool is_open_;
 };
 
-/// \brief An output stream that writes into a fixed-size mutable buffer
+/// An output stream that writes into a fixed-size mutable buffer
 class ARROW_EXPORT FixedSizeBufferWriter : public WritableFile {
  public:
   /// Input buffer must be mutable, will abort if not
@@ -125,9 +121,7 @@ class ARROW_EXPORT FixedSizeBufferWriter : public WritableFile {
   Status Seek(int64_t position) override;
   Result<int64_t> Tell() const override;
   Status Write(const void* data, int64_t nbytes) override;
-  /// \cond FALSE
   using Writable::Write;
-  /// \endcond
 
   Status WriteAt(int64_t position, const void* data, int64_t nbytes) override;
 
@@ -140,12 +134,11 @@ class ARROW_EXPORT FixedSizeBufferWriter : public WritableFile {
   std::unique_ptr<FixedSizeBufferWriterImpl> impl_;
 };
 
-/// \class BufferReader
-/// \brief Random access zero-copy reads on an arrow::Buffer
+/// Random access zero-copy reads on an arrow::Buffer
 class ARROW_EXPORT BufferReader
     : public internal::RandomAccessFileConcurrencyWrapper<BufferReader> {
  public:
-  /// \brief Instantiate from std::shared_ptr<Buffer>.
+  /// Instantiate from std::shared_ptr<Buffer>.
   ///
   /// This is a zero-copy constructor.
   explicit BufferReader(std::shared_ptr<Buffer> buffer);
@@ -158,7 +151,7 @@ class ARROW_EXPORT BufferReader
       "buffer) instead.")
   BufferReader(const uint8_t* data, int64_t size);
 
-  /// \brief Instantiate from std::string_view. Does not own data
+  /// Instantiate from std::string_view. Does not own data
   /// \deprecated Deprecated in 14.0.0. Use FromString or
   /// BufferReader(std::shared_ptr<Buffer> buffer) instead.
   ARROW_DEPRECATED(
@@ -166,7 +159,7 @@ class ARROW_EXPORT BufferReader
       "buffer) instead.")
   explicit BufferReader(std::string_view data);
 
-  /// \brief Instantiate from std::string. Owns data.
+  /// Instantiate from std::string. Owns data.
   static std::unique_ptr<BufferReader> FromString(std::string data);
 
   bool closed() const override;

@@ -42,38 +42,38 @@ using arrow::internal::checked_cast;
 
 namespace arrow::flight::sql {
 
-/// \brief Auxiliary variant visitor used to assert that GetSqlInfo's values are
+/// Auxiliary variant visitor used to assert that GetSqlInfo's values are
 /// correctly placed on its DenseUnionArray
 class SqlInfoDenseUnionValidator {
  private:
   const DenseUnionScalar& data;
 
  public:
-  /// \brief Asserts that the current DenseUnionScalar equals to given string value
+  /// Asserts that the current DenseUnionScalar equals to given string value
   void operator()(const std::string& string_value) const {
     const auto& scalar = checked_cast<const StringScalar&>(*data.value);
     ASSERT_EQ(string_value, scalar.ToString());
   }
 
-  /// \brief Asserts that the current DenseUnionScalar equals to given bool value
+  /// Asserts that the current DenseUnionScalar equals to given bool value
   void operator()(const bool bool_value) const {
     const auto& scalar = checked_cast<const BooleanScalar&>(*data.value);
     ASSERT_EQ(bool_value, scalar.value);
   }
 
-  /// \brief Asserts that the current DenseUnionScalar equals to given int64_t value
+  /// Asserts that the current DenseUnionScalar equals to given int64_t value
   void operator()(const int64_t bigint_value) const {
     const auto& scalar = checked_cast<const Int64Scalar&>(*data.value);
     ASSERT_EQ(bigint_value, scalar.value);
   }
 
-  /// \brief Asserts that the current DenseUnionScalar equals to given int32_t value
+  /// Asserts that the current DenseUnionScalar equals to given int32_t value
   void operator()(const int32_t int32_bitmask) const {
     const auto& scalar = checked_cast<const Int32Scalar&>(*data.value);
     ASSERT_EQ(int32_bitmask, scalar.value);
   }
 
-  /// \brief Asserts that the current DenseUnionScalar equals to given string list
+  /// Asserts that the current DenseUnionScalar equals to given string list
   void operator()(const std::vector<std::string>& string_list) const {
     const auto& array = checked_cast<const StringArray&>(
         *(checked_cast<const ListScalar&>(*data.value).value));
@@ -85,7 +85,7 @@ class SqlInfoDenseUnionValidator {
     }
   }
 
-  /// \brief Asserts that the current DenseUnionScalar equals to given int32 to int32 list
+  /// Asserts that the current DenseUnionScalar equals to given int32 to int32 list
   /// map.
   void operator()(const std::unordered_map<int32_t, std::vector<int32_t>>&
                       int32_to_int32_list) const {

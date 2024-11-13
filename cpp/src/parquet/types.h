@@ -137,7 +137,7 @@ struct DecimalMetadata {
 
 }  // namespace schema
 
-/// \brief Implementation of parquet.thrift LogicalType types.
+/// Implementation of parquet.thrift LogicalType types.
 class PARQUET_EXPORT LogicalType {
  public:
   struct Type {
@@ -166,18 +166,18 @@ class PARQUET_EXPORT LogicalType {
     enum unit { UNKNOWN = 0, MILLIS = 1, MICROS, NANOS };
   };
 
-  /// \brief If possible, return a logical type equivalent to the given legacy
+  /// If possible, return a logical type equivalent to the given legacy
   /// converted type (and decimal metadata if applicable).
   static std::shared_ptr<const LogicalType> FromConvertedType(
       const parquet::ConvertedType::type converted_type,
       const parquet::schema::DecimalMetadata converted_decimal_metadata = {false, -1,
                                                                            -1});
 
-  /// \brief Return the logical type represented by the Thrift intermediary object.
+  /// Return the logical type represented by the Thrift intermediary object.
   static std::shared_ptr<const LogicalType> FromThrift(
       const parquet::format::LogicalType& thrift_logical_type);
 
-  /// \brief Return the explicitly requested logical type.
+  /// Return the explicitly requested logical type.
   static std::shared_ptr<const LogicalType> String();
   static std::shared_ptr<const LogicalType> Map();
   static std::shared_ptr<const LogicalType> List();
@@ -187,13 +187,13 @@ class PARQUET_EXPORT LogicalType {
   static std::shared_ptr<const LogicalType> Time(bool is_adjusted_to_utc,
                                                  LogicalType::TimeUnit::unit time_unit);
 
-  /// \brief Create a Timestamp logical type
-  /// \param[in] is_adjusted_to_utc set true if the data is UTC-normalized
-  /// \param[in] time_unit the resolution of the timestamp
-  /// \param[in] is_from_converted_type if true, the timestamp was generated
+  /// Create a Timestamp logical type
+  /// :param is_adjusted_to_utc: set true if the data is UTC-normalized
+  /// :param time_unit: the resolution of the timestamp
+  /// :param is_from_converted_type: if true, the timestamp was generated
   /// by translating a legacy converted type of TIMESTAMP_MILLIS or
   /// TIMESTAMP_MICROS. Default is false.
-  /// \param[in] force_set_converted_type if true, always set the
+  /// :param force_set_converted_type: if true, always set the
   /// legacy ConvertedType TIMESTAMP_MICROS and TIMESTAMP_MILLIS
   /// metadata. Default is false
   static std::shared_ptr<const LogicalType> Timestamp(
@@ -203,7 +203,7 @@ class PARQUET_EXPORT LogicalType {
   static std::shared_ptr<const LogicalType> Interval();
   static std::shared_ptr<const LogicalType> Int(int bit_width, bool is_signed);
 
-  /// \brief Create a logical type for data that's always null
+  /// Create a logical type for data that's always null
   ///
   /// Any physical type can be annotated with this logical type.
   static std::shared_ptr<const LogicalType> Null();
@@ -213,41 +213,41 @@ class PARQUET_EXPORT LogicalType {
   static std::shared_ptr<const LogicalType> UUID();
   static std::shared_ptr<const LogicalType> Float16();
 
-  /// \brief Create a placeholder for when no logical type is specified
+  /// Create a placeholder for when no logical type is specified
   static std::shared_ptr<const LogicalType> None();
 
-  /// \brief Return true if this logical type is consistent with the given underlying
+  /// Return true if this logical type is consistent with the given underlying
   /// physical type.
   bool is_applicable(parquet::Type::type primitive_type,
                      int32_t primitive_length = -1) const;
 
-  /// \brief Return true if this logical type is equivalent to the given legacy converted
+  /// Return true if this logical type is equivalent to the given legacy converted
   /// type (and decimal metadata if applicable).
   bool is_compatible(parquet::ConvertedType::type converted_type,
                      parquet::schema::DecimalMetadata converted_decimal_metadata = {
                          false, -1, -1}) const;
 
-  /// \brief If possible, return the legacy converted type (and decimal metadata if
+  /// If possible, return the legacy converted type (and decimal metadata if
   /// applicable) equivalent to this logical type.
   parquet::ConvertedType::type ToConvertedType(
       parquet::schema::DecimalMetadata* out_decimal_metadata) const;
 
-  /// \brief Return a printable representation of this logical type.
+  /// Return a printable representation of this logical type.
   std::string ToString() const;
 
-  /// \brief Return a JSON representation of this logical type.
+  /// Return a JSON representation of this logical type.
   std::string ToJSON() const;
 
-  /// \brief Return a serializable Thrift object for this logical type.
+  /// Return a serializable Thrift object for this logical type.
   parquet::format::LogicalType ToThrift() const;
 
-  /// \brief Return true if the given logical type is equivalent to this logical type.
+  /// Return true if the given logical type is equivalent to this logical type.
   bool Equals(const LogicalType& other) const;
 
-  /// \brief Return the enumerated type of this logical type.
+  /// Return the enumerated type of this logical type.
   LogicalType::Type::type type() const;
 
-  /// \brief Return the appropriate sort order for this logical type.
+  /// Return the appropriate sort order for this logical type.
   SortOrder::type sort_order() const;
 
   // Type checks ...
@@ -267,13 +267,13 @@ class PARQUET_EXPORT LogicalType {
   bool is_UUID() const;
   bool is_float16() const;
   bool is_none() const;
-  /// \brief Return true if this logical type is of a known type.
+  /// Return true if this logical type is of a known type.
   bool is_valid() const;
   bool is_invalid() const;
-  /// \brief Return true if this logical type is suitable for a schema GroupNode.
+  /// Return true if this logical type is suitable for a schema GroupNode.
   bool is_nested() const;
   bool is_nonnested() const;
-  /// \brief Return true if this logical type is included in the Thrift output for its
+  /// Return true if this logical type is included in the Thrift output for its
   /// node.
   bool is_serialized() const;
 
@@ -288,7 +288,7 @@ class PARQUET_EXPORT LogicalType {
   std::unique_ptr<const Impl> impl_;
 };
 
-/// \brief Allowed for physical type BYTE_ARRAY, must be encoded as UTF-8.
+/// Allowed for physical type BYTE_ARRAY, must be encoded as UTF-8.
 class PARQUET_EXPORT StringLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -297,7 +297,7 @@ class PARQUET_EXPORT StringLogicalType : public LogicalType {
   StringLogicalType() = default;
 };
 
-/// \brief Allowed for group nodes only.
+/// Allowed for group nodes only.
 class PARQUET_EXPORT MapLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -306,7 +306,7 @@ class PARQUET_EXPORT MapLogicalType : public LogicalType {
   MapLogicalType() = default;
 };
 
-/// \brief Allowed for group nodes only.
+/// Allowed for group nodes only.
 class PARQUET_EXPORT ListLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -315,7 +315,7 @@ class PARQUET_EXPORT ListLogicalType : public LogicalType {
   ListLogicalType() = default;
 };
 
-/// \brief Allowed for physical type BYTE_ARRAY, must be encoded as UTF-8.
+/// Allowed for physical type BYTE_ARRAY, must be encoded as UTF-8.
 class PARQUET_EXPORT EnumLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -324,7 +324,7 @@ class PARQUET_EXPORT EnumLogicalType : public LogicalType {
   EnumLogicalType() = default;
 };
 
-/// \brief Allowed for physical type INT32, INT64, FIXED_LEN_BYTE_ARRAY, or BYTE_ARRAY,
+/// Allowed for physical type INT32, INT64, FIXED_LEN_BYTE_ARRAY, or BYTE_ARRAY,
 /// depending on the precision.
 class PARQUET_EXPORT DecimalLogicalType : public LogicalType {
  public:
@@ -336,7 +336,7 @@ class PARQUET_EXPORT DecimalLogicalType : public LogicalType {
   DecimalLogicalType() = default;
 };
 
-/// \brief Allowed for physical type INT32.
+/// Allowed for physical type INT32.
 class PARQUET_EXPORT DateLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -345,7 +345,7 @@ class PARQUET_EXPORT DateLogicalType : public LogicalType {
   DateLogicalType() = default;
 };
 
-/// \brief Allowed for physical type INT32 (for MILLIS) or INT64 (for MICROS and NANOS).
+/// Allowed for physical type INT32 (for MILLIS) or INT64 (for MICROS and NANOS).
 class PARQUET_EXPORT TimeLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make(bool is_adjusted_to_utc,
@@ -357,7 +357,7 @@ class PARQUET_EXPORT TimeLogicalType : public LogicalType {
   TimeLogicalType() = default;
 };
 
-/// \brief Allowed for physical type INT64.
+/// Allowed for physical type INT64.
 class PARQUET_EXPORT TimestampLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make(bool is_adjusted_to_utc,
@@ -367,10 +367,10 @@ class PARQUET_EXPORT TimestampLogicalType : public LogicalType {
   bool is_adjusted_to_utc() const;
   LogicalType::TimeUnit::unit time_unit() const;
 
-  /// \brief If true, will not set LogicalType in Thrift metadata
+  /// If true, will not set LogicalType in Thrift metadata
   bool is_from_converted_type() const;
 
-  /// \brief If true, will set ConvertedType for micros and millis
+  /// If true, will set ConvertedType for micros and millis
   /// resolution in legacy ConvertedType Thrift metadata
   bool force_set_converted_type() const;
 
@@ -378,7 +378,7 @@ class PARQUET_EXPORT TimestampLogicalType : public LogicalType {
   TimestampLogicalType() = default;
 };
 
-/// \brief Allowed for physical type FIXED_LEN_BYTE_ARRAY with length 12
+/// Allowed for physical type FIXED_LEN_BYTE_ARRAY with length 12
 class PARQUET_EXPORT IntervalLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -387,7 +387,7 @@ class PARQUET_EXPORT IntervalLogicalType : public LogicalType {
   IntervalLogicalType() = default;
 };
 
-/// \brief Allowed for physical type INT32 (for bit widths 8, 16, and 32) and INT64
+/// Allowed for physical type INT32 (for bit widths 8, 16, and 32) and INT64
 /// (for bit width 64).
 class PARQUET_EXPORT IntLogicalType : public LogicalType {
  public:
@@ -399,7 +399,7 @@ class PARQUET_EXPORT IntLogicalType : public LogicalType {
   IntLogicalType() = default;
 };
 
-/// \brief Allowed for any physical type.
+/// Allowed for any physical type.
 class PARQUET_EXPORT NullLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -408,7 +408,7 @@ class PARQUET_EXPORT NullLogicalType : public LogicalType {
   NullLogicalType() = default;
 };
 
-/// \brief Allowed for physical type BYTE_ARRAY.
+/// Allowed for physical type BYTE_ARRAY.
 class PARQUET_EXPORT JSONLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -417,7 +417,7 @@ class PARQUET_EXPORT JSONLogicalType : public LogicalType {
   JSONLogicalType() = default;
 };
 
-/// \brief Allowed for physical type BYTE_ARRAY.
+/// Allowed for physical type BYTE_ARRAY.
 class PARQUET_EXPORT BSONLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -426,7 +426,7 @@ class PARQUET_EXPORT BSONLogicalType : public LogicalType {
   BSONLogicalType() = default;
 };
 
-/// \brief Allowed for physical type FIXED_LEN_BYTE_ARRAY with length 16,
+/// Allowed for physical type FIXED_LEN_BYTE_ARRAY with length 16,
 /// must encode raw UUID bytes.
 class PARQUET_EXPORT UUIDLogicalType : public LogicalType {
  public:
@@ -436,7 +436,7 @@ class PARQUET_EXPORT UUIDLogicalType : public LogicalType {
   UUIDLogicalType() = default;
 };
 
-/// \brief Allowed for physical type FIXED_LEN_BYTE_ARRAY with length 2,
+/// Allowed for physical type FIXED_LEN_BYTE_ARRAY with length 2,
 /// must encode raw FLOAT16 bytes.
 class PARQUET_EXPORT Float16LogicalType : public LogicalType {
  public:
@@ -446,7 +446,7 @@ class PARQUET_EXPORT Float16LogicalType : public LogicalType {
   Float16LogicalType() = default;
 };
 
-/// \brief Allowed for any physical type.
+/// Allowed for any physical type.
 class PARQUET_EXPORT NoLogicalType : public LogicalType {
  public:
   static std::shared_ptr<const LogicalType> Make();
@@ -491,7 +491,7 @@ enum class ExposedEncoding {
   DICTIONARY = 1
 };
 
-/// \brief Return true if Parquet supports indicated compression type
+/// Return true if Parquet supports indicated compression type
 PARQUET_EXPORT
 bool IsCodecSupported(Compression::type codec);
 
@@ -549,7 +549,7 @@ class ColumnOrder {
   ColumnOrder::type column_order_;
 };
 
-/// \brief BoundaryOrder is a proxy around format::BoundaryOrder.
+/// BoundaryOrder is a proxy around format::BoundaryOrder.
 struct BoundaryOrder {
   enum type {
     Unordered = 0,
@@ -560,7 +560,7 @@ struct BoundaryOrder {
   };
 };
 
-/// \brief SortingColumn is a proxy around format::SortingColumn.
+/// SortingColumn is a proxy around format::SortingColumn.
 struct PARQUET_EXPORT SortingColumn {
   // The column index (in this row group)
   int32_t column_idx;

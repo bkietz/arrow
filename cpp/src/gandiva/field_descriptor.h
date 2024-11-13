@@ -23,7 +23,7 @@
 
 namespace gandiva {
 
-/// \brief Descriptor for an arrow field. Holds indexes into the flattened array of
+/// Descriptor for an arrow field. Holds indexes into the flattened array of
 /// buffers that is passed to LLVM generated functions.
 class FieldDescriptor {
  public:

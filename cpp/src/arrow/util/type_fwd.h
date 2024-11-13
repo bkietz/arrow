@@ -44,7 +44,7 @@ struct Scope;
 }  // namespace internal
 
 struct Compression {
-  /// \brief Compression algorithm
+  /// Compression algorithm
   enum type {
     UNCOMPRESSED,
     SNAPPY,

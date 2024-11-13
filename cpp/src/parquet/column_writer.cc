@@ -504,7 +504,7 @@ class SerializedPageWriter : public PageWriter {
     page_header.__set_data_page_header_v2(data_page_header);
   }
 
-  /// \brief Finish page index builders and update the stream offset to adjust
+  /// Finish page index builders and update the stream offset to adjust
   /// page offsets.
   void FinishPageIndexes(int64_t final_position) {
     if (column_index_builder_ != nullptr) {
@@ -1609,18 +1609,18 @@ class TypedColumnWriterImpl : public ColumnWriterImpl, public TypedColumnWriter<
     }
   }
 
-  /// \brief Write values with spaces and update page statistics accordingly.
+  /// Write values with spaces and update page statistics accordingly.
   ///
-  /// \param values input buffer of values to write, including spaces.
-  /// \param num_values number of non-null values in the values buffer.
-  /// \param num_spaced_values length of values buffer, including spaces and does not
+  /// :param values: input buffer of values to write, including spaces.
+  /// :param num_values: number of non-null values in the values buffer.
+  /// :param num_spaced_values: length of values buffer, including spaces and does not
   ///   count some nulls from ancestor (e.g. empty lists).
-  /// \param valid_bits validity bitmap of values buffer, which does not include some
+  /// :param valid_bits: validity bitmap of values buffer, which does not include some
   ///   nulls from ancestor (e.g. empty lists).
-  /// \param valid_bits_offset offset to valid_bits bitmap.
-  /// \param num_levels number of levels to write, including nulls from values buffer
+  /// :param valid_bits_offset: offset to valid_bits bitmap.
+  /// :param num_levels: number of levels to write, including nulls from values buffer
   ///   and nulls from ancestor (e.g. empty lists).
-  /// \param num_nulls number of nulls in the values buffer as well as nulls from the
+  /// :param num_nulls: number of nulls in the values buffer as well as nulls from the
   ///   ancestor (e.g. empty lists).
   void WriteValuesSpaced(const T* values, int64_t num_values, int64_t num_spaced_values,
                          const uint8_t* valid_bits, int64_t valid_bits_offset,

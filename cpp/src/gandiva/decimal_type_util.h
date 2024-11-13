@@ -27,7 +27,7 @@
 
 namespace gandiva {
 
-/// @brief Handles conversion of scale/precision for operations on decimal types.
+/// Handles conversion of scale/precision for operations on decimal types.
 /// TODO : do validations for all of these.
 class GANDIVA_EXPORT DecimalTypeUtil {
  public:

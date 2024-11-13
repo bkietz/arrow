@@ -25,8 +25,8 @@ namespace flight {
 namespace sql {
 namespace example {
 
-/// \brief Gets the mapping from SQL info ids to SqlInfoResult instances.
-/// \return the cache.
+/// Gets the mapping from SQL info ids to SqlInfoResult instances.
+/// :return: the cache.
 SqlInfoResultMap GetSqlInfoResultMap() {
   return {
       {SqlInfoOptions::SqlInfo::FLIGHT_SQL_SERVER_NAME,

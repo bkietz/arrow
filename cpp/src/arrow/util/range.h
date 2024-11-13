@@ -151,10 +151,10 @@ LazyRange<Generator> MakeLazyRange(Generator&& gen, int64_t length) {
   return LazyRange<Generator>(std::forward<Generator>(gen), length);
 }
 
-/// \brief A helper for iterating multiple ranges simultaneously, similar to C++23's
+/// A helper for iterating multiple ranges simultaneously, similar to C++23's
 /// zip() view adapter modelled after python's built-in zip() function.
 ///
-/// \code {.cpp}
+/// ```
 /// const std::vector<SomeTable>& tables = ...
 /// std::function<std::vector<std::string>()> GetNames = ...
 /// for (auto [table, name] : Zip(tables, GetNames())) {
@@ -164,7 +164,7 @@ LazyRange<Generator> MakeLazyRange(Generator&& gen, int64_t length) {
 ///   // duration of a loop and are safely movable).
 ///   RegisterTableWithName(std::move(name), &table);
 /// }
-/// \endcode
+/// ```
 ///
 /// The zipped sequence ends as soon as any of its member ranges ends.
 ///
@@ -220,17 +220,17 @@ struct Zip<std::tuple<Ranges...>, std::index_sequence<I...>> {
   constexpr iterator begin() { return {std::begin(std::get<I>(ranges_))...}; }
 };
 
-/// \brief A lazy sequence of integers which starts from 0 and never stops.
+/// A lazy sequence of integers which starts from 0 and never stops.
 ///
 /// This can be used in conjunction with Zip() to emulate python's built-in
 /// enumerate() function:
 ///
-/// \code {.cpp}
+/// ```
 /// const std::vector<SomeTable>& tables = ...
 /// for (auto [i, table] : Zip(Enumerate<>, tables)) {
 ///   std::cout << "#" << i << ": " << table.name() << std::endl;
 /// }
-/// \endcode
+/// ```
 template <typename I = size_t>
 constexpr auto Enumerate = [] {
   struct {

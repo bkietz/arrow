@@ -80,7 +80,7 @@ class ARROW_EXPORT CpuInfo {
   /// Returns the size of the cache in KB at this cache level
   int64_t CacheSize(CacheLevel level) const;
 
-  /// \brief Returns whether or not the given feature is enabled.
+  /// Returns whether or not the given feature is enabled.
   ///
   /// IsSupported() is true iff IsDetected() is also true and the feature
   /// wasn't disabled by the user (for example by setting the ARROW_USER_SIMD_LEVEL

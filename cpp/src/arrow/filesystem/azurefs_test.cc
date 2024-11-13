@@ -62,9 +62,9 @@ namespace DataLake = Azure::Storage::Files::DataLake;
 using HNSSupport = internal::HierarchicalNamespaceSupport;
 
 enum class AzureBackend {
-  /// \brief Official Azure Remote Backend
+  /// Official Azure Remote Backend
   kAzure,
-  /// \brief Local Simulated Storage
+  /// Local Simulated Storage
   kAzurite
 };
 
@@ -94,7 +94,7 @@ class BaseAzureEnv : public ::testing::Environment {
 template <class AzureEnvClass>
 class AzureEnvImpl : public BaseAzureEnv {
  private:
-  /// \brief Factory function that registers the singleton instance as a global test
+  /// Factory function that registers the singleton instance as a global test
   /// environment. Must be called only once per implementation (see GetInstance()).
   ///
   /// Every BaseAzureEnv implementation defines a static and parameter-less member
@@ -114,7 +114,7 @@ class AzureEnvImpl : public BaseAzureEnv {
  protected:
   using BaseAzureEnv::BaseAzureEnv;
 
-  /// \brief Create an AzureEnvClass instance from environment variables.
+  /// Create an AzureEnvClass instance from environment variables.
   ///
   /// Reads the account name and key from the environment variables. This can be
   /// used in BaseAzureEnv implementations that don't need to do any additional
@@ -1639,7 +1639,7 @@ class TestAzureFileSystem : public ::testing::Test {
                                 "' does not exist.");
   }
 
-  /// \brief Expected POSIX semantics for the rename operation on multiple
+  /// Expected POSIX semantics for the rename operation on multiple
   /// scenarios.
   ///
   /// If the src doesn't exist, the error is always ENOENT, otherwise we are
@@ -1661,8 +1661,8 @@ class TestAzureFileSystem : public ::testing::Test {
   /// paths don't lead requests for moves that would make the source a subdir of
   /// the destination.
   ///
-  /// \param paths_are_equal src and dest paths without trailing slashes are equal
-  /// \return std::nullopt if success is expected in the scenario or the errno
+  /// :param paths_are_equal: src and dest paths without trailing slashes are equal
+  /// :return: std::nullopt if success is expected in the scenario or the errno
   /// if failure is expected.
   static std::optional<int> RenameSemantics(FileType src_type, bool src_trailing_slash,
                                             FileType dest_type, bool dest_trailing_slash,
@@ -2124,7 +2124,7 @@ class AzureFileSystemTestImpl : public TestAzureFileSystem {
 
   Result<BaseAzureEnv*> GetAzureEnv() const final { return AzureEnvClass::GetInstance(); }
 
-  /// \brief HNSSupport value that should be assumed as the cached
+  /// HNSSupport value that should be assumed as the cached
   /// HNSSupport on every fs()->Operation(...) call in tests.
   ///
   /// If TestingScenario::kHNSSupportShouldBeKnown is true, this value

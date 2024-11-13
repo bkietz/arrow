@@ -40,7 +40,7 @@ namespace arrow::dataset {
 
 constexpr char kJsonTypeName[] = "json";
 
-/// \brief A FileFormat implementation that reads from JSON files
+/// A FileFormat implementation that reads from JSON files
 class ARROW_DS_EXPORT JsonFileFormat : public FileFormat {
  public:
   JsonFileFormat();
@@ -80,16 +80,16 @@ class ARROW_DS_EXPORT JsonFileFormat : public FileFormat {
   std::shared_ptr<FileWriteOptions> DefaultWriteOptions() override { return NULLPTR; }
 };
 
-/// \brief Per-scan options for JSON fragments
+/// Per-scan options for JSON fragments
 struct ARROW_DS_EXPORT JsonFragmentScanOptions : public FragmentScanOptions {
   std::string type_name() const override { return kJsonTypeName; }
 
-  /// @brief Options that affect JSON parsing
+  /// Options that affect JSON parsing
   ///
   /// Note: `explicit_schema` and `unexpected_field_behavior` are ignored.
   json::ParseOptions parse_options = json::ParseOptions::Defaults();
 
-  /// @brief Options that affect JSON reading
+  /// Options that affect JSON reading
   json::ReadOptions read_options = json::ReadOptions::Defaults();
 };
 

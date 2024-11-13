@@ -31,7 +31,7 @@ namespace util {
 
 using arrow::compute::ExecBatch;
 
-/// \brief A container that accumulates batches until they are ready to
+/// A container that accumulates batches until they are ready to
 ///        be processed.
 class AccumulationQueue {
  public:
@@ -84,7 +84,7 @@ class SequencingQueue {
     /// safe to do things that rely on order but minimal time should be spent here
     /// to avoid becoming a bottleneck.
     ///
-    /// \return a follow-up task that will be scheduled.  The follow-up task(s) are
+    /// :return: a follow-up task that will be scheduled.  The follow-up task(s) are
     ///         is not guaranteed to run in any particular order.  If nullopt is
     ///         returned then nothing will be scheduled.
     virtual Result<std::optional<Task>> Process(ExecBatch batch) = 0;
@@ -109,7 +109,7 @@ class SequencingQueue {
   virtual Status InsertBatch(ExecBatch batch) = 0;
 
   /// Create a queue
-  /// \param processor describes how to process the batches, must outlive the queue
+  /// :param processor: describes how to process the batches, must outlive the queue
   static std::unique_ptr<SequencingQueue> Make(Processor* processor);
 };
 
@@ -152,7 +152,7 @@ class SerialSequencingQueue {
   virtual Status InsertBatch(ExecBatch batch) = 0;
 
   /// Create a queue
-  /// \param processor describes how to process the batches, must outlive the queue
+  /// :param processor: describes how to process the batches, must outlive the queue
   static std::unique_ptr<SerialSequencingQueue> Make(Processor* processor);
 };
 

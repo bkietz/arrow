@@ -26,7 +26,7 @@
 
 namespace gandiva {
 
-/// \brief Utility class for converting sql patterns to pcre patterns.
+/// Utility class for converting sql patterns to pcre patterns.
 class GANDIVA_EXPORT RegexUtil {
  public:
   // Convert an sql pattern to a pcre pattern

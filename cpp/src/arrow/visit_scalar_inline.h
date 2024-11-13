@@ -33,12 +33,12 @@ namespace arrow {
     return visitor->Visit(internal::checked_cast<const TYPE_CLASS##Scalar&>(scalar), \
                           std::forward<ARGS>(args)...);
 
-/// \brief Apply the visitors Visit() method specialized to the scalar type
+/// Apply the visitors Visit() method specialized to the scalar type
 ///
-/// \tparam VISITOR Visitor type that implements Visit() for all scalar types.
-/// \tparam ARGS Additional arguments, if any, will be passed to the Visit function after
+/// :param VISITOR: Visitor type that implements Visit() for all scalar types.
+/// :param ARGS: Additional arguments, if any, will be passed to the Visit function after
 /// the `scalar` argument
-/// \return Status
+/// :return: Status
 ///
 /// A visitor is a type that implements specialized logic for each Arrow type.
 /// Example usage:

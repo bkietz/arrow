@@ -93,7 +93,7 @@ arrow::Result<std::shared_ptr<arrow::RecordBatch>> GetSampleRecordBatch(
   return record_batch->FromStructArray(struct_result);
 }
 
-/// \brief Create a sample table
+/// Create a sample table
 /// The table's contents will be:
 /// a,b
 /// 1,null
@@ -106,7 +106,7 @@ arrow::Result<std::shared_ptr<arrow::RecordBatch>> GetSampleRecordBatch(
 /// 6,false
 /// 7,false
 /// 8,true
-/// \return The created table
+/// :return: The created table
 
 arrow::Result<std::shared_ptr<arrow::Table>> GetTable() {
   auto null_long = std::numeric_limits<int64_t>::quiet_NaN();
@@ -136,8 +136,8 @@ arrow::Result<std::shared_ptr<arrow::Table>> GetTable() {
   return table;
 }
 
-/// \brief Create a sample dataset
-/// \return An in-memory dataset based on GetTable()
+/// Create a sample dataset
+/// :return: An in-memory dataset based on GetTable()
 arrow::Result<std::shared_ptr<arrow::dataset::Dataset>> GetDataset() {
   ARROW_ASSIGN_OR_RAISE(auto table, GetTable());
   auto ds = std::make_shared<arrow::dataset::InMemoryDataset>(table);
@@ -269,7 +269,7 @@ arrow::Status ExecutePlanAndCollectAsTable(ac::Declaration plan) {
 
 // (Doc section: Scan Example)
 
-/// \brief An example demonstrating a scan and sink node
+/// An example demonstrating a scan and sink node
 ///
 /// Scan-Table
 /// This example shows how scan operation can be applied on a dataset.
@@ -292,7 +292,7 @@ arrow::Status ScanSinkExample() {
 
 // (Doc section: Source Example)
 
-/// \brief An example demonstrating a source and sink node
+/// An example demonstrating a source and sink node
 ///
 /// Source-Table Example
 /// This example shows how a custom source can be used
@@ -315,7 +315,7 @@ arrow::Status SourceSinkExample() {
 
 // (Doc section: Table Source Example)
 
-/// \brief An example showing a table source node
+/// An example showing a table source node
 ///
 /// TableSource-Table Example
 /// This example shows how a table_source can be used
@@ -338,7 +338,7 @@ arrow::Status TableSourceSinkExample() {
 
 // (Doc section: Filter Example)
 
-/// \brief An example showing a filter node
+/// An example showing a filter node
 ///
 /// Source-Filter-Table
 /// This example shows how a filter can be used in an execution plan,
@@ -379,7 +379,7 @@ arrow::Status ScanFilterSinkExample() {
 
 // (Doc section: Project Example)
 
-/// \brief An example showing a project node
+/// An example showing a project node
 ///
 /// Scan-Project-Table
 /// This example shows how a Scan operation can be used to load the data
@@ -428,7 +428,7 @@ arrow::Status ScanProjectSequenceSinkExample() {
 
 // (Doc section: Scalar Aggregate Example)
 
-/// \brief An example showing an aggregation node to aggregate an entire table
+/// An example showing an aggregation node to aggregate an entire table
 ///
 /// Source-Aggregation-Table
 /// This example shows how an aggregation operation can be applied on a
@@ -453,7 +453,7 @@ arrow::Status SourceScalarAggregateSinkExample() {
 
 // (Doc section: Group Aggregate Example)
 
-/// \brief An example showing an aggregation node to perform a group-by operation
+/// An example showing an aggregation node to perform a group-by operation
 ///
 /// Source-Aggregation-Table
 /// This example shows how an aggregation operation can be applied on a
@@ -482,7 +482,7 @@ arrow::Status SourceGroupAggregateSinkExample() {
 
 // (Doc section: ConsumingSink Example)
 
-/// \brief An example showing a consuming sink node
+/// An example showing a consuming sink node
 ///
 /// Source-Consuming-Sink
 /// This example shows how the data can be consumed within the execution plan
@@ -571,7 +571,7 @@ arrow::Status ExecutePlanAndCollectAsTableWithCustomSink(
   return future.status();
 }
 
-/// \brief An example showing an order-by node
+/// An example showing an order-by node
 ///
 /// Source-OrderBy-Sink
 /// In this example, the data enters through the source node
@@ -602,7 +602,7 @@ arrow::Status SourceOrderBySinkExample() {
 
 // (Doc section: HashJoin Example)
 
-/// \brief An example showing a hash join node
+/// An example showing a hash join node
 ///
 /// Source-HashJoin-Table
 /// This example shows how source node gets the data and how a self-join
@@ -629,7 +629,7 @@ arrow::Status SourceHashJoinSinkExample() {
 
 // (Doc section: KSelect Example)
 
-/// \brief An example showing a select-k node
+/// An example showing a select-k node
 ///
 /// Source-KSelect
 /// This example shows how K number of elements can be selected
@@ -661,8 +661,8 @@ arrow::Status SourceKSelectExample() {
 
 // (Doc section: Write Example)
 
-/// \brief An example showing a write node
-/// \param file_path The destination to write to
+/// An example showing a write node
+/// :param file_path: The destination to write to
 ///
 /// Scan-Filter-Write
 /// This example shows how scan node can be used to load the data
@@ -723,7 +723,7 @@ arrow::Status ScanFilterWriteExample(const std::string& file_path) {
 
 // (Doc section: Union Example)
 
-/// \brief An example showing a union node
+/// An example showing a union node
 ///
 /// Source-Union-Table
 /// This example shows how a union operation can be applied on two
@@ -747,7 +747,7 @@ arrow::Status SourceUnionSinkExample() {
 
 // (Doc section: Table Sink Example)
 
-/// \brief An example showing a table sink node
+/// An example showing a table sink node
 ///
 /// TableSink Example
 /// This example shows how a table_sink can be used
@@ -787,7 +787,7 @@ arrow::Status TableSinkExample() {
 
 // (Doc section: RecordBatchReaderSource Example)
 
-/// \brief An example showing the usage of a RecordBatchReader as the data source.
+/// An example showing the usage of a RecordBatchReader as the data source.
 ///
 /// RecordBatchReaderSourceSink Example
 /// This example shows how a record_batch_reader_source can be used

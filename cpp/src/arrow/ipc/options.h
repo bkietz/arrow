@@ -39,36 +39,36 @@ namespace ipc {
 // maximum allowed recursion depth
 constexpr int kMaxNestingDepth = 64;
 
-/// \brief Options for writing Arrow IPC messages
+/// Options for writing Arrow IPC messages
 struct ARROW_EXPORT IpcWriteOptions {
-  /// \brief If true, allow field lengths that don't fit in a signed 32-bit int.
+  /// If true, allow field lengths that don't fit in a signed 32-bit int.
   ///
   /// Some implementations may not be able to parse streams created with this option.
   bool allow_64bit = false;
 
-  /// \brief The maximum permitted schema nesting depth.
+  /// The maximum permitted schema nesting depth.
   int max_recursion_depth = kMaxNestingDepth;
 
-  /// \brief Write padding after memory buffers up to this multiple of bytes.
+  /// Write padding after memory buffers up to this multiple of bytes.
   int32_t alignment = 8;
 
-  /// \brief Write the pre-0.15.0 IPC message format
+  /// Write the pre-0.15.0 IPC message format
   ///
   /// This legacy format consists of a 4-byte prefix instead of 8-byte.
   bool write_legacy_ipc_format = false;
 
-  /// \brief The memory pool to use for allocations made during IPC writing
+  /// The memory pool to use for allocations made during IPC writing
   ///
   /// While Arrow IPC is predominantly zero-copy, it may have to allocate
   /// memory in some cases (for example if compression is enabled).
   MemoryPool* memory_pool = default_memory_pool();
 
-  /// \brief Compression codec to use for record batch body buffers
+  /// Compression codec to use for record batch body buffers
   ///
   /// May only be UNCOMPRESSED, LZ4_FRAME and ZSTD.
   std::shared_ptr<util::Codec> codec;
 
-  /// \brief Minimum space savings percentage required for compression to be applied
+  /// Minimum space savings percentage required for compression to be applied
   ///
   /// Space savings is calculated as (1.0 - compressed_size / uncompressed_size).
   ///
@@ -83,11 +83,11 @@ struct ARROW_EXPORT IpcWriteOptions {
   /// prior to 12.0.0.
   std::optional<double> min_space_savings;
 
-  /// \brief Use global CPU thread pool to parallelize any computational tasks
+  /// Use global CPU thread pool to parallelize any computational tasks
   /// like compression
   bool use_threads = true;
 
-  /// \brief Whether to emit dictionary deltas
+  /// Whether to emit dictionary deltas
   ///
   /// If false, a changed dictionary for a given field will emit a full
   /// dictionary replacement.
@@ -101,7 +101,7 @@ struct ARROW_EXPORT IpcWriteOptions {
   /// then a delta is never emitted, for compatibility with the read path.
   bool emit_dictionary_deltas = false;
 
-  /// \brief Whether to unify dictionaries for the IPC file format
+  /// Whether to unify dictionaries for the IPC file format
   ///
   /// The IPC file format doesn't support dictionary replacements.
   /// Therefore, chunks of a column with a dictionary type must have the same
@@ -119,7 +119,7 @@ struct ARROW_EXPORT IpcWriteOptions {
   /// and deltas.
   bool unify_dictionaries = false;
 
-  /// \brief Format version to use for IPC messages and their metadata.
+  /// Format version to use for IPC messages and their metadata.
   ///
   /// Presently using V5 version (readable by 1.0.0 and later).
   /// V4 is also available (readable by 0.8.0 and later).
@@ -128,28 +128,28 @@ struct ARROW_EXPORT IpcWriteOptions {
   static IpcWriteOptions Defaults();
 };
 
-/// \brief Options for reading Arrow IPC messages
+/// Options for reading Arrow IPC messages
 struct ARROW_EXPORT IpcReadOptions {
-  /// \brief The maximum permitted schema nesting depth.
+  /// The maximum permitted schema nesting depth.
   int max_recursion_depth = kMaxNestingDepth;
 
-  /// \brief The memory pool to use for allocations made during IPC reading
+  /// The memory pool to use for allocations made during IPC reading
   ///
   /// While Arrow IPC is predominantly zero-copy, it may have to allocate
   /// memory in some cases (for example if compression is enabled).
   MemoryPool* memory_pool = default_memory_pool();
 
-  /// \brief Top-level schema fields to include when deserializing RecordBatch.
+  /// Top-level schema fields to include when deserializing RecordBatch.
   ///
   /// If empty (the default), return all deserialized fields.
   /// If non-empty, the values are the indices of fields in the top-level schema.
   std::vector<int> included_fields;
 
-  /// \brief Use global CPU thread pool to parallelize any computational tasks
+  /// Use global CPU thread pool to parallelize any computational tasks
   /// like decompression
   bool use_threads = true;
 
-  /// \brief Whether to convert incoming data to platform-native endianness
+  /// Whether to convert incoming data to platform-native endianness
   ///
   /// If the endianness of the received schema is not equal to platform-native
   /// endianness, then all buffers with endian-sensitive data will be byte-swapped.
@@ -161,7 +161,7 @@ struct ARROW_EXPORT IpcReadOptions {
   /// RecordBatchStreamReader and StreamDecoder classes.
   bool ensure_native_endian = true;
 
-  /// \brief Options to control caching behavior when pre-buffering is requested
+  /// Options to control caching behavior when pre-buffering is requested
   ///
   /// The lazy property will always be reset to true to deliver the expected behavior
   io::CacheOptions pre_buffer_cache_options = io::CacheOptions::LazyDefaults();

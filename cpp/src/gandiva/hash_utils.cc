@@ -58,7 +58,7 @@ const char* gdv_md5_hash(int64_t context, const void* message, size_t message_le
                                 md5_result_length, out_length);
 }
 
-/// \brief Hashes a generic message using SHA algorithm.
+/// Hashes a generic message using SHA algorithm.
 ///
 /// It uses the EVP API in the OpenSSL library to generate
 /// the hash. The type of the hash is defined by the

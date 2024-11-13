@@ -83,7 +83,7 @@ struct ClientRpc {
     }
   }
 
-  /// \brief Add an auth token via an auth handler
+  /// Add an auth token via an auth handler
   Status SetToken(ClientAuthHandler* auth_handler) {
     if (auth_handler) {
       std::string token;
@@ -257,7 +257,7 @@ class GrpcClientAuthReader : public ClientAuthReader {
       stream_;
 };
 
-/// \brief The base of the ClientDataStream implementation for gRPC.
+/// The base of the ClientDataStream implementation for gRPC.
 template <typename Stream, typename ReadPayloadType>
 class FinishableDataStream : public internal::ClientDataStream {
  public:
@@ -312,7 +312,7 @@ class FinishableDataStream : public internal::ClientDataStream {
   Status transport_status_;
 };
 
-/// \brief A ClientDataStream implementation for gRPC that manages a
+/// A ClientDataStream implementation for gRPC that manages a
 ///   mutex to protect from concurrent reads/writes, and drains the
 ///   read side on finish.
 template <typename Stream, typename ReadPayload>
@@ -420,11 +420,11 @@ class GrpcClientExchangeStream
 static constexpr char kBearerPrefix[] = "Bearer ";
 static constexpr char kBasicPrefix[] = "Basic ";
 
-/// \brief Add base64 encoded credentials to the outbound headers.
+/// Add base64 encoded credentials to the outbound headers.
 ///
-/// \param context Context object to add the headers to.
-/// \param username Username to format and encode.
-/// \param password Password to format and encode.
+/// :param context: Context object to add the headers to.
+/// :param username: Username to format and encode.
+/// :param password: Password to format and encode.
 void AddBasicAuthHeaders(::grpc::ClientContext* context, const std::string& username,
                          const std::string& password) {
   const std::string credentials = username + ":" + password;
@@ -432,10 +432,10 @@ void AddBasicAuthHeaders(::grpc::ClientContext* context, const std::string& user
                        kBasicPrefix + arrow::util::base64_encode(credentials));
 }
 
-/// \brief Get bearer token from inbound headers.
+/// Get bearer token from inbound headers.
 ///
-/// \param context Incoming ClientContext that contains headers.
-/// \return Arrow result with bearer token (empty if no bearer token found).
+/// :param context: Incoming ClientContext that contains headers.
+/// :return: Arrow result with bearer token (empty if no bearer token found).
 arrow::Result<std::pair<std::string, std::string>> GetBearerTokenHeader(
     ::grpc::ClientContext& context) {
   // Lambda function to compare characters without case sensitivity.

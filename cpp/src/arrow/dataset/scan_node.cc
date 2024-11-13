@@ -79,7 +79,7 @@ Future<AsyncGenerator<std::shared_ptr<Fragment>>> GetFragments(
       });
 }
 
-/// \brief A node that scans a dataset
+/// A node that scans a dataset
 ///
 /// The scan node has three groups of io-tasks and one task.
 ///

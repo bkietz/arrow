@@ -28,7 +28,7 @@
 
 namespace gandiva {
 
-/// @brief Base class for building IR functions.
+/// Base class for building IR functions.
 class FunctionIRBuilder {
  public:
   explicit FunctionIRBuilder(Engine* engine) : engine_(engine) {}

@@ -48,33 +48,33 @@ class FunctionHolder;
 /// Builds an LLVM module and generates code for the specified set of expressions.
 class GANDIVA_EXPORT LLVMGenerator {
  public:
-  /// \brief Factory method to initialize the generator.
+  /// Factory method to initialize the generator.
   static Result<std::unique_ptr<LLVMGenerator>> Make(
       const std::shared_ptr<Configuration>& config, bool cached,
       std::optional<std::reference_wrapper<GandivaObjectCache>> object_cache =
           std::nullopt);
 
-  /// \brief Get the cache to be used for LLVM ObjectCache.
+  /// Get the cache to be used for LLVM ObjectCache.
   static std::shared_ptr<Cache<ExpressionCacheKey, std::shared_ptr<llvm::MemoryBuffer>>>
   GetCache();
 
-  /// \brief Set LLVM ObjectCache.
+  /// Set LLVM ObjectCache.
   Status SetLLVMObjectCache(GandivaObjectCache& object_cache);
 
-  /// \brief Build the code for the expression trees for default mode with a LLVM
+  /// Build the code for the expression trees for default mode with a LLVM
   /// ObjectCache. Each element in the vector represents an expression tree
   Status Build(const ExpressionVector& exprs, SelectionVector::Mode mode);
 
-  /// \brief Build the code for the expression trees for default mode. Each
+  /// Build the code for the expression trees for default mode. Each
   /// element in the vector represents an expression tree
   Status Build(const ExpressionVector& exprs);
 
-  /// \brief Execute the built expression against the provided arguments for
+  /// Execute the built expression against the provided arguments for
   /// default mode.
   Status Execute(const arrow::RecordBatch& record_batch,
                  const ArrayDataVector& output_vector) const;
 
-  /// \brief Execute the built expression against the provided arguments for
+  /// Execute the built expression against the provided arguments for
   /// all modes. Only works on the records specified in the selection_vector.
   Status Execute(const arrow::RecordBatch& record_batch,
                  const SelectionVector* selection_vector,
@@ -237,10 +237,10 @@ class GANDIVA_EXPORT LLVMGenerator {
 
   /// Compute the result bitmap for the expression.
   ///
-  /// \param[in] compiled_expr the compiled expression (includes the bitmap indices to be
+  /// :param compiled_expr: the compiled expression (includes the bitmap indices to be
   ///            used for computing the validity bitmap of the result).
-  /// \param[in] selection_vector the list of selected positions
-  /// \param[in,out] eval_batch (includes input/output buffer addresses)
+  /// :param selection_vector: the list of selected positions
+  /// :param eval_batch[in,out]: (includes input/output buffer addresses)
   void ComputeBitMapsForExpr(const CompiledExpr& compiled_expr,
                              const SelectionVector* selection_vector,
                              EvalBatch* eval_batch) const;

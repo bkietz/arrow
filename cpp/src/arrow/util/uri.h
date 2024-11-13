@@ -29,7 +29,7 @@
 
 namespace arrow::util {
 
-/// \brief A parsed URI
+/// A parsed URI
 class ARROW_EXPORT Uri {
  public:
   Uri();

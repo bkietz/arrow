@@ -31,7 +31,7 @@
 namespace arrow {
 namespace internal {
 
-/// \brief A group of related tasks
+/// A group of related tasks
 ///
 /// A TaskGroup executes tasks with the signature `Status()`.
 /// Execution can be serial or parallel, depending on the TaskGroup

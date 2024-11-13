@@ -52,7 +52,7 @@ namespace py {
 namespace parquet {
 namespace encryption {
 
-/// \brief A table of function pointers for calling from C++ into
+/// A table of function pointers for calling from C++ into
 /// Python.
 class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyKmsClientVtable {
  public:
@@ -64,7 +64,7 @@ class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyKmsClientVtable {
       unwrap_key;
 };
 
-/// \brief A helper for KmsClient implementation in Python.
+/// A helper for KmsClient implementation in Python.
 class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyKmsClient
     : public ::parquet::encryption::KmsClient {
  public:
@@ -82,7 +82,7 @@ class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyKmsClient
   PyKmsClientVtable vtable_;
 };
 
-/// \brief A table of function pointers for calling from C++ into
+/// A table of function pointers for calling from C++ into
 /// Python.
 class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyKmsClientFactoryVtable {
  public:
@@ -92,7 +92,7 @@ class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyKmsClientFactoryVtable {
       create_kms_client;
 };
 
-/// \brief A helper for KmsClientFactory implementation in Python.
+/// A helper for KmsClientFactory implementation in Python.
 class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyKmsClientFactory
     : public ::parquet::encryption::KmsClientFactory {
  public:
@@ -107,7 +107,7 @@ class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyKmsClientFactory
   PyKmsClientFactoryVtable vtable_;
 };
 
-/// \brief A CryptoFactory that returns Results instead of throwing exceptions.
+/// A CryptoFactory that returns Results instead of throwing exceptions.
 class ARROW_PYTHON_PARQUET_ENCRYPTION_EXPORT PyCryptoFactory
     : public ::parquet::encryption::CryptoFactory {
  public:

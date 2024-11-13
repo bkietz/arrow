@@ -50,7 +50,7 @@ struct ARROW_DS_EXPORT PartitionPathFormat {
 ///
 /// @{
 
-/// \brief Interface for parsing partition expressions from string partition
+/// Interface for parsing partition expressions from string partition
 /// identifiers.
 ///
 /// For example, the identifier "foo=5" might be parsed to an equality expression
@@ -68,15 +68,15 @@ class ARROW_DS_EXPORT Partitioning : public util::EqualityComparable<Partitionin
  public:
   virtual ~Partitioning() = default;
 
-  /// \brief The name identifying the kind of partitioning
+  /// The name identifying the kind of partitioning
   virtual std::string type_name() const = 0;
 
-  //// \brief Return whether the partitionings are equal
+  ///  Return whether the partitionings are equal
   virtual bool Equals(const Partitioning& other) const {
     return schema_->Equals(other.schema_, /*check_metadata=*/false);
   }
 
-  /// \brief If the input batch shares any fields with this partitioning,
+  /// If the input batch shares any fields with this partitioning,
   /// produce sub-batches which satisfy mutually exclusive Expressions.
   struct PartitionedBatches {
     RecordBatchVector batches;
@@ -85,16 +85,16 @@ class ARROW_DS_EXPORT Partitioning : public util::EqualityComparable<Partitionin
   virtual Result<PartitionedBatches> Partition(
       const std::shared_ptr<RecordBatch>& batch) const = 0;
 
-  /// \brief Parse a path into a partition expression
+  /// Parse a path into a partition expression
   virtual Result<compute::Expression> Parse(const std::string& path) const = 0;
 
   virtual Result<PartitionPathFormat> Format(const compute::Expression& expr) const = 0;
 
-  /// \brief A default Partitioning which is a DirectoryPartitioning
+  /// A default Partitioning which is a DirectoryPartitioning
   /// with an empty schema.
   static std::shared_ptr<Partitioning> Default();
 
-  /// \brief The partition schema.
+  /// The partition schema.
   const std::shared_ptr<Schema>& schema() const { return schema_; }
 
  protected:
@@ -103,7 +103,7 @@ class ARROW_DS_EXPORT Partitioning : public util::EqualityComparable<Partitionin
   std::shared_ptr<Schema> schema_;
 };
 
-/// \brief The encoding of partition segments.
+/// The encoding of partition segments.
 enum class SegmentEncoding : int8_t {
   /// No encoding.
   None = 0,
@@ -114,14 +114,14 @@ enum class SegmentEncoding : int8_t {
 ARROW_DS_EXPORT
 std::ostream& operator<<(std::ostream& os, SegmentEncoding segment_encoding);
 
-/// \brief Options for key-value based partitioning (hive/directory).
+/// Options for key-value based partitioning (hive/directory).
 struct ARROW_DS_EXPORT KeyValuePartitioningOptions {
   /// After splitting a path into components, decode the path components
   /// before parsing according to this scheme.
   SegmentEncoding segment_encoding = SegmentEncoding::Uri;
 };
 
-/// \brief Options for inferring a partitioning.
+/// Options for inferring a partitioning.
 struct ARROW_DS_EXPORT PartitioningFactoryOptions {
   /// When inferring a schema for partition fields, yield dictionary encoded types
   /// instead of plain. This can be more efficient when materializing virtual
@@ -139,7 +139,7 @@ struct ARROW_DS_EXPORT PartitioningFactoryOptions {
   KeyValuePartitioningOptions AsPartitioningOptions() const;
 };
 
-/// \brief Options for inferring a hive-style partitioning.
+/// Options for inferring a hive-style partitioning.
 struct ARROW_DS_EXPORT HivePartitioningFactoryOptions : PartitioningFactoryOptions {
   /// The hive partitioning scheme maps null to a hard coded fallback string.
   std::string null_fallback;
@@ -147,13 +147,13 @@ struct ARROW_DS_EXPORT HivePartitioningFactoryOptions : PartitioningFactoryOptio
   HivePartitioningOptions AsHivePartitioningOptions() const;
 };
 
-/// \brief PartitioningFactory provides creation of a partitioning  when the
+/// PartitioningFactory provides creation of a partitioning  when the
 /// specific schema must be inferred from available paths (no explicit schema is known).
 class ARROW_DS_EXPORT PartitioningFactory {
  public:
   virtual ~PartitioningFactory() = default;
 
-  /// \brief The name identifying the kind of partitioning
+  /// The name identifying the kind of partitioning
   virtual std::string type_name() const = 0;
 
   /// Get the schema for the resulting Partitioning.
@@ -167,7 +167,7 @@ class ARROW_DS_EXPORT PartitioningFactory {
       const std::shared_ptr<Schema>& schema) const = 0;
 };
 
-/// \brief Subclass for the common case of a partitioning which yields an equality
+/// Subclass for the common case of a partitioning which yields an equality
 /// expression for each segment
 class ARROW_DS_EXPORT KeyValuePartitioning : public Partitioning {
  public:
@@ -218,7 +218,7 @@ class ARROW_DS_EXPORT KeyValuePartitioning : public Partitioning {
   KeyValuePartitioningOptions options_;
 };
 
-/// \brief DirectoryPartitioning parses one segment of a path for each field in its
+/// DirectoryPartitioning parses one segment of a path for each field in its
 /// schema. All fields are required, so paths passed to DirectoryPartitioning::Parse
 /// must contain segments for each field.
 ///
@@ -236,9 +236,9 @@ class ARROW_DS_EXPORT DirectoryPartitioning : public KeyValuePartitioning {
 
   bool Equals(const Partitioning& other) const override;
 
-  /// \brief Create a factory for a directory partitioning.
+  /// Create a factory for a directory partitioning.
   ///
-  /// \param[in] field_names The names for the partition fields. Types will be
+  /// :param field_names: The names for the partition fields. Types will be
   ///     inferred.
   static std::shared_ptr<PartitioningFactory> MakeFactory(
       std::vector<std::string> field_names, PartitioningFactoryOptions = {});
@@ -249,7 +249,7 @@ class ARROW_DS_EXPORT DirectoryPartitioning : public KeyValuePartitioning {
   Result<PartitionPathFormat> FormatValues(const ScalarVector& values) const override;
 };
 
-/// \brief The default fallback used for null values in a Hive-style partitioning.
+/// The default fallback used for null values in a Hive-style partitioning.
 static constexpr char kDefaultHiveNullFallback[] = "__HIVE_DEFAULT_PARTITION__";
 
 struct ARROW_DS_EXPORT HivePartitioningOptions : public KeyValuePartitioningOptions {
@@ -262,7 +262,7 @@ struct ARROW_DS_EXPORT HivePartitioningOptions : public KeyValuePartitioningOpti
   }
 };
 
-/// \brief Multi-level, directory based partitioning
+/// Multi-level, directory based partitioning
 /// originating from Apache Hive with all data files stored in the
 /// leaf directories. Data is partitioned by static values of a
 /// particular column in the schema. Partition keys are represented in
@@ -297,7 +297,7 @@ class ARROW_DS_EXPORT HivePartitioning : public KeyValuePartitioning {
 
   bool Equals(const Partitioning& other) const override;
 
-  /// \brief Create a factory for a hive partitioning.
+  /// Create a factory for a hive partitioning.
   static std::shared_ptr<PartitioningFactory> MakeFactory(
       HivePartitioningFactoryOptions = {});
 
@@ -308,7 +308,7 @@ class ARROW_DS_EXPORT HivePartitioning : public KeyValuePartitioning {
   Result<PartitionPathFormat> FormatValues(const ScalarVector& values) const override;
 };
 
-/// \brief Implementation provided by lambda or other callable
+/// Implementation provided by lambda or other callable
 class ARROW_DS_EXPORT FunctionPartitioning : public Partitioning {
  public:
   using ParseImpl = std::function<Result<compute::Expression>(const std::string&)>;
@@ -352,7 +352,7 @@ class ARROW_DS_EXPORT FunctionPartitioning : public Partitioning {
 
 class ARROW_DS_EXPORT FilenamePartitioning : public KeyValuePartitioning {
  public:
-  /// \brief Construct a FilenamePartitioning from its components.
+  /// Construct a FilenamePartitioning from its components.
   ///
   /// If a field in schema is of dictionary type, the corresponding element of
   /// dictionaries must be contain the dictionary of values for that field.
@@ -362,9 +362,9 @@ class ARROW_DS_EXPORT FilenamePartitioning : public KeyValuePartitioning {
 
   std::string type_name() const override { return "filename"; }
 
-  /// \brief Create a factory for a filename partitioning.
+  /// Create a factory for a filename partitioning.
   ///
-  /// \param[in] field_names The names for the partition fields. Types will be
+  /// :param field_names: The names for the partition fields. Types will be
   ///     inferred.
   static std::shared_ptr<PartitioningFactory> MakeFactory(
       std::vector<std::string> field_names, PartitioningFactoryOptions = {});
@@ -380,22 +380,22 @@ class ARROW_DS_EXPORT FilenamePartitioning : public KeyValuePartitioning {
 ARROW_DS_EXPORT std::string StripPrefix(const std::string& path,
                                         const std::string& prefix);
 
-/// \brief Extracts the directory and filename and removes the prefix of a path
+/// Extracts the directory and filename and removes the prefix of a path
 ///
 /// e.g., `StripPrefixAndFilename("/data/year=2019/c.txt", "/data") ->
 /// {"year=2019","c.txt"}`
 ARROW_DS_EXPORT std::string StripPrefixAndFilename(const std::string& path,
                                                    const std::string& prefix);
 
-/// \brief Vector version of StripPrefixAndFilename.
+/// Vector version of StripPrefixAndFilename.
 ARROW_DS_EXPORT std::vector<std::string> StripPrefixAndFilename(
     const std::vector<std::string>& paths, const std::string& prefix);
 
-/// \brief Vector version of StripPrefixAndFilename.
+/// Vector version of StripPrefixAndFilename.
 ARROW_DS_EXPORT std::vector<std::string> StripPrefixAndFilename(
     const std::vector<fs::FileInfo>& files, const std::string& prefix);
 
-/// \brief Either a Partitioning or a PartitioningFactory
+/// Either a Partitioning or a PartitioningFactory
 class ARROW_DS_EXPORT PartitioningOrFactory {
  public:
   explicit PartitioningOrFactory(std::shared_ptr<Partitioning> partitioning)
@@ -412,13 +412,13 @@ class ARROW_DS_EXPORT PartitioningOrFactory {
     return *this = PartitioningOrFactory(std::move(factory));
   }
 
-  /// \brief The partitioning (if given).
+  /// The partitioning (if given).
   const std::shared_ptr<Partitioning>& partitioning() const { return partitioning_; }
 
-  /// \brief The partition factory (if given).
+  /// The partition factory (if given).
   const std::shared_ptr<PartitioningFactory>& factory() const { return factory_; }
 
-  /// \brief Get the partition schema, inferring it with the given factory if needed.
+  /// Get the partition schema, inferring it with the given factory if needed.
   Result<std::shared_ptr<Schema>> GetOrInferSchema(const std::vector<std::string>& paths);
 
  private:

@@ -67,7 +67,7 @@ class SlowInputStreamBase : public StreamType {
   std::shared_ptr<LatencyGenerator> latencies_;
 };
 
-/// \brief An InputStream wrapper that makes reads slower.
+/// An InputStream wrapper that makes reads slower.
 ///
 /// Read() calls are made slower by an average latency (in seconds).
 /// Actual latencies form a normal distribution closely centered
@@ -90,7 +90,7 @@ class ARROW_EXPORT SlowInputStream : public SlowInputStreamBase<InputStream> {
   Result<int64_t> Tell() const override;
 };
 
-/// \brief A RandomAccessFile wrapper that makes reads slower.
+/// A RandomAccessFile wrapper that makes reads slower.
 ///
 /// Similar to SlowInputStream, but allows random access and seeking.
 class ARROW_EXPORT SlowRandomAccessFile : public SlowInputStreamBase<RandomAccessFile> {

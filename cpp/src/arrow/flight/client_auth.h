@@ -26,7 +26,7 @@ namespace arrow {
 
 namespace flight {
 
-/// \brief A reader for messages from the server during an
+/// A reader for messages from the server during an
 /// authentication handshake.
 class ARROW_FLIGHT_EXPORT ClientAuthReader {
  public:
@@ -34,7 +34,7 @@ class ARROW_FLIGHT_EXPORT ClientAuthReader {
   virtual Status Read(std::string* response) = 0;
 };
 
-/// \brief A writer for messages to the server during an
+/// A writer for messages to the server during an
 /// authentication handshake.
 class ARROW_FLIGHT_EXPORT ClientAuthSender {
  public:
@@ -42,19 +42,19 @@ class ARROW_FLIGHT_EXPORT ClientAuthSender {
   virtual Status Write(const std::string& token) = 0;
 };
 
-/// \brief An authentication implementation for a Flight service.
+/// An authentication implementation for a Flight service.
 /// Authentication includes both an initial negotiation and a per-call
 /// token validation. Implementations may choose to use either or both
 /// mechanisms.
 class ARROW_FLIGHT_EXPORT ClientAuthHandler {
  public:
   virtual ~ClientAuthHandler() = default;
-  /// \brief Authenticate the client on initial connection. The client
+  /// Authenticate the client on initial connection. The client
   /// can send messages to/read responses from the server at any time.
-  /// \return Status OK if authenticated successfully
+  /// :return: Status OK if authenticated successfully
   virtual Status Authenticate(ClientAuthSender* outgoing, ClientAuthReader* incoming) = 0;
-  /// \brief Get a per-call token.
-  /// \param[out] token The token to send to the server.
+  /// Get a per-call token.
+  /// :param token[out]: The token to send to the server.
   virtual Status GetToken(std::string* token) = 0;
 };
 

@@ -53,7 +53,7 @@ class FileSystemDatasetFactory;
 struct FileSystemDatasetWriteOptions;
 class WriteNodeOptions;
 
-/// \brief Controls what happens if files exist in an output directory during a dataset
+/// Controls what happens if files exist in an output directory during a dataset
 /// write
 enum class ExistingDataBehavior : int8_t {
   /// Deletes all files in a directory the first time that directory is encountered

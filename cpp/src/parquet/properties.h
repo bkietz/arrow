@@ -88,7 +88,7 @@ class PARQUET_EXPORT ReaderProperties {
   /// Set the size of the buffered stream buffer in bytes.
   void set_buffer_size(int64_t size) { buffer_size_ = size; }
 
-  /// \brief Return the size limit on thrift strings.
+  /// Return the size limit on thrift strings.
   ///
   /// This limit helps prevent space and time bombs in files, but may need to
   /// be increased in order to read files with especially large headers.
@@ -96,7 +96,7 @@ class PARQUET_EXPORT ReaderProperties {
   /// Set the size limit on thrift strings.
   void set_thrift_string_size_limit(int32_t size) { thrift_string_size_limit_ = size; }
 
-  /// \brief Return the size limit on thrift containers.
+  /// Return the size limit on thrift containers.
   ///
   /// This limit helps prevent space and time bombs in files, but may need to
   /// be increased in order to read files with especially large headers.
@@ -357,7 +357,7 @@ class PARQUET_EXPORT WriterProperties {
       return this;
     }
 
-    /// \brief Define the encoding that is used when we don't utilise dictionary encoding.
+    /// Define the encoding that is used when we don't utilise dictionary encoding.
     //
     /// This either apply if dictionary encoding is disabled or if we fallback
     /// as the dictionary grew too large.
@@ -371,7 +371,7 @@ class PARQUET_EXPORT WriterProperties {
       return this;
     }
 
-    /// \brief Define the encoding that is used when we don't utilise dictionary encoding.
+    /// Define the encoding that is used when we don't utilise dictionary encoding.
     //
     /// This either apply if dictionary encoding is disabled or if we fallback
     /// as the dictionary grew too large.
@@ -385,7 +385,7 @@ class PARQUET_EXPORT WriterProperties {
       return this;
     }
 
-    /// \brief Define the encoding that is used when we don't utilise dictionary encoding.
+    /// Define the encoding that is used when we don't utilise dictionary encoding.
     //
     /// This either apply if dictionary encoding is disabled or if we fallback
     /// as the dictionary grew too large.
@@ -422,7 +422,7 @@ class PARQUET_EXPORT WriterProperties {
       return this->compression(path->ToDotString(), codec);
     }
 
-    /// \brief Specify the default compression level for the compressor in
+    /// Specify the default compression level for the compressor in
     /// every column.  In case a column does not have an explicitly specified
     /// compression level, the default one would be used.
     ///
@@ -442,7 +442,7 @@ class PARQUET_EXPORT WriterProperties {
       return this;
     }
 
-    /// \brief Specify a compression level for the compressor for the column
+    /// Specify a compression level for the compressor for the column
     /// described by path.
     ///
     /// The provided compression level is compressor specific. The user would
@@ -461,7 +461,7 @@ class PARQUET_EXPORT WriterProperties {
       return this;
     }
 
-    /// \brief Specify a compression level for the compressor for the column
+    /// Specify a compression level for the compressor for the column
     /// described by path.
     ///
     /// The provided compression level is compressor specific. The user would
@@ -477,7 +477,7 @@ class PARQUET_EXPORT WriterProperties {
       return this->compression_level(path->ToDotString(), compression_level);
     }
 
-    /// \brief Specify the default codec options for the compressor in
+    /// Specify the default codec options for the compressor in
     /// every column.
     ///
     /// The codec options allow configuring the compression level as well
@@ -488,7 +488,7 @@ class PARQUET_EXPORT WriterProperties {
       return this;
     }
 
-    /// \brief Specify the codec options for the compressor for the column
+    /// Specify the codec options for the compressor for the column
     /// described by path.
     Builder* codec_options(
         const std::string& path,
@@ -497,7 +497,7 @@ class PARQUET_EXPORT WriterProperties {
       return this;
     }
 
-    /// \brief Specify the codec options for the compressor for the column
+    /// Specify the codec options for the compressor for the column
     /// described by path.
     Builder* codec_options(
         const std::shared_ptr<schema::ColumnPath>& path,
@@ -639,8 +639,8 @@ class PARQUET_EXPORT WriterProperties {
       return this->disable_write_page_index(path->ToDotString());
     }
 
-    /// \brief Build the WriterProperties with the builder parameters.
-    /// \return The WriterProperties defined by the builder.
+    /// Build the WriterProperties with the builder parameters.
+    /// :return: The WriterProperties defined by the builder.
     std::shared_ptr<WriterProperties> build() {
       std::unordered_map<std::string, ColumnProperties> column_properties;
       auto get = [&](const std::string& key) -> ColumnProperties& {
@@ -873,17 +873,17 @@ class PARQUET_EXPORT ArrowReaderProperties {
         coerce_int96_timestamp_unit_(::arrow::TimeUnit::NANO),
         arrow_extensions_enabled_(false) {}
 
-  /// \brief Set whether to use the IO thread pool to parse columns in parallel.
+  /// Set whether to use the IO thread pool to parse columns in parallel.
   ///
   /// Default is false.
   void set_use_threads(bool use_threads) { use_threads_ = use_threads; }
   /// Return whether will use multiple threads.
   bool use_threads() const { return use_threads_; }
 
-  /// \brief Set whether to read a particular column as dictionary encoded.
+  /// Set whether to read a particular column as dictionary encoded.
   ///
   /// If the file metadata contains a serialized Arrow schema, then ...
-  ////
+  /// 
   /// This is only supported for columns with a Parquet physical type of
   /// BYTE_ARRAY, such as string or binary types.
   void set_read_dictionary(int column_index, bool read_dict) {
@@ -902,7 +902,7 @@ class PARQUET_EXPORT ArrowReaderProperties {
     }
   }
 
-  /// \brief Set the maximum number of rows to read into a record batch.
+  /// Set the maximum number of rows to read into a record batch.
   ///
   /// Will only be fewer rows when there are no more rows in the file.
   /// Note that some APIs such as ReadTable may ignore this setting.
@@ -989,13 +989,13 @@ class PARQUET_EXPORT ArrowWriterProperties {
           executor_(NULLPTR) {}
     virtual ~Builder() = default;
 
-    /// \brief Disable writing legacy int96 timestamps (default disabled).
+    /// Disable writing legacy int96 timestamps (default disabled).
     Builder* disable_deprecated_int96_timestamps() {
       write_timestamps_as_int96_ = false;
       return this;
     }
 
-    /// \brief Enable writing legacy int96 timestamps (default disabled).
+    /// Enable writing legacy int96 timestamps (default disabled).
     ///
     /// May be turned on to write timestamps compatible with older Parquet writers.
     /// This takes precedent over coerce_timestamps.
@@ -1004,8 +1004,8 @@ class PARQUET_EXPORT ArrowWriterProperties {
       return this;
     }
 
-    /// \brief Coerce all timestamps to the specified time unit.
-    /// \param unit time unit to truncate to.
+    /// Coerce all timestamps to the specified time unit.
+    /// :param unit: time unit to truncate to.
     /// For Parquet versions 1.0 and 2.4, nanoseconds are casted to microseconds.
     Builder* coerce_timestamps(::arrow::TimeUnit::type unit) {
       coerce_timestamps_enabled_ = true;
@@ -1013,7 +1013,7 @@ class PARQUET_EXPORT ArrowWriterProperties {
       return this;
     }
 
-    /// \brief Allow loss of data when truncating timestamps.
+    /// Allow loss of data when truncating timestamps.
     ///
     /// This is disallowed by default and an error will be returned.
     Builder* allow_truncated_timestamps() {
@@ -1021,13 +1021,13 @@ class PARQUET_EXPORT ArrowWriterProperties {
       return this;
     }
 
-    /// \brief Disallow loss of data when truncating timestamps (default).
+    /// Disallow loss of data when truncating timestamps (default).
     Builder* disallow_truncated_timestamps() {
       truncated_timestamps_allowed_ = false;
       return this;
     }
 
-    /// \brief EXPERIMENTAL: Write binary serialized Arrow schema to the file,
+    /// EXPERIMENTAL: Write binary serialized Arrow schema to the file,
     /// to enable certain read options (like "read_dictionary") to be set
     /// automatically
     Builder* store_schema() {
@@ -1035,7 +1035,7 @@ class PARQUET_EXPORT ArrowWriterProperties {
       return this;
     }
 
-    /// \brief When enabled, will not preserve Arrow field names for list types.
+    /// When enabled, will not preserve Arrow field names for list types.
     ///
     /// Instead of using the field names Arrow uses for the values array of
     /// list types (default "item"), will use "element", as is specified in
@@ -1059,7 +1059,7 @@ class PARQUET_EXPORT ArrowWriterProperties {
       return this;
     }
 
-    /// \brief Set whether to use multiple threads to write columns
+    /// Set whether to use multiple threads to write columns
     /// in parallel in the buffered row group mode.
     ///
     /// WARNING: If writing multiple files in parallel in the same
@@ -1072,7 +1072,7 @@ class PARQUET_EXPORT ArrowWriterProperties {
       return this;
     }
 
-    /// \brief Set the executor to write columns in parallel in the
+    /// Set the executor to write columns in parallel in the
     /// buffered row group mode.
     ///
     /// Default is nullptr and the default cpu executor will be used.
@@ -1115,24 +1115,24 @@ class PARQUET_EXPORT ArrowWriterProperties {
 
   bool store_schema() const { return store_schema_; }
 
-  /// \brief Enable nested type naming according to the parquet specification.
+  /// Enable nested type naming according to the parquet specification.
   ///
   /// Older versions of arrow wrote out field names for nested lists based on the name
   /// of the field.  According to the parquet specification they should always be
   /// "element".
   bool compliant_nested_types() const { return compliant_nested_types_; }
 
-  /// \brief The underlying engine version to use when writing Arrow data.
+  /// The underlying engine version to use when writing Arrow data.
   ///
   /// V2 is currently the latest V1 is considered deprecated but left in
   /// place in case there are bugs detected in V2.
   EngineVersion engine_version() const { return engine_version_; }
 
-  /// \brief Returns whether the writer will use multiple threads
+  /// Returns whether the writer will use multiple threads
   /// to write columns in parallel in the buffered row group mode.
   bool use_threads() const { return use_threads_; }
 
-  /// \brief Returns the executor used to write columns in parallel.
+  /// Returns the executor used to write columns in parallel.
   ::arrow::internal::Executor* executor() const;
 
  private:
@@ -1164,7 +1164,7 @@ class PARQUET_EXPORT ArrowWriterProperties {
   ::arrow::internal::Executor* executor_;
 };
 
-/// \brief State object used for writing Arrow data directly to a Parquet
+/// State object used for writing Arrow data directly to a Parquet
 /// column chunk. API possibly not stable
 struct ArrowWriteContext {
   ArrowWriteContext(MemoryPool* memory_pool, ArrowWriterProperties* properties)

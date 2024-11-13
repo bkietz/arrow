@@ -27,7 +27,7 @@
 
 namespace gandiva {
 
-/// \brief The buffers corresponding to one batch of records, used for
+/// The buffers corresponding to one batch of records, used for
 /// expression evaluation.
 class LocalBitMapsHolder {
  public:

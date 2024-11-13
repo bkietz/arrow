@@ -39,9 +39,9 @@ class SqliteTablesWithSchemaBatchReader : public RecordBatchReader {
 
  public:
   /// Constructor for SqliteTablesWithSchemaBatchReader class
-  /// \param reader an shared_ptr from a SqliteStatementBatchReader.
-  /// \param main_query  SQL query that originated reader's data.
-  /// \param db     a pointer to the sqlite3 db.
+  /// :param reader: an shared_ptr from a SqliteStatementBatchReader.
+  /// :param main_query:  SQL query that originated reader's data.
+  /// :param db:     a pointer to the sqlite3 db.
   SqliteTablesWithSchemaBatchReader(
       std::shared_ptr<example::SqliteStatementBatchReader> reader, std::string main_query,
       sqlite3* db)

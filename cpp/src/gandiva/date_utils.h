@@ -29,7 +29,7 @@
 
 namespace gandiva {
 
-/// \brief Utility class for converting sql date patterns to internal date patterns.
+/// Utility class for converting sql date patterns to internal date patterns.
 class GANDIVA_EXPORT DateUtils {
  public:
   static Status ToInternalFormat(const std::string& format,

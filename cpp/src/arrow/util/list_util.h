@@ -27,16 +27,16 @@ namespace arrow {
 namespace list_util {
 namespace internal {
 
-/// \brief Calculate the smallest continuous range of values used by the
+/// Calculate the smallest continuous range of values used by the
 /// var-length list-like input (list, map and list-view types).
 ///
-/// \param input The input array such that is_var_length_list_like(input.type)
+/// :param input: The input array such that is_var_length_list_like(input.type)
 /// is true
-/// \return A pair of (offset, length) describing the range
+/// :return: A pair of (offset, length) describing the range
 ARROW_EXPORT Result<std::pair<int64_t, int64_t>> RangeOfValuesUsed(
     const ArraySpan& input);
 
-/// \brief Calculate the sum of the sizes of all valid lists or list-views
+/// Calculate the sum of the sizes of all valid lists or list-views
 ///
 /// This is usually the same as the length of the RangeOfValuesUsed() range, but
 /// it can be:
@@ -44,9 +44,9 @@ ARROW_EXPORT Result<std::pair<int64_t, int64_t>> RangeOfValuesUsed(
 /// referenced by the lists or list-views in the parent array
 /// - Greater: when the list-views share child array ranges
 ///
-/// \param input The input array such that is_var_length_list_like(input.type)
+/// :param input: The input array such that is_var_length_list_like(input.type)
 /// is true
-/// \return The sum of all list or list-view sizes
+/// :return: The sum of all list or list-view sizes
 ARROW_EXPORT Result<int64_t> SumOfLogicalListSizes(const ArraySpan& input);
 
 }  // namespace internal

@@ -27,7 +27,7 @@
 
 namespace arrow::extension {
 
-/// \brief Concrete type class for variable-size JSON data, utf8-encoded.
+/// Concrete type class for variable-size JSON data, utf8-encoded.
 class ARROW_EXPORT JsonExtensionType : public ExtensionType {
  public:
   explicit JsonExtensionType(const std::shared_ptr<DataType>& storage_type)
@@ -53,7 +53,7 @@ class ARROW_EXPORT JsonExtensionType : public ExtensionType {
   std::shared_ptr<DataType> storage_type_;
 };
 
-/// \brief Return a JsonExtensionType instance.
+/// Return a JsonExtensionType instance.
 ARROW_EXPORT std::shared_ptr<DataType> json(
     std::shared_ptr<DataType> storage_type = utf8());
 

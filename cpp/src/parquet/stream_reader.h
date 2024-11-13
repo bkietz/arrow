@@ -32,7 +32,7 @@
 
 namespace parquet {
 
-/// \brief A class for reading Parquet files using an output stream type API.
+/// A class for reading Parquet files using an output stream type API.
 ///
 /// The values given must be of the correct type i.e. the type must
 /// match the file schema exactly otherwise a ParquetException will be
@@ -183,26 +183,26 @@ class PARQUET_EXPORT StreamReader {
     return *this;
   }
 
-  /// \brief Terminate current row and advance to next one.
-  /// \throws ParquetException if all columns in the row were not
+  /// Terminate current row and advance to next one.
+  /// :throws ParquetException: if all columns in the row were not
   /// read or skipped.
   void EndRow();
 
-  /// \brief Skip the data in the next columns.
+  /// Skip the data in the next columns.
   /// If the number of columns exceeds the columns remaining on the
   /// current row then skipping is terminated - it does _not_ continue
   /// skipping columns on the next row.
   /// Skipping of columns still requires the use 'EndRow' even if all
   /// remaining columns were skipped.
-  /// \return Number of columns actually skipped.
+  /// :return: Number of columns actually skipped.
   int64_t SkipColumns(int64_t num_columns_to_skip);
 
-  /// \brief Skip the data in the next rows.
+  /// Skip the data in the next rows.
   /// Skipping of rows is not allowed if reading of data for the
   /// current row is not finished.
   /// Skipping of rows will be terminated if the end of file is
   /// reached.
-  /// \return Number of rows actually skipped.
+  /// :return: Number of rows actually skipped.
   int64_t SkipRows(int64_t num_rows_to_skip);
 
  protected:

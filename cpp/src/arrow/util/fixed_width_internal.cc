@@ -203,14 +203,14 @@ const uint8_t* OffsetPointerOfFixedByteWidthValues(const ArraySpan& source) {
   return OffsetPointerOfFixedBitWidthValues(source).second;
 }
 
-/// \brief Get the mutable pointer to the fixed-width values of an array
+/// Get the mutable pointer to the fixed-width values of an array
 ///        allocated by PreallocateFixedWidthArrayData.
 ///
-/// \pre mutable_array->offset and the offset of child array (if it's a
+/// :precondition: mutable_array->offset and the offset of child array (if it's a
 ///      FixedSizeList) MUST be 0 (recursively).
-/// \pre IsFixedWidthLike(ArraySpan(mutable_array)) or the more restrictive
+/// :precondition: IsFixedWidthLike(ArraySpan(mutable_array)) or the more restrictive
 ///      is_fixed_width(*mutable_array->type) MUST be true
-/// \return The mutable pointer to the fixed-width byte blocks of the array. If
+/// :return: The mutable pointer to the fixed-width byte blocks of the array. If
 ///         pre-conditions are not satisfied, the return values is undefined.
 uint8_t* MutableFixedWidthValuesPointer(ArrayData* mutable_array) {
   auto* array = mutable_array;

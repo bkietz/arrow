@@ -117,7 +117,7 @@ arrow::Result<std::shared_ptr<Table>> FlightStreamReader::ToTable(
   return Table::FromRecordBatches(schema, std::move(batches));
 }
 
-/// \brief An ipc::MessageReader adapting the Flight ClientDataStream interface.
+/// An ipc::MessageReader adapting the Flight ClientDataStream interface.
 ///
 /// In order to support app_metadata and reuse the existing IPC
 /// infrastructure, this takes a pointer to a buffer (provided by the
@@ -174,7 +174,7 @@ class IpcMessageReader : public ipc::MessageReader {
   bool stream_finished_;
 };
 
-/// \brief A reader for any ClientDataStream.
+/// A reader for any ClientDataStream.
 class ClientStreamReader : public FlightStreamReader {
  public:
   ClientStreamReader(std::shared_ptr<internal::ClientDataStream> stream,
@@ -319,7 +319,7 @@ class ServerErrorTagStatusDetail : public arrow::StatusDetail {
   }
 };
 
-/// \brief An IpcPayloadWriter for any ClientDataStream.
+/// An IpcPayloadWriter for any ClientDataStream.
 ///
 /// To support app_metadata and reuse the existing IPC infrastructure,
 /// this takes a pointer to a buffer to be combined with the IPC

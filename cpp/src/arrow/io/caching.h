@@ -34,21 +34,21 @@ struct ARROW_EXPORT CacheOptions {
   static constexpr double kDefaultIdealBandwidthUtilizationFrac = 0.9;
   static constexpr int64_t kDefaultMaxIdealRequestSizeMib = 64;
 
-  /// \brief The maximum distance in bytes between two consecutive
+  /// The maximum distance in bytes between two consecutive
   ///   ranges; beyond this value, ranges are not combined
   int64_t hole_size_limit;
-  /// \brief The maximum size in bytes of a combined range; if
+  /// The maximum size in bytes of a combined range; if
   ///   combining two consecutive ranges would produce a range of a
   ///   size greater than this, they are not combined
   int64_t range_size_limit;
-  /// \brief A lazy cache does not perform any I/O until requested.
+  /// A lazy cache does not perform any I/O until requested.
   ///   lazy = false: request all byte ranges when PreBuffer or WillNeed is called.
   ///   lazy = True, prefetch_limit = 0: request merged byte ranges only after the reader
   ///   needs them.
   ///   lazy = True, prefetch_limit = k: prefetch up to k merged byte ranges ahead of the
   ///   range that is currently being read.
   bool lazy;
-  /// \brief The maximum number of ranges to be prefetched. This is only used
+  /// The maximum number of ranges to be prefetched. This is only used
   ///   for lazy cache to asynchronously read some ranges after reading the target range.
   int64_t prefetch_limit = 0;
 
@@ -58,21 +58,21 @@ struct ARROW_EXPORT CacheOptions {
            prefetch_limit == other.prefetch_limit;
   }
 
-  /// \brief Construct CacheOptions from network storage metrics (e.g. S3).
+  /// Construct CacheOptions from network storage metrics (e.g. S3).
   ///
-  /// \param[in] time_to_first_byte_millis Seek-time or Time-To-First-Byte (TTFB) in
+  /// :param time_to_first_byte_millis: Seek-time or Time-To-First-Byte (TTFB) in
   ///   milliseconds, also called call setup latency of a new read request.
   ///   The value is a positive integer.
-  /// \param[in] transfer_bandwidth_mib_per_sec Data transfer Bandwidth (BW) in MiB/sec
+  /// :param transfer_bandwidth_mib_per_sec: Data transfer Bandwidth (BW) in MiB/sec
   ///   (per connection).
   ///   The value is a positive integer.
-  /// \param[in] ideal_bandwidth_utilization_frac Transfer bandwidth utilization fraction
+  /// :param ideal_bandwidth_utilization_frac: Transfer bandwidth utilization fraction
   ///   (per connection) to maximize the net data load.
   ///   The value is a positive double precision number less than 1.
-  /// \param[in] max_ideal_request_size_mib The maximum single data request size (in MiB)
+  /// :param max_ideal_request_size_mib: The maximum single data request size (in MiB)
   ///   to maximize the net data load.
   ///   The value is a positive integer.
-  /// \return A new instance of CacheOptions.
+  /// :return: A new instance of CacheOptions.
   static CacheOptions MakeFromNetworkMetrics(
       int64_t time_to_first_byte_millis, int64_t transfer_bandwidth_mib_per_sec,
       double ideal_bandwidth_utilization_frac = kDefaultIdealBandwidthUtilizationFrac,
@@ -84,7 +84,7 @@ struct ARROW_EXPORT CacheOptions {
 
 namespace internal {
 
-/// \brief A read cache designed to hide IO latencies when reading.
+/// A read cache designed to hide IO latencies when reading.
 ///
 /// This class takes multiple byte ranges that an application expects to read, and
 /// coalesces them into fewer, larger read requests, which benefits performance on some
@@ -127,19 +127,19 @@ class ARROW_EXPORT ReadRangeCache {
 
   ~ReadRangeCache();
 
-  /// \brief Cache the given ranges in the background.
+  /// Cache the given ranges in the background.
   ///
   /// The caller must ensure that the ranges do not overlap with each other,
   /// nor with previously cached ranges.  Otherwise, behaviour will be undefined.
   Status Cache(std::vector<ReadRange> ranges);
 
-  /// \brief Read a range previously given to Cache().
+  /// Read a range previously given to Cache().
   Result<std::shared_ptr<Buffer>> Read(ReadRange range);
 
-  /// \brief Wait until all ranges added so far have been cached.
+  /// Wait until all ranges added so far have been cached.
   Future<> Wait();
 
-  /// \brief Wait until all given ranges have been cached.
+  /// Wait until all given ranges have been cached.
   Future<> WaitFor(std::vector<ReadRange> ranges);
 
  protected:

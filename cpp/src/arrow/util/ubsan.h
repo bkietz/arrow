@@ -34,7 +34,7 @@ constexpr uint8_t kNonNullFiller = 0;
 
 }  // namespace internal
 
-/// \brief Returns maybe_null if not null or a non-null pointer to an arbitrary memory
+/// Returns maybe_null if not null or a non-null pointer to an arbitrary memory
 /// that shouldn't be dereferenced.
 ///
 /// Memset/Memcpy are undefined when a nullptr is passed as an argument use this utility

@@ -87,7 +87,7 @@ Status LLVMGenerator::Add(const ExpressionPtr expr, const FieldDescriptorPtr out
   return Status::OK();
 }
 
-/// \brief Build the code for the expression trees for default mode with a LLVM
+/// Build the code for the expression trees for default mode with a LLVM
 /// ObjectCache. Each element in the vector represents an expression tree
 Status LLVMGenerator::Build(const ExpressionVector& exprs, SelectionVector::Mode mode) {
   selection_vector_mode_ = mode;
@@ -111,7 +111,7 @@ Status LLVMGenerator::Build(const ExpressionVector& exprs, SelectionVector::Mode
   return Status::OK();
 }
 
-/// \brief Build the code for the expression trees for default mode. Each
+/// Build the code for the expression trees for default mode. Each
 /// element in the vector represents an expression tree
 Status LLVMGenerator::Build(const ExpressionVector& exprs) {
   return Build(exprs, SelectionVector::Mode::MODE_NONE);
@@ -223,7 +223,7 @@ llvm::Value* LLVMGenerator::GetLocalBitMapReference(llvm::Value* arg_bitmaps, in
                                       std::to_string(idx) + "_lbmap");
 }
 
-/// \brief Generate code for one expression.
+/// Generate code for one expression.
 
 // Sample IR code for "c1:int + c2:int"
 //

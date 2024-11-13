@@ -106,7 +106,7 @@ static void ExecuteScalarExpressionOverhead(benchmark::State& state, Expression 
       static_cast<double>(state.iterations() * num_batches), benchmark::Counter::kIsRate);
 }
 
-/// \brief Baseline benchmarks are implemented in pure C++ without arrow for performance
+/// Baseline benchmarks are implemented in pure C++ without arrow for performance
 /// comparison.
 template <typename BenchmarkType>
 void ExecuteScalarExpressionBaseline(benchmark::State& state) {
@@ -189,7 +189,7 @@ BENCHMARK_CAPTURE(BindAndEvaluate, nested_array,
 BENCHMARK_CAPTURE(BindAndEvaluate, nested_scalar,
                   field_ref(FieldRef("struct_scalar", "float")));
 
-/// \brief Baseline benchmark for complex_expression implemented without arrow
+/// Baseline benchmark for complex_expression implemented without arrow
 struct ComplexExpressionBaseline {
  public:
   ComplexExpressionBaseline(size_t input_size) {
@@ -231,7 +231,7 @@ struct ComplexExpressionBaseline {
   std::vector<int64_t> output;
 };
 
-/// \brief Baseline benchmark for simple_expression implemented without arrow
+/// Baseline benchmark for simple_expression implemented without arrow
 struct SimpleExpressionBaseline {
   SimpleExpressionBaseline(size_t input_size) { output.resize(input_size); }
   void Exec(const std::vector<int64_t>& input) {

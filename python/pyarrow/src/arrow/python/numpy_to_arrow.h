@@ -39,14 +39,14 @@ namespace py {
 /// Convert NumPy arrays to Arrow. If target data type is not known, pass a
 /// type with null
 ///
-/// \param[in] pool Memory pool for any memory allocations
-/// \param[in] ao an ndarray with the array data
-/// \param[in] mo an ndarray with a null mask (True is null), optional
-/// \param[in] from_pandas If true, use pandas's null sentinels to determine
+/// :param pool: Memory pool for any memory allocations
+/// :param ao: an ndarray with the array data
+/// :param mo: an ndarray with a null mask (True is null), optional
+/// :param from_pandas: If true, use pandas's null sentinels to determine
 /// whether values are null
-/// \param[in] type a specific type to cast to, may be null
-/// \param[in] cast_options casting options
-/// \param[out] out a ChunkedArray, to accommodate chunked output
+/// :param type: a specific type to cast to, may be null
+/// :param cast_options: casting options
+/// :param out[out]: a ChunkedArray, to accommodate chunked output
 ARROW_PYTHON_EXPORT
 Status NdarrayToArrow(MemoryPool* pool, PyObject* ao, PyObject* mo, bool from_pandas,
                       const std::shared_ptr<DataType>& type,
@@ -56,13 +56,13 @@ Status NdarrayToArrow(MemoryPool* pool, PyObject* ao, PyObject* mo, bool from_pa
 /// Safely convert NumPy arrays to Arrow. If target data type is not known,
 /// pass a type with null.
 ///
-/// \param[in] pool Memory pool for any memory allocations
-/// \param[in] ao an ndarray with the array data
-/// \param[in] mo an ndarray with a null mask (True is null), optional
-/// \param[in] from_pandas If true, use pandas's null sentinels to determine
+/// :param pool: Memory pool for any memory allocations
+/// :param ao: an ndarray with the array data
+/// :param mo: an ndarray with a null mask (True is null), optional
+/// :param from_pandas: If true, use pandas's null sentinels to determine
 /// whether values are null
-/// \param[in] type a specific type to cast to, may be null
-/// \param[out] out a ChunkedArray, to accommodate chunked output
+/// :param type: a specific type to cast to, may be null
+/// :param out[out]: a ChunkedArray, to accommodate chunked output
 ARROW_PYTHON_EXPORT
 Status NdarrayToArrow(MemoryPool* pool, PyObject* ao, PyObject* mo, bool from_pandas,
                       const std::shared_ptr<DataType>& type,

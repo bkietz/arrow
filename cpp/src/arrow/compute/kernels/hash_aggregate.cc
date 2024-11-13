@@ -309,9 +309,9 @@ struct GroupedCountImpl : public GroupedAggregator {
   struct RunEndEncodedCountImpl {
     /// Count the number of valid or invalid values in a run-end-encoded array.
     ///
-    /// \param[in] input the run-end-encoded array
-    /// \param[out] counts the counts being accumulated
-    /// \param[in] g the group ids of the values in the array
+    /// :param input: the run-end-encoded array
+    /// :param counts[out]: the counts being accumulated
+    /// :param g: the group ids of the values in the array
     template <typename RunEndCType>
     void DoCount(const ArraySpan& input, int64_t* counts, const uint32_t* g) {
       ree_util::RunEndEncodedArraySpan<RunEndCType> ree_span(input);

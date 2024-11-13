@@ -546,7 +546,7 @@ TEST_F(TestFieldRef, FindAllForTable) {
   // out of range index results in a failure to match
   EXPECT_THAT(FieldRef(schema_num_fields * 2).FindAll(*table_ptr), ElementsAre());
 
-  //// lookup by name returns the Indices of both matching fields
+  ///  lookup by name returns the Indices of both matching fields
   EXPECT_THAT(FieldRef("alpha").FindAll(*table_ptr),
               ElementsAre(FieldPath{0}, FieldPath{2}));
   EXPECT_THAT(FieldRef("beta").FindAll(*table_ptr),
@@ -579,7 +579,7 @@ TEST_F(TestFieldRef, FindAllForRecordBatch) {
   // out of range index results in a failure to match
   EXPECT_THAT(FieldRef(schema_num_fields * 2).FindAll(*record_batch_ptr), ElementsAre());
 
-  //// lookup by name returns the Indices of both matching fields
+  ///  lookup by name returns the Indices of both matching fields
   EXPECT_THAT(FieldRef("alpha").FindAll(*record_batch_ptr),
               ElementsAre(FieldPath{0}, FieldPath{2}));
   EXPECT_THAT(FieldRef("beta").FindAll(*record_batch_ptr),

@@ -43,5 +43,5 @@
 #include "arrow/visit_scalar_inline.h"      // IWYU pragma: export
 #include "arrow/visitor.h"                  // IWYU pragma: export
 
-/// \brief Top-level namespace for Apache Arrow C++ API
+/// Top-level namespace for Apache Arrow C++ API
 namespace arrow {}

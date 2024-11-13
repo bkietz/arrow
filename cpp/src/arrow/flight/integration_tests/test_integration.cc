@@ -56,7 +56,7 @@ namespace {
 
 using arrow::internal::checked_cast;
 
-/// \brief The server for the basic auth integration test.
+/// The server for the basic auth integration test.
 class AuthBasicProtoServer : public FlightServerBase {
   Status DoAction(const ServerCallContext& context, const Action& action,
                   std::unique_ptr<ResultStream>* result) override {
@@ -95,7 +95,7 @@ constexpr auto kAuthUsername = "arrow";
 // The expected password for the basic auth integration test.
 constexpr auto kAuthPassword = "flight";
 
-/// \brief A scenario testing the basic auth protobuf.
+/// A scenario testing the basic auth protobuf.
 class AuthBasicProtoScenario : public Scenario {
   Status MakeServer(std::unique_ptr<FlightServerBase>* server,
                     FlightServerOptions* options) override {
@@ -127,7 +127,7 @@ class AuthBasicProtoScenario : public Scenario {
   }
 };
 
-/// \brief Test middleware that echoes back the value of a particular
+/// Test middleware that echoes back the value of a particular
 /// incoming header.
 ///
 /// In Java, gRPC may consolidate this header with HTTP/2 trailers if
@@ -166,7 +166,7 @@ class TestServerMiddlewareFactory : public ServerMiddlewareFactory {
   }
 };
 
-/// \brief Test middleware that adds a header on every outgoing call,
+/// Test middleware that adds a header on every outgoing call,
 /// and gets the value of the expected header sent by the server.
 class TestClientMiddleware : public ClientMiddleware {
  public:
@@ -205,7 +205,7 @@ class TestClientMiddlewareFactory : public ClientMiddlewareFactory {
   std::string received_header_;
 };
 
-/// \brief The server used for testing middleware. Implements only one
+/// The server used for testing middleware. Implements only one
 /// endpoint, GetFlightInfo, in such a way that it either succeeds or
 /// returns an error based on the input, in order to test both paths.
 class MiddlewareServer : public FlightServerBase {
@@ -232,7 +232,7 @@ class MiddlewareServer : public FlightServerBase {
   }
 };
 
-/// \brief The middleware scenario.
+/// The middleware scenario.
 ///
 /// This tests that the server and client get expected header values.
 class MiddlewareScenario : public Scenario {
@@ -281,7 +281,7 @@ class MiddlewareScenario : public Scenario {
   std::shared_ptr<TestClientMiddlewareFactory> client_middleware_;
 };
 
-/// \brief The server used for testing FlightInfo.ordered.
+/// The server used for testing FlightInfo.ordered.
 ///
 /// If the given command is "ordered", the server sets
 /// FlightInfo.ordered. The client that supports FlightInfo.ordered
@@ -348,7 +348,7 @@ class OrderedServer : public FlightServerBase {
   }
 };
 
-/// \brief The ordered scenario.
+/// The ordered scenario.
 ///
 /// This tests that the server and client get expected header values.
 class OrderedScenario : public Scenario {
@@ -417,7 +417,7 @@ class OrderedScenario : public Scenario {
   }
 };
 
-/// \brief The server used for testing FlightEndpoint.expiration_time.
+/// The server used for testing FlightEndpoint.expiration_time.
 ///
 /// GetFlightInfo() returns a FlightInfo that has the following
 /// three FlightEndpoints:
@@ -585,7 +585,7 @@ class ExpirationTimeServer : public FlightServerBase {
   std::vector<EndpointStatus> statuses_;
 };
 
-/// \brief The expiration time scenario - DoGet.
+/// The expiration time scenario - DoGet.
 ///
 /// This tests that the client can read data that isn't expired yet
 /// multiple times and can't read data after it's expired.
@@ -642,7 +642,7 @@ class ExpirationTimeDoGetScenario : public Scenario {
   }
 };
 
-/// \brief The expiration time scenario - ListActions.
+/// The expiration time scenario - ListActions.
 ///
 /// This tests that the client can get pre-defined actions and the
 /// server uses pre-defined ActionTypes for ListActions.
@@ -676,7 +676,7 @@ class ExpirationTimeListActionsScenario : public Scenario {
   }
 };
 
-/// \brief The expiration time scenario - CancelFlightInfo.
+/// The expiration time scenario - CancelFlightInfo.
 ///
 /// This tests that the client can cancel a FlightInfo explicitly and
 /// the server returns an error for DoGet against endpoints in the
@@ -710,7 +710,7 @@ class ExpirationTimeCancelFlightInfoScenario : public Scenario {
   }
 };
 
-/// \brief The expiration time scenario - RenewFlightEndpoint.
+/// The expiration time scenario - RenewFlightEndpoint.
 ///
 /// This tests that the client can renew a FlightEndpoint.
 class ExpirationTimeRenewFlightEndpointScenario : public Scenario {
@@ -748,7 +748,7 @@ class ExpirationTimeRenewFlightEndpointScenario : public Scenario {
   }
 };
 
-/// \brief The server used for testing Session Options.
+/// The server used for testing Session Options.
 ///
 /// SetSessionOptions has a blacklisted option name and string option value,
 /// both "lol_invalid", which will result in errors attempting to set either.
@@ -823,7 +823,7 @@ class SessionOptionsServer : public sql::FlightSqlServerBase {
   }
 };
 
-/// \brief The Session Options scenario.
+/// The Session Options scenario.
 ///
 /// This tests Session Options functionality as well as ServerSessionMiddleware.
 class SessionOptionsScenario : public Scenario {
@@ -898,7 +898,7 @@ class SessionOptionsScenario : public Scenario {
   }
 };
 
-/// \brief The server used for testing PollFlightInfo().
+/// The server used for testing PollFlightInfo().
 class PollFlightInfoServer : public FlightServerBase {
  public:
   PollFlightInfoServer() : FlightServerBase() {}
@@ -924,7 +924,7 @@ class PollFlightInfoServer : public FlightServerBase {
   }
 };
 
-/// \brief The PollFlightInfo scenario.
+/// The PollFlightInfo scenario.
 ///
 /// This tests that the client can poll a long-running query.
 class PollFlightInfoScenario : public Scenario {
@@ -969,7 +969,7 @@ class PollFlightInfoScenario : public Scenario {
   }
 };
 
-/// \brief The server used for testing app_metadata in FlightInfo and FlightEndpoint
+/// The server used for testing app_metadata in FlightInfo and FlightEndpoint
 class AppMetadataFlightInfoEndpointServer : public FlightServerBase {
  public:
   AppMetadataFlightInfoEndpointServer() : FlightServerBase() {}
@@ -990,7 +990,7 @@ class AppMetadataFlightInfoEndpointServer : public FlightServerBase {
   }
 };
 
-/// \brief The AppMetadataFlightInfoEndpoint scenario.
+/// The AppMetadataFlightInfoEndpoint scenario.
 ///
 /// This tests that the client can receive and use the `app_metadata` field in
 /// the FlightInfo and FlightEndpoint messages.
@@ -1027,7 +1027,7 @@ class AppMetadataFlightInfoEndpointScenario : public Scenario {
   }
 };
 
-/// \brief The server used for testing do_exchange
+/// The server used for testing do_exchange
 class DoExchangeServer : public FlightServerBase {
  public:
   DoExchangeServer() : FlightServerBase() {}
@@ -1073,7 +1073,7 @@ class DoExchangeServer : public FlightServerBase {
   }
 };
 
-/// \brief The DoExchangeEcho scenario.
+/// The DoExchangeEcho scenario.
 ///
 /// This tests that the client and server can perform a two-way data exchange.
 ///
@@ -1152,7 +1152,7 @@ class DoExchangeEchoScenario : public Scenario {
   }
 };
 
-/// \brief Schema to be returned for mocking the statement/prepared statement results.
+/// Schema to be returned for mocking the statement/prepared statement results.
 ///
 /// Must be the same across all languages.
 const std::shared_ptr<Schema>& GetQuerySchema() {
@@ -1172,7 +1172,7 @@ const std::shared_ptr<Schema>& GetQuerySchema() {
   return kSchema;
 }
 
-/// \brief Schema to be returned for queries with transactions.
+/// Schema to be returned for queries with transactions.
 ///
 /// Must be the same across all languages.
 std::shared_ptr<Schema> GetQueryWithTransactionSchema() {
@@ -1223,7 +1223,7 @@ arrow::Status AssertUnprintableEq(const T& expected, const T& actual,
   return Status::OK();
 }
 
-/// \brief The server used for testing Flight SQL, this implements a static Flight SQL
+/// The server used for testing Flight SQL, this implements a static Flight SQL
 /// server which only asserts that commands called during integration tests are being
 /// parsed correctly and returns the expected schemas to be validated on client.
 class FlightSqlScenarioServer : public sql::FlightSqlServerBase {
@@ -1746,7 +1746,7 @@ class FlightSqlScenarioServer : public sql::FlightSqlServerBase {
   }
 };
 
-/// \brief Integration test scenario for validating Flight SQL specs across multiple
+/// Integration test scenario for validating Flight SQL specs across multiple
 /// implementations. This should ensure that RPC objects are being built and parsed
 /// correctly for multiple languages and that the Arrow schemas are returned as expected.
 class FlightSqlScenario : public Scenario {
@@ -1925,7 +1925,7 @@ class FlightSqlScenario : public Scenario {
   }
 };
 
-/// \brief Integration test scenario for validating the Substrait and
+/// Integration test scenario for validating the Substrait and
 ///    transaction extensions to Flight SQL.
 class FlightSqlExtensionScenario : public FlightSqlScenario {
  public:
@@ -2209,7 +2209,7 @@ class FlightSqlExtensionScenario : public FlightSqlScenario {
   }
 };
 
-/// \brief The server for testing arrow-flight-reuse-connection://.
+/// The server for testing arrow-flight-reuse-connection://.
 class ReuseConnectionServer : public FlightServerBase {
  public:
   Status GetFlightInfo(const ServerCallContext& context,
@@ -2224,7 +2224,7 @@ class ReuseConnectionServer : public FlightServerBase {
   }
 };
 
-/// \brief A scenario for testing arrow-flight-reuse-connection://?.
+/// A scenario for testing arrow-flight-reuse-connection://?.
 class ReuseConnectionScenario : public Scenario {
   Status MakeServer(std::unique_ptr<FlightServerBase>* server,
                     FlightServerOptions* options) override {
@@ -2264,7 +2264,7 @@ arrow::Result<std::shared_ptr<RecordBatchReader>> GetIngestRecords() {
   return RecordBatchReader::Make({record_batch});
 }
 
-/// \brief The server used for testing bulk ingestion
+/// The server used for testing bulk ingestion
 class FlightSqlIngestionServer : public sql::FlightSqlServerBase {
  public:
   FlightSqlIngestionServer() : sql::FlightSqlServerBase() {
@@ -2328,7 +2328,7 @@ class FlightSqlIngestionServer : public sql::FlightSqlServerBase {
   }
 };
 
-/// \brief The FlightSqlIngestion scenario.
+/// The FlightSqlIngestion scenario.
 ///
 /// This tests that the client can execute bulk ingestion against the server.
 ///

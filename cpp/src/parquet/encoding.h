@@ -127,7 +127,7 @@ struct EncodingTraits<ByteArrayType> {
   using Decoder = ByteArrayDecoder;
 
   using ArrowType = ::arrow::BinaryType;
-  /// \brief Internal helper class for decoding BYTE_ARRAY data where we can
+  /// Internal helper class for decoding BYTE_ARRAY data where we can
   /// overflow the capacity of a single arrow::BinaryArray
   struct Accumulator {
     std::unique_ptr<::arrow::BinaryBuilder> builder;
@@ -216,17 +216,17 @@ class DictEncoder : virtual public TypedEncoder<DType> {
 
   virtual int num_entries() const = 0;
 
-  /// \brief EXPERIMENTAL: Append dictionary indices into the encoder. It is
+  /// EXPERIMENTAL: Append dictionary indices into the encoder. It is
   /// assumed (without any boundschecking) that the indices reference
   /// preexisting dictionary values
-  /// \param[in] indices the dictionary index values. Only Int32Array currently
+  /// :param indices: the dictionary index values. Only Int32Array currently
   /// supported
   virtual void PutIndices(const ::arrow::Array& indices) = 0;
 
-  /// \brief EXPERIMENTAL: Append dictionary into encoder, inserting indices
+  /// EXPERIMENTAL: Append dictionary into encoder, inserting indices
   /// separately. Currently throws exception if the current dictionary memo is
   /// non-empty
-  /// \param[in] values the dictionary values. Only valid for certain
+  /// :param values: the dictionary values. Only valid for certain
   /// Parquet/Arrow type combinations, like BYTE_ARRAY/BinaryArray
   virtual void PutDictionary(const ::arrow::Array& values) = 0;
 };
@@ -258,29 +258,29 @@ class TypedDecoder : virtual public Decoder {
  public:
   using T = typename DType::c_type;
 
-  /// \brief Decode values into a buffer
+  /// Decode values into a buffer
   ///
   /// Subclasses may override the more specialized Decode methods below.
   ///
-  /// \param[in] buffer destination for decoded values
-  /// \param[in] max_values maximum number of values to decode
-  /// \return The number of values decoded. Should be identical to max_values except
+  /// :param buffer: destination for decoded values
+  /// :param max_values: maximum number of values to decode
+  /// :return: The number of values decoded. Should be identical to max_values except
   /// at the end of the current data page.
   virtual int Decode(T* buffer, int max_values) = 0;
 
-  /// \brief Decode the values in this data page but leave spaces for null entries.
+  /// Decode the values in this data page but leave spaces for null entries.
   ///
-  /// \param[in] buffer destination for decoded values
-  /// \param[in] num_values size of the def_levels and buffer arrays including the number
+  /// :param buffer: destination for decoded values
+  /// :param num_values: size of the def_levels and buffer arrays including the number
   /// of null slots
-  /// \param[in] null_count number of null slots
-  /// \param[in] valid_bits bitmap data indicating position of valid slots
-  /// \param[in] valid_bits_offset offset into valid_bits
-  /// \return The number of values decoded, including nulls.
+  /// :param null_count: number of null slots
+  /// :param valid_bits: bitmap data indicating position of valid slots
+  /// :param valid_bits_offset: offset into valid_bits
+  /// :return: The number of values decoded, including nulls.
   virtual int DecodeSpaced(T* buffer, int num_values, int null_count,
                            const uint8_t* valid_bits, int64_t valid_bits_offset) = 0;
 
-  /// \brief Decode into an ArrayBuilder or other accumulator
+  /// Decode into an ArrayBuilder or other accumulator
   ///
   /// This function assumes the definition levels were already decoded
   /// as a validity bitmap in the given `valid_bits`.  `null_count`
@@ -288,20 +288,20 @@ class TypedDecoder : virtual public Decoder {
   /// As a space optimization, it is allowed for `valid_bits` to be null
   /// if `null_count` is zero.
   ///
-  /// \return number of values decoded
+  /// :return: number of values decoded
   virtual int DecodeArrow(int num_values, int null_count, const uint8_t* valid_bits,
                           int64_t valid_bits_offset,
                           typename EncodingTraits<DType>::Accumulator* out) = 0;
 
-  /// \brief Decode into an ArrayBuilder or other accumulator ignoring nulls
+  /// Decode into an ArrayBuilder or other accumulator ignoring nulls
   ///
-  /// \return number of values decoded
+  /// :return: number of values decoded
   int DecodeArrowNonNull(int num_values,
                          typename EncodingTraits<DType>::Accumulator* out) {
     return DecodeArrow(num_values, 0, /*valid_bits=*/NULLPTR, 0, out);
   }
 
-  /// \brief Decode into a DictionaryBuilder
+  /// Decode into a DictionaryBuilder
   ///
   /// This function assumes the definition levels were already decoded
   /// as a validity bitmap in the given `valid_bits`.  `null_count`
@@ -309,14 +309,14 @@ class TypedDecoder : virtual public Decoder {
   /// As a space optimization, it is allowed for `valid_bits` to be null
   /// if `null_count` is zero.
   ///
-  /// \return number of values decoded
+  /// :return: number of values decoded
   virtual int DecodeArrow(int num_values, int null_count, const uint8_t* valid_bits,
                           int64_t valid_bits_offset,
                           typename EncodingTraits<DType>::DictAccumulator* builder) = 0;
 
-  /// \brief Decode into a DictionaryBuilder ignoring nulls
+  /// Decode into a DictionaryBuilder ignoring nulls
   ///
-  /// \return number of values decoded
+  /// :return: number of values decoded
   int DecodeArrowNonNull(int num_values,
                          typename EncodingTraits<DType>::DictAccumulator* builder) {
     return DecodeArrow(num_values, 0, /*valid_bits=*/NULLPTR, 0, builder);
@@ -330,11 +330,11 @@ class DictDecoder : virtual public TypedDecoder<DType> {
 
   virtual void SetDict(TypedDecoder<DType>* dictionary) = 0;
 
-  /// \brief Insert dictionary values into the Arrow dictionary builder's memo,
+  /// Insert dictionary values into the Arrow dictionary builder's memo,
   /// but do not append any indices
   virtual void InsertDictionary(::arrow::ArrayBuilder* builder) = 0;
 
-  /// \brief Decode only dictionary indices and append to dictionary
+  /// Decode only dictionary indices and append to dictionary
   /// builder. The builder must have had the dictionary from this decoder
   /// inserted already.
   ///
@@ -344,26 +344,28 @@ class DictDecoder : virtual public TypedDecoder<DType> {
                                   const uint8_t* valid_bits, int64_t valid_bits_offset,
                                   ::arrow::ArrayBuilder* builder) = 0;
 
-  /// \brief Decode only dictionary indices (no nulls)
+  /// Decode only dictionary indices (no nulls)
   ///
   /// \warning Remember to reset the builder each time the dict decoder is initialized
   /// with a new dictionary page
   virtual int DecodeIndices(int num_values, ::arrow::ArrayBuilder* builder) = 0;
 
-  /// \brief Decode only dictionary indices (no nulls). Same as above
+  /// Decode only dictionary indices (no nulls). Same as above
   /// DecodeIndices but target is an array instead of a builder.
   ///
-  /// \note API EXPERIMENTAL
+  /// ```{note}
+  /// API EXPERIMENTAL
   virtual int DecodeIndices(int num_values, int32_t* indices) = 0;
 
-  /// \brief Get dictionary. The reader will call this API when it encounters a
+  /// Get dictionary. The reader will call this API when it encounters a
   /// new dictionary.
   ///
-  /// @param[out] dictionary The pointer to dictionary values. Dictionary is owned by
+  /// :param dictionary[out]: The pointer to dictionary values. Dictionary is owned by
   /// the decoder and is destroyed when the decoder is destroyed.
-  /// @param[out] dictionary_length The dictionary length.
+  /// :param dictionary_length[out]: The dictionary length.
   ///
-  /// \note API EXPERIMENTAL
+  /// ```{note}
+  /// API EXPERIMENTAL
   virtual void GetDictionary(const T** dictionary, int32_t* dictionary_length) = 0;
 };
 
@@ -374,14 +376,14 @@ class BooleanDecoder : virtual public TypedDecoder<BooleanType> {
  public:
   using TypedDecoder<BooleanType>::Decode;
 
-  /// \brief Decode and bit-pack values into a buffer
+  /// Decode and bit-pack values into a buffer
   ///
-  /// \param[in] buffer destination for decoded values
+  /// :param buffer: destination for decoded values
   /// This buffer will contain bit-packed values. If
   /// max_values is not a multiple of 8, the trailing bits
   /// of the last byte will be undefined.
-  /// \param[in] max_values max values to decode.
-  /// \return The number of values decoded. Should be identical to max_values except
+  /// :param max_values: max values to decode.
+  /// :return: The number of values decoded. Should be identical to max_values except
   /// at the end of the current data page.
   virtual int Decode(uint8_t* buffer, int max_values) = 0;
 };

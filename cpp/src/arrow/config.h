@@ -73,7 +73,7 @@ struct RuntimeInfo {
   std::optional<std::string> timezone_db_path;
 };
 
-/// \brief Get runtime build info.
+/// Get runtime build info.
 ///
 /// The returned values correspond to exact loaded version of the Arrow library,
 /// rather than the values frozen at application compile-time through the `ARROW_*`
@@ -81,7 +81,7 @@ struct RuntimeInfo {
 ARROW_EXPORT
 const BuildInfo& GetBuildInfo();
 
-/// \brief Get runtime info.
+/// Get runtime info.
 ///
 ARROW_EXPORT
 RuntimeInfo GetRuntimeInfo();

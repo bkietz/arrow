@@ -42,7 +42,7 @@ class BooleanOrDex;
 template <typename Type>
 class InExprDexBase;
 
-/// \brief Visitor for decomposed expression.
+/// Visitor for decomposed expression.
 class GANDIVA_EXPORT DexVisitor {
  public:
   virtual ~DexVisitor() = default;

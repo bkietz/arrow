@@ -701,7 +701,7 @@ struct DecimalConverter<DecimalArrayType, ByteArrayType> {
   }
 };
 
-/// \brief Convert an Int32 or Int64 array into a Decimal128Array
+/// Convert an Int32 or Int64 array into a Decimal128Array
 /// The parquet spec allows systems to write decimals in int32, int64 if the values are
 /// small enough to fit in less 4 bytes or less than 8 bytes, respectively.
 /// This function implements the conversion from int32 and int64 arrays to decimal arrays.
@@ -756,7 +756,7 @@ static Status DecimalIntegerTransfer(RecordReader* reader, MemoryPool* pool,
   return Status::OK();
 }
 
-/// \brief Convert an arrow::BinaryArray to an arrow::Decimal{128,256}Array
+/// Convert an arrow::BinaryArray to an arrow::Decimal{128,256}Array
 /// We do this by:
 /// 1. Creating an arrow::BinaryArray from the RecordReader's builder
 /// 2. Allocating a buffer for the arrow::Decimal{128,256}Array

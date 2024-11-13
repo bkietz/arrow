@@ -536,21 +536,21 @@ struct MoveOnlyDataType {
 class ARROW_TESTING_EXPORT GatingTask {
  public:
   explicit GatingTask(double timeout_seconds = 10);
-  /// \brief During destruction we wait for all pending tasks to finish
+  /// During destruction we wait for all pending tasks to finish
   ~GatingTask();
 
-  /// \brief Creates a new waiting task (presumably to spawn on a thread).  It will return
+  /// Creates a new waiting task (presumably to spawn on a thread).  It will return
   /// invalid if the timeout arrived before the unlock.  The task will not complete until
   /// unlocked or timed out
   ///
   /// Note: The GatingTask must outlive any Task instances
   std::function<void()> Task();
-  /// \brief Creates a new waiting task as a future.  The future will not complete
+  /// Creates a new waiting task as a future.  The future will not complete
   /// until unlocked.
   Future<> AsyncTask();
-  /// \brief Waits until at least count tasks are running.
+  /// Waits until at least count tasks are running.
   Status WaitForRunning(int count);
-  /// \brief Unlocks all waiting tasks.  Returns an invalid status if any waiting task has
+  /// Unlocks all waiting tasks.  Returns an invalid status if any waiting task has
   /// timed out
   Status Unlock();
 
@@ -561,11 +561,11 @@ class ARROW_TESTING_EXPORT GatingTask {
   std::shared_ptr<Impl> impl_;
 };
 
-/// \brief create an exact copy of the data where each buffer has a max alignment of 1
+/// create an exact copy of the data where each buffer has a max alignment of 1
 ///
 /// This method does not recurse into the dictionary or children
 ARROW_TESTING_EXPORT std::shared_ptr<ArrayData> UnalignBuffers(const ArrayData& array);
-/// \brief create an exact copy of the array where each buffer has a max alignment of 1
+/// create an exact copy of the array where each buffer has a max alignment of 1
 ///
 /// This method does not recurse into the dictionary or children
 ARROW_TESTING_EXPORT std::shared_ptr<Array> UnalignBuffers(const Array& array);

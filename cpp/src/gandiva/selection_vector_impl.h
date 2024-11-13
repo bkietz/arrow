@@ -29,7 +29,7 @@
 
 namespace gandiva {
 
-/// \brief template implementation of selection vector with a specific ctype and arrow
+/// template implementation of selection vector with a specific ctype and arrow
 /// type.
 template <typename C_TYPE, typename A_TYPE, SelectionVector::Mode mode>
 class SelectionVectorImpl : public SelectionVector {

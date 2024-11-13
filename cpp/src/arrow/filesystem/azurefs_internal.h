@@ -37,7 +37,7 @@ enum class HierarchicalNamespaceSupport {
   kEnabled = 3,
 };
 
-/// \brief Performs a request to check if the storage account has Hierarchical
+/// Performs a request to check if the storage account has Hierarchical
 /// Namespace support enabled.
 ///
 /// This check requires a DataLakeFileSystemClient for any container of the
@@ -66,9 +66,9 @@ enum class HierarchicalNamespaceSupport {
 /// IMPORTANT: If the result is kEnabled or kDisabled, it doesn't necessarily mean that
 /// the container exists.
 ///
-/// \param adlfs_client A DataLakeFileSystemClient for a container of the storage
+/// :param adlfs_client: A DataLakeFileSystemClient for a container of the storage
 /// account.
-/// \return kEnabled/kDisabled/kContainerNotFound (kUnknown is never
+/// :return: kEnabled/kDisabled/kContainerNotFound (kUnknown is never
 /// returned).
 Result<HierarchicalNamespaceSupport> CheckIfHierarchicalNamespaceIsEnabled(
     const Azure::Storage::Files::DataLake::DataLakeFileSystemClient& adlfs_client,

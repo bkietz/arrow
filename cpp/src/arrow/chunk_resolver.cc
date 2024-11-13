@@ -90,8 +90,8 @@ inline TypedChunkLocation<IndexType> ResolveOneInline(uint32_t num_offsets,
   return loc;
 }
 
-/// \pre all the pre-conditions of ChunkResolver::ResolveMany()
-/// \pre num_offsets - 1 <= std::numeric_limits<IndexType>::max()
+/// :precondition: all the pre-conditions of ChunkResolver::ResolveMany()
+/// :precondition: num_offsets - 1 <= std::numeric_limits<IndexType>::max()
 template <typename IndexType>
 void ResolveManyInline(uint32_t num_offsets, const int64_t* signed_offsets,
                        int64_t n_indices, const IndexType* logical_index_vec,

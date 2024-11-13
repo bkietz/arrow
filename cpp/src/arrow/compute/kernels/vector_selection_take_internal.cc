@@ -340,7 +340,7 @@ using TakeState = OptionsWrapper<TakeOptions>;
 // boundschecking to check for negative numbers in the indices we can safely
 // reinterpret_cast signed integers as unsigned.
 
-/// \brief The Take implementation for primitive types and fixed-width binary.
+/// The Take implementation for primitive types and fixed-width binary.
 ///
 /// Also note that this function can also handle fixed-size-list arrays if
 /// they fit the criteria described in fixed_width_internal.h, so use the
@@ -350,7 +350,7 @@ using TakeState = OptionsWrapper<TakeOptions>;
 /// NOTE: Template parameters are types instead of values to let
 /// `TakeIndexDispatch<>` forward `typename... Args`  after the index type.
 ///
-/// \pre the indices have been boundschecked
+/// :precondition: the indices have been boundschecked
 template <typename IndexCType, typename ValueBitWidthConstant,
           typename OutputIsZeroInitialized = std::false_type,
           typename WithFactor = std::false_type>

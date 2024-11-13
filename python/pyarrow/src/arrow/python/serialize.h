@@ -59,12 +59,12 @@ struct ARROW_PYTHON_EXPORT SerializedPyObject {
 
   SerializedPyObject();
 
-  /// \brief Write serialized Python object to OutputStream
-  /// \param[in,out] dst an OutputStream
-  /// \return Status
+  /// Write serialized Python object to OutputStream
+  /// :param dst[in,out]: an OutputStream
+  /// :return: Status
   Status WriteTo(io::OutputStream* dst);
 
-  /// \brief Convert SerializedPyObject to a dict containing the message
+  /// Convert SerializedPyObject to a dict containing the message
   /// components as Buffer instances with minimal memory allocation
   ///
   /// {
@@ -81,36 +81,36 @@ struct ARROW_PYTHON_EXPORT SerializedPyObject {
   Status GetComponents(MemoryPool* pool, PyObject** out);
 };
 
-/// \brief Serialize Python sequence as a SerializedPyObject.
-/// \param[in] context Serialization context which contains custom serialization
+/// Serialize Python sequence as a SerializedPyObject.
+/// :param context: Serialization context which contains custom serialization
 /// and deserialization callbacks. Can be any Python object with a
 /// _serialize_callback method for serialization and a _deserialize_callback
 /// method for deserialization. If context is None, no custom serialization
 /// will be attempted.
-/// \param[in] sequence A Python sequence object to serialize to Arrow data
+/// :param sequence: A Python sequence object to serialize to Arrow data
 /// structures
-/// \param[out] out The serialized representation
-/// \return Status
+/// :param out[out]: The serialized representation
+/// :return: Status
 ///
 /// Release GIL before calling
 ARROW_DEPRECATED("Deprecated in 18.0.0. Will be removed in 20.0.0")
 ARROW_PYTHON_EXPORT
 Status SerializeObject(PyObject* context, PyObject* sequence, SerializedPyObject* out);
 
-/// \brief Serialize an Arrow Tensor as a SerializedPyObject.
-/// \param[in] tensor Tensor to be serialized
-/// \param[out] out The serialized representation
-/// \return Status
+/// Serialize an Arrow Tensor as a SerializedPyObject.
+/// :param tensor: Tensor to be serialized
+/// :param out[out]: The serialized representation
+/// :return: Status
 ARROW_DEPRECATED("Deprecated in 18.0.0. Will be removed in 20.0.0")
 ARROW_PYTHON_EXPORT
 Status SerializeTensor(std::shared_ptr<Tensor> tensor, py::SerializedPyObject* out);
 
-/// \brief Write the Tensor metadata header to an OutputStream.
-/// \param[in] dtype DataType of the Tensor
-/// \param[in] shape The shape of the tensor
-/// \param[in] tensor_num_bytes The length of the Tensor data in bytes
-/// \param[in] dst The OutputStream to write the Tensor header to
-/// \return Status
+/// Write the Tensor metadata header to an OutputStream.
+/// :param dtype: DataType of the Tensor
+/// :param shape: The shape of the tensor
+/// :param tensor_num_bytes: The length of the Tensor data in bytes
+/// :param dst: The OutputStream to write the Tensor header to
+/// :return: Status
 ARROW_DEPRECATED("Deprecated in 18.0.0. Will be removed in 20.0.0")
 ARROW_PYTHON_EXPORT
 Status WriteNdarrayHeader(std::shared_ptr<DataType> dtype,

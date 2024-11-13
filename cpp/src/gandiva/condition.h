@@ -25,7 +25,7 @@
 
 namespace gandiva {
 
-/// \brief A condition expression.
+/// A condition expression.
 class Condition : public Expression {
  public:
   explicit Condition(const NodePtr root)

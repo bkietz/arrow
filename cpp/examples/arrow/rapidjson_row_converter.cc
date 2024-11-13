@@ -50,7 +50,7 @@
 
 const rapidjson::Value kNullJsonSingleton = rapidjson::Value();
 
-/// \brief Builder that holds state for a single conversion.
+/// Builder that holds state for a single conversion.
 ///
 /// Implements Visit() methods for each type of Arrow Array that set the values
 /// of the corresponding fields in each row.
@@ -66,10 +66,10 @@ class RowBatchBuilder {
     }
   }
 
-  /// \brief Set which field to convert.
+  /// Set which field to convert.
   void SetField(const arrow::Field* field) { field_ = field; }
 
-  /// \brief Retrieve converted rows from builder.
+  /// Retrieve converted rows from builder.
   std::vector<rapidjson::Document> Rows() && { return std::move(rows_); }
 
   // Default implementation
@@ -212,7 +212,7 @@ class ArrowToDocumentConverter {
   }
 };  // ArrowToDocumentConverter
 
-/// \brief Iterator over rows values of a document for a given field
+/// Iterator over rows values of a document for a given field
 ///
 /// path and array_levels are used to address each field in a JSON document. As
 /// an example, consider this JSON document:
@@ -230,9 +230,9 @@ class ArrowToDocumentConverter {
 /// },
 class DocValuesIterator {
  public:
-  /// \param rows vector of rows
-  /// \param path field names to enter
-  /// \param array_levels number of arrays to enter
+  /// :param rows: vector of rows
+  /// :param path: field names to enter
+  /// :param array_levels: number of arrays to enter
   DocValuesIterator(const std::vector<rapidjson::Document>& rows,
                     std::vector<std::string> path, int64_t array_levels)
       : rows(rows), path(std::move(path)), array_levels(array_levels) {}
@@ -329,12 +329,12 @@ class JsonValueConverter {
                      const std::vector<std::string>& root_path, int64_t array_levels)
       : rows_(rows), root_path_(root_path), array_levels_(array_levels) {}
 
-  /// \brief For field passed in, append corresponding values to builder
+  /// For field passed in, append corresponding values to builder
   arrow::Status Convert(const arrow::Field& field, arrow::ArrayBuilder* builder) {
     return Convert(field, field.name(), builder);
   }
 
-  /// \brief For field passed in, append corresponding values to builder
+  /// For field passed in, append corresponding values to builder
   arrow::Status Convert(const arrow::Field& field, const std::string& field_name,
                         arrow::ArrayBuilder* builder) {
     field_name_ = field_name;

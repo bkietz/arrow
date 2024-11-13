@@ -98,7 +98,7 @@ void TryUnmapBuffer(ucp_context_h context, ucp_mem_h memh_p) {
   }
 }
 
-/// \brief Wrapper around a UCX zero copy buffer (a host memory DATA
+/// Wrapper around a UCX zero copy buffer (a host memory DATA
 ///   buffer).
 ///
 /// Owns a reference to the associated worker to avoid undefined

@@ -79,7 +79,7 @@ Result<std::shared_ptr<FileSystem>> FSFromUriOrPath(const std::string& uri,
   return FileSystemFromUriOrPath(uri, out_path);
 }
 
-////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////
 // Registered FileSystemFactory tests
 
 class SlowFileSystemPublicProps : public SlowFileSystem {
@@ -184,7 +184,7 @@ TEST(FileSystemFromUri, LinkedRegisteredFactoryNameCollision) {
   // other schemes are not affected by the collision
   EXPECT_THAT(FileSystemFromUri("slowfile:///hey/yo", &path), Ok());
 }
-////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////
 // Misc tests
 
 TEST(DetectAbsolutePath, Basics) {
@@ -222,7 +222,7 @@ TEST(DetectAbsolutePath, Basics) {
   ASSERT_FALSE(DetectAbsolutePath("foo\\bar"));
 }
 
-////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////
 // Generic LocalFileSystem tests
 
 template <typename PathFormatter>
@@ -259,7 +259,7 @@ class TestLocalFSGenericMMap : public TestLocalFSGeneric<CommonPathFormatter> {
 
 GENERIC_FS_TEST_FUNCTIONS(TestLocalFSGenericMMap);
 
-////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////
 // Concrete LocalFileSystem tests
 
 template <typename PathFormatter>

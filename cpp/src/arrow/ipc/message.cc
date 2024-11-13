@@ -988,7 +988,7 @@ MessageDecoder::State MessageDecoder::state() const { return impl_->state(); }
 // ----------------------------------------------------------------------
 // Implement InputStream message reader
 
-/// \brief Implementation of MessageReader that reads from InputStream
+/// Implementation of MessageReader that reads from InputStream
 class InputStreamMessageReader : public MessageReader, public MessageDecoderListener {
  public:
   explicit InputStreamMessageReader(io::InputStream* stream)

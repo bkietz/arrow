@@ -172,7 +172,7 @@ static inline uint64_t TrailingBits(uint64_t v, int num_bits) {
   return (v << n) >> n;
 }
 
-/// \brief Count the number of leading zeros in an unsigned integer.
+/// Count the number of leading zeros in an unsigned integer.
 static inline int CountLeadingZeros(uint32_t value) {
 #if defined(__clang__) || defined(__GNUC__)
   if (value == 0) return 32;
@@ -316,15 +316,15 @@ static inline void SetBitTo(uint8_t* bits, int64_t i, bool bit_is_set) {
                  kBitmask[i % 8];
 }
 
-/// \brief set or clear a range of bits quickly
+/// set or clear a range of bits quickly
 ARROW_EXPORT
 void SetBitsTo(uint8_t* bits, int64_t start_offset, int64_t length, bool bits_are_set);
 
-/// \brief Sets all bits in the bitmap to true
+/// Sets all bits in the bitmap to true
 ARROW_EXPORT
 void SetBitmap(uint8_t* data, int64_t offset, int64_t length);
 
-/// \brief Clears all bits in the bitmap (set to false)
+/// Clears all bits in the bitmap (set to false)
 ARROW_EXPORT
 void ClearBitmap(uint8_t* data, int64_t offset, int64_t length);
 
@@ -343,7 +343,7 @@ static_assert(PrecedingWordBitmask<uint8_t>(4) == 0x0f, "");
 static_assert(PrecedingWordBitmask<uint8_t>(8) == 0xff, "");
 static_assert(PrecedingWordBitmask<uint16_t>(8) == 0x00ff, "");
 
-/// \brief Create a word with low `n` bits from `low` and high `sizeof(Word)-n` bits
+/// Create a word with low `n` bits from `low` and high `sizeof(Word)-n` bits
 /// from `high`.
 /// Word ret
 /// for (i = 0; i < sizeof(Word)*8; i++){
@@ -354,7 +354,7 @@ constexpr Word SpliceWord(int n, Word low, Word high) {
   return (high & ~PrecedingWordBitmask<Word>(n)) | (low & PrecedingWordBitmask<Word>(n));
 }
 
-/// \brief Pack integers into a bitmap in batches of 8
+/// Pack integers into a bitmap in batches of 8
 template <int batch_size>
 void PackBits(const uint32_t* values, uint8_t* out) {
   for (int i = 0; i < batch_size / 8; ++i) {

@@ -29,7 +29,7 @@ struct DecryptionConfiguration;
 namespace arrow {
 namespace dataset {
 
-/// \brief Core configuration class encapsulating parameters for high-level encryption
+/// Core configuration class encapsulating parameters for high-level encryption
 /// within Parquet framework.
 ///
 /// ParquetEncryptionConfig serves as a bridge, passing encryption-related
@@ -50,7 +50,7 @@ struct ARROW_DS_EXPORT ParquetEncryptionConfig {
   std::shared_ptr<parquet::encryption::EncryptionConfiguration> encryption_config;
 };
 
-/// \brief Core configuration class encapsulating parameters for high-level decryption
+/// Core configuration class encapsulating parameters for high-level decryption
 /// within Parquet framework.
 ///
 /// ParquetDecryptionConfig is designed to pass decryption-related parameters to

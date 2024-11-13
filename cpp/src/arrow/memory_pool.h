@@ -32,10 +32,10 @@ namespace arrow {
 
 namespace internal {
 
-///////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////
 // Helper tracking memory statistics
 
-/// \brief Memory pool statistics
+/// Memory pool statistics
 ///
 /// 64-byte aligned so that all atomic values are on the same cache line.
 class alignas(64) MemoryPoolStats {
@@ -109,7 +109,7 @@ class ARROW_EXPORT MemoryPool {
  public:
   virtual ~MemoryPool() = default;
 
-  /// \brief EXPERIMENTAL. Create a new instance of the default MemoryPool
+  /// EXPERIMENTAL. Create a new instance of the default MemoryPool
   static std::unique_ptr<MemoryPool> CreateDefault();
 
   /// Allocate a new memory region of at least size bytes.
@@ -134,11 +134,11 @@ class ARROW_EXPORT MemoryPool {
 
   /// Free an allocated region.
   ///
-  /// @param buffer Pointer to the start of the allocated memory region
-  /// @param size Allocated size located at buffer. An allocator implementation
+  /// :param buffer: Pointer to the start of the allocated memory region
+  /// :param size: Allocated size located at buffer. An allocator implementation
   ///   may use this for tracking the amount of allocated bytes as well as for
   ///   faster deallocation if supported by its backend.
-  /// @param alignment The alignment of the allocation. Defaults to 64 bytes.
+  /// :param alignment: The alignment of the allocation. Defaults to 64 bytes.
   virtual void Free(uint8_t* buffer, int64_t size, int64_t alignment) = 0;
   void Free(uint8_t* buffer, int64_t size) {
     Free(buffer, size, kDefaultBufferAlignment);
@@ -157,7 +157,7 @@ class ARROW_EXPORT MemoryPool {
 
   /// Return peak memory allocation in this memory pool
   ///
-  /// \return Maximum bytes allocated. If not known (or not implemented),
+  /// :return: Maximum bytes allocated. If not known (or not implemented),
   /// returns -1
   virtual int64_t max_memory() const;
 
@@ -235,15 +235,15 @@ class ARROW_EXPORT ProxyMemoryPool : public MemoryPool {
   std::unique_ptr<ProxyMemoryPoolImpl> impl_;
 };
 
-/// \brief Return a process-wide memory pool based on the system allocator.
+/// Return a process-wide memory pool based on the system allocator.
 ARROW_EXPORT MemoryPool* system_memory_pool();
 
-/// \brief Return a process-wide memory pool based on jemalloc.
+/// Return a process-wide memory pool based on jemalloc.
 ///
 /// May return NotImplemented if jemalloc is not available.
 ARROW_EXPORT Status jemalloc_memory_pool(MemoryPool** out);
 
-/// \brief Set jemalloc memory page purging behavior for future-created arenas
+/// Set jemalloc memory page purging behavior for future-created arenas
 /// to the indicated number of milliseconds. See dirty_decay_ms and
 /// muzzy_decay_ms options in jemalloc for a description of what these do. The
 /// default is configured to 1000 (1 second) which releases memory more
@@ -254,43 +254,43 @@ ARROW_EXPORT Status jemalloc_memory_pool(MemoryPool** out);
 ARROW_EXPORT
 Status jemalloc_set_decay_ms(int ms);
 
-/// \brief Get basic statistics from jemalloc's mallctl.
+/// Get basic statistics from jemalloc's mallctl.
 /// See the MALLCTL NAMESPACE section in jemalloc project documentation for
 /// available stats.
 ARROW_EXPORT
 Result<int64_t> jemalloc_get_stat(const char* name);
 
-/// \brief Reset the counter for peak bytes allocated in the calling thread to zero.
+/// Reset the counter for peak bytes allocated in the calling thread to zero.
 /// This affects subsequent calls to thread.peak.read, but not the values returned by
 /// thread.allocated or thread.deallocated.
 ARROW_EXPORT
 Status jemalloc_peak_reset();
 
-/// \brief Print summary statistics in human-readable form to stderr.
+/// Print summary statistics in human-readable form to stderr.
 /// See malloc_stats_print documentation in jemalloc project documentation for
 /// available opt flags.
 ARROW_EXPORT
 Status jemalloc_stats_print(const char* opts = "");
 
-/// \brief Print summary statistics in human-readable form using a callback
+/// Print summary statistics in human-readable form using a callback
 /// See malloc_stats_print documentation in jemalloc project documentation for
 /// available opt flags.
 ARROW_EXPORT
 Status jemalloc_stats_print(std::function<void(const char*)> write_cb,
                             const char* opts = "");
 
-/// \brief Get summary statistics in human-readable form.
+/// Get summary statistics in human-readable form.
 /// See malloc_stats_print documentation in jemalloc project documentation for
 /// available opt flags.
 ARROW_EXPORT
 Result<std::string> jemalloc_stats_string(const char* opts = "");
 
-/// \brief Return a process-wide memory pool based on mimalloc.
+/// Return a process-wide memory pool based on mimalloc.
 ///
 /// May return NotImplemented if mimalloc is not available.
 ARROW_EXPORT Status mimalloc_memory_pool(MemoryPool** out);
 
-/// \brief Return the names of the backends supported by this Arrow build.
+/// Return the names of the backends supported by this Arrow build.
 ARROW_EXPORT std::vector<std::string> SupportedMemoryBackendNames();
 
 }  // namespace arrow

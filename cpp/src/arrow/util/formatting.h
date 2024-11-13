@@ -42,7 +42,7 @@
 namespace arrow {
 namespace internal {
 
-/// \brief The entry point for conversion to strings.
+/// The entry point for conversion to strings.
 template <typename ARROW_TYPE, typename Enable = void>
 class StringFormatter;
 
@@ -63,7 +63,7 @@ using enable_if_formattable = enable_if_t<is_formattable<T>::value, R>;
 template <typename Appender>
 using Return = decltype(std::declval<Appender>()(std::string_view{}));
 
-/////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 // Boolean formatting
 
 template <>
@@ -85,7 +85,7 @@ class StringFormatter<BooleanType> {
   }
 };
 
-/////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 // Decimals formatting
 
 template <typename ARROW_TYPE>
@@ -129,7 +129,7 @@ class StringFormatter<Decimal256Type>
   using DecimalToStringFormatterMixin::DecimalToStringFormatterMixin;
 };
 
-/////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 // Integer formatting
 
 namespace detail {
@@ -266,7 +266,7 @@ class StringFormatter<UInt64Type> : public IntToStringFormatterMixin<UInt64Type>
   using IntToStringFormatterMixin::IntToStringFormatterMixin;
 };
 
-/////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 // Floating-point formatting
 
 class ARROW_EXPORT FloatToStringFormatter {
@@ -334,7 +334,7 @@ class StringFormatter<DoubleType> : public FloatToStringFormatterMixin<DoubleTyp
   using FloatToStringFormatterMixin::FloatToStringFormatterMixin;
 };
 
-/////////////////////////////////////////////////////////////////////////
+/// /////////////////////////////////////////////////////////////////////
 // Temporal formatting
 
 namespace detail {

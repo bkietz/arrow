@@ -33,13 +33,13 @@ class ChunkResolver;
 
 template <typename IndexType>
 struct ARROW_EXPORT TypedChunkLocation {
-  /// \brief Index of the chunk in the array of chunks
+  /// Index of the chunk in the array of chunks
   ///
   /// The value is always in the range `[0, chunks.size()]`. `chunks.size()` is used
   /// to represent out-of-bounds locations.
   IndexType chunk_index = 0;
 
-  /// \brief Index of the value in the chunk
+  /// Index of the value in the chunk
   ///
   /// The value is UNDEFINED if `chunk_index >= chunks.size()`
   IndexType index_in_chunk = 0;
@@ -59,19 +59,19 @@ struct ARROW_EXPORT TypedChunkLocation {
 
 using ChunkLocation = TypedChunkLocation<int64_t>;
 
-/// \brief An utility that incrementally resolves logical indices into
+/// An utility that incrementally resolves logical indices into
 /// physical indices in a chunked array.
 class ARROW_EXPORT ChunkResolver {
  private:
-  /// \brief Array containing `chunks.size() + 1` offsets.
+  /// Array containing `chunks.size() + 1` offsets.
   ///
   /// `offsets_[i]` is the starting logical index of chunk `i`. `offsets_[0]` is always 0
   /// and `offsets_[chunks.size()]` is the logical length of the chunked array.
   std::vector<int64_t> offsets_;
 
-  /// \brief Cache of the index of the last resolved chunk.
+  /// Cache of the index of the last resolved chunk.
   ///
-  /// \invariant `cached_chunk_ in [0, chunks.size()]`
+  /// :invariant: `cached_chunk_ in [0, chunks.size()]`
   mutable std::atomic<int32_t> cached_chunk_;
 
  public:
@@ -107,15 +107,15 @@ class ARROW_EXPORT ChunkResolver {
     return offsets_[chunk_index + 1] - offsets_[chunk_index];
   }
 
-  /// \brief Resolve a logical index to a ChunkLocation.
+  /// Resolve a logical index to a ChunkLocation.
   ///
   /// The returned ChunkLocation contains the chunk index and the within-chunk index
   /// equivalent to the logical index.
   ///
-  /// \pre `index >= 0`
-  /// \post `location.chunk_index` in `[0, chunks.size()]`
-  /// \param index The logical index to resolve
-  /// \return ChunkLocation with a valid chunk_index if index is within
+  /// :precondition: `index >= 0`
+  /// :postcondition: `location.chunk_index` in `[0, chunks.size()]`
+  /// :param index: The logical index to resolve
+  /// :return: ChunkLocation with a valid chunk_index if index is within
   ///         bounds, or with `chunk_index == chunks.size()` if logical index is
   ///         `>= chunked_array.length()`.
   inline ChunkLocation Resolve(int64_t index) const {
@@ -125,17 +125,17 @@ class ARROW_EXPORT ChunkResolver {
     return ChunkLocation{chunk_index, index - offsets_[chunk_index]};
   }
 
-  /// \brief Resolve a logical index to a ChunkLocation.
+  /// Resolve a logical index to a ChunkLocation.
   ///
   /// The returned ChunkLocation contains the chunk index and the within-chunk index
   /// equivalent to the logical index.
   ///
-  /// \pre `index >= 0`
-  /// \post `location.chunk_index` in `[0, chunks.size()]`
-  /// \param index The logical index to resolve
-  /// \param hint ChunkLocation{} or the last ChunkLocation returned by
+  /// :precondition: `index >= 0`
+  /// :postcondition: `location.chunk_index` in `[0, chunks.size()]`
+  /// :param index: The logical index to resolve
+  /// :param hint: ChunkLocation{} or the last ChunkLocation returned by
   ///             this ChunkResolver.
-  /// \return ChunkLocation with a valid chunk_index if index is within
+  /// :return: ChunkLocation with a valid chunk_index if index is within
   ///         bounds, or with `chunk_index == chunks.size()` if logical index is
   ///         `>= chunked_array.length()`.
   inline ChunkLocation ResolveWithHint(int64_t index, ChunkLocation hint) const {
@@ -145,25 +145,25 @@ class ARROW_EXPORT ChunkResolver {
     return ChunkLocation{chunk_index, index - offsets_[chunk_index]};
   }
 
-  /// \brief Resolve `n_indices` logical indices to chunk indices.
+  /// Resolve `n_indices` logical indices to chunk indices.
   ///
-  /// \pre 0 <= logical_index_vec[i] < logical_array_length()
+  /// :precondition: 0 <= logical_index_vec[i] < logical_array_length()
   ///      (for well-defined and valid chunk index results)
-  /// \pre out_chunk_location_vec has space for `n_indices` locations
-  /// \pre chunk_hint in [0, chunks.size()]
-  /// \post out_chunk_location_vec[i].chunk_index in [0, chunks.size()] for i in [0, n)
-  /// \post if logical_index_vec[i] >= chunked_array.length(), then
+  /// :precondition: out_chunk_location_vec has space for `n_indices` locations
+  /// :precondition: chunk_hint in [0, chunks.size()]
+  /// :postcondition: out_chunk_location_vec[i].chunk_index in [0, chunks.size()] for i in [0, n)
+  /// :postcondition: if logical_index_vec[i] >= chunked_array.length(), then
   ///       out_chunk_location_vec[i].chunk_index == chunks.size()
   ///       and out_chunk_location_vec[i].index_in_chunk is UNDEFINED (can be
   ///       out-of-bounds)
-  /// \post if logical_index_vec[i] < 0, then both values in out_chunk_index_vec[i]
+  /// :postcondition: if logical_index_vec[i] < 0, then both values in out_chunk_index_vec[i]
   ///       are UNDEFINED
   ///
-  /// \param n_indices The number of logical indices to resolve
-  /// \param logical_index_vec The logical indices to resolve
-  /// \param out_chunk_location_vec The output array where the locations will be written
-  /// \param chunk_hint 0 or the last chunk_index produced by ResolveMany
-  /// \return false iff chunks.size() > std::numeric_limits<IndexType>::max()
+  /// :param n_indices: The number of logical indices to resolve
+  /// :param logical_index_vec: The logical indices to resolve
+  /// :param out_chunk_location_vec: The output array where the locations will be written
+  /// :param chunk_hint: 0 or the last chunk_index produced by ResolveMany
+  /// :return: false iff chunks.size() > std::numeric_limits<IndexType>::max()
   template <typename IndexType>
   [[nodiscard]] bool ResolveMany(int64_t n_indices, const IndexType* logical_index_vec,
                                  TypedChunkLocation<IndexType>* out_chunk_location_vec,
@@ -227,8 +227,8 @@ class ARROW_EXPORT ChunkResolver {
     return chunk_index;
   }
 
-  /// \pre all the pre-conditions of ChunkResolver::ResolveMany()
-  /// \pre num_offsets - 1 <= std::numeric_limits<IndexType>::max()
+  /// :precondition: all the pre-conditions of ChunkResolver::ResolveMany()
+  /// :precondition: num_offsets - 1 <= std::numeric_limits<IndexType>::max()
   void ResolveManyImpl(int64_t, const uint8_t*, TypedChunkLocation<uint8_t>*,
                        int32_t) const;
   void ResolveManyImpl(int64_t, const uint16_t*, TypedChunkLocation<uint16_t>*,
@@ -239,16 +239,16 @@ class ARROW_EXPORT ChunkResolver {
                        int32_t) const;
 
  public:
-  /// \brief Find the index of the chunk that contains the logical index.
+  /// Find the index of the chunk that contains the logical index.
   ///
   /// Any non-negative index is accepted. When `hi=num_offsets`, the largest
   /// possible return value is `num_offsets-1` which is equal to
   /// `chunks.size()`. Which is returned when the logical index is greater or
   /// equal the logical length of the chunked array.
   ///
-  /// \pre index >= 0 (otherwise, when index is negative, hi-1 is returned)
-  /// \pre lo < hi
-  /// \pre lo >= 0 && hi <= offsets_.size()
+  /// :precondition: index >= 0 (otherwise, when index is negative, hi-1 is returned)
+  /// :precondition: lo < hi
+  /// :precondition: lo >= 0 && hi <= offsets_.size()
   static inline int32_t Bisect(int64_t index, const int64_t* offsets, int32_t lo,
                                int32_t hi) {
     return Bisect(static_cast<uint64_t>(index),

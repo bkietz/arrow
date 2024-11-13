@@ -27,7 +27,7 @@
 
 namespace gandiva {
 
-/// \brief Extract bitmap buffer from either the input/buffer vectors or the
+/// Extract bitmap buffer from either the input/buffer vectors or the
 /// local validity bitmap, and accumulates them to do the final computation.
 class GANDIVA_EXPORT BitMapAccumulator : public DexDefaultVisitor {
  public:

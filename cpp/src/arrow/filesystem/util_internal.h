@@ -58,18 +58,18 @@ Status NotAFile(std::string_view path);
 ARROW_EXPORT
 Status InvalidDeleteDirContents(std::string_view path);
 
-/// \brief Parse the string as a URI
-/// \param uri_string the string to parse
+/// Parse the string as a URI
+/// :param uri_string: the string to parse
 ///
 /// This is the same as Uri::Parse except it tolerates Windows
 /// file URIs that contain backslash instead of /
 Result<Uri> ParseFileSystemUri(const std::string& uri_string);
 
-/// \brief check if the string is a local absolute path
+/// check if the string is a local absolute path
 ARROW_EXPORT
 bool DetectAbsolutePath(const std::string& s);
 
-/// \brief describes how to handle the authority (host) component of the URI
+/// describes how to handle the authority (host) component of the URI
 enum class AuthorityHandlingBehavior {
   // Return an invalid status if the authority is non-empty
   kDisallow = 0,
@@ -81,18 +81,18 @@ enum class AuthorityHandlingBehavior {
   kIgnore = 3
 };
 
-/// \brief check to see if uri_string matches one of the supported schemes and return the
+/// check to see if uri_string matches one of the supported schemes and return the
 /// path component
-/// \param uri_string a uri or local path to test and convert
-/// \param supported_schemes the set of URI schemes that should be accepted
-/// \param accept_local_paths if true, allow an absolute path
-/// \return the path portion of the URI
+/// :param uri_string: a uri or local path to test and convert
+/// :param supported_schemes: the set of URI schemes that should be accepted
+/// :param accept_local_paths: if true, allow an absolute path
+/// :return: the path portion of the URI
 Result<std::string> PathFromUriHelper(const std::string& uri_string,
                                       std::vector<std::string> supported_schemes,
                                       bool accept_local_paths,
                                       AuthorityHandlingBehavior authority_handling);
 
-/// \brief Return files matching the glob pattern on the filesystem
+/// Return files matching the glob pattern on the filesystem
 ///
 /// Globbing starts from the root of the filesystem.
 ARROW_EXPORT

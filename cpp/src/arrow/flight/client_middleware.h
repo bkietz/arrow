@@ -29,7 +29,7 @@
 namespace arrow {
 namespace flight {
 
-/// \brief Client-side middleware for a call, instantiated per RPC.
+/// Client-side middleware for a call, instantiated per RPC.
 ///
 /// Middleware should be fast and must be infallible: there is no way
 /// to reject the call or report errors from the middleware instance.
@@ -37,11 +37,11 @@ class ARROW_FLIGHT_EXPORT ClientMiddleware {
  public:
   virtual ~ClientMiddleware() = default;
 
-  /// \brief A callback before headers are sent. Extra headers can be
+  /// A callback before headers are sent. Extra headers can be
   /// added, but existing ones cannot be read.
   virtual void SendingHeaders(AddCallHeaders* outgoing_headers) = 0;
 
-  /// \brief A callback when headers are received from the server.
+  /// A callback when headers are received from the server.
   ///
   /// This may be called more than once, since servers send both
   /// headers and trailers.  Some implementations (e.g. gRPC-Java, and
@@ -49,11 +49,11 @@ class ARROW_FLIGHT_EXPORT ClientMiddleware {
   /// trailers if the RPC errored.
   virtual void ReceivedHeaders(const CallHeaders& incoming_headers) = 0;
 
-  /// \brief A callback after the call has completed.
+  /// A callback after the call has completed.
   virtual void CallCompleted(const Status& status) = 0;
 };
 
-/// \brief A factory for new middleware instances.
+/// A factory for new middleware instances.
 ///
 /// If added to a client, this will be called for each RPC (including
 /// Handshake) to give the opportunity to intercept the call.
@@ -64,10 +64,10 @@ class ARROW_FLIGHT_EXPORT ClientMiddlewareFactory {
  public:
   virtual ~ClientMiddlewareFactory() = default;
 
-  /// \brief A callback for the start of a new call.
+  /// A callback for the start of a new call.
   ///
-  /// \param info Information about the call.
-  /// \param[out] middleware The middleware instance for this call. If
+  /// :param info: Information about the call.
+  /// :param middleware[out]: The middleware instance for this call. If
   ///     unset, will not add middleware to this call instance from
   ///     this factory.
   virtual void StartCall(const CallInfo& info,

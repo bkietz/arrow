@@ -52,55 +52,54 @@ static constexpr const int kFeatherV2Version = 3;
 // ----------------------------------------------------------------------
 // Metadata accessor classes
 
-/// \class Reader
-/// \brief An interface for reading columns from Feather files
+/// An interface for reading columns from Feather files
 class ARROW_EXPORT Reader {
  public:
   virtual ~Reader() = default;
 
-  /// \brief Open a Feather file from a RandomAccessFile interface
+  /// Open a Feather file from a RandomAccessFile interface
   ///
-  /// \param[in] source a RandomAccessFile instance
-  /// \return the table reader
+  /// :param source: a RandomAccessFile instance
+  /// :return: the table reader
   static Result<std::shared_ptr<Reader>> Open(
       const std::shared_ptr<io::RandomAccessFile>& source);
 
-  /// \brief Open a Feather file from a RandomAccessFile interface
+  /// Open a Feather file from a RandomAccessFile interface
   /// with IPC Read options
   ///
-  /// \param[in] source a RandomAccessFile instance
-  /// \param[in] options IPC Read options
-  /// \return the table reader
+  /// :param source: a RandomAccessFile instance
+  /// :param options: IPC Read options
+  /// :return: the table reader
   static Result<std::shared_ptr<Reader>> Open(
       const std::shared_ptr<io::RandomAccessFile>& source, const IpcReadOptions& options);
 
-  /// \brief Return the version number of the Feather file
+  /// Return the version number of the Feather file
   virtual int version() const = 0;
 
   virtual std::shared_ptr<Schema> schema() const = 0;
 
-  /// \brief Read all columns from the file as an arrow::Table.
+  /// Read all columns from the file as an arrow::Table.
   ///
-  /// \param[out] out the returned table
-  /// \return Status
+  /// :param out[out]: the returned table
+  /// :return: Status
   ///
   /// This function is zero-copy if the file source supports zero-copy reads
   virtual Status Read(std::shared_ptr<Table>* out) = 0;
 
-  /// \brief Read only the specified columns from the file as an arrow::Table.
+  /// Read only the specified columns from the file as an arrow::Table.
   ///
-  /// \param[in] indices the column indices to read
-  /// \param[out] out the returned table
-  /// \return Status
+  /// :param indices: the column indices to read
+  /// :param out[out]: the returned table
+  /// :return: Status
   ///
   /// This function is zero-copy if the file source supports zero-copy reads
   virtual Status Read(const std::vector<int>& indices, std::shared_ptr<Table>* out) = 0;
 
-  /// \brief Read only the specified columns from the file as an arrow::Table.
+  /// Read only the specified columns from the file as an arrow::Table.
   ///
-  /// \param[in] names the column names to read
-  /// \param[out] out the returned table
-  /// \return Status
+  /// :param names: the column names to read
+  /// :param out[out]: the returned table
+  /// :return: Status
   ///
   /// This function is zero-copy if the file source supports zero-copy reads
   virtual Status Read(const std::vector<std::string>& names,

@@ -113,13 +113,13 @@ class ARROW_EXPORT AsyncTaskScheduler {
   /// attempting to add tasks to an aborted scheduler.  It is only included for callers
   /// that want to avoid future task generation to save effort.
   ///
-  /// \param task the task to submit
+  /// :param task: the task to submit
   ///
   /// A task's name must remain valid for the duration of the task.  It is used for
   /// debugging (e.g. when debugging a deadlock to see which tasks still remain) and for
   /// traceability (the name will be used for spans assigned to the task)
   ///
-  /// \return true if the task was submitted or queued, false if the task was ignored
+  /// :return: true if the task was submitted or queued, false if the task was ignored
   virtual bool AddTask(std::unique_ptr<Task> task) = 0;
 
   /// Adds an async generator to the scheduler
@@ -135,9 +135,9 @@ class ARROW_EXPORT AsyncTaskScheduler {
   /// However, if the scheduler is aborted, the generator will be destroyed as soon as the
   /// next item would be requested.
   ///
-  /// \param generator the generator to submit to the scheduler
-  /// \param visitor a function which visits each generator future as it completes
-  /// \param name a name which will be used for each submitted task
+  /// :param generator: the generator to submit to the scheduler
+  /// :param visitor: a function which visits each generator future as it completes
+  /// :param name: a name which will be used for each submitted task
   template <typename T>
   bool AddAsyncGenerator(std::function<Future<T>()> generator,
                          std::function<Status(const T&)> visitor, std::string_view name);
@@ -159,13 +159,15 @@ class ARROW_EXPORT AsyncTaskScheduler {
 
   /// Add a task with cost 1 to the scheduler
   ///
-  /// \param callable a "submit" function that should return a future
-  /// \param name a name for the task
+  /// :param callable: a "submit" function that should return a future
+  /// :param name: a name for the task
   ///
   /// `name` must remain valid until the task has been submitted AND the returned
   /// future completes.  It is used for debugging and tracing.
   ///
-  /// \see AddTask for more details
+  /// ```{seealso}
+  /// AddTask for more details
+  /// ```
   template <typename Callable>
   bool AddSimpleTask(Callable callable, std::string_view name) {
     return AddTask(std::make_unique<SimpleTask<Callable>>(std::move(callable), name));
@@ -183,19 +185,19 @@ class ARROW_EXPORT AsyncTaskScheduler {
 
   /// Construct a scheduler
   ///
-  /// \param initial_task The initial task which is responsible for adding
+  /// :param initial_task: The initial task which is responsible for adding
   ///        the first subtasks to the scheduler.
-  /// \param abort_callback A callback that will be triggered immediately after a task
+  /// :param abort_callback: A callback that will be triggered immediately after a task
   ///        fails while other tasks may still be running.  Nothing needs to be done here,
   ///        when a task fails the scheduler will stop accepting new tasks and eventually
   ///        return the error.  However, this callback can be used to more quickly end
   ///        long running tasks that have already been submitted.  Defaults to doing
   ///        nothing.
-  /// \param stop_token An optional stop token that will allow cancellation of the
+  /// :param stop_token: An optional stop token that will allow cancellation of the
   ///        scheduler.  This will be checked before each task is submitted and, in the
   ///        event of a cancellation, the scheduler will enter an aborted state. This is
   ///        a graceful cancellation and submitted tasks will still complete.
-  /// \return A future that will be completed when the initial task and all subtasks have
+  /// :return: A future that will be completed when the initial task and all subtasks have
   ///         finished.
   static Future<> Make(
       FnOnce<Status(AsyncTaskScheduler*)> initial_task,
@@ -216,7 +218,7 @@ class ARROW_EXPORT ThrottledAsyncTaskScheduler : public AsyncTaskScheduler {
     virtual ~Queue() = default;
     /// Push a task to the queue
     ///
-    /// \param task the task to enqueue
+    /// :param task: the task to enqueue
     virtual void Push(std::unique_ptr<Task> task) = 0;
     /// Pop the next task from the queue
     virtual std::unique_ptr<Task> Pop() = 0;
@@ -239,14 +241,14 @@ class ARROW_EXPORT ThrottledAsyncTaskScheduler : public AsyncTaskScheduler {
     /// should wait for the future to complete first.  When the returned future completes
     /// the permits have NOT been acquired and the caller must call Acquire again
     ///
-    /// \param amt the number of permits to acquire
+    /// :param amt: the number of permits to acquire
     virtual std::optional<Future<>> TryAcquire(int amt) = 0;
     /// Release amt permits
     ///
     /// This will possibly complete waiting futures and should probably not be
     /// called while holding locks.
     ///
-    /// \param amt the number of permits to release
+    /// :param amt: the number of permits to release
     virtual void Release(int amt) = 0;
 
     /// The size of the largest task that can run
@@ -292,18 +294,18 @@ class ARROW_EXPORT ThrottledAsyncTaskScheduler : public AsyncTaskScheduler {
   /// important the caller keep the returned pointer alive for as long as they plan to add
   /// tasks to the view.
   ///
-  /// \param scheduler a scheduler to submit tasks to after throttling
+  /// :param scheduler: a scheduler to submit tasks to after throttling
   ///
   /// This can be the root scheduler, another throttled scheduler, or a task group.  These
   /// are all composable.
   ///
-  /// \param max_concurrent_cost the maximum amount of cost allowed to run at any one time
+  /// :param max_concurrent_cost: the maximum amount of cost allowed to run at any one time
   ///
   /// If a task is added that has a cost greater than max_concurrent_cost then its cost
   /// will be reduced to max_concurrent_cost so that it is still possible for the task to
   /// run.
   ///
-  /// \param queue the queue to use when tasks cannot be submitted
+  /// :param queue: the queue to use when tasks cannot be submitted
   ///
   /// By default a FIFO queue will be used.  However, a custom queue can be provided if
   /// some tasks have higher priority than other tasks.
@@ -311,9 +313,11 @@ class ARROW_EXPORT ThrottledAsyncTaskScheduler : public AsyncTaskScheduler {
       AsyncTaskScheduler* scheduler, int max_concurrent_cost,
       std::unique_ptr<Queue> queue = NULLPTR);
 
-  /// @brief Create a ThrottledAsyncTaskScheduler using a custom throttle
+  /// Create a ThrottledAsyncTaskScheduler using a custom throttle
   ///
-  /// \see Make
+  /// ```{seealso}
+  /// Make
+  /// ```
   static std::shared_ptr<ThrottledAsyncTaskScheduler> MakeWithCustomThrottle(
       AsyncTaskScheduler* scheduler, std::unique_ptr<Throttle> throttle,
       std::unique_ptr<Queue> queue = NULLPTR);
@@ -347,8 +351,8 @@ class ARROW_EXPORT AsyncTaskGroup : public AsyncTaskScheduler {
   /// tasks are finished so you will generally want to reset / destroy the returned
   /// unique_ptr at some point.
   ///
-  /// \param scheduler The underlying scheduler to submit tasks to
-  /// \param finish_callback A callback that will be run only after the task group has
+  /// :param scheduler: The underlying scheduler to submit tasks to
+  /// :param finish_callback: A callback that will be run only after the task group has
   ///                        been destroyed and all tasks added by the group have
   ///                        finished.
   ///
@@ -363,12 +367,16 @@ class ARROW_EXPORT AsyncTaskGroup : public AsyncTaskScheduler {
 /// This is a utility factory that creates a throttled view of a scheduler and then
 /// wraps that throttled view with a task group that destroys the throttle when finished.
 ///
-/// \see ThrottledAsyncTaskScheduler
-/// \see AsyncTaskGroup
-/// \param target the underlying scheduler to submit tasks to
-/// \param max_concurrent_cost the maximum amount of cost allowed to run at any one time
-/// \param queue the queue to use when tasks cannot be submitted
-/// \param finish_callback A callback that will be run only after the task group has
+/// ```{seealso}
+/// ThrottledAsyncTaskScheduler
+/// ```
+/// ```{seealso}
+/// AsyncTaskGroup
+/// ```
+/// :param target: the underlying scheduler to submit tasks to
+/// :param max_concurrent_cost: the maximum amount of cost allowed to run at any one time
+/// :param queue: the queue to use when tasks cannot be submitted
+/// :param finish_callback: A callback that will be run only after the task group has
 ///                  been destroyed and all tasks added by the group have finished
 ARROW_EXPORT std::unique_ptr<ThrottledAsyncTaskScheduler> MakeThrottledAsyncTaskGroup(
     AsyncTaskScheduler* target, int max_concurrent_cost,

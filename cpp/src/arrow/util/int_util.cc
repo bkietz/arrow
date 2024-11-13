@@ -560,7 +560,7 @@ static Status CheckIndexBoundsImpl(const ArraySpan& values, uint64_t upper_limit
       });
 }
 
-/// \brief Branchless boundschecking of the values. Processes batches of
+/// Branchless boundschecking of the values. Processes batches of
 /// values at a time and shortcircuits when encountering an out-of-bounds
 /// index in a batch
 Status CheckIndexBounds(const ArraySpan& values, uint64_t upper_limit) {

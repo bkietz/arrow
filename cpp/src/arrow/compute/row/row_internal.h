@@ -32,7 +32,7 @@ namespace compute {
 struct ARROW_EXPORT RowTableMetadata {
   using offset_type = int64_t;
 
-  /// \brief True if there are no variable length columns in the table
+  /// True if there are no variable length columns in the table
   bool is_fixed_length;
 
   /// For a fixed-length binary row, common size of rows in bytes,
@@ -115,7 +115,7 @@ struct ARROW_EXPORT RowTableMetadata {
     return reinterpret_cast<const uint32_t*>(row + varbinary_end_array_offset);
   }
 
-  /// \brief An array of mutable offsets within a row of ends of varbinary fields.
+  /// An array of mutable offsets within a row of ends of varbinary fields.
   inline uint32_t* varbinary_end_array(uint8_t* row) const {
     ARROW_DCHECK(!is_fixed_length);
     return reinterpret_cast<uint32_t*>(row + varbinary_end_array_offset);
@@ -153,17 +153,17 @@ struct ARROW_EXPORT RowTableMetadata {
 
   uint32_t num_varbinary_cols() const;
 
-  /// \brief Populate this instance to describe `cols` with the given alignment
+  /// Populate this instance to describe `cols` with the given alignment
   void FromColumnMetadataVector(const std::vector<KeyColumnMetadata>& cols,
                                 int in_row_alignment, int in_string_alignment);
 
-  /// \brief True if `other` has the same number of columns
+  /// True if `other` has the same number of columns
   ///   and each column has the same width (two variable length
   ///   columns are considered to have the same width)
   bool is_compatible(const RowTableMetadata& other) const;
 };
 
-/// \brief A table of data stored in row-major order
+/// A table of data stored in row-major order
 ///
 /// Can only store non-nested data types
 ///
@@ -175,29 +175,29 @@ class ARROW_EXPORT RowTableImpl {
   using offset_type = RowTableMetadata::offset_type;
 
   RowTableImpl();
-  /// \brief Initialize a row array for use
+  /// Initialize a row array for use
   ///
   /// This must be called before any other method
   Status Init(MemoryPool* pool, const RowTableMetadata& metadata);
-  /// \brief Clear all rows from the table
+  /// Clear all rows from the table
   ///
   /// Does not shrink buffers
   void Clean();
-  /// \brief Add empty rows
-  /// \param num_rows_to_append The number of empty rows to append
-  /// \param num_extra_bytes_to_append For tables storing variable-length data this
+  /// Add empty rows
+  /// :param num_rows_to_append: The number of empty rows to append
+  /// :param num_extra_bytes_to_append: For tables storing variable-length data this
   ///     should be a guess of how many data bytes will be needed to populate the
   ///     data.  This is ignored if there are no variable-length columns
   Status AppendEmpty(uint32_t num_rows_to_append, int64_t num_extra_bytes_to_append);
-  /// \brief Append rows from a source table
-  /// \param from The table to append from
-  /// \param num_rows_to_append The number of rows to append
-  /// \param source_row_ids Indices (into `from`) of the desired rows
+  /// Append rows from a source table
+  /// :param from: The table to append from
+  /// :param num_rows_to_append: The number of rows to append
+  /// :param source_row_ids: Indices (into `from`) of the desired rows
   Status AppendSelectionFrom(const RowTableImpl& from, uint32_t num_rows_to_append,
                              const uint16_t* source_row_ids);
-  /// \brief Metadata describing the data stored in this table
+  /// Metadata describing the data stored in this table
   const RowTableMetadata& metadata() const { return metadata_; }
-  /// \brief The number of rows stored in the table
+  /// The number of rows stored in the table
   int64_t length() const { return num_rows_; }
   // Accessors into the table's buffers
   const uint8_t* data(int i) const {
@@ -223,28 +223,28 @@ class ARROW_EXPORT RowTableImpl {
   const uint8_t* null_masks() const { return null_masks_->data(); }
   uint8_t* null_masks() { return null_masks_->mutable_data(); }
 
-  /// \brief True if there is a null value anywhere in the table
+  /// True if there is a null value anywhere in the table
   ///
   /// This calculation is memoized based on the number of rows and assumes
   /// that values are only appended (and not modified in place) between
   /// successive calls
   bool has_any_nulls(const LightContext* ctx) const;
 
-  /// \brief Size of the table's buffers
+  /// Size of the table's buffers
   int64_t buffer_size(int i) const {
     ARROW_DCHECK(i >= 0 && i < kMaxBuffers);
     return buffers_[i]->size();
   }
 
  private:
-  /// \brief Resize the fixed length buffers to store `num_extra_rows` more rows. The
+  /// Resize the fixed length buffers to store `num_extra_rows` more rows. The
   /// fixed length buffers are buffers_[0] for null masks, buffers_[1] for row data if the
   /// row is fixed length, or for row offsets otherwise.
   Status ResizeFixedLengthBuffers(int64_t num_extra_rows);
 
-  /// \brief Resize the optional varying length buffer to store `num_extra_bytes` more
+  /// Resize the optional varying length buffer to store `num_extra_bytes` more
   /// bytes.
-  /// \pre !metadata_.is_fixed_length
+  /// :precondition: !metadata_.is_fixed_length
   Status ResizeOptionalVaryingLengthBuffer(int64_t num_extra_bytes);
 
   // Helper functions to determine the number of bytes needed for each

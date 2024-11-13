@@ -66,13 +66,11 @@ class ARROW_EXPORT MockFileSystem : public FileSystem {
   bool Equals(const FileSystem& other) const override;
   Result<std::string> PathFromUri(const std::string& uri_string) const override;
 
-  /// \cond FALSE
   using FileSystem::CreateDir;
   using FileSystem::DeleteDirContents;
   using FileSystem::GetFileInfo;
   using FileSystem::OpenAppendStream;
   using FileSystem::OpenOutputStream;
-  /// \endcond
 
   Result<FileInfo> GetFileInfo(const std::string& path) override;
   Result<std::vector<FileInfo>> GetFileInfo(const FileSelector& select) override;

@@ -37,7 +37,7 @@ class FunctionHolderMakerRegistry {
 
   arrow::Status Register(const std::string& name, FunctionHolderMaker holder_maker);
 
-  /// \brief lookup a function holder maker using the given function name,
+  /// lookup a function holder maker using the given function name,
   /// and make a FunctionHolderPtr using the found holder maker and the given FunctionNode
   arrow::Result<FunctionHolderPtr> Make(const std::string& name,
                                         const FunctionNode& node);

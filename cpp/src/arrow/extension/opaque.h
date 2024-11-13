@@ -22,16 +22,16 @@
 
 namespace arrow::extension {
 
-/// \brief Opaque is a placeholder for a type from an external (usually
+/// Opaque is a placeholder for a type from an external (usually
 ///   non-Arrow) system that could not be interpreted.
 class ARROW_EXPORT OpaqueType : public ExtensionType {
  public:
-  /// \brief Construct an OpaqueType.
+  /// Construct an OpaqueType.
   ///
-  /// \param[in] storage_type The underlying storage type.  Should be
+  /// :param storage_type: The underlying storage type.  Should be
   ///   arrow::null if there is no data.
-  /// \param[in] type_name The name of the type in the external system.
-  /// \param[in] vendor_name The name of the external system.
+  /// :param type_name: The name of the type in the external system.
+  /// :param vendor_name: The name of the external system.
   explicit OpaqueType(std::shared_ptr<DataType> storage_type, std::string type_name,
                       std::string vendor_name)
       : ExtensionType(std::move(storage_type)),
@@ -56,14 +56,14 @@ class ARROW_EXPORT OpaqueType : public ExtensionType {
   std::string vendor_name_;
 };
 
-/// \brief Opaque is a wrapper for (usually binary) data from an external
+/// Opaque is a wrapper for (usually binary) data from an external
 ///   (often non-Arrow) system that could not be interpreted.
 class ARROW_EXPORT OpaqueArray : public ExtensionArray {
  public:
   using ExtensionArray::ExtensionArray;
 };
 
-/// \brief Return an OpaqueType instance.
+/// Return an OpaqueType instance.
 ARROW_EXPORT std::shared_ptr<DataType> opaque(std::shared_ptr<DataType> storage_type,
                                               std::string type_name,
                                               std::string vendor_name);

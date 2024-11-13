@@ -77,7 +77,7 @@ using RjObject = rj::Value::ConstObject;
 
 namespace arrow::internal::integration::json {
 
-/// \brief Append integration test Schema format to rapidjson writer
+/// Append integration test Schema format to rapidjson writer
 ARROW_EXPORT
 Status WriteSchema(const Schema& schema, const ipc::DictionaryFieldMapper& mapper,
                    RjWriter* writer);

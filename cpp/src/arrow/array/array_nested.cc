@@ -56,9 +56,9 @@ using internal::CopyBitmap;
 
 namespace {
 
-/// \brief Clean offsets when their null_count is greater than 0
+/// Clean offsets when their null_count is greater than 0
 ///
-/// \pre offsets.null_count() > 0
+/// :precondition: offsets.null_count() > 0
 template <typename TYPE>
 Result<BufferVector> CleanListOffsets(const std::shared_ptr<Buffer>& validity_buffer,
                                       const Array& offsets, MemoryPool* pool) {

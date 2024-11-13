@@ -39,7 +39,7 @@ namespace arrow {
 // ----------------------------------------------------------------------
 // User array accessor types
 
-/// \brief Array base type
+/// Array base type
 /// Immutable data array with some logical type and some length.
 ///
 /// Any memory is owned by the respective Buffer instance (or its parents).
@@ -54,10 +54,10 @@ class ARROW_EXPORT Array {
  public:
   virtual ~Array() = default;
 
-  /// \brief Return true if value at index is null. Does not boundscheck
+  /// Return true if value at index is null. Does not boundscheck
   bool IsNull(int64_t i) const { return !IsValid(i); }
 
-  /// \brief Return true if value at index is valid (not null). Does not
+  /// Return true if value at index is valid (not null). Does not
   /// boundscheck
   bool IsValid(int64_t i) const {
     if (null_bitmap_data_ != NULLPTR) {
@@ -79,7 +79,7 @@ class ARROW_EXPORT Array {
     return data_->null_count != data_->length;
   }
 
-  /// \brief Return a Scalar containing the value of this array at i
+  /// Return a Scalar containing the value of this array at i
   Result<std::shared_ptr<Scalar>> GetScalar(int64_t i) const;
 
   /// Size in the number of elements this array contains.
@@ -95,7 +95,7 @@ class ARROW_EXPORT Array {
   /// function
   int64_t null_count() const;
 
-  /// \brief Computes the logical null count for arrays of all types including
+  /// Computes the logical null count for arrays of all types including
   /// those that do not have a validity bitmap like union and run-end encoded
   /// arrays
   ///
@@ -103,7 +103,9 @@ class ARROW_EXPORT Array {
   /// null_count(). For types that have no validity bitmap, this function will
   /// recompute the null count every time it is called.
   ///
-  /// \see GetNullCount
+  /// ```{seealso}
+  /// GetNullCount
+  /// ```
   int64_t ComputeLogicalNullCount() const;
 
   const std::shared_ptr<DataType>& type() const { return data_->type; }
@@ -127,7 +129,7 @@ class ARROW_EXPORT Array {
   bool Equals(const std::shared_ptr<Array>& arr,
               const EqualOptions& = EqualOptions::Defaults()) const;
 
-  /// \brief Return the formatted unified diff of arrow::Diff between this
+  /// Return the formatted unified diff of arrow::Diff between this
   /// Array and another Array
   std::string Diff(const Array& other) const;
 
@@ -154,7 +156,7 @@ class ARROW_EXPORT Array {
                    int64_t end_idx, int64_t other_start_idx,
                    const EqualOptions& = EqualOptions::Defaults()) const;
 
-  /// \brief Apply the ArrayVisitor::Visit() method specialized to the array type
+  /// Apply the ArrayVisitor::Visit() method specialized to the array type
   Status Accept(ArrayVisitor* visitor) const;
 
   /// Construct a zero-copy view of this array with the given type.
@@ -165,14 +167,14 @@ class ARROW_EXPORT Array {
   /// An error is returned if the types are not layout-compatible.
   Result<std::shared_ptr<Array>> View(const std::shared_ptr<DataType>& type) const;
 
-  /// \brief Construct a copy of the array with all buffers on destination
+  /// Construct a copy of the array with all buffers on destination
   /// Memory Manager
   ///
   /// This method recursively copies the array's buffers and those of its children
   /// onto the destination MemoryManager device and returns the new Array.
   Result<std::shared_ptr<Array>> CopyTo(const std::shared_ptr<MemoryManager>& to) const;
 
-  /// \brief Construct a new array attempting to zero-copy view if possible.
+  /// Construct a new array attempting to zero-copy view if possible.
   ///
   /// Like CopyTo this method recursively goes through all of the array's buffers
   /// and those of it's children and first attempts to create zero-copy
@@ -184,12 +186,12 @@ class ARROW_EXPORT Array {
   /// Construct a zero-copy slice of the array with the indicated offset and
   /// length
   ///
-  /// \param[in] offset the position of the first element in the constructed
+  /// :param offset: the position of the first element in the constructed
   /// slice
-  /// \param[in] length the length of the slice. If there are not enough
+  /// :param length: the length of the slice. If there are not enough
   /// elements in the array, the length will be adjusted accordingly
   ///
-  /// \return a new object wrapped in std::shared_ptr<Array>
+  /// :return: a new object wrapped in std::shared_ptr<Array>
   std::shared_ptr<Array> Slice(int64_t offset, int64_t length) const;
 
   /// Slice from offset until end of the array
@@ -204,40 +206,40 @@ class ARROW_EXPORT Array {
 
   int num_fields() const { return static_cast<int>(data_->child_data.size()); }
 
-  /// \return PrettyPrint representation of array suitable for debugging
+  /// :return: PrettyPrint representation of array suitable for debugging
   std::string ToString() const;
 
-  /// \brief Perform cheap validation checks to determine obvious inconsistencies
+  /// Perform cheap validation checks to determine obvious inconsistencies
   /// within the array's internal data.
   ///
   /// This is O(k) where k is the number of descendents.
   ///
-  /// \return Status
+  /// :return: Status
   Status Validate() const;
 
-  /// \brief Perform extensive validation checks to determine inconsistencies
+  /// Perform extensive validation checks to determine inconsistencies
   /// within the array's internal data.
   ///
   /// This is potentially O(k*n) where k is the number of descendents and n
   /// is the array length.
   ///
-  /// \return Status
+  /// :return: Status
   Status ValidateFull() const;
 
-  /// \brief Return the device_type that this array's data is allocated on
+  /// Return the device_type that this array's data is allocated on
   ///
   /// This just delegates to calling device_type on the underlying ArrayData
   /// object which backs this Array.
   ///
-  /// \return DeviceAllocationType
+  /// :return: DeviceAllocationType
   DeviceAllocationType device_type() const { return data_->device_type(); }
 
-  /// \brief Return the statistics of this Array
+  /// Return the statistics of this Array
   ///
   /// This just delegates to calling statistics on the underlying ArrayData
   /// object which backs this Array.
   ///
-  /// \return const std::shared_ptr<ArrayStatistics>&
+  /// :return: const std::shared_ptr<ArrayStatistics>&
   const std::shared_ptr<ArrayStatistics>& statistics() const { return data_->statistics; }
 
  protected:

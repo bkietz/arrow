@@ -93,7 +93,7 @@ Status OffsetOverflowStatus() {
   }
 
 struct ErrorHints {
-  /// \brief Suggested cast to avoid overflow during concatenation.
+  /// Suggested cast to avoid overflow during concatenation.
   ///
   /// If the concatenation of offsets overflows, this field might be set to the
   /// a type that uses larger offsets (e.g. large_utf8, large_list).

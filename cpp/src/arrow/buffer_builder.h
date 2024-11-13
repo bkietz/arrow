@@ -38,8 +38,7 @@ namespace arrow {
 // ----------------------------------------------------------------------
 // Buffer builder classes
 
-/// \class BufferBuilder
-/// \brief A class for incrementally building a contiguous chunk of in-memory
+/// A class for incrementally building a contiguous chunk of in-memory
 /// data
 class ARROW_EXPORT BufferBuilder {
  public:
@@ -52,7 +51,7 @@ class ARROW_EXPORT BufferBuilder {
         size_(0),
         alignment_(alignment) {}
 
-  /// \brief Constructs new Builder that will start using
+  /// Constructs new Builder that will start using
   /// the provided buffer until Finish/Reset are called.
   /// The buffer is not resized.
   explicit BufferBuilder(std::shared_ptr<ResizableBuffer> buffer,
@@ -65,14 +64,14 @@ class ARROW_EXPORT BufferBuilder {
         size_(buffer_->size()),
         alignment_(alignment) {}
 
-  /// \brief Resize the buffer to the nearest multiple of 64 bytes
+  /// Resize the buffer to the nearest multiple of 64 bytes
   ///
-  /// \param new_capacity the new capacity of the of the builder. Will be
+  /// :param new_capacity: the new capacity of the of the builder. Will be
   /// rounded up to a multiple of 64 bytes for padding
-  /// \param shrink_to_fit if new capacity is smaller than the existing,
+  /// :param shrink_to_fit: if new capacity is smaller than the existing,
   /// reallocate internal buffer. Set to false to avoid reallocations when
   /// shrinking the builder.
-  /// \return Status
+  /// :return: Status
   Status Resize(const int64_t new_capacity, bool shrink_to_fit = true) {
     if (buffer_ == NULLPTR) {
       ARROW_ASSIGN_OR_RAISE(buffer_,
@@ -85,11 +84,11 @@ class ARROW_EXPORT BufferBuilder {
     return Status::OK();
   }
 
-  /// \brief Ensure that builder can accommodate the additional number of bytes
+  /// Ensure that builder can accommodate the additional number of bytes
   /// without the need to perform allocations
   ///
-  /// \param[in] additional_bytes number of additional bytes to make space for
-  /// \return Status
+  /// :param additional_bytes: number of additional bytes to make space for
+  /// :return: Status
   Status Reserve(const int64_t additional_bytes) {
     auto min_capacity = size_ + additional_bytes;
     if (min_capacity <= capacity_) {
@@ -98,7 +97,7 @@ class ARROW_EXPORT BufferBuilder {
     return Resize(GrowByFactor(capacity_, min_capacity), false);
   }
 
-  /// \brief Return a capacity expanded by the desired growth factor
+  /// Return a capacity expanded by the desired growth factor
   static int64_t GrowByFactor(int64_t current_capacity, int64_t new_capacity) {
     // Doubling capacity except for large Reserve requests. 2x growth strategy
     // (versus 1.5x) seems to have slightly better performance when using
@@ -107,7 +106,7 @@ class ARROW_EXPORT BufferBuilder {
     return std::max(new_capacity, current_capacity * 2);
   }
 
-  /// \brief Append the given data to the buffer
+  /// Append the given data to the buffer
   ///
   /// The buffer is automatically expanded if necessary.
   Status Append(const void* data, const int64_t length) {
@@ -118,12 +117,12 @@ class ARROW_EXPORT BufferBuilder {
     return Status::OK();
   }
 
-  /// \brief Append the given data to the buffer
+  /// Append the given data to the buffer
   ///
   /// The buffer is automatically expanded if necessary.
   Status Append(std::string_view v) { return Append(v.data(), v.size()); }
 
-  /// \brief Append copies of a value to the buffer
+  /// Append copies of a value to the buffer
   ///
   /// The buffer is automatically expanded if necessary.
   Status Append(const int64_t num_copies, uint8_t value) {
@@ -153,15 +152,15 @@ class ARROW_EXPORT BufferBuilder {
     size_ += num_copies;
   }
 
-  /// \brief Return result of builder as a Buffer object.
+  /// Return result of builder as a Buffer object.
   ///
   /// The builder is reset and can be reused afterwards.
   ///
-  /// \param[out] out the finalized Buffer object
-  /// \param shrink_to_fit if the buffer size is smaller than its capacity,
+  /// :param out[out]: the finalized Buffer object
+  /// :param shrink_to_fit: if the buffer size is smaller than its capacity,
   /// reallocate to fit more tightly in memory. Set to false to avoid
   /// a reallocation, at the expense of potentially more memory consumption.
-  /// \return Status
+  /// :return: Status
   Status Finish(std::shared_ptr<Buffer>* out, bool shrink_to_fit = true) {
     ARROW_RETURN_NOT_OK(Resize(size_, shrink_to_fit));
     if (size_ != 0) buffer_->ZeroPadding();
@@ -179,7 +178,7 @@ class ARROW_EXPORT BufferBuilder {
     return out;
   }
 
-  /// \brief Like Finish, but override the final buffer size
+  /// Like Finish, but override the final buffer size
   ///
   /// This is useful after writing data directly into the builder memory
   /// without calling the Append methods (basically, when using BufferBuilder
@@ -195,9 +194,9 @@ class ARROW_EXPORT BufferBuilder {
     capacity_ = size_ = 0;
   }
 
-  /// \brief Set size to a smaller value without modifying builder
+  /// Set size to a smaller value without modifying builder
   /// contents. For reusable BufferBuilder classes
-  /// \param[in] position must be non-negative and less than or equal
+  /// :param position: must be non-negative and less than or equal
   /// to the current length()
   void Rewind(int64_t position) { size_ = position; }
 
@@ -226,7 +225,7 @@ class ARROW_EXPORT BufferBuilder {
 template <typename T, typename Enable = void>
 class TypedBufferBuilder;
 
-/// \brief A BufferBuilder for building a buffer of arithmetic elements
+/// A BufferBuilder for building a buffer of arithmetic elements
 template <typename T>
 class TypedBufferBuilder<
     T, typename std::enable_if<std::is_arithmetic<T>::value ||
@@ -305,7 +304,7 @@ class TypedBufferBuilder<
     return out;
   }
 
-  /// \brief Like Finish, but override the final buffer size
+  /// Like Finish, but override the final buffer size
   ///
   /// This is useful after writing data directly into the builder memory
   /// without calling the Append methods (basically, when using TypedBufferBuilder
@@ -326,7 +325,7 @@ class TypedBufferBuilder<
   BufferBuilder bytes_builder_;
 };
 
-/// \brief A BufferBuilder for building a buffer containing a bitmap
+/// A BufferBuilder for building a buffer containing a bitmap
 template <>
 class TypedBufferBuilder<bool> {
  public:
@@ -365,7 +364,7 @@ class TypedBufferBuilder<bool> {
     ++bit_length_;
   }
 
-  /// \brief Append bits from an array of bytes (one value per byte)
+  /// Append bits from an array of bytes (one value per byte)
   void UnsafeAppend(const uint8_t* bytes, int64_t num_elements) {
     if (num_elements == 0) return;
     int64_t i = 0;
@@ -377,7 +376,7 @@ class TypedBufferBuilder<bool> {
     bit_length_ += num_elements;
   }
 
-  /// \brief Append bits from a packed bitmap
+  /// Append bits from a packed bitmap
   void UnsafeAppend(const uint8_t* bitmap, int64_t offset, int64_t num_elements) {
     if (num_elements == 0) return;
     internal::CopyBitmap(bitmap, offset, num_elements, mutable_data(), bit_length_);
@@ -451,7 +450,7 @@ class TypedBufferBuilder<bool> {
     return out;
   }
 
-  /// \brief Like Finish, but override the final buffer size
+  /// Like Finish, but override the final buffer size
   ///
   /// This is useful after writing data directly into the builder memory
   /// without calling the Append methods (basically, when using TypedBufferBuilder

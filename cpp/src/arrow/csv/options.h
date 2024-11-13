@@ -65,7 +65,7 @@ struct ARROW_EXPORT ParseOptions {
   /// Create parsing options with default values
   static ParseOptions Defaults();
 
-  /// \brief Test that all set options are valid
+  /// Test that all set options are valid
   Status Validate() const;
 };
 
@@ -131,7 +131,7 @@ struct ARROW_EXPORT ConvertOptions {
   /// values for `null_values`, `true_values` and `false_values`
   static ConvertOptions Defaults();
 
-  /// \brief Test that all set options are valid
+  /// Test that all set options are valid
   Status Validate() const;
 };
 
@@ -141,7 +141,7 @@ struct ARROW_EXPORT ReadOptions {
   /// Whether to use the global CPU thread pool
   bool use_threads = true;
 
-  /// \brief Block size we request from the IO layer.
+  /// Block size we request from the IO layer.
   ///
   /// This will determine multi-threading granularity as well as
   /// the size of individual record batches.
@@ -166,11 +166,11 @@ struct ARROW_EXPORT ReadOptions {
   /// Create read options with default values
   static ReadOptions Defaults();
 
-  /// \brief Test that all set options are valid
+  /// Test that all set options are valid
   Status Validate() const;
 };
 
-/// \brief Quoting style for CSV writing
+/// Quoting style for CSV writing
 enum class ARROW_EXPORT QuotingStyle {
   /// Only enclose values in quotes which need them, because their CSV rendering can
   /// contain quotes itself (e.g. strings or binary values)
@@ -188,7 +188,7 @@ struct ARROW_EXPORT WriteOptions {
   /// Whether to write an initial header line with column names
   bool include_header = true;
 
-  /// \brief Maximum number of rows processed at a time
+  /// Maximum number of rows processed at a time
   ///
   /// The CSV writer converts and writes data in batches of N rows.
   /// This number can impact performance.
@@ -197,22 +197,22 @@ struct ARROW_EXPORT WriteOptions {
   /// Field delimiter
   char delimiter = ',';
 
-  /// \brief The string to write for null values. Quotes are not allowed in this string.
+  /// The string to write for null values. Quotes are not allowed in this string.
   std::string null_string;
 
-  /// \brief IO context for writing.
+  /// IO context for writing.
   io::IOContext io_context;
 
-  /// \brief The end of line character to use for ending rows
+  /// The end of line character to use for ending rows
   std::string eol = "\n";
 
-  /// \brief Quoting style
+  /// Quoting style
   QuotingStyle quoting_style = QuotingStyle::Needed;
 
   /// Create write options with default values
   static WriteOptions Defaults();
 
-  /// \brief Test that all set options are valid
+  /// Test that all set options are valid
   Status Validate() const;
 };
 

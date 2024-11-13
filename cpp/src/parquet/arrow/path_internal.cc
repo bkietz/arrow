@@ -118,7 +118,7 @@ using ::arrow::TypedBufferBuilder;
 
 constexpr static int16_t kLevelNotSet = -1;
 
-/// \brief Simple result of a iterating over a column to determine values.
+/// Simple result of a iterating over a column to determine values.
 enum IterationResult {
   /// Processing is done at this node. Move back up the path
   /// to continue processing.

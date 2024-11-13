@@ -51,7 +51,7 @@ class ColumnReader;
 struct SchemaManifest;
 class RowGroupReader;
 
-/// \brief Arrow read adapter class for deserializing Parquet files as Arrow row batches.
+/// Arrow read adapter class for deserializing Parquet files as Arrow row batches.
 ///
 /// This interfaces caters for different use cases and thus provides different
 /// interfaces. In its most simplistic form, we cater for a user that wants to
@@ -136,10 +136,10 @@ class PARQUET_EXPORT FileReader {
   // The indicated column index is relative to the schema
   virtual ::arrow::Status GetColumn(int i, std::unique_ptr<ColumnReader>* out) = 0;
 
-  /// \brief Return arrow schema for all the columns.
+  /// Return arrow schema for all the columns.
   virtual ::arrow::Status GetSchema(std::shared_ptr<::arrow::Schema>* out) = 0;
 
-  /// \brief Read column as a whole into a chunked array.
+  /// Read column as a whole into a chunked array.
   ///
   /// The index i refers the index of the top level schema field, which may
   /// be nested or flat - e.g.
@@ -154,43 +154,43 @@ class PARQUET_EXPORT FileReader {
   virtual ::arrow::Status ReadColumn(int i,
                                      std::shared_ptr<::arrow::ChunkedArray>* out) = 0;
 
-  /// \brief Return a RecordBatchReader of all row groups and columns.
+  /// Return a RecordBatchReader of all row groups and columns.
   virtual ::arrow::Status GetRecordBatchReader(
       std::unique_ptr<::arrow::RecordBatchReader>* out) = 0;
 
-  /// \brief Return a RecordBatchReader of row groups selected from row_group_indices.
+  /// Return a RecordBatchReader of row groups selected from row_group_indices.
   ///
   /// Note that the ordering in row_group_indices matters. FileReaders must outlive
   /// their RecordBatchReaders.
   ///
-  /// \returns error Status if row_group_indices contains an invalid index
+  /// :return: error Status if row_group_indices contains an invalid index
   virtual ::arrow::Status GetRecordBatchReader(
       const std::vector<int>& row_group_indices,
       std::unique_ptr<::arrow::RecordBatchReader>* out) = 0;
 
-  /// \brief Return a RecordBatchReader of row groups selected from
+  /// Return a RecordBatchReader of row groups selected from
   /// row_group_indices, whose columns are selected by column_indices.
   ///
   /// Note that the ordering in row_group_indices and column_indices
   /// matter. FileReaders must outlive their RecordBatchReaders.
   ///
-  /// \returns error Status if either row_group_indices or column_indices
+  /// :return: error Status if either row_group_indices or column_indices
   ///     contains an invalid index
   virtual ::arrow::Status GetRecordBatchReader(
       const std::vector<int>& row_group_indices, const std::vector<int>& column_indices,
       std::unique_ptr<::arrow::RecordBatchReader>* out) = 0;
 
-  /// \brief Return a RecordBatchReader of row groups selected from
+  /// Return a RecordBatchReader of row groups selected from
   /// row_group_indices, whose columns are selected by column_indices.
   ///
   /// Note that the ordering in row_group_indices and column_indices
   /// matter. FileReaders must outlive their RecordBatchReaders.
   ///
-  /// \param row_group_indices which row groups to read (order determines read order).
-  /// \param column_indices which columns to read (order determines output schema).
-  /// \param[out] out record batch stream from parquet data.
+  /// :param row_group_indices: which row groups to read (order determines read order).
+  /// :param column_indices: which columns to read (order determines output schema).
+  /// :param out[out]: record batch stream from parquet data.
   ///
-  /// \returns error Status if either row_group_indices or column_indices
+  /// :return: error Status if either row_group_indices or column_indices
   ///     contains an invalid index
   ::arrow::Status GetRecordBatchReader(const std::vector<int>& row_group_indices,
                                        const std::vector<int>& column_indices,
@@ -199,12 +199,12 @@ class PARQUET_EXPORT FileReader {
                                        std::shared_ptr<::arrow::RecordBatchReader>* out);
   ::arrow::Status GetRecordBatchReader(std::shared_ptr<::arrow::RecordBatchReader>* out);
 
-  /// \brief Return a generator of record batches.
+  /// Return a generator of record batches.
   ///
   /// The FileReader must outlive the generator, so this requires that you pass in a
   /// shared_ptr.
   ///
-  /// \returns error Result if either row_group_indices or column_indices contains an
+  /// :return: error Result if either row_group_indices or column_indices contains an
   ///     invalid index
   virtual ::arrow::Result<
       std::function<::arrow::Future<std::shared_ptr<::arrow::RecordBatch>>()>>
@@ -217,7 +217,7 @@ class PARQUET_EXPORT FileReader {
   /// Read all columns into a Table
   virtual ::arrow::Status ReadTable(std::shared_ptr<::arrow::Table>* out) = 0;
 
-  /// \brief Read the given columns into a Table
+  /// Read the given columns into a Table
   ///
   /// The indicated column indices are relative to the internal representation
   /// of the parquet table. For instance :
@@ -249,16 +249,16 @@ class PARQUET_EXPORT FileReader {
   virtual ::arrow::Status ReadRowGroups(const std::vector<int>& row_groups,
                                         std::shared_ptr<::arrow::Table>* out) = 0;
 
-  /// \brief Scan file contents with one thread, return number of rows
+  /// Scan file contents with one thread, return number of rows
   virtual ::arrow::Status ScanContents(std::vector<int> columns,
                                        const int32_t column_batch_size,
                                        int64_t* num_rows) = 0;
 
-  /// \brief Return a reader for the RowGroup, this object must not outlive the
+  /// Return a reader for the RowGroup, this object must not outlive the
   ///   FileReader.
   virtual std::shared_ptr<RowGroupReader> RowGroup(int row_group_index) = 0;
 
-  /// \brief The number of row groups in the file
+  /// The number of row groups in the file
   virtual int num_row_groups() const = 0;
 
   virtual ParquetFileReader* parquet_reader() const = 0;
@@ -318,7 +318,7 @@ class PARQUET_EXPORT ColumnReader {
                                     std::shared_ptr<::arrow::ChunkedArray>* out) = 0;
 };
 
-/// \brief Experimental helper class for bindings (like Python) that struggle
+/// Experimental helper class for bindings (like Python) that struggle
 /// either with std::move or C++ exceptions
 class PARQUET_EXPORT FileReaderBuilder {
  public:
@@ -354,7 +354,7 @@ class PARQUET_EXPORT FileReaderBuilder {
 ///
 /// @{
 
-/// \brief Build FileReader from Arrow file and MemoryPool
+/// Build FileReader from Arrow file and MemoryPool
 ///
 /// Advanced settings are supported through the FileReaderBuilder class.
 PARQUET_EXPORT

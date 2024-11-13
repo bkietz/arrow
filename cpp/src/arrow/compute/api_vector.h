@@ -61,7 +61,7 @@ class ARROW_EXPORT TakeOptions : public FunctionOptions {
   bool boundscheck = true;
 };
 
-/// \brief Options for the dictionary encode function
+/// Options for the dictionary encode function
 class ARROW_EXPORT DictionaryEncodeOptions : public FunctionOptions {
  public:
   /// Configure how null values will be encoded
@@ -79,7 +79,7 @@ class ARROW_EXPORT DictionaryEncodeOptions : public FunctionOptions {
   NullEncodingBehavior null_encoding_behavior = MASK;
 };
 
-/// \brief Options for the run-end encode function
+/// Options for the run-end encode function
 class ARROW_EXPORT RunEndEncodeOptions : public FunctionOptions {
  public:
   explicit RunEndEncodeOptions(std::shared_ptr<DataType> run_end_type = int32());
@@ -123,7 +123,7 @@ class ARROW_EXPORT SortOptions : public FunctionOptions {
   NullPlacement null_placement;
 };
 
-/// \brief SelectK options
+/// SelectK options
 class ARROW_EXPORT SelectKOptions : public FunctionOptions {
  public:
   explicit SelectKOptions(int64_t k = -1, std::vector<SortKey> sort_keys = {});
@@ -158,7 +158,7 @@ class ARROW_EXPORT SelectKOptions : public FunctionOptions {
   std::vector<SortKey> sort_keys;
 };
 
-/// \brief Rank options
+/// Rank options
 class ARROW_EXPORT RankOptions : public FunctionOptions {
  public:
   /// Configure how ties between equal values are handled
@@ -195,7 +195,7 @@ class ARROW_EXPORT RankOptions : public FunctionOptions {
   Tiebreaker tiebreaker;
 };
 
-/// \brief Partitioning options for NthToIndices
+/// Partitioning options for NthToIndices
 class ARROW_EXPORT PartitionNthOptions : public FunctionOptions {
  public:
   explicit PartitionNthOptions(int64_t pivot,
@@ -209,8 +209,9 @@ class ARROW_EXPORT PartitionNthOptions : public FunctionOptions {
   NullPlacement null_placement;
 };
 
-/// \brief Options for cumulative functions
-/// \note Also aliased as CumulativeSumOptions for backward compatibility
+/// Options for cumulative functions
+/// ```{note}
+/// Also aliased as CumulativeSumOptions for backward compatibility
 class ARROW_EXPORT CumulativeOptions : public FunctionOptions {
  public:
   explicit CumulativeOptions(bool skip_nulls = false);
@@ -234,7 +235,7 @@ class ARROW_EXPORT CumulativeOptions : public FunctionOptions {
 };
 using CumulativeSumOptions = CumulativeOptions;  // For backward compatibility
 
-/// \brief Options for pairwise functions
+/// Options for pairwise functions
 class ARROW_EXPORT PairwiseOptions : public FunctionOptions {
  public:
   explicit PairwiseOptions(int64_t periods = 1);
@@ -245,21 +246,21 @@ class ARROW_EXPORT PairwiseOptions : public FunctionOptions {
   int64_t periods = 1;
 };
 
-/// \brief Options for list_flatten function
+/// Options for list_flatten function
 class ARROW_EXPORT ListFlattenOptions : public FunctionOptions {
  public:
   explicit ListFlattenOptions(bool recursive = false);
   static constexpr char const kTypeName[] = "ListFlattenOptions";
   static ListFlattenOptions Defaults() { return ListFlattenOptions(); }
 
-  /// \brief If true, the list is flattened recursively until a non-list
+  /// If true, the list is flattened recursively until a non-list
   /// array is formed.
   bool recursive = false;
 };
 
 /// @}
 
-/// \brief Filter with a boolean selection filter
+/// Filter with a boolean selection filter
 ///
 /// The output will be populated with values from the input at positions
 /// where the selection filter is not 0. Nulls in the filter will be handled
@@ -270,11 +271,11 @@ class ARROW_EXPORT ListFlattenOptions : public FunctionOptions {
 /// (null_selection_behavior == DROP)      = ["b", "c", "f"]
 /// (null_selection_behavior == EMIT_NULL) = ["b", "c", null, "f"]
 ///
-/// \param[in] values array to filter
-/// \param[in] filter indicates which values should be filtered out
-/// \param[in] options configures null_selection_behavior
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: array to filter
+/// :param filter: indicates which values should be filtered out
+/// :param options: configures null_selection_behavior
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ARROW_EXPORT
 Result<Datum> Filter(const Datum& values, const Datum& filter,
                      const FilterOptions& options = FilterOptions::Defaults(),
@@ -284,19 +285,19 @@ namespace internal {
 
 // These internal functions are implemented in kernels/vector_selection.cc
 
-/// \brief Return the number of selected indices in the boolean filter
+/// Return the number of selected indices in the boolean filter
 ///
-/// \param filter a plain or run-end encoded boolean array with or without nulls
-/// \param null_selection how to handle nulls in the filter
+/// :param filter: a plain or run-end encoded boolean array with or without nulls
+/// :param null_selection: how to handle nulls in the filter
 ARROW_EXPORT
 int64_t GetFilterOutputSize(const ArraySpan& filter,
                             FilterOptions::NullSelectionBehavior null_selection);
 
-/// \brief Compute uint64 selection indices for use with Take given a boolean
+/// Compute uint64 selection indices for use with Take given a boolean
 /// filter
 ///
-/// \param filter a plain or run-end encoded boolean array with or without nulls
-/// \param null_selection how to handle nulls in the filter
+/// :param filter: a plain or run-end encoded boolean array with or without nulls
+/// :param null_selection: how to handle nulls in the filter
 ARROW_EXPORT
 Result<std::shared_ptr<ArrayData>> GetTakeIndices(
     const ArraySpan& filter, FilterOptions::NullSelectionBehavior null_selection,
@@ -304,24 +305,26 @@ Result<std::shared_ptr<ArrayData>> GetTakeIndices(
 
 }  // namespace internal
 
-/// \brief ReplaceWithMask replaces each value in the array corresponding
+/// ReplaceWithMask replaces each value in the array corresponding
 /// to a true value in the mask with the next element from `replacements`.
 ///
-/// \param[in] values Array input to replace
-/// \param[in] mask Array or Scalar of Boolean mask values
-/// \param[in] replacements The replacement values to draw from. There must
+/// :param values: Array input to replace
+/// :param mask: Array or Scalar of Boolean mask values
+/// :param replacements: The replacement values to draw from. There must
 /// be as many replacement values as true values in the mask.
-/// \param[in] ctx the function execution context, optional
+/// :param ctx: the function execution context, optional
 ///
-/// \return the resulting datum
+/// :return: the resulting datum
 ///
-/// \since 5.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 5.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> ReplaceWithMask(const Datum& values, const Datum& mask,
                               const Datum& replacements, ExecContext* ctx = NULLPTR);
 
-/// \brief FillNullForward fill null values in forward direction
+/// FillNullForward fill null values in forward direction
 ///
 /// The output array will be of the same type as the input values
 /// array, with replaced null values in forward direction.
@@ -329,13 +332,13 @@ Result<Datum> ReplaceWithMask(const Datum& values, const Datum& mask,
 /// For example given values = ["a", "b", "c", null, null, "f"],
 /// the output will be = ["a", "b", "c", "c", "c", "f"]
 ///
-/// \param[in] values datum from which to take
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: datum from which to take
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ARROW_EXPORT
 Result<Datum> FillNullForward(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief FillNullBackward fill null values in backward direction
+/// FillNullBackward fill null values in backward direction
 ///
 /// The output array will be of the same type as the input values
 /// array, with replaced null values in backward direction.
@@ -343,13 +346,13 @@ Result<Datum> FillNullForward(const Datum& values, ExecContext* ctx = NULLPTR);
 /// For example given values = ["a", "b", "c", null, null, "f"],
 /// the output will be = ["a", "b", "c", "f", "f", "f"]
 ///
-/// \param[in] values datum from which to take
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: datum from which to take
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ARROW_EXPORT
 Result<Datum> FillNullBackward(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Take from an array of values at indices in another array
+/// Take from an array of values at indices in another array
 ///
 /// The output array will be of the same type as the input values
 /// array, with elements taken from the values array at the given
@@ -360,23 +363,23 @@ Result<Datum> FillNullBackward(const Datum& values, ExecContext* ctx = NULLPTR);
 /// = [values[2], values[1], null, values[3]]
 /// = ["c", "b", null, null]
 ///
-/// \param[in] values datum from which to take
-/// \param[in] indices which values to take
-/// \param[in] options options
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: datum from which to take
+/// :param indices: which values to take
+/// :param options: options
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ARROW_EXPORT
 Result<Datum> Take(const Datum& values, const Datum& indices,
                    const TakeOptions& options = TakeOptions::Defaults(),
                    ExecContext* ctx = NULLPTR);
 
-/// \brief Take with Array inputs and output
+/// Take with Array inputs and output
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> Take(const Array& values, const Array& indices,
                                     const TakeOptions& options = TakeOptions::Defaults(),
                                     ExecContext* ctx = NULLPTR);
 
-/// \brief Drop Null from an array of values
+/// Drop Null from an array of values
 ///
 /// The output array will be of the same type as the input values
 /// array, with elements taken from the values array without nulls.
@@ -384,17 +387,17 @@ Result<std::shared_ptr<Array>> Take(const Array& values, const Array& indices,
 /// For example given values = ["a", "b", "c", null, "e", "f"],
 /// the output will be = ["a", "b", "c", "e", "f"]
 ///
-/// \param[in] values datum from which to take
-/// \param[in] ctx the function execution context, optional
-/// \return the resulting datum
+/// :param values: datum from which to take
+/// :param ctx: the function execution context, optional
+/// :return: the resulting datum
 ARROW_EXPORT
 Result<Datum> DropNull(const Datum& values, ExecContext* ctx = NULLPTR);
 
-/// \brief DropNull with Array inputs and output
+/// DropNull with Array inputs and output
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> DropNull(const Array& values, ExecContext* ctx = NULLPTR);
 
-/// \brief Return indices that partition an array around n-th sorted element.
+/// Return indices that partition an array around n-th sorted element.
 ///
 /// Find index of n-th(0 based) smallest value and perform indirect
 /// partition of an array around that element. Output indices[0 ~ n-1]
@@ -403,29 +406,29 @@ Result<std::shared_ptr<Array>> DropNull(const Array& values, ExecContext* ctx = 
 /// is not sorted. Nulls will be partitioned to the end of the output.
 /// Output is not guaranteed to be stable.
 ///
-/// \param[in] values array to be partitioned
-/// \param[in] n pivot array around sorted n-th element
-/// \param[in] ctx the function execution context, optional
-/// \return offsets indices that would partition an array
+/// :param values: array to be partitioned
+/// :param n: pivot array around sorted n-th element
+/// :param ctx: the function execution context, optional
+/// :return: offsets indices that would partition an array
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> NthToIndices(const Array& values, int64_t n,
                                             ExecContext* ctx = NULLPTR);
 
-/// \brief Return indices that partition an array around n-th sorted element.
+/// Return indices that partition an array around n-th sorted element.
 ///
 /// This overload takes a PartitionNthOptions specifying the pivot index
 /// and the null handling.
 ///
-/// \param[in] values array to be partitioned
-/// \param[in] options options including pivot index and null handling
-/// \param[in] ctx the function execution context, optional
-/// \return offsets indices that would partition an array
+/// :param values: array to be partitioned
+/// :param options: options including pivot index and null handling
+/// :param ctx: the function execution context, optional
+/// :return: offsets indices that would partition an array
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> NthToIndices(const Array& values,
                                             const PartitionNthOptions& options,
                                             ExecContext* ctx = NULLPTR);
 
-/// \brief Return indices that would select the first `k` elements.
+/// Return indices that would select the first `k` elements.
 ///
 /// Perform an indirect sort of the datum, keeping only the first `k` elements. The output
 /// array will contain indices such that the item indicated by the k-th index will be in
@@ -433,16 +436,16 @@ Result<std::shared_ptr<Array>> NthToIndices(const Array& values,
 /// indices of null values will not be part of the output. The sort is not guaranteed to
 /// be stable.
 ///
-/// \param[in] datum datum to be partitioned
-/// \param[in] options options
-/// \param[in] ctx the function execution context, optional
-/// \return a datum with the same schema as the input
+/// :param datum: datum to be partitioned
+/// :param options: options
+/// :param ctx: the function execution context, optional
+/// :return: a datum with the same schema as the input
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> SelectKUnstable(const Datum& datum,
                                                const SelectKOptions& options,
                                                ExecContext* ctx = NULLPTR);
 
-/// \brief Return the indices that would sort an array.
+/// Return the indices that would sort an array.
 ///
 /// Perform an indirect sort of array. The output array will contain
 /// indices that would sort an array, which would be the same length
@@ -453,30 +456,30 @@ Result<std::shared_ptr<Array>> SelectKUnstable(const Datum& datum,
 /// = SortOrder::DESCENDING, the output will be [5, 2, 4, 1, 0,
 /// 3].
 ///
-/// \param[in] array array to sort
-/// \param[in] order ascending or descending
-/// \param[in] ctx the function execution context, optional
-/// \return offsets indices that would sort an array
+/// :param array: array to sort
+/// :param order: ascending or descending
+/// :param ctx: the function execution context, optional
+/// :return: offsets indices that would sort an array
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> SortIndices(const Array& array,
                                            SortOrder order = SortOrder::Ascending,
                                            ExecContext* ctx = NULLPTR);
 
-/// \brief Return the indices that would sort an array.
+/// Return the indices that would sort an array.
 ///
 /// This overload takes a ArraySortOptions specifying the sort order
 /// and the null handling.
 ///
-/// \param[in] array array to sort
-/// \param[in] options options including sort order and null handling
-/// \param[in] ctx the function execution context, optional
-/// \return offsets indices that would sort an array
+/// :param array: array to sort
+/// :param options: options including sort order and null handling
+/// :param ctx: the function execution context, optional
+/// :return: offsets indices that would sort an array
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> SortIndices(const Array& array,
                                            const ArraySortOptions& options,
                                            ExecContext* ctx = NULLPTR);
 
-/// \brief Return the indices that would sort a chunked array.
+/// Return the indices that would sort a chunked array.
 ///
 /// Perform an indirect sort of chunked array. The output array will
 /// contain indices that would sort a chunked array, which would be
@@ -487,30 +490,30 @@ Result<std::shared_ptr<Array>> SortIndices(const Array& array,
 /// 5.3]] and order = SortOrder::DESCENDING, the output will be [5, 2,
 /// 4, 1, 0, 3].
 ///
-/// \param[in] chunked_array chunked array to sort
-/// \param[in] order ascending or descending
-/// \param[in] ctx the function execution context, optional
-/// \return offsets indices that would sort an array
+/// :param chunked_array: chunked array to sort
+/// :param order: ascending or descending
+/// :param ctx: the function execution context, optional
+/// :return: offsets indices that would sort an array
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> SortIndices(const ChunkedArray& chunked_array,
                                            SortOrder order = SortOrder::Ascending,
                                            ExecContext* ctx = NULLPTR);
 
-/// \brief Return the indices that would sort a chunked array.
+/// Return the indices that would sort a chunked array.
 ///
 /// This overload takes a ArraySortOptions specifying the sort order
 /// and the null handling.
 ///
-/// \param[in] chunked_array chunked array to sort
-/// \param[in] options options including sort order and null handling
-/// \param[in] ctx the function execution context, optional
-/// \return offsets indices that would sort an array
+/// :param chunked_array: chunked array to sort
+/// :param options: options including sort order and null handling
+/// :param ctx: the function execution context, optional
+/// :return: offsets indices that would sort an array
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> SortIndices(const ChunkedArray& chunked_array,
                                            const ArraySortOptions& options,
                                            ExecContext* ctx = NULLPTR);
 
-/// \brief Return the indices that would sort an input in the
+/// Return the indices that would sort an input in the
 /// specified order. Input is one of array, chunked array record batch
 /// or table.
 ///
@@ -527,24 +530,26 @@ Result<std::shared_ptr<Array>> SortIndices(const ChunkedArray& chunked_array,
 /// {"column2", SortOrder::Descending},
 /// }, the output will be [5, 1, 4, 2, 0, 3].
 ///
-/// \param[in] datum array, chunked array, record batch or table to sort
-/// \param[in] options options
-/// \param[in] ctx the function execution context, optional
-/// \return offsets indices that would sort a table
+/// :param datum: array, chunked array, record batch or table to sort
+/// :param options: options
+/// :param ctx: the function execution context, optional
+/// :return: offsets indices that would sort a table
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> SortIndices(const Datum& datum, const SortOptions& options,
                                            ExecContext* ctx = NULLPTR);
 
-/// \brief Compute unique elements from an array-like object
+/// Compute unique elements from an array-like object
 ///
 /// Note if a null occurs in the input it will NOT be included in the output.
 ///
-/// \param[in] datum array-like input
-/// \param[in] ctx the function execution context, optional
-/// \return result as Array
+/// :param datum: array-like input
+/// :param ctx: the function execution context, optional
+/// :return: result as Array
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> Unique(const Datum& datum, ExecContext* ctx = NULLPTR);
 
@@ -554,7 +559,7 @@ ARROW_EXPORT extern const char kCountsFieldName[];
 ARROW_EXPORT extern const int32_t kValuesFieldIndex;
 ARROW_EXPORT extern const int32_t kCountsFieldIndex;
 
-/// \brief Return counts of unique elements from an array-like object.
+/// Return counts of unique elements from an array-like object.
 ///
 /// Note that the counts do not include counts for nulls in the array.  These can be
 /// obtained separately from metadata.
@@ -562,17 +567,19 @@ ARROW_EXPORT extern const int32_t kCountsFieldIndex;
 /// For floating point arrays there is no attempt to normalize -0.0, 0.0 and NaN values
 /// which can lead to unexpected results if the input Array has these values.
 ///
-/// \param[in] value array-like input
-/// \param[in] ctx the function execution context, optional
-/// \return counts An array of  <input type "Values", int64_t "Counts"> structs.
+/// :param value: array-like input
+/// :param ctx: the function execution context, optional
+/// :return: counts An array of  <input type "Values", int64_t "Counts"> structs.
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<std::shared_ptr<StructArray>> ValueCounts(const Datum& value,
                                                  ExecContext* ctx = NULLPTR);
 
-/// \brief Dictionary-encode values in an array-like object
+/// Dictionary-encode values in an array-like object
 ///
 /// Any nulls encountered in the dictionary will be handled according to the
 /// specified null encoding behavior.
@@ -584,106 +591,112 @@ Result<std::shared_ptr<StructArray>> ValueCounts(const Datum& value,
 /// If the input is already dictionary encoded this function is a no-op unless
 /// it needs to modify the null_encoding (TODO)
 ///
-/// \param[in] data array-like input
-/// \param[in] ctx the function execution context, optional
-/// \param[in] options configures null encoding behavior
-/// \return result with same shape and type as input
+/// :param data: array-like input
+/// :param ctx: the function execution context, optional
+/// :param options: configures null encoding behavior
+/// :return: result with same shape and type as input
 ///
-/// \since 1.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 1.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> DictionaryEncode(
     const Datum& data,
     const DictionaryEncodeOptions& options = DictionaryEncodeOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Run-end-encode values in an array-like object
+/// Run-end-encode values in an array-like object
 ///
 /// The returned run-end encoded type uses the same value type of the input and
 /// run-end type defined in the options.
 ///
-/// \param[in] value array-like input
-/// \param[in] options configures encoding behavior
-/// \param[in] ctx the function execution context, optional
-/// \return result with same shape but run-end encoded
+/// :param value: array-like input
+/// :param options: configures encoding behavior
+/// :param ctx: the function execution context, optional
+/// :return: result with same shape but run-end encoded
 ///
-/// \since 12.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 12.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> RunEndEncode(
     const Datum& value,
     const RunEndEncodeOptions& options = RunEndEncodeOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Decode a Run-End Encoded array to a plain array
+/// Decode a Run-End Encoded array to a plain array
 ///
 /// The output data type is the same as the values array type of run-end encoded
 /// input.
 ///
-/// \param[in] value run-end-encoded input
-/// \param[in] ctx the function execution context, optional
-/// \return plain array resulting from decoding the run-end encoded input
+/// :param value: run-end-encoded input
+/// :param ctx: the function execution context, optional
+/// :return: plain array resulting from decoding the run-end encoded input
 ///
-/// \since 12.0.0
-/// \note API not yet finalized
+/// ```{versionadded} 12.0.0
+/// ```
+/// ```{note}
+/// API not yet finalized
 ARROW_EXPORT
 Result<Datum> RunEndDecode(const Datum& value, ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the cumulative sum of an array-like object
+/// Compute the cumulative sum of an array-like object
 ///
-/// \param[in] values array-like input
-/// \param[in] options configures cumulative sum behavior
-/// \param[in] check_overflow whether to check for overflow, if true, return Invalid
+/// :param values: array-like input
+/// :param options: configures cumulative sum behavior
+/// :param check_overflow: whether to check for overflow, if true, return Invalid
 /// status on overflow, otherwise wrap around on overflow
-/// \param[in] ctx the function execution context, optional
+/// :param ctx: the function execution context, optional
 ARROW_EXPORT
 Result<Datum> CumulativeSum(
     const Datum& values, const CumulativeOptions& options = CumulativeOptions::Defaults(),
     bool check_overflow = false, ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the cumulative product of an array-like object
+/// Compute the cumulative product of an array-like object
 ///
-/// \param[in] values array-like input
-/// \param[in] options configures cumulative prod behavior
-/// \param[in] check_overflow whether to check for overflow, if true, return Invalid
+/// :param values: array-like input
+/// :param options: configures cumulative prod behavior
+/// :param check_overflow: whether to check for overflow, if true, return Invalid
 /// status on overflow, otherwise wrap around on overflow
-/// \param[in] ctx the function execution context, optional
+/// :param ctx: the function execution context, optional
 ARROW_EXPORT
 Result<Datum> CumulativeProd(
     const Datum& values, const CumulativeOptions& options = CumulativeOptions::Defaults(),
     bool check_overflow = false, ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the cumulative max of an array-like object
+/// Compute the cumulative max of an array-like object
 ///
-/// \param[in] values array-like input
-/// \param[in] options configures cumulative max behavior
-/// \param[in] ctx the function execution context, optional
+/// :param values: array-like input
+/// :param options: configures cumulative max behavior
+/// :param ctx: the function execution context, optional
 ARROW_EXPORT
 Result<Datum> CumulativeMax(
     const Datum& values, const CumulativeOptions& options = CumulativeOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the cumulative min of an array-like object
+/// Compute the cumulative min of an array-like object
 ///
-/// \param[in] values array-like input
-/// \param[in] options configures cumulative min behavior
-/// \param[in] ctx the function execution context, optional
+/// :param values: array-like input
+/// :param options: configures cumulative min behavior
+/// :param ctx: the function execution context, optional
 ARROW_EXPORT
 Result<Datum> CumulativeMin(
     const Datum& values, const CumulativeOptions& options = CumulativeOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Compute the cumulative mean of an array-like object
+/// Compute the cumulative mean of an array-like object
 ///
-/// \param[in] values array-like input
-/// \param[in] options configures cumulative mean behavior, `start` is ignored
-/// \param[in] ctx the function execution context, optional
+/// :param values: array-like input
+/// :param options: configures cumulative mean behavior, `start` is ignored
+/// :param ctx: the function execution context, optional
 ARROW_EXPORT
 Result<Datum> CumulativeMean(
     const Datum& values, const CumulativeOptions& options = CumulativeOptions::Defaults(),
     ExecContext* ctx = NULLPTR);
 
-/// \brief Return the first order difference of an array.
+/// Return the first order difference of an array.
 ///
 /// Computes the first order difference of an array, i.e.
 ///   output[i] = input[i] - input[i - p]  if i >= p
@@ -694,11 +707,11 @@ Result<Datum> CumulativeMean(
 ///   Diff([1, 4, 9, 10, 15]) = [null, null, 8, 6, 6]
 /// p can also be negative, in which case the diff is computed in
 /// the opposite direction.
-/// \param[in] array array input
-/// \param[in] options options, specifying overflow behavior and period
-/// \param[in] check_overflow whether to return error on overflow
-/// \param[in] ctx the function execution context, optional
-/// \return result as array
+/// :param array: array input
+/// :param options: options, specifying overflow behavior and period
+/// :param check_overflow: whether to return error on overflow
+/// :param ctx: the function execution context, optional
+/// :return: result as array
 ARROW_EXPORT
 Result<std::shared_ptr<Array>> PairwiseDiff(const Array& array,
                                             const PairwiseOptions& options,

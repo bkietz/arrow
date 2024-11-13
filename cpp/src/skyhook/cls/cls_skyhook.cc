@@ -34,11 +34,10 @@ CLS_NAME(skyhook)
 cls_handle_t h_class;
 cls_method_handle_t h_scan_op;
 
-/// \brief Log skyhook errors using RADOS object class SDK's logger.
+/// Log skyhook errors using RADOS object class SDK's logger.
 void LogSkyhookError(const std::string& msg) { CLS_LOG(0, "error: %s", msg.c_str()); }
 
-/// \class RandomAccessObject
-/// \brief An interface to provide a file-like view over RADOS objects.
+/// An interface to provide a file-like view over RADOS objects.
 class RandomAccessObject : public arrow::io::RandomAccessFile {
  public:
   explicit RandomAccessObject(cls_method_context_t hctx, int64_t file_size) {
@@ -143,13 +142,13 @@ class RandomAccessObject : public arrow::io::RandomAccessFile {
   std::vector<std::shared_ptr<ceph::bufferlist>> chunks_;
 };
 
-/// \brief Driver function to execute the Scan operations.
-/// \param[in] hctx RADOS object context.
-/// \param[in] req The scan request received from the client.
-/// \param[in] format The file format instance to use in the scan.
-/// \param[in] fragment_scan_options The fragment scan options to use to customize the
+/// Driver function to execute the Scan operations.
+/// :param hctx: RADOS object context.
+/// :param req: The scan request received from the client.
+/// :param format: The file format instance to use in the scan.
+/// :param fragment_scan_options: The fragment scan options to use to customize the
 /// scan.
-/// \return Table.
+/// :return: Table.
 arrow::Result<std::shared_ptr<arrow::Table>> DoScan(
     cls_method_context_t hctx, const skyhook::ScanRequest& req,
     const std::shared_ptr<arrow::dataset::FileFormat>& format,
@@ -172,10 +171,10 @@ arrow::Result<std::shared_ptr<arrow::Table>> DoScan(
   return table;
 }
 
-/// \brief Scan RADOS objects containing Arrow IPC data.
-/// \param[in] hctx The RADOS object context.
-/// \param[in] req The scan request received from the client.
-/// \return Table.
+/// Scan RADOS objects containing Arrow IPC data.
+/// :param hctx: The RADOS object context.
+/// :param req: The scan request received from the client.
+/// :return: Table.
 static arrow::Result<std::shared_ptr<arrow::Table>> ScanIpcObject(
     cls_method_context_t hctx, skyhook::ScanRequest req) {
   auto format = std::make_shared<arrow::dataset::IpcFileFormat>();
@@ -186,10 +185,10 @@ static arrow::Result<std::shared_ptr<arrow::Table>> ScanIpcObject(
   return result_table;
 }
 
-/// \brief Scan RADOS objects containing Parquet binary data.
-/// \param[in] hctx The RADOS object context.
-/// \param[in] req The scan request received from the client.
-/// \return Table.
+/// Scan RADOS objects containing Parquet binary data.
+/// :param hctx: The RADOS object context.
+/// :param req: The scan request received from the client.
+/// :return: Table.
 static arrow::Result<std::shared_ptr<arrow::Table>> ScanParquetObject(
     cls_method_context_t hctx, skyhook::ScanRequest req) {
   auto format = std::make_shared<arrow::dataset::ParquetFileFormat>();
@@ -201,13 +200,13 @@ static arrow::Result<std::shared_ptr<arrow::Table>> ScanParquetObject(
   return result_table;
 }
 
-/// \brief The scan operation to execute on the Ceph OSD nodes. The scan request is
+/// The scan operation to execute on the Ceph OSD nodes. The scan request is
 /// deserialized, the object is scanned, and the resulting table is serialized
 /// and sent back to the client.
-/// \param[in] hctx The RADOS object context.
-/// \param[in] in A bufferlist containing serialized Scan request.
-/// \param[out] out A bufferlist to store the serialized resultant table.
-/// \return Exit code.
+/// :param hctx: The RADOS object context.
+/// :param in: A bufferlist containing serialized Scan request.
+/// :param out[out]: A bufferlist to store the serialized resultant table.
+/// :return: Exit code.
 static int scan_op(cls_method_context_t hctx, ceph::bufferlist* in,
                    ceph::bufferlist* out) {
   // Components required to construct a File fragment.

@@ -34,7 +34,7 @@ namespace gandiva {
 
 class LLVMGenerator;
 
-/// \brief projection using expressions.
+/// projection using expressions.
 ///
 /// A projector is built for a specific schema and vector of expressions.
 /// Once the projector is built, it can be used to evaluate many row batches.
@@ -47,19 +47,19 @@ class GANDIVA_EXPORT Projector {
   /// Build a default projector for the given schema to evaluate
   /// the vector of expressions.
   ///
-  /// \param[in] schema schema for the record batches, and the expressions.
-  /// \param[in] exprs vector of expressions.
-  /// \param[out] projector the returned projector object
+  /// :param schema: schema for the record batches, and the expressions.
+  /// :param exprs: vector of expressions.
+  /// :param projector[out]: the returned projector object
   static Status Make(SchemaPtr schema, const ExpressionVector& exprs,
                      std::shared_ptr<Projector>* projector);
 
   /// Build a projector for the given schema to evaluate the vector of expressions.
   /// Customize the projector with runtime configuration.
   ///
-  /// \param[in] schema schema for the record batches, and the expressions.
-  /// \param[in] exprs vector of expressions.
-  /// \param[in] configuration run time configuration.
-  /// \param[out] projector the returned projector object
+  /// :param schema: schema for the record batches, and the expressions.
+  /// :param exprs: vector of expressions.
+  /// :param configuration: run time configuration.
+  /// :param projector[out]: the returned projector object
   static Status Make(SchemaPtr schema, const ExpressionVector& exprs,
                      std::shared_ptr<Configuration> configuration,
                      std::shared_ptr<Projector>* projector);
@@ -67,11 +67,11 @@ class GANDIVA_EXPORT Projector {
   /// Build a projector for the given schema to evaluate the vector of expressions.
   /// Customize the projector with runtime configuration.
   ///
-  /// \param[in] schema schema for the record batches, and the expressions.
-  /// \param[in] exprs vector of expressions.
-  /// \param[in] selection_vector_mode mode of selection vector
-  /// \param[in] configuration run time configuration.
-  /// \param[out] projector the returned projector object
+  /// :param schema: schema for the record batches, and the expressions.
+  /// :param exprs: vector of expressions.
+  /// :param selection_vector_mode: mode of selection vector
+  /// :param configuration: run time configuration.
+  /// :param projector[out]: the returned projector object
   static Status Make(SchemaPtr schema, const ExpressionVector& exprs,
                      SelectionVector::Mode selection_vector_mode,
                      std::shared_ptr<Configuration> configuration,
@@ -81,17 +81,17 @@ class GANDIVA_EXPORT Projector {
   /// arrays. The output arrays will be allocated from the memory pool 'pool', and added
   /// to the vector 'output'.
   ///
-  /// \param[in] batch the record batch. schema should be the same as the one in 'Make'
-  /// \param[in] pool memory pool used to allocate output arrays (if required).
-  /// \param[out] output the vector of allocated/populated arrays.
+  /// :param batch: the record batch. schema should be the same as the one in 'Make'
+  /// :param pool: memory pool used to allocate output arrays (if required).
+  /// :param output[out]: the vector of allocated/populated arrays.
   Status Evaluate(const arrow::RecordBatch& batch, arrow::MemoryPool* pool,
                   arrow::ArrayVector* output) const;
 
   /// Evaluate the specified record batch, and populate the output arrays. The output
   /// arrays of sufficient capacity must be allocated by the caller.
   ///
-  /// \param[in] batch the record batch. schema should be the same as the one in 'Make'
-  /// \param[in,out] output vector of arrays, the arrays are allocated by the caller and
+  /// :param batch: the record batch. schema should be the same as the one in 'Make'
+  /// :param output[in,out]: vector of arrays, the arrays are allocated by the caller and
   ///                populated by Evaluate.
   Status Evaluate(const arrow::RecordBatch& batch, const ArrayDataVector& output) const;
 
@@ -99,10 +99,10 @@ class GANDIVA_EXPORT Projector {
   /// arrays. The output arrays will be allocated from the memory pool 'pool', and added
   /// to the vector 'output'.
   ///
-  /// \param[in] batch the record batch. schema should be the same as the one in 'Make'
-  /// \param[in] selection_vector selection vector which has filtered row positions.
-  /// \param[in] pool memory pool used to allocate output arrays (if required).
-  /// \param[out] output the vector of allocated/populated arrays.
+  /// :param batch: the record batch. schema should be the same as the one in 'Make'
+  /// :param selection_vector: selection vector which has filtered row positions.
+  /// :param pool: memory pool used to allocate output arrays (if required).
+  /// :param output[out]: the vector of allocated/populated arrays.
   Status Evaluate(const arrow::RecordBatch& batch,
                   const SelectionVector* selection_vector, arrow::MemoryPool* pool,
                   arrow::ArrayVector* output) const;
@@ -110,9 +110,9 @@ class GANDIVA_EXPORT Projector {
   /// Evaluate the specified record batch, and populate the output arrays at the filtered
   /// positions. The output arrays of sufficient capacity must be allocated by the caller.
   ///
-  /// \param[in] batch the record batch. schema should be the same as the one in 'Make'
-  /// \param[in] selection_vector selection vector which has the filtered row positions
-  /// \param[in,out] output vector of arrays, the arrays are allocated by the caller and
+  /// :param batch: the record batch. schema should be the same as the one in 'Make'
+  /// :param selection_vector: selection vector which has the filtered row positions
+  /// :param output[in,out]: vector of arrays, the arrays are allocated by the caller and
   ///                 populated by Evaluate.
   Status Evaluate(const arrow::RecordBatch& batch,
                   const SelectionVector* selection_vector,

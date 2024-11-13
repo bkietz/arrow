@@ -42,8 +42,7 @@ template <typename T, typename V>
 class ChunkedArrayIterator;
 }  // namespace stl
 
-/// \class ChunkedArray
-/// \brief A data structure managing a list of primitive Arrow arrays logically
+/// A data structure managing a list of primitive Arrow arrays logically
 /// as one large array
 ///
 /// Data chunking is treated throughout this project largely as an
@@ -76,11 +75,11 @@ class ARROW_EXPORT ChunkedArray {
   ChunkedArray(ChunkedArray&&) = default;
   ChunkedArray& operator=(ChunkedArray&&) = default;
 
-  /// \brief Construct a chunked array from a single Array
+  /// Construct a chunked array from a single Array
   explicit ChunkedArray(std::shared_ptr<Array> chunk)
       : ChunkedArray(ArrayVector{std::move(chunk)}) {}
 
-  /// \brief Construct a chunked array from a vector of arrays and an optional data type
+  /// Construct a chunked array from a vector of arrays and an optional data type
   ///
   /// The vector elements must have the same data type.
   /// If the data type is passed explicitly, the vector may be empty.
@@ -91,57 +90,57 @@ class ARROW_EXPORT ChunkedArray {
   static Result<std::shared_ptr<ChunkedArray>> Make(
       ArrayVector chunks, std::shared_ptr<DataType> type = NULLPTR);
 
-  /// \brief Create an empty ChunkedArray of a given type
+  /// Create an empty ChunkedArray of a given type
   ///
   /// The output ChunkedArray will have one chunk with an empty
   /// array of the given type.
   ///
-  /// \param[in] type the data type of the empty ChunkedArray
-  /// \param[in] pool the memory pool to allocate memory from
-  /// \return the resulting ChunkedArray
+  /// :param type: the data type of the empty ChunkedArray
+  /// :param pool: the memory pool to allocate memory from
+  /// :return: the resulting ChunkedArray
   static Result<std::shared_ptr<ChunkedArray>> MakeEmpty(
       std::shared_ptr<DataType> type, MemoryPool* pool = default_memory_pool());
 
-  /// \return the total length of the chunked array; computed on construction
+  /// :return: the total length of the chunked array; computed on construction
   int64_t length() const { return length_; }
 
-  /// \return the total number of nulls among all chunks
+  /// :return: the total number of nulls among all chunks
   int64_t null_count() const { return null_count_; }
 
-  /// \return the total number of chunks in the chunked array
+  /// :return: the total number of chunks in the chunked array
   int num_chunks() const { return static_cast<int>(chunks_.size()); }
 
-  /// \return chunk a particular chunk from the chunked array
+  /// :return: chunk a particular chunk from the chunked array
   const std::shared_ptr<Array>& chunk(int i) const { return chunks_[i]; }
 
-  /// \return an ArrayVector of chunks
+  /// :return: an ArrayVector of chunks
   const ArrayVector& chunks() const { return chunks_; }
 
-  /// \return The set of device allocation types used by the chunks in this
+  /// :return: The set of device allocation types used by the chunks in this
   /// chunked array.
   DeviceAllocationTypeSet device_types() const;
 
-  /// \return true if all chunks are allocated on CPU-accessible memory.
+  /// :return: true if all chunks are allocated on CPU-accessible memory.
   bool is_cpu() const { return device_types().is_cpu_only(); }
 
-  /// \brief Construct a zero-copy slice of the chunked array with the
+  /// Construct a zero-copy slice of the chunked array with the
   /// indicated offset and length
   ///
-  /// \param[in] offset the position of the first element in the constructed
+  /// :param offset: the position of the first element in the constructed
   /// slice
-  /// \param[in] length the length of the slice. If there are not enough
+  /// :param length: the length of the slice. If there are not enough
   /// elements in the chunked array, the length will be adjusted accordingly
   ///
-  /// \return a new object wrapped in std::shared_ptr<ChunkedArray>
+  /// :return: a new object wrapped in std::shared_ptr<ChunkedArray>
   std::shared_ptr<ChunkedArray> Slice(int64_t offset, int64_t length) const;
 
-  /// \brief Slice from offset until end of the chunked array
+  /// Slice from offset until end of the chunked array
   std::shared_ptr<ChunkedArray> Slice(int64_t offset) const;
 
-  /// \brief Flatten this chunked array as a vector of chunked arrays, one
+  /// Flatten this chunked array as a vector of chunked arrays, one
   /// for each struct field
   ///
-  /// \param[in] pool The pool for buffer allocations, if any
+  /// :param pool: The pool for buffer allocations, if any
   Result<std::vector<std::shared_ptr<ChunkedArray>>> Flatten(
       MemoryPool* pool = default_memory_pool()) const;
 
@@ -150,44 +149,44 @@ class ARROW_EXPORT ChunkedArray {
   /// there are zero chunks
   Result<std::shared_ptr<ChunkedArray>> View(const std::shared_ptr<DataType>& type) const;
 
-  /// \brief Return the type of the chunked array
+  /// Return the type of the chunked array
   const std::shared_ptr<DataType>& type() const { return type_; }
 
-  /// \brief Return a Scalar containing the value of this array at index
+  /// Return a Scalar containing the value of this array at index
   Result<std::shared_ptr<Scalar>> GetScalar(int64_t index) const;
 
-  /// \brief Determine if two chunked arrays are equal.
+  /// Determine if two chunked arrays are equal.
   ///
   /// Two chunked arrays can be equal only if they have equal datatypes.
   /// However, they may be equal even if they have different chunkings.
   bool Equals(const ChunkedArray& other,
               const EqualOptions& opts = EqualOptions::Defaults()) const;
-  /// \brief Determine if two chunked arrays are equal.
+  /// Determine if two chunked arrays are equal.
   bool Equals(const std::shared_ptr<ChunkedArray>& other,
               const EqualOptions& opts = EqualOptions::Defaults()) const;
-  /// \brief Determine if two chunked arrays approximately equal
+  /// Determine if two chunked arrays approximately equal
   bool ApproxEquals(const ChunkedArray& other,
                     const EqualOptions& = EqualOptions::Defaults()) const;
 
-  /// \return PrettyPrint representation suitable for debugging
+  /// :return: PrettyPrint representation suitable for debugging
   std::string ToString() const;
 
-  /// \brief Perform cheap validation checks to determine obvious inconsistencies
+  /// Perform cheap validation checks to determine obvious inconsistencies
   /// within the chunk array's internal data.
   ///
   /// This is O(k*m) where k is the number of array descendents,
   /// and m is the number of chunks.
   ///
-  /// \return Status
+  /// :return: Status
   Status Validate() const;
 
-  /// \brief Perform extensive validation checks to determine inconsistencies
+  /// Perform extensive validation checks to determine inconsistencies
   /// within the chunk array's internal data.
   ///
   /// This is O(k*n) where k is the number of array descendents,
   /// and n is the length in elements.
   ///
-  /// \return Status
+  /// :return: Status
   Status ValidateFull() const;
 
  protected:
@@ -205,7 +204,7 @@ class ARROW_EXPORT ChunkedArray {
 
 namespace internal {
 
-/// \brief EXPERIMENTAL: Utility for incremental iteration over contiguous
+/// EXPERIMENTAL: Utility for incremental iteration over contiguous
 /// pieces of potentially differently-chunked ChunkedArray objects
 class ARROW_EXPORT MultipleChunkIterator {
  public:
@@ -246,7 +245,7 @@ class ARROW_EXPORT MultipleChunkIterator {
   int64_t chunk_pos_right_;
 };
 
-/// \brief Evaluate binary function on two ChunkedArray objects having possibly
+/// Evaluate binary function on two ChunkedArray objects having possibly
 /// different chunk layouts. The passed binary function / functor should have
 /// the following signature.
 ///

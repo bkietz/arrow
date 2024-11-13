@@ -73,7 +73,7 @@ class TransportIpcMessageReader : public ipc::MessageReader {
   bool stream_finished_ = false;
 };
 
-/// \brief Adapt TransportDataStream to the FlightMessageReader
+/// Adapt TransportDataStream to the FlightMessageReader
 ///   interface for DoPut.
 class TransportMessageReader final : public FlightMessageReader {
  public:
@@ -255,7 +255,7 @@ class TransportMessageWriter final : public FlightMessageWriter {
   bool dictionaries_written_ = false;
 };
 
-/// \brief Adapt TransportDataStream to the FlightMetadataWriter
+/// Adapt TransportDataStream to the FlightMetadataWriter
 ///   interface for DoPut.
 class TransportMetadataWriter final : public FlightMetadataWriter {
  public:

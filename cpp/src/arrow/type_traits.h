@@ -88,16 +88,16 @@ TYPE_ID_TRAIT(EXTENSION, ExtensionType)
 //
 
 /// \addtogroup type-traits
-/// \brief Base template for type traits of Arrow data types
+/// Base template for type traits of Arrow data types
 /// Type traits provide various information about a type at compile time, such
 /// as the associated ArrayType, BuilderType, and ScalarType. Not all types
 /// provide all information.
-/// \tparam T An Arrow data type
+/// :param T: An Arrow data type
 template <typename T>
 struct TypeTraits {};
 
-/// \brief Base template for type traits of C++ types
-/// \tparam T A standard C++ type
+/// Base template for type traits of C++ types
+/// :param T: A standard C++ type
 template <typename T>
 struct CTypeTraits {};
 
@@ -988,10 +988,10 @@ using enable_if_physical_floating_point =
 /// \addtogroup runtime-type-predicates
 /// @{
 
-/// \brief Check for an integer type (signed or unsigned)
+/// Check for an integer type (signed or unsigned)
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is an integer type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is an integer type one
 constexpr bool is_integer(Type::type type_id) {
   switch (type_id) {
     case Type::UINT8:
@@ -1009,10 +1009,10 @@ constexpr bool is_integer(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a signed integer type
+/// Check for a signed integer type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a signed integer type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a signed integer type one
 constexpr bool is_signed_integer(Type::type type_id) {
   switch (type_id) {
     case Type::INT8:
@@ -1026,10 +1026,10 @@ constexpr bool is_signed_integer(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for an unsigned integer type
+/// Check for an unsigned integer type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is an unsigned integer type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is an unsigned integer type one
 constexpr bool is_unsigned_integer(Type::type type_id) {
   switch (type_id) {
     case Type::UINT8:
@@ -1043,10 +1043,10 @@ constexpr bool is_unsigned_integer(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a floating point type
+/// Check for a floating point type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a floating point type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a floating point type one
 constexpr bool is_floating(Type::type type_id) {
   switch (type_id) {
     case Type::HALF_FLOAT:
@@ -1059,12 +1059,12 @@ constexpr bool is_floating(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a numeric type
+/// Check for a numeric type
 ///
 /// This predicate doesn't match decimals (see `is_decimal`).
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a numeric type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a numeric type one
 constexpr bool is_numeric(Type::type type_id) {
   switch (type_id) {
     case Type::UINT8:
@@ -1085,10 +1085,10 @@ constexpr bool is_numeric(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a decimal type
+/// Check for a decimal type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a decimal type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a decimal type one
 constexpr bool is_decimal(Type::type type_id) {
   switch (type_id) {
     case Type::DECIMAL32:
@@ -1102,11 +1102,11 @@ constexpr bool is_decimal(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a type that can be used as a run-end in Run-End Encoded
+/// Check for a type that can be used as a run-end in Run-End Encoded
 /// arrays
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id can represent a run-end value
+/// :param type_id: the type-id to check
+/// :return: whether type-id can represent a run-end value
 constexpr bool is_run_end_type(Type::type type_id) {
   switch (type_id) {
     case Type::INT16:
@@ -1119,12 +1119,12 @@ constexpr bool is_run_end_type(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a primitive type
+/// Check for a primitive type
 ///
 /// This predicate doesn't match null, decimals and binary-like types.
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a primitive type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a primitive type one
 constexpr bool is_primitive(Type::type type_id) {
   switch (type_id) {
     case Type::BOOL:
@@ -1155,13 +1155,13 @@ constexpr bool is_primitive(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a base-binary-like type
+/// Check for a base-binary-like type
 ///
 /// This predicate doesn't match fixed-size binary types and will otherwise
 /// match all binary- and string-like types regardless of offset width.
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a base-binary-like type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a base-binary-like type one
 constexpr bool is_base_binary_like(Type::type type_id) {
   switch (type_id) {
     case Type::BINARY:
@@ -1175,10 +1175,10 @@ constexpr bool is_base_binary_like(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a binary-like type (i.e. with 32-bit offsets)
+/// Check for a binary-like type (i.e. with 32-bit offsets)
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a binary-like type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a binary-like type one
 constexpr bool is_binary_like(Type::type type_id) {
   switch (type_id) {
     case Type::BINARY:
@@ -1190,10 +1190,10 @@ constexpr bool is_binary_like(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a large-binary-like type (i.e. with 64-bit offsets)
+/// Check for a large-binary-like type (i.e. with 64-bit offsets)
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a large-binary-like type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a large-binary-like type one
 constexpr bool is_large_binary_like(Type::type type_id) {
   switch (type_id) {
     case Type::LARGE_BINARY:
@@ -1205,10 +1205,10 @@ constexpr bool is_large_binary_like(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a binary (non-string) type
+/// Check for a binary (non-string) type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a binary type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a binary type one
 constexpr bool is_binary(Type::type type_id) {
   switch (type_id) {
     case Type::BINARY:
@@ -1220,10 +1220,10 @@ constexpr bool is_binary(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a string type
+/// Check for a string type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a string type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a string type one
 constexpr bool is_string(Type::type type_id) {
   switch (type_id) {
     case Type::STRING:
@@ -1235,10 +1235,10 @@ constexpr bool is_string(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a binary-view-like type (i.e. string view and binary view)
+/// Check for a binary-view-like type (i.e. string view and binary view)
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a binary-view-like type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a binary-view-like type one
 constexpr bool is_binary_view_like(Type::type type_id) {
   switch (type_id) {
     case Type::STRING_VIEW:
@@ -1250,10 +1250,10 @@ constexpr bool is_binary_view_like(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a temporal type
+/// Check for a temporal type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a temporal type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a temporal type one
 constexpr bool is_temporal(Type::type type_id) {
   switch (type_id) {
     case Type::DATE32:
@@ -1268,10 +1268,10 @@ constexpr bool is_temporal(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a time type
+/// Check for a time type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a primitive type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a primitive type one
 constexpr bool is_time(Type::type type_id) {
   switch (type_id) {
     case Type::TIME32:
@@ -1283,10 +1283,10 @@ constexpr bool is_time(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a date type
+/// Check for a date type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a primitive type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a primitive type one
 constexpr bool is_date(Type::type type_id) {
   switch (type_id) {
     case Type::DATE32:
@@ -1298,10 +1298,10 @@ constexpr bool is_date(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for an interval type
+/// Check for an interval type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is an interval type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is an interval type one
 constexpr bool is_interval(Type::type type_id) {
   switch (type_id) {
     case Type::INTERVAL_MONTHS:
@@ -1314,17 +1314,17 @@ constexpr bool is_interval(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a dictionary type
+/// Check for a dictionary type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a dictionary type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a dictionary type one
 constexpr bool is_dictionary(Type::type type_id) { return type_id == Type::DICTIONARY; }
 
-/// \brief Check for a fixed-size-binary type
+/// Check for a fixed-size-binary type
 ///
 /// This predicate also matches decimals.
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a fixed-size-binary type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a fixed-size-binary type one
 constexpr bool is_fixed_size_binary(Type::type type_id) {
   switch (type_id) {
     case Type::DECIMAL32:
@@ -1339,18 +1339,18 @@ constexpr bool is_fixed_size_binary(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a fixed-width type
+/// Check for a fixed-width type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a fixed-width type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a fixed-width type one
 constexpr bool is_fixed_width(Type::type type_id) {
   return is_primitive(type_id) || is_dictionary(type_id) || is_fixed_size_binary(type_id);
 }
 
-/// \brief Check for a variable-length list type
+/// Check for a variable-length list type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a variable-length list type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a variable-length list type one
 constexpr bool is_var_length_list(Type::type type_id) {
   switch (type_id) {
     case Type::LIST:
@@ -1363,10 +1363,10 @@ constexpr bool is_var_length_list(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a list type
+/// Check for a list type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a list type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a list type one
 constexpr bool is_list(Type::type type_id) {
   switch (type_id) {
     case Type::LIST:
@@ -1379,10 +1379,10 @@ constexpr bool is_list(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a list-like type
+/// Check for a list-like type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a list-like type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a list-like type one
 constexpr bool is_list_like(Type::type type_id) {
   switch (type_id) {
     case Type::LIST:
@@ -1396,10 +1396,10 @@ constexpr bool is_list_like(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a var-length list or list-view like type
+/// Check for a var-length list or list-view like type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a var-length list or list-view like type
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a var-length list or list-view like type
 constexpr bool is_var_length_list_like(Type::type type_id) {
   switch (type_id) {
     case Type::LIST:
@@ -1414,10 +1414,10 @@ constexpr bool is_var_length_list_like(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a list-view type
+/// Check for a list-view type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a list-view type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a list-view type one
 constexpr bool is_list_view(Type::type type_id) {
   switch (type_id) {
     case Type::LIST_VIEW:
@@ -1429,10 +1429,10 @@ constexpr bool is_list_view(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a nested type
+/// Check for a nested type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a nested type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a nested type one
 constexpr bool is_nested(Type::type type_id) {
   switch (type_id) {
     case Type::LIST:
@@ -1452,10 +1452,10 @@ constexpr bool is_nested(Type::type type_id) {
   return false;
 }
 
-/// \brief Check for a union type
+/// Check for a union type
 ///
-/// \param[in] type_id the type-id to check
-/// \return whether type-id is a union type one
+/// :param type_id: the type-id to check
+/// :return: whether type-id is a union type one
 constexpr bool is_union(Type::type type_id) {
   switch (type_id) {
     case Type::SPARSE_UNION:
@@ -1467,10 +1467,10 @@ constexpr bool is_union(Type::type type_id) {
   return false;
 }
 
-/// \brief Return the values bit width of a type
+/// Return the values bit width of a type
 ///
-/// \param[in] type_id the type-id to check
-/// \return the values bit width, or 0 if the type does not have fixed-width values
+/// :param type_id: the type-id to check
+/// :return: the values bit width, or 0 if the type does not have fixed-width values
 ///
 /// For Type::FIXED_SIZE_BINARY, you will instead need to inspect the concrete
 /// DataType to get this information.
@@ -1526,10 +1526,10 @@ static inline int bit_width(Type::type type_id) {
   return 0;
 }
 
-/// \brief Return the offsets bit width of a type
+/// Return the offsets bit width of a type
 ///
-/// \param[in] type_id the type-id to check
-/// \return the offsets bit width, or 0 if the type does not have offsets
+/// :param type_id: the type-id to check
+/// :return: the offsets bit width, or 0 if the type does not have offsets
 static inline int offset_bit_width(Type::type type_id) {
   switch (type_id) {
     case Type::STRING:
@@ -1550,7 +1550,7 @@ static inline int offset_bit_width(Type::type type_id) {
   return 0;
 }
 
-/// \brief Get the alignment a buffer should have to be considered "value aligned"
+/// Get the alignment a buffer should have to be considered "value aligned"
 ///
 /// Some buffers are frequently type-punned.  For example, in an int32 array the
 /// values buffer is frequently cast to int32_t*
@@ -1564,225 +1564,225 @@ static inline int offset_bit_width(Type::type type_id) {
 ///
 /// We call this "value aligned" and this method will calculate that required alignment.
 ///
-/// \param type_id the type of the array containing the buffer
+/// :param type_id: the type of the array containing the buffer
 ///                Note: this should be the indices type for a dictionary array since
 ///                A dictionary array's buffers are indices.  It should be the storage
 ///                type for an extension array.
-/// \param buffer_index the index of the buffer to check, for example 0 will typically
+/// :param buffer_index: the index of the buffer to check, for example 0 will typically
 ///                     give you the alignment expected of the validity buffer
-/// \return the required value alignment in bytes (1 if no alignment required)
+/// :return: the required value alignment in bytes (1 if no alignment required)
 int RequiredValueAlignmentForBuffer(Type::type type_id, int buffer_index);
 
-/// \brief Check for an integer type (signed or unsigned)
+/// Check for an integer type (signed or unsigned)
 ///
-/// \param[in] type the type to check
-/// \return whether type is an integer type
+/// :param type: the type to check
+/// :return: whether type is an integer type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_integer(const DataType& type) { return is_integer(type.id()); }
 
-/// \brief Check for a signed integer type
+/// Check for a signed integer type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a signed integer type
+/// :param type: the type to check
+/// :return: whether type is a signed integer type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_signed_integer(const DataType& type) {
   return is_signed_integer(type.id());
 }
 
-/// \brief Check for an unsigned integer type
+/// Check for an unsigned integer type
 ///
-/// \param[in] type the type to check
-/// \return whether type is an unsigned integer type
+/// :param type: the type to check
+/// :return: whether type is an unsigned integer type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_unsigned_integer(const DataType& type) {
   return is_unsigned_integer(type.id());
 }
 
-/// \brief Check for a floating point type
+/// Check for a floating point type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a floating point type
+/// :param type: the type to check
+/// :return: whether type is a floating point type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_floating(const DataType& type) { return is_floating(type.id()); }
 
-/// \brief Check for a numeric type (number except boolean type)
+/// Check for a numeric type (number except boolean type)
 ///
-/// \param[in] type the type to check
-/// \return whether type is a numeric type
+/// :param type: the type to check
+/// :return: whether type is a numeric type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_numeric(const DataType& type) { return is_numeric(type.id()); }
 
-/// \brief Check for a decimal type
+/// Check for a decimal type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a decimal type
+/// :param type: the type to check
+/// :return: whether type is a decimal type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_decimal(const DataType& type) { return is_decimal(type.id()); }
 
-/// \brief Check for a primitive type
+/// Check for a primitive type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a primitive type
+/// :param type: the type to check
+/// :return: whether type is a primitive type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_primitive(const DataType& type) { return is_primitive(type.id()); }
 
-/// \brief Check for a binary or string-like type (except fixed-size binary)
+/// Check for a binary or string-like type (except fixed-size binary)
 ///
-/// \param[in] type the type to check
-/// \return whether type is a binary or string-like type
+/// :param type: the type to check
+/// :return: whether type is a binary or string-like type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_base_binary_like(const DataType& type) {
   return is_base_binary_like(type.id());
 }
 
-/// \brief Check for a binary-like type
+/// Check for a binary-like type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a binary-like type
+/// :param type: the type to check
+/// :return: whether type is a binary-like type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_binary_like(const DataType& type) {
   return is_binary_like(type.id());
 }
 
-/// \brief Check for a large-binary-like type
+/// Check for a large-binary-like type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a large-binary-like type
+/// :param type: the type to check
+/// :return: whether type is a large-binary-like type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_large_binary_like(const DataType& type) {
   return is_large_binary_like(type.id());
 }
 
-/// \brief Check for a binary type
+/// Check for a binary type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a binary type
+/// :param type: the type to check
+/// :return: whether type is a binary type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_binary(const DataType& type) { return is_binary(type.id()); }
 
-/// \brief Check for a string type
+/// Check for a string type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a string type
+/// :param type: the type to check
+/// :return: whether type is a string type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_string(const DataType& type) { return is_string(type.id()); }
 
-/// \brief Check for a binary-view-like type
+/// Check for a binary-view-like type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a binary-view-like type
+/// :param type: the type to check
+/// :return: whether type is a binary-view-like type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_binary_view_like(const DataType& type) {
   return is_binary_view_like(type.id());
 }
 
-/// \brief Check for a temporal type, including time and timestamps for each unit
+/// Check for a temporal type, including time and timestamps for each unit
 ///
-/// \param[in] type the type to check
-/// \return whether type is a temporal type
+/// :param type: the type to check
+/// :return: whether type is a temporal type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_temporal(const DataType& type) { return is_temporal(type.id()); }
 
-/// \brief Check for an interval type
+/// Check for an interval type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a interval type
+/// :param type: the type to check
+/// :return: whether type is a interval type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_interval(const DataType& type) { return is_interval(type.id()); }
 
-/// \brief Check for a dictionary type
+/// Check for a dictionary type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a dictionary type
+/// :param type: the type to check
+/// :return: whether type is a dictionary type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_dictionary(const DataType& type) {
   return is_dictionary(type.id());
 }
 
-/// \brief Check for a fixed-size-binary type
+/// Check for a fixed-size-binary type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a fixed-size-binary type
+/// :param type: the type to check
+/// :return: whether type is a fixed-size-binary type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_fixed_size_binary(const DataType& type) {
   return is_fixed_size_binary(type.id());
 }
 
-/// \brief Check for a fixed-width type
+/// Check for a fixed-width type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a fixed-width type
+/// :param type: the type to check
+/// :return: whether type is a fixed-width type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_fixed_width(const DataType& type) {
   return is_fixed_width(type.id());
 }
 
-/// \brief Check for a variable-length list type
+/// Check for a variable-length list type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a variable-length list type
+/// :param type: the type to check
+/// :return: whether type is a variable-length list type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_var_length_list(const DataType& type) {
   return is_var_length_list(type.id());
 }
 
-/// \brief Check for a list-like type
+/// Check for a list-like type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a list-like type
+/// :param type: the type to check
+/// :return: whether type is a list-like type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_list_like(const DataType& type) { return is_list_like(type.id()); }
 
-/// \brief Check for a var-length list or list-view like type
+/// Check for a var-length list or list-view like type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a var-length list or list-view like type
+/// :param type: the type to check
+/// :return: whether type is a var-length list or list-view like type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_var_length_list_like(const DataType& type) {
   return is_var_length_list_like(type.id());
 }
 
-/// \brief Check for a list-view type
+/// Check for a list-view type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a list-view type
+/// :param type: the type to check
+/// :return: whether type is a list-view type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_list_view(const DataType& type) { return is_list_view(type.id()); }
 
-/// \brief Check for a nested type
+/// Check for a nested type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a nested type
+/// :param type: the type to check
+/// :return: whether type is a nested type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_nested(const DataType& type) { return is_nested(type.id()); }
 
-/// \brief Check for a union type
+/// Check for a union type
 ///
-/// \param[in] type the type to check
-/// \return whether type is a union type
+/// :param type: the type to check
+/// :return: whether type is a union type
 ///
 /// Convenience for checking using the type's id
 static inline bool is_union(const DataType& type) { return is_union(type.id()); }

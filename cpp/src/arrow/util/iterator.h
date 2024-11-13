@@ -40,7 +40,7 @@ class Iterator;
 
 template <typename T>
 struct IterationTraits {
-  /// \brief a reserved value which indicates the end of iteration. By
+  /// a reserved value which indicates the end of iteration. By
   /// default this is NULLPTR since most iterators yield pointer types.
   /// Specialize IterationTraits if different end semantics are required.
   ///
@@ -49,7 +49,7 @@ struct IterationTraits {
   /// is only for returning terminal values.
   static T End() { return T(NULLPTR); }
 
-  /// \brief Checks to see if the value is a terminal value.
+  /// Checks to see if the value is a terminal value.
   /// A method is used here since T is not necessarily comparable in many
   /// cases even though it has a distinct final value
   static bool IsEnd(const T& val) { return val == End(); }
@@ -67,12 +67,12 @@ bool IsIterationEnd(const T& val) {
 
 template <typename T>
 struct IterationTraits<std::optional<T>> {
-  /// \brief by default when iterating through a sequence of optional,
+  /// by default when iterating through a sequence of optional,
   /// nullopt indicates the end of iteration.
   /// Specialize IterationTraits if different end semantics are required.
   static std::optional<T> End() { return std::nullopt; }
 
-  /// \brief by default when iterating through a sequence of optional,
+  /// by default when iterating through a sequence of optional,
   /// nullopt (!has_value()) indicates the end of iteration.
   /// Specialize IterationTraits if different end semantics are required.
   static bool IsEnd(const std::optional<T>& val) { return !val.has_value(); }
@@ -82,11 +82,11 @@ struct IterationTraits<std::optional<T>> {
   // is nullopt. Add IterationTraits::GetRangeElement() to handle this case
 };
 
-/// \brief A generic Iterator that can return errors
+/// A generic Iterator that can return errors
 template <typename T>
 class Iterator : public util::EqualityComparable<Iterator<T>> {
  public:
-  /// \brief Iterator may be constructed from any type which has a member function
+  /// Iterator may be constructed from any type which has a member function
   /// with signature Result<T> Next();
   /// End of iterator is signalled by returning IteratorTraits<T>::End();
   ///
@@ -104,7 +104,7 @@ class Iterator : public util::EqualityComparable<Iterator<T>> {
 
   Iterator() : ptr_(NULLPTR, [](void*) {}) {}
 
-  /// \brief Return the next element of the sequence, IterationTraits<T>::End() when the
+  /// Return the next element of the sequence, IterationTraits<T>::End() when the
   /// iteration is completed.
   Result<T> Next() {
     if (ptr_) {
@@ -182,7 +182,7 @@ class Iterator : public util::EqualityComparable<Iterator<T>> {
 
   RangeIterator end() { return RangeIterator(); }
 
-  /// \brief Move every element of this iterator into a vector.
+  /// Move every element of this iterator into a vector.
   Result<std::vector<T>> ToVector() {
     std::vector<T> out;
     for (auto maybe_element : *this) {
@@ -318,7 +318,7 @@ class TransformIterator {
   bool finished_ = false;
 };
 
-/// \brief Transforms an iterator according to a transformer, returning a new Iterator.
+/// Transforms an iterator according to a transformer, returning a new Iterator.
 ///
 /// The transformer will be called on each element of the source iterator and for each
 /// call it can yield a value, skip, or finish the iteration.  When yielding a value the
@@ -356,7 +356,7 @@ class FunctionIterator {
   Fn fn_;
 };
 
-/// \brief Construct an Iterator which invokes a callable on Next()
+/// Construct an Iterator which invokes a callable on Next()
 template <typename Fn,
           typename Ret = typename internal::call_traits::return_type<Fn>::ValueType>
 Iterator<Ret> MakeFunctionIterator(Fn fn) {
@@ -376,7 +376,7 @@ Iterator<T> MakeErrorIterator(Status s) {
   });
 }
 
-/// \brief Simple iterator which yields the elements of a std::vector
+/// Simple iterator which yields the elements of a std::vector
 template <typename T>
 class VectorIterator {
  public:
@@ -399,7 +399,7 @@ Iterator<T> MakeVectorIterator(std::vector<T> v) {
   return Iterator<T>(VectorIterator<T>(std::move(v)));
 }
 
-/// \brief Simple iterator which yields *pointers* to the elements of a std::vector<T>.
+/// Simple iterator which yields *pointers* to the elements of a std::vector<T>.
 /// This is provided to support T where IterationTraits<T>::End is not specialized
 template <typename T>
 class VectorPointingIterator {
@@ -423,7 +423,7 @@ Iterator<T*> MakeVectorPointingIterator(std::vector<T> v) {
   return Iterator<T*>(VectorPointingIterator<T>(std::move(v)));
 }
 
-/// \brief MapIterator takes ownership of an iterator and a function to apply
+/// MapIterator takes ownership of an iterator and a function to apply
 /// on every element. The mapped function is not allowed to fail.
 template <typename Fn, typename I, typename O>
 class MapIterator {
@@ -446,7 +446,7 @@ class MapIterator {
   Iterator<I> it_;
 };
 
-/// \brief MapIterator takes ownership of an iterator and a function to apply
+/// MapIterator takes ownership of an iterator and a function to apply
 /// on every element. The mapped function is not allowed to fail.
 template <typename Fn, typename From = internal::call_traits::argument_type<0, Fn>,
           typename To = internal::call_traits::return_type<Fn>>
@@ -454,7 +454,7 @@ Iterator<To> MakeMapIterator(Fn map, Iterator<From> it) {
   return Iterator<To>(MapIterator<Fn, From, To>(std::move(map), std::move(it)));
 }
 
-/// \brief Like MapIterator, but where the function can fail.
+/// Like MapIterator, but where the function can fail.
 template <typename Fn, typename From = internal::call_traits::argument_type<0, Fn>,
           typename To = typename internal::call_traits::return_type<Fn>::ValueType>
 Iterator<To> MakeMaybeMapIterator(Fn map, Iterator<From> it) {
@@ -512,7 +512,7 @@ struct FilterIterator {
   };
 };
 
-/// \brief Like MapIterator, but where the function can fail or reject elements.
+/// Like MapIterator, but where the function can fail or reject elements.
 template <
     typename Fn, typename From = typename internal::call_traits::argument_type<0, Fn>,
     typename Ret = typename internal::call_traits::return_type<Fn>::ValueType,
@@ -524,7 +524,7 @@ Iterator<To> MakeFilterIterator(Fn filter, Iterator<From> it) {
       FilterIterator::Impl<Fn, From, To>(std::move(filter), std::move(it)));
 }
 
-/// \brief FlattenIterator takes an iterator generating iterators and yields a
+/// FlattenIterator takes an iterator generating iterators and yields a
 /// unified iterator that flattens/concatenates in a single stream.
 template <typename T>
 class FlattenIterator {

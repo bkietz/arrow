@@ -27,7 +27,7 @@
 
 namespace arrow {
 
-/// \brief Statistics for an Array
+/// Statistics for an Array
 ///
 /// Apache Arrow format doesn't have statistics but data source such
 /// as Apache Parquet may have statistics. Statistics associated with
@@ -52,39 +52,39 @@ struct ARROW_EXPORT ArrayStatistics {
     return std::visit(visitor, value.value());
   }
 
-  /// \brief The number of null values, may not be set
+  /// The number of null values, may not be set
   std::optional<int64_t> null_count = std::nullopt;
 
-  /// \brief The number of distinct values, may not be set
+  /// The number of distinct values, may not be set
   std::optional<int64_t> distinct_count = std::nullopt;
 
-  /// \brief The minimum value, may not be set
+  /// The minimum value, may not be set
   std::optional<ValueType> min = std::nullopt;
 
   const std::shared_ptr<DataType>& MinArrowType() { return ValueToArrowType(min); }
 
-  /// \brief Whether the minimum value is exact or not
+  /// Whether the minimum value is exact or not
   bool is_min_exact = false;
 
-  /// \brief The maximum value, may not be set
+  /// The maximum value, may not be set
   std::optional<ValueType> max = std::nullopt;
 
   const std::shared_ptr<DataType>& MaxArrowType() { return ValueToArrowType(max); }
 
-  /// \brief Whether the maximum value is exact or not
+  /// Whether the maximum value is exact or not
   bool is_max_exact = false;
 
-  /// \brief Check two statistics for equality
+  /// Check two statistics for equality
   bool Equals(const ArrayStatistics& other) const {
     return null_count == other.null_count && distinct_count == other.distinct_count &&
            min == other.min && is_min_exact == other.is_min_exact && max == other.max &&
            is_max_exact == other.is_max_exact;
   }
 
-  /// \brief Check two statistics for equality
+  /// Check two statistics for equality
   bool operator==(const ArrayStatistics& other) const { return Equals(other); }
 
-  /// \brief Check two statistics for not equality
+  /// Check two statistics for not equality
   bool operator!=(const ArrayStatistics& other) const { return !Equals(other); }
 };
 

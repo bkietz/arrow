@@ -48,7 +48,7 @@ namespace compute {
 // the future once parallel execution is implemented
 static constexpr int64_t kDefaultExecChunksize = UINT16_MAX;
 
-/// \brief Context for expression-global variables and options used by
+/// Context for expression-global variables and options used by
 /// function evaluation
 class ARROW_EXPORT ExecContext {
  public:
@@ -57,16 +57,16 @@ class ARROW_EXPORT ExecContext {
                        ::arrow::internal::Executor* executor = NULLPTR,
                        FunctionRegistry* func_registry = NULLPTR);
 
-  /// \brief The MemoryPool used for allocations, default is
+  /// The MemoryPool used for allocations, default is
   /// default_memory_pool().
   MemoryPool* memory_pool() const { return pool_; }
 
   const ::arrow::internal::CpuInfo* cpu_info() const;
 
-  /// \brief An Executor which may be used to parallelize execution.
+  /// An Executor which may be used to parallelize execution.
   ::arrow::internal::Executor* executor() const { return executor_; }
 
-  /// \brief The FunctionRegistry for looking up functions by name and
+  /// The FunctionRegistry for looking up functions by name and
   /// selecting kernels for execution. Defaults to the library-global function
   /// registry provided by GetFunctionRegistry.
   FunctionRegistry* func_registry() const { return func_registry_; }
@@ -82,11 +82,11 @@ class ARROW_EXPORT ExecContext {
   // smaller chunks.
   int64_t exec_chunksize() const { return exec_chunksize_; }
 
-  /// \brief Set whether to use multiple threads for function execution. This
+  /// Set whether to use multiple threads for function execution. This
   /// is not yet used.
   void set_use_threads(bool use_threads = true) { use_threads_ = use_threads; }
 
-  /// \brief If true, then utilize multiple threads where relevant for function
+  /// If true, then utilize multiple threads where relevant for function
   /// execution. This is not yet used.
   bool use_threads() const { return use_threads_; }
 
@@ -105,7 +105,7 @@ class ARROW_EXPORT ExecContext {
     preallocate_contiguous_ = preallocate;
   }
 
-  /// \brief If contiguous preallocations should be used when doing chunked
+  /// If contiguous preallocations should be used when doing chunked
   /// execution as specified by exec_chunksize(). See
   /// set_preallocate_contiguous() for more information.
   bool preallocate_contiguous() const { return preallocate_contiguous_; }
@@ -122,7 +122,7 @@ class ARROW_EXPORT ExecContext {
 // TODO: Consider standardizing on uint16 selection vectors and only use them
 // when we can ensure that each value is 64K length or smaller
 
-/// \brief Container for an array of value selection indices that were
+/// Container for an array of value selection indices that were
 /// materialized from a filter.
 ///
 /// Columnar query engines (see e.g. [1]) have found that rather than
@@ -140,7 +140,7 @@ class ARROW_EXPORT SelectionVector {
 
   explicit SelectionVector(const Array& arr);
 
-  /// \brief Create SelectionVector from boolean mask
+  /// Create SelectionVector from boolean mask
   static Result<std::shared_ptr<SelectionVector>> FromMask(const BooleanArray& arr);
 
   const int32_t* indices() const { return indices_; }
@@ -154,7 +154,7 @@ class ARROW_EXPORT SelectionVector {
 /// An index to represent that a batch does not belong to an ordered stream
 constexpr int64_t kUnsequencedIndex = -1;
 
-/// \brief A unit of work for kernel execution. It contains a collection of
+/// A unit of work for kernel execution. It contains a collection of
 /// Array and Scalar values and an optional SelectionVector indicating that
 /// there is an unmaterialized filter that either must be materialized, or (if
 /// the kernel supports it) pushed down into the kernel implementation.
@@ -178,7 +178,7 @@ struct ARROW_EXPORT ExecBatch {
 
   explicit ExecBatch(const RecordBatch& batch);
 
-  /// \brief Infer the ExecBatch length from values.
+  /// Infer the ExecBatch length from values.
   static Result<int64_t> InferLength(const std::vector<Datum>& values);
 
   /// Creates an ExecBatch with length-validation.
@@ -218,13 +218,13 @@ struct ARROW_EXPORT ExecBatch {
   /// whether any values are Scalar.
   int64_t length = 0;
 
-  /// \brief index of this batch in a sorted stream of batches
+  /// index of this batch in a sorted stream of batches
   ///
   /// This index must be strictly monotonic starting at 0 without gaps or
   /// it can be set to kUnsequencedIndex if there is no meaningful order
   int64_t index = kUnsequencedIndex;
 
-  /// \brief The sum of bytes in each buffer referenced by the batch
+  /// The sum of bytes in each buffer referenced by the batch
   ///
   /// Note: Scalars are not counted
   /// Note: Some values may referenced only part of a buffer, for
@@ -233,7 +233,7 @@ struct ARROW_EXPORT ExecBatch {
   ///       buffer size in this case.
   int64_t TotalBufferSize() const;
 
-  /// \brief Return the value at the i-th index
+  /// Return the value at the i-th index
   template <typename index_type>
   inline const Datum& operator[](index_type i) const {
     return values[i];
@@ -241,14 +241,14 @@ struct ARROW_EXPORT ExecBatch {
 
   bool Equals(const ExecBatch& other) const;
 
-  /// \brief A convenience for the number of values / arguments.
+  /// A convenience for the number of values / arguments.
   int num_values() const { return static_cast<int>(values.size()); }
 
   ExecBatch Slice(int64_t offset, int64_t length) const;
 
   Result<ExecBatch> SelectValues(const std::vector<int>& ids) const;
 
-  /// \brief A convenience for returning the types from the batch.
+  /// A convenience for returning the types from the batch.
   std::vector<TypeHolder> GetTypes() const {
     std::vector<TypeHolder> result;
     for (const auto& value : this->values) {
@@ -363,7 +363,7 @@ struct ARROW_EXPORT ExecResult {
   bool is_array_data() const { return this->value.index() == 1; }
 };
 
-/// \brief A "lightweight" column batch object which contains no
+/// A "lightweight" column batch object which contains no
 /// std::shared_ptr objects and does not have any memory ownership
 /// semantics. Can represent a view onto an "owning" ExecBatch.
 struct ARROW_EXPORT ExecSpan {
@@ -390,13 +390,13 @@ struct ARROW_EXPORT ExecSpan {
     }
   }
 
-  /// \brief Return the value at the i-th index
+  /// Return the value at the i-th index
   template <typename index_type>
   inline const ExecValue& operator[](index_type i) const {
     return values[i];
   }
 
-  /// \brief A convenience for the number of values / arguments.
+  /// A convenience for the number of values / arguments.
   int num_values() const { return static_cast<int>(values.size()); }
 
   std::vector<TypeHolder> GetTypes() const {
@@ -428,7 +428,7 @@ struct ARROW_EXPORT ExecSpan {
 ///
 /// @{
 
-/// \brief One-shot invoker for all types of functions.
+/// One-shot invoker for all types of functions.
 ///
 /// Does kernel dispatch, argument checking, iteration of ChunkedArray inputs,
 /// and wrapping of outputs.
@@ -436,14 +436,14 @@ ARROW_EXPORT
 Result<Datum> CallFunction(const std::string& func_name, const std::vector<Datum>& args,
                            const FunctionOptions* options, ExecContext* ctx = NULLPTR);
 
-/// \brief Variant of CallFunction which uses a function's default options.
+/// Variant of CallFunction which uses a function's default options.
 ///
 /// NB: Some functions require FunctionOptions be provided.
 ARROW_EXPORT
 Result<Datum> CallFunction(const std::string& func_name, const std::vector<Datum>& args,
                            ExecContext* ctx = NULLPTR);
 
-/// \brief One-shot invoker for all types of functions.
+/// One-shot invoker for all types of functions.
 ///
 /// Does kernel dispatch, argument checking, iteration of ChunkedArray inputs,
 /// and wrapping of outputs.
@@ -451,7 +451,7 @@ ARROW_EXPORT
 Result<Datum> CallFunction(const std::string& func_name, const ExecBatch& batch,
                            const FunctionOptions* options, ExecContext* ctx = NULLPTR);
 
-/// \brief Variant of CallFunction which uses a function's default options.
+/// Variant of CallFunction which uses a function's default options.
 ///
 /// NB: Some functions require FunctionOptions be provided.
 ARROW_EXPORT
@@ -464,7 +464,7 @@ Result<Datum> CallFunction(const std::string& func_name, const ExecBatch& batch,
 ///
 /// @{
 
-/// \brief One-shot executor provider for all types of functions.
+/// One-shot executor provider for all types of functions.
 ///
 /// This function creates and initializes a `FunctionExecutor` appropriate
 /// for the given function name, input types and function options.
@@ -473,7 +473,7 @@ Result<std::shared_ptr<FunctionExecutor>> GetFunctionExecutor(
     const std::string& func_name, std::vector<TypeHolder> in_types,
     const FunctionOptions* options = NULLPTR, FunctionRegistry* func_registry = NULLPTR);
 
-/// \brief One-shot executor provider for all types of functions.
+/// One-shot executor provider for all types of functions.
 ///
 /// This function creates and initializes a `FunctionExecutor` appropriate
 /// for the given function name, input types (taken from the Datum arguments)

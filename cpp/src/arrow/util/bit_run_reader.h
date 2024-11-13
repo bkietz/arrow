@@ -74,11 +74,11 @@ class BitRunReaderLinear {
 /// in a bitmap.
 class ARROW_EXPORT BitRunReader {
  public:
-  /// \brief Constructs new BitRunReader.
+  /// Constructs new BitRunReader.
   ///
-  /// \param[in] bitmap source data
-  /// \param[in] start_offset bit offset into the source data
-  /// \param[in] length number of bits to copy
+  /// :param bitmap: source data
+  /// :param start_offset: bit offset into the source data
+  /// :param length: number of bits to copy
   BitRunReader(const uint8_t* bitmap, int64_t start_offset, int64_t length);
 
   /// Returns a new BitRun containing the number of contiguous
@@ -190,11 +190,11 @@ struct SetBitRun {
 template <bool Reverse>
 class BaseSetBitRunReader {
  public:
-  /// \brief Constructs new SetBitRunReader.
+  /// Constructs new SetBitRunReader.
   ///
-  /// \param[in] bitmap source data
-  /// \param[in] start_offset bit offset into the source data
-  /// \param[in] length number of bits to copy
+  /// :param bitmap: source data
+  /// :param start_offset: bit offset into the source data
+  /// :param length: number of bits to copy
   ARROW_NOINLINE
   BaseSetBitRunReader(const uint8_t* bitmap, int64_t start_offset, int64_t length)
       : bitmap_(util::MakeNonNull(bitmap)),

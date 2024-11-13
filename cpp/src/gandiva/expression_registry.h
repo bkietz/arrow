@@ -30,7 +30,7 @@ namespace gandiva {
 
 class NativeFunction;
 class FunctionRegistry;
-/// \brief Exports types supported by Gandiva for processing.
+/// Exports types supported by Gandiva for processing.
 ///
 /// Has helper methods for clients to programmatically discover
 /// data types and functions supported by Gandiva.
@@ -67,7 +67,7 @@ class GANDIVA_EXPORT ExpressionRegistry {
   std::shared_ptr<FunctionRegistry> function_registry_;
 };
 
-/// \brief Get the list of all function signatures.
+/// Get the list of all function signatures.
 GANDIVA_EXPORT
 std::vector<std::shared_ptr<FunctionSignature>> GetRegisteredFunctionSignatures();
 

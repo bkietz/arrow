@@ -186,7 +186,7 @@ class MemoryPoolMemoryManager : public benchmark::MemoryManager {
   int64_t global_allocations_start;
 };
 
-/// \brief Track memory pool allocations in benchmarks.
+/// Track memory pool allocations in benchmarks.
 ///
 /// Instantiate as a global variable to register the hooks into Google Benchmark
 /// to collect memory metrics. Before each benchmark, a new ProxyMemoryPool is

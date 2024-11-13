@@ -31,7 +31,7 @@
 
 namespace parquet {
 
-/// \brief A class for writing Parquet files using an output stream type API.
+/// A class for writing Parquet files using an output stream type API.
 ///
 /// The values given must be of the correct type i.e. the type must
 /// match the file schema exactly otherwise a ParquetException will be
@@ -91,7 +91,7 @@ class PARQUET_EXPORT StreamWriter {
   StreamWriter(const StreamWriter&) = delete;
   StreamWriter& operator=(const StreamWriter&) = delete;
 
-  /// \brief Output operators for required fields.
+  /// Output operators for required fields.
   /// These can also be used for optional fields when a value must be set.
   StreamWriter& operator<<(bool v);
 
@@ -121,7 +121,7 @@ class PARQUET_EXPORT StreamWriter {
 
   StreamWriter& operator<<(char v);
 
-  /// \brief Helper class to write fixed length strings.
+  /// Helper class to write fixed length strings.
   /// This is useful as the standard string view (such as
   /// std::string_view) is for variable length data.
   struct PARQUET_EXPORT FixedStringView {
@@ -135,7 +135,7 @@ class PARQUET_EXPORT StreamWriter {
     std::size_t size{0};
   };
 
-  /// \brief Output operators for fixed length strings.
+  /// Output operators for fixed length strings.
   template <int N>
   StreamWriter& operator<<(const char (&v)[N]) {
     return WriteFixedLength(v, N);
@@ -146,12 +146,12 @@ class PARQUET_EXPORT StreamWriter {
   }
   StreamWriter& operator<<(FixedStringView v);
 
-  /// \brief Output operators for variable length strings.
+  /// Output operators for variable length strings.
   StreamWriter& operator<<(const char* v);
   StreamWriter& operator<<(const std::string& v);
   StreamWriter& operator<<(::std::string_view v);
 
-  /// \brief Output operator for optional fields.
+  /// Output operator for optional fields.
   template <typename T>
   StreamWriter& operator<<(const optional<T>& v) {
     if (v) {
@@ -161,20 +161,20 @@ class PARQUET_EXPORT StreamWriter {
     return *this;
   }
 
-  /// \brief Skip the next N columns of optional data.  If there are
+  /// Skip the next N columns of optional data.  If there are
   /// less than N columns remaining then the excess columns are
   /// ignored.
-  /// \throws ParquetException if there is an attempt to skip any
+  /// :throws ParquetException: if there is an attempt to skip any
   /// required column.
-  /// \return Number of columns actually skipped.
+  /// :return: Number of columns actually skipped.
   int64_t SkipColumns(int num_columns_to_skip);
 
-  /// \brief Terminate the current row and advance to next one.
-  /// \throws ParquetException if all columns in the row were not
+  /// Terminate the current row and advance to next one.
+  /// :throws ParquetException: if all columns in the row were not
   /// written or skipped.
   void EndRow();
 
-  /// \brief Terminate the current row group and create new one.
+  /// Terminate the current row group and create new one.
   void EndRowGroup();
 
  protected:
@@ -197,8 +197,8 @@ class PARQUET_EXPORT StreamWriter {
   void CheckColumn(Type::type physical_type, ConvertedType::type converted_type,
                    int length = -1);
 
-  /// \brief Skip the next column which must be optional.
-  /// \throws ParquetException if the next column does not exist or is
+  /// Skip the next column which must be optional.
+  /// :throws ParquetException: if the next column does not exist or is
   /// not optional.
   void SkipOptionalColumn();
 

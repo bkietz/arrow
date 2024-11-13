@@ -1406,7 +1406,7 @@ namespace {
 
 const char kDelimiter[] = {internal::kSep, '\0'};
 
-/// \pre location.container is not empty.
+/// :precondition: location.container is not empty.
 template <class ContainerClient>
 Result<FileInfo> GetContainerPropsAsFileInfo(const AzureLocation& location,
                                              const ContainerClient& container_client) {
@@ -1464,7 +1464,7 @@ FileInfo FileInfoFromBlob(std::string_view container,
   return info;
 }
 
-/// \brief RAII-style guard for releasing a lease on a blob or container.
+/// RAII-style guard for releasing a lease on a blob or container.
 ///
 /// The guard should be constructed right after a successful BlobLeaseClient::Acquire()
 /// call. Use std::optional<LeaseGuard> to declare a guard in outer scope and construct it
@@ -1481,7 +1481,7 @@ class LeaseGuard {
   using SteadyClock = std::chrono::steady_clock;
 
  private:
-  /// \brief The time when the lease expires or is broken.
+  /// The time when the lease expires or is broken.
   ///
   /// The lease is not guaranteed to be valid until this time, but it is guaranteed to
   /// be expired after this time. In other words, this is an overestimation of
@@ -1490,11 +1490,11 @@ class LeaseGuard {
   const std::unique_ptr<Blobs::BlobLeaseClient> lease_client_;
   bool release_attempt_pending_ = true;
 
-  /// \brief The latest known expiry time of a lease guarded by this class
+  /// The latest known expiry time of a lease guarded by this class
   /// that failed to be released or was forgotten by calling Forget().
   static std::atomic<SteadyClock::time_point> latest_known_expiry_time_;
 
-  /// \brief The maximum lease duration supported by Azure Storage.
+  /// The maximum lease duration supported by Azure Storage.
   static constexpr std::chrono::seconds kMaxLeaseDuration{60};
 
  public:
@@ -1540,7 +1540,7 @@ class LeaseGuard {
     return SteadyClock::now() + expected_time_left < break_or_expires_at_;
   }
 
-  /// \brief Break the lease.
+  /// Break the lease.
   ///
   /// The lease will stay in the "Breaking" state for break_period seconds or
   /// less if the lease is expiring before that.
@@ -1577,7 +1577,7 @@ class LeaseGuard {
     return Status::OK();
   }
 
-  /// \brief Break the lease before deleting or renaming the resource via the
+  /// Break the lease before deleting or renaming the resource via the
   /// DataLakeFileSystemClient API.
   ///
   /// NOTE: When using the Blobs API, this is not necessary -- you can release a
@@ -1612,10 +1612,12 @@ class LeaseGuard {
     return Status::OK();
   }
 
-  /// \brief Prevent any release attempts in the destructor.
+  /// Prevent any release attempts in the destructor.
   ///
   /// When it's known they would certainly fail.
-  /// \see LeaseGuard::BreakBeforeDeletion()
+  /// ```{seealso}
+  /// LeaseGuard::BreakBeforeDeletion()
+  /// ```
   ARROW_NOINLINE void Forget() {
     if (!PendingRelease()) {
       release_attempt_pending_ = false;
@@ -1685,15 +1687,15 @@ class AzureFileSystem::Impl {
     return GetBlobContainerClient(container_name).GetBlobClient(blob_name);
   }
 
-  /// \param container_name Also known as "filesystem" in the ADLS Gen2 API.
+  /// :param container_name: Also known as "filesystem" in the ADLS Gen2 API.
   DataLake::DataLakeFileSystemClient GetFileSystemClient(
       const std::string& container_name) {
     return datalake_service_client_->GetFileSystemClient(container_name);
   }
 
-  /// \brief Memoized version of CheckIfHierarchicalNamespaceIsEnabled.
+  /// Memoized version of CheckIfHierarchicalNamespaceIsEnabled.
   ///
-  /// \return kEnabled/kDisabled/kContainerNotFound (kUnknown is never returned).
+  /// :return: kEnabled/kDisabled/kContainerNotFound (kUnknown is never returned).
   Result<HNSSupport> HierarchicalNamespaceSupport(
       const DataLake::DataLakeFileSystemClient& adlfs_client) {
     switch (cached_hns_support_) {
@@ -1738,7 +1740,7 @@ class AzureFileSystem::Impl {
     DCHECK(false) << "Invalid enum HierarchicalNamespaceSupport value.";
   }
 
-  /// \pre location.path is not empty.
+  /// :precondition: location.path is not empty.
   Result<FileInfo> GetFileInfo(const DataLake::DataLakeFileSystemClient& adlfs_client,
                                const AzureLocation& location,
                                Azure::Nullable<std::string> lease_id = {}) {
@@ -1778,7 +1780,7 @@ class AzureFileSystem::Impl {
   /// implied by empty directory marker blobs with names ending in "/" or there
   /// being blobs with names starting with the directory path.
   ///
-  /// \pre location.path is not empty.
+  /// :precondition: location.path is not empty.
   Result<FileInfo> GetFileInfo(const Blobs::BlobContainerClient& container_client,
                                const AzureLocation& location) {
     DCHECK(!location.path.empty());
@@ -1866,7 +1868,7 @@ class AzureFileSystem::Impl {
   }
 
  private:
-  /// \pre location.container is not empty.
+  /// :precondition: location.container is not empty.
   template <typename ContainerClient>
   Status CheckDirExists(const ContainerClient& container_client,
                         const AzureLocation& location) {
@@ -1913,9 +1915,9 @@ class AzureFileSystem::Impl {
     return result;
   }
 
-  /// \brief List the paths at the root of a filesystem or some dir in a filesystem.
+  /// List the paths at the root of a filesystem or some dir in a filesystem.
   ///
-  /// \pre adlfs_client is the client for the filesystem named like the first
+  /// :precondition: adlfs_client is the client for the filesystem named like the first
   /// segment of select.base_dir. The filesystem is know to exist.
   Status GetFileInfoWithSelectorFromFileSystem(
       const DataLake::DataLakeFileSystemClient& adlfs_client,
@@ -1969,9 +1971,9 @@ class AzureFileSystem::Impl {
                : ::arrow::fs::internal::PathNotFound(select.base_dir);
   }
 
-  /// \brief List the blobs at the root of a container or some dir in a container.
+  /// List the blobs at the root of a container or some dir in a container.
   ///
-  /// \pre container_client is the client for the container named like the first
+  /// :precondition: container_client is the client for the container named like the first
   /// segment of select.base_dir.
   Status GetFileInfoWithSelectorFromContainer(
       const Blobs::BlobContainerClient& container_client, const Core::Context& context,
@@ -2172,8 +2174,8 @@ class AzureFileSystem::Impl {
  private:
   /// This function cannot assume the filesystem/container already exists.
   ///
-  /// \pre location.container is not empty.
-  /// \pre location.path is not empty.
+  /// :precondition: location.container is not empty.
+  /// :precondition: location.path is not empty.
   template <class ContainerClient, class CreateDirIfNotExists>
   Status CreateDirTemplate(const ContainerClient& container_client,
                            CreateDirIfNotExists&& create_if_not_exists,
@@ -2265,8 +2267,8 @@ class AzureFileSystem::Impl {
  public:
   /// This function cannot assume the filesystem already exists.
   ///
-  /// \pre location.container is not empty.
-  /// \pre location.path is not empty.
+  /// :precondition: location.container is not empty.
+  /// :precondition: location.path is not empty.
   Status CreateDirOnFileSystem(const DataLake::DataLakeFileSystemClient& adlfs_client,
                                const AzureLocation& location, bool recursive) {
     return CreateDirTemplate(
@@ -2281,8 +2283,8 @@ class AzureFileSystem::Impl {
 
   /// This function cannot assume the container already exists.
   ///
-  /// \pre location.container is not empty.
-  /// \pre location.path is not empty.
+  /// :precondition: location.container is not empty.
+  /// :precondition: location.path is not empty.
   Status CreateDirOnContainer(const Blobs::BlobContainerClient& container_client,
                               const AzureLocation& location, bool recursive) {
     return CreateDirTemplate(
@@ -2347,8 +2349,8 @@ class AzureFileSystem::Impl {
   /// This function assumes the container already exists. So it can only be
   /// called after that has been verified.
   ///
-  /// \pre location.container is not empty.
-  /// \pre The location.container container already exists.
+  /// :precondition: location.container is not empty.
+  /// :precondition: The location.container container already exists.
   Status EnsureEmptyDirExists(const Blobs::BlobContainerClient& container_client,
                               const AzureLocation& location, const char* operation_name) {
     DCHECK(!location.container.empty());
@@ -2366,8 +2368,8 @@ class AzureFileSystem::Impl {
     }
   }
 
-  /// \pre location.container is not empty.
-  /// \pre location.path is empty.
+  /// :precondition: location.container is not empty.
+  /// :precondition: location.path is empty.
   Status DeleteContainer(const Blobs::BlobContainerClient& container_client,
                          const AzureLocation& location) {
     DCHECK(!location.container.empty());
@@ -2391,17 +2393,17 @@ class AzureFileSystem::Impl {
   /// Deletes contents of a directory and possibly the directory itself
   /// depending on the value of preserve_dir_marker_blob.
   ///
-  /// \pre location.container is not empty.
-  /// \pre preserve_dir_marker_blob=false implies location.path is not empty
+  /// :precondition: location.container is not empty.
+  /// :precondition: preserve_dir_marker_blob=false implies location.path is not empty
   /// because we can't *not preserve* the root directory of a container.
   ///
-  /// \param require_dir_to_exist Require the directory to exist *before* this
+  /// :param require_dir_to_exist: Require the directory to exist *before* this
   /// operation, otherwise return PathNotFound.
-  /// \param preserve_dir_marker_blob Ensure the empty directory marker blob
+  /// :param preserve_dir_marker_blob: Ensure the empty directory marker blob
   /// is preserved (not deleted) or created (before the contents are deleted) if it
   /// doesn't exist explicitly but is implied by the existence of blobs with names
   /// starting with the directory path.
-  /// \param operation_name Used in error messages to accurately describe the operation
+  /// :param operation_name: Used in error messages to accurately describe the operation
   Status DeleteDirContentsOnContainer(const Blobs::BlobContainerClient& container_client,
                                       const AzureLocation& location,
                                       bool require_dir_to_exist,
@@ -2509,8 +2511,8 @@ class AzureFileSystem::Impl {
     }
   }
 
-  /// \pre location.container is not empty.
-  /// \pre location.path is not empty.
+  /// :precondition: location.container is not empty.
+  /// :precondition: location.path is not empty.
   Status DeleteDirOnFileSystem(const DataLake::DataLakeFileSystemClient& adlfs_client,
                                const AzureLocation& location, bool recursive,
                                bool require_dir_to_exist,
@@ -2552,7 +2554,7 @@ class AzureFileSystem::Impl {
     return Status::OK();
   }
 
-  /// \pre location.container is not empty.
+  /// :precondition: location.container is not empty.
   Status DeleteDirContentsOnFileSystem(
       const DataLake::DataLakeFileSystemClient& adlfs_client,
       const AzureLocation& location, bool missing_dir_ok) {
@@ -2597,11 +2599,11 @@ class AzureFileSystem::Impl {
   }
 
  private:
-  /// \brief Create a BlobLeaseClient and acquire a lease on the container.
+  /// Create a BlobLeaseClient and acquire a lease on the container.
   ///
-  /// \param allow_missing_container if true, a nullptr may be returned when the container
+  /// :param allow_missing_container: if true, a nullptr may be returned when the container
   /// doesn't exist, otherwise a PathNotFound(location) error is produced right away
-  /// \return A BlobLeaseClient is wrapped as a unique_ptr so it's moveable and
+  /// :return: A BlobLeaseClient is wrapped as a unique_ptr so it's moveable and
   /// optional (nullptr denotes container not found)
   Result<std::unique_ptr<Blobs::BlobLeaseClient>> AcquireContainerLease(
       const AzureLocation& location, std::chrono::seconds lease_duration,
@@ -2635,12 +2637,12 @@ class AzureFileSystem::Impl {
     return lease_client;
   }
 
-  /// \brief Create a BlobLeaseClient and acquire a lease on a blob/file (or
+  /// Create a BlobLeaseClient and acquire a lease on a blob/file (or
   /// directory if Hierarchical Namespace is supported).
   ///
-  /// \param allow_missing if true, a nullptr may be returned when the blob
+  /// :param allow_missing: if true, a nullptr may be returned when the blob
   /// doesn't exist, otherwise a PathNotFound(location) error is produced right away
-  /// \return A BlobLeaseClient is wrapped as a unique_ptr so it's moveable and
+  /// :return: A BlobLeaseClient is wrapped as a unique_ptr so it's moveable and
   /// optional (nullptr denotes blob not found)
   Result<std::unique_ptr<Blobs::BlobLeaseClient>> AcquireBlobLease(
       const AzureLocation& location, std::chrono::seconds lease_duration,
@@ -2675,7 +2677,7 @@ class AzureFileSystem::Impl {
     return lease_client;
   }
 
-  /// \brief The default lease duration used for acquiring a lease on a container or blob.
+  /// The default lease duration used for acquiring a lease on a container or blob.
   ///
   /// Azure Storage leases can be acquired for a duration of 15 to 60 seconds.
   ///
@@ -2707,8 +2709,8 @@ class AzureFileSystem::Impl {
   static constexpr auto kTimeNeededForFileOrDirectoryRename = std::chrono::seconds{3};
 
  public:
-  /// \pre location.container is not empty.
-  /// \pre location.path is not empty.
+  /// :precondition: location.container is not empty.
+  /// :precondition: location.path is not empty.
   Status DeleteFileOnFileSystem(const DataLake::DataLakeFileSystemClient& adlfs_client,
                                 const AzureLocation& location,
                                 bool require_file_to_exist) {
@@ -2744,8 +2746,8 @@ class AzureFileSystem::Impl {
     return Status::OK();
   }
 
-  /// \pre location.container is not empty.
-  /// \pre location.path is not empty.
+  /// :precondition: location.container is not empty.
+  /// :precondition: location.path is not empty.
   Status DeleteFileOnContainer(const Blobs::BlobContainerClient& container_client,
                                const AzureLocation& location, bool require_file_to_exist,
                                const char* operation) {

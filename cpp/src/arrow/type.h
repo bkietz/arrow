@@ -124,7 +124,7 @@ struct ARROW_EXPORT DataTypeLayout {
       : buffers(std::move(buffers)), variadic_spec(variadic_spec) {}
 };
 
-/// \brief Base class for all data types
+/// Base class for all data types
 ///
 /// Data types in this library are all *logical*. They can be expressed as
 /// either a primitive physical type (bytes or bits of some fixed size), a
@@ -140,50 +140,52 @@ class ARROW_EXPORT DataType : public std::enable_shared_from_this<DataType>,
   explicit DataType(Type::type id) : detail::Fingerprintable(), id_(id) {}
   ~DataType() override;
 
-  /// \brief Return whether the types are equal
+  /// Return whether the types are equal
   ///
   /// Types that are logically convertible from one to another (e.g. List<UInt8>
   /// and Binary) are NOT equal.
   bool Equals(const DataType& other, bool check_metadata = false) const;
 
-  /// \brief Return whether the types are equal
+  /// Return whether the types are equal
   bool Equals(const std::shared_ptr<DataType>& other, bool check_metadata = false) const;
 
-  /// \brief Return the child field at index i.
+  /// Return the child field at index i.
   const std::shared_ptr<Field>& field(int i) const { return children_[i]; }
 
-  /// \brief Return the children fields associated with this type.
+  /// Return the children fields associated with this type.
   const FieldVector& fields() const { return children_; }
 
-  /// \brief Return the number of children fields associated with this type.
+  /// Return the number of children fields associated with this type.
   int num_fields() const { return static_cast<int>(children_.size()); }
 
-  /// \brief Apply the TypeVisitor::Visit() method specialized to the data type
+  /// Apply the TypeVisitor::Visit() method specialized to the data type
   Status Accept(TypeVisitor* visitor) const;
 
-  /// \brief A string representation of the type, including any children
+  /// A string representation of the type, including any children
   virtual std::string ToString(bool show_metadata = false) const = 0;
 
-  /// \brief Return hash value (excluding metadata in child fields)
+  /// Return hash value (excluding metadata in child fields)
   size_t Hash() const;
 
-  /// \brief A string name of the type, omitting any child fields
+  /// A string name of the type, omitting any child fields
   ///
-  /// \since 0.7.0
+  /// ```{versionadded} 0.7.0
+  /// ```
   virtual std::string name() const = 0;
 
-  /// \brief Return the data type layout.  Children are not included.
+  /// Return the data type layout.  Children are not included.
   ///
-  /// \note Experimental API
+  /// ```{note}
+  /// Experimental API
   virtual DataTypeLayout layout() const = 0;
 
-  /// \brief Return the type category
+  /// Return the type category
   Type::type id() const { return id_; }
 
-  /// \brief Return the type category of the storage type
+  /// Return the type category of the storage type
   virtual Type::type storage_id() const { return id_; }
 
-  /// \brief Returns the type's fixed byte width, if any. Returns -1
+  /// Returns the type's fixed byte width, if any. Returns -1
   /// for non-fixed-width types, and should only be used for
   /// subclasses of FixedWidthType
   virtual int32_t byte_width() const {
@@ -191,7 +193,7 @@ class ARROW_EXPORT DataType : public std::enable_shared_from_this<DataType>,
     return num_bits > 0 ? num_bits / 8 : -1;
   }
 
-  /// \brief Returns the type's fixed bit width, if any. Returns -1
+  /// Returns the type's fixed bit width, if any. Returns -1
   /// for non-fixed-width types, and should only be used for
   /// subclasses of FixedWidthType
   virtual int bit_width() const { return -1; }
@@ -217,7 +219,7 @@ class ARROW_EXPORT DataType : public std::enable_shared_from_this<DataType>,
   ARROW_DISALLOW_COPY_AND_ASSIGN(DataType);
 };
 
-/// \brief EXPERIMENTAL: Container for a type pointer which can hold a
+/// EXPERIMENTAL: Container for a type pointer which can hold a
 /// dynamically created shared_ptr<DataType> if it needs to.
 struct ARROW_EXPORT TypeHolder {
   const DataType* type = NULLPTR;
@@ -282,7 +284,7 @@ std::ostream& operator<<(std::ostream& os, const DataType& type);
 ARROW_EXPORT
 std::ostream& operator<<(std::ostream& os, const TypeHolder& type);
 
-/// \brief Return the compatible physical data type
+/// Return the compatible physical data type
 ///
 /// Some types may have distinct logical meanings but the exact same physical
 /// representation.  For example, TimestampType has Int64Type as a physical
@@ -294,7 +296,7 @@ std::ostream& operator<<(std::ostream& os, const TypeHolder& type);
 /// - otherwise, return the input type itself.
 std::shared_ptr<DataType> GetPhysicalType(const std::shared_ptr<DataType>& type);
 
-/// \brief Base class for all fixed-width data types
+/// Base class for all fixed-width data types
 class ARROW_EXPORT FixedWidthType : public DataType {
  public:
   using DataType::DataType;
@@ -303,7 +305,7 @@ class ARROW_EXPORT FixedWidthType : public DataType {
   ~FixedWidthType() override;
 };
 
-/// \brief Base class for all data types representing primitive values
+/// Base class for all data types representing primitive values
 class ARROW_EXPORT PrimitiveCType : public FixedWidthType {
  public:
   using FixedWidthType::FixedWidthType;
@@ -312,7 +314,7 @@ class ARROW_EXPORT PrimitiveCType : public FixedWidthType {
   ~PrimitiveCType() override;
 };
 
-/// \brief Base class for all numeric data types
+/// Base class for all numeric data types
 class ARROW_EXPORT NumberType : public PrimitiveCType {
  public:
   using PrimitiveCType::PrimitiveCType;
@@ -321,7 +323,7 @@ class ARROW_EXPORT NumberType : public PrimitiveCType {
   ~NumberType() override;
 };
 
-/// \brief Base class for all integral data types
+/// Base class for all integral data types
 class ARROW_EXPORT IntegerType : public NumberType {
  public:
   using NumberType::NumberType;
@@ -331,7 +333,7 @@ class ARROW_EXPORT IntegerType : public NumberType {
   virtual bool is_signed() const = 0;
 };
 
-/// \brief Base class for all floating-point data types
+/// Base class for all floating-point data types
 class ARROW_EXPORT FloatingPointType : public NumberType {
  public:
   using NumberType::NumberType;
@@ -342,7 +344,7 @@ class ARROW_EXPORT FloatingPointType : public NumberType {
   virtual Precision precision() const = 0;
 };
 
-/// \brief Base class for all parametric data types
+/// Base class for all parametric data types
 class ParametricType {};
 
 class ARROW_EXPORT NestedType : public DataType, public ParametricType {
@@ -353,7 +355,7 @@ class ARROW_EXPORT NestedType : public DataType, public ParametricType {
   ~NestedType() override;
 };
 
-/// \brief The combination of a field name and data type, with optional metadata
+/// The combination of a field name and data type, with optional metadata
 ///
 /// Fields are used to describe the individual constituents of a
 /// nested DataType or a Schema.
@@ -373,35 +375,35 @@ class ARROW_EXPORT Field : public detail::Fingerprintable,
 
   ~Field() override;
 
-  /// \brief Return the field's attached metadata
+  /// Return the field's attached metadata
   std::shared_ptr<const KeyValueMetadata> metadata() const { return metadata_; }
 
-  /// \brief Return whether the field has non-empty metadata
+  /// Return whether the field has non-empty metadata
   bool HasMetadata() const;
 
-  /// \brief Return a copy of this field with the given metadata attached to it
+  /// Return a copy of this field with the given metadata attached to it
   std::shared_ptr<Field> WithMetadata(
       const std::shared_ptr<const KeyValueMetadata>& metadata) const;
 
-  /// \brief EXPERIMENTAL: Return a copy of this field with the given metadata
+  /// EXPERIMENTAL: Return a copy of this field with the given metadata
   /// merged with existing metadata (any colliding keys will be overridden by
   /// the passed metadata)
   std::shared_ptr<Field> WithMergedMetadata(
       const std::shared_ptr<const KeyValueMetadata>& metadata) const;
 
-  /// \brief Return a copy of this field without any metadata attached to it
+  /// Return a copy of this field without any metadata attached to it
   std::shared_ptr<Field> RemoveMetadata() const;
 
-  /// \brief Return a copy of this field with the replaced type.
+  /// Return a copy of this field with the replaced type.
   std::shared_ptr<Field> WithType(const std::shared_ptr<DataType>& type) const;
 
-  /// \brief Return a copy of this field with the replaced name.
+  /// Return a copy of this field with the replaced name.
   std::shared_ptr<Field> WithName(const std::string& name) const;
 
-  /// \brief Return a copy of this field with the replaced nullability.
+  /// Return a copy of this field with the replaced nullability.
   std::shared_ptr<Field> WithNullable(bool nullable) const;
 
-  /// \brief Options that control the behavior of `MergeWith`.
+  /// Options that control the behavior of `MergeWith`.
   /// Options are to be added to allow type conversions, including integer
   /// widening, promotion from integer to float, or conversion to or from boolean.
   struct ARROW_EXPORT MergeOptions : public util::ToStringOstreamable<MergeOptions> {
@@ -476,7 +478,7 @@ class ARROW_EXPORT Field : public detail::Fingerprintable,
     std::string ToString() const;
   };
 
-  /// \brief Merge the current field with a field of the same name.
+  /// Merge the current field with a field of the same name.
   ///
   /// The two fields must be compatible, i.e:
   ///   - have the same name
@@ -492,34 +494,34 @@ class ARROW_EXPORT Field : public detail::Fingerprintable,
 
   FieldVector Flatten() const;
 
-  /// \brief Indicate if fields are equals.
+  /// Indicate if fields are equals.
   ///
-  /// \param[in] other field to check equality with.
-  /// \param[in] check_metadata controls if it should check for metadata
+  /// :param other: field to check equality with.
+  /// :param check_metadata: controls if it should check for metadata
   ///            equality.
   ///
-  /// \return true if fields are equal, false otherwise.
+  /// :return: true if fields are equal, false otherwise.
   bool Equals(const Field& other, bool check_metadata = false) const;
   bool Equals(const std::shared_ptr<Field>& other, bool check_metadata = false) const;
 
-  /// \brief Indicate if fields are compatibles.
+  /// Indicate if fields are compatibles.
   ///
   /// See the criteria of MergeWith.
   ///
-  /// \return true if fields are compatible, false otherwise.
+  /// :return: true if fields are compatible, false otherwise.
   bool IsCompatibleWith(const Field& other) const;
   bool IsCompatibleWith(const std::shared_ptr<Field>& other) const;
 
-  /// \brief Return a string representation ot the field
-  /// \param[in] show_metadata when true, if KeyValueMetadata is non-empty,
+  /// Return a string representation ot the field
+  /// :param show_metadata: when true, if KeyValueMetadata is non-empty,
   /// print keys and values in the output
   std::string ToString(bool show_metadata = false) const;
 
-  /// \brief Return the field name
+  /// Return the field name
   const std::string& name() const { return name_; }
-  /// \brief Return the field data type
+  /// Return the field data type
   const std::shared_ptr<DataType>& type() const { return type_; }
-  /// \brief Return whether the field is nullable
+  /// Return whether the field is nullable
   bool nullable() const { return nullable_; }
 
   std::shared_ptr<Field> Copy() const;
@@ -736,7 +738,7 @@ class ARROW_EXPORT DoubleType
 
 /// @}
 
-/// \brief Base class for all variable-size binary data types
+/// Base class for all variable-size binary data types
 class ARROW_EXPORT BaseBinaryType : public DataType {
  public:
   using DataType::DataType;
@@ -751,7 +753,7 @@ constexpr int64_t kBinaryMemoryLimit = std::numeric_limits<int32_t>::max() - 1;
 ///
 /// @{
 
-/// \brief Concrete type class for variable-size binary data
+/// Concrete type class for variable-size binary data
 class ARROW_EXPORT BinaryType : public BaseBinaryType {
  public:
   static constexpr Type::type type_id = Type::BINARY;
@@ -779,7 +781,7 @@ class ARROW_EXPORT BinaryType : public BaseBinaryType {
   explicit BinaryType(Type::type logical_type) : BaseBinaryType(logical_type) {}
 };
 
-/// \brief Concrete type class for variable-size binary view data
+/// Concrete type class for variable-size binary view data
 class ARROW_EXPORT BinaryViewType : public DataType {
  public:
   static constexpr Type::type type_id = Type::BINARY_VIEW;
@@ -876,7 +878,7 @@ class ARROW_EXPORT BinaryViewType : public DataType {
   explicit BinaryViewType(Type::type logical_type) : DataType(logical_type) {}
 };
 
-/// \brief Concrete type class for large variable-size binary data
+/// Concrete type class for large variable-size binary data
 class ARROW_EXPORT LargeBinaryType : public BaseBinaryType {
  public:
   static constexpr Type::type type_id = Type::LARGE_BINARY;
@@ -904,7 +906,7 @@ class ARROW_EXPORT LargeBinaryType : public BaseBinaryType {
   explicit LargeBinaryType(Type::type logical_type) : BaseBinaryType(logical_type) {}
 };
 
-/// \brief Concrete type class for variable-size string data, utf8-encoded
+/// Concrete type class for variable-size string data, utf8-encoded
 class ARROW_EXPORT StringType : public BinaryType {
  public:
   static constexpr Type::type type_id = Type::STRING;
@@ -922,7 +924,7 @@ class ARROW_EXPORT StringType : public BinaryType {
   std::string ComputeFingerprint() const override;
 };
 
-/// \brief Concrete type class for variable-size string data, utf8-encoded
+/// Concrete type class for variable-size string data, utf8-encoded
 class ARROW_EXPORT StringViewType : public BinaryViewType {
  public:
   static constexpr Type::type type_id = Type::STRING_VIEW;
@@ -940,7 +942,7 @@ class ARROW_EXPORT StringViewType : public BinaryViewType {
   std::string ComputeFingerprint() const override;
 };
 
-/// \brief Concrete type class for large variable-size string data, utf8-encoded
+/// Concrete type class for large variable-size string data, utf8-encoded
 class ARROW_EXPORT LargeStringType : public LargeBinaryType {
  public:
   static constexpr Type::type type_id = Type::LARGE_STRING;
@@ -958,7 +960,7 @@ class ARROW_EXPORT LargeStringType : public LargeBinaryType {
   std::string ComputeFingerprint() const override;
 };
 
-/// \brief Concrete type class for fixed-size binary data
+/// Concrete type class for fixed-size binary data
 class ARROW_EXPORT FixedSizeBinaryType : public FixedWidthType, public ParametricType {
  public:
   static constexpr Type::type type_id = Type::FIXED_SIZE_BINARY;
@@ -998,7 +1000,7 @@ class ARROW_EXPORT FixedSizeBinaryType : public FixedWidthType, public Parametri
 ///
 /// @{
 
-/// \brief Base type class for (fixed-size) decimal data
+/// Base type class for (fixed-size) decimal data
 class ARROW_EXPORT DecimalType : public FixedSizeBinaryType {
  public:
   explicit DecimalType(Type::type type_id, int32_t byte_width, int32_t precision,
@@ -1012,7 +1014,7 @@ class ARROW_EXPORT DecimalType : public FixedSizeBinaryType {
   int32_t precision() const { return precision_; }
   int32_t scale() const { return scale_; }
 
-  /// \brief Returns the number of bytes needed for precision.
+  /// Returns the number of bytes needed for precision.
   ///
   /// precision must be >= 1
   static int32_t DecimalSize(int32_t precision);
@@ -1024,7 +1026,7 @@ class ARROW_EXPORT DecimalType : public FixedSizeBinaryType {
   int32_t scale_;
 };
 
-/// \brief Concrete type class for 32-bit decimal data
+/// Concrete type class for 32-bit decimal data
 ///
 /// Arrow decimals are fixed-point decimal numbers encoded as a scaled
 /// integer.  The precision is the number of significant digits that the
@@ -1059,7 +1061,7 @@ class ARROW_EXPORT Decimal32Type : public DecimalType {
   static constexpr int32_t kByteWidth = 4;
 };
 
-/// \brief Concrete type class for 64-bit decimal data
+/// Concrete type class for 64-bit decimal data
 ///
 /// Arrow decimals are fixed-point decimal numbers encoded as a scaled
 /// integer.  The precision is the number of significant digits that the
@@ -1094,7 +1096,7 @@ class ARROW_EXPORT Decimal64Type : public DecimalType {
   static constexpr int32_t kByteWidth = 8;
 };
 
-/// \brief Concrete type class for 128-bit decimal data
+/// Concrete type class for 128-bit decimal data
 ///
 /// Arrow decimals are fixed-point decimal numbers encoded as a scaled
 /// integer.  The precision is the number of significant digits that the
@@ -1128,7 +1130,7 @@ class ARROW_EXPORT Decimal128Type : public DecimalType {
   static constexpr int32_t kByteWidth = 16;
 };
 
-/// \brief Concrete type class for 256-bit decimal data
+/// Concrete type class for 256-bit decimal data
 ///
 /// Arrow decimals are fixed-point decimal numbers encoded as a scaled
 /// integer.  The precision is the number of significant digits that the
@@ -1167,7 +1169,7 @@ class ARROW_EXPORT Decimal256Type : public DecimalType {
 ///
 /// @{
 
-/// \brief Base class for all variable-size list data types
+/// Base class for all variable-size list data types
 class ARROW_EXPORT BaseListType : public NestedType {
  public:
   using NestedType::NestedType;
@@ -1179,7 +1181,7 @@ class ARROW_EXPORT BaseListType : public NestedType {
   const std::shared_ptr<DataType>& value_type() const { return children_[0]->type(); }
 };
 
-/// \brief Concrete type class for list data
+/// Concrete type class for list data
 ///
 /// List data is nested data where each value is a variable number of
 /// child items.  Lists can be recursively nested, for example
@@ -1212,7 +1214,7 @@ class ARROW_EXPORT ListType : public BaseListType {
   std::string ComputeFingerprint() const override;
 };
 
-/// \brief Concrete type class for large list data
+/// Concrete type class for large list data
 ///
 /// LargeListType is like ListType but with 64-bit rather than 32-bit offsets.
 class ARROW_EXPORT LargeListType : public BaseListType {
@@ -1243,7 +1245,7 @@ class ARROW_EXPORT LargeListType : public BaseListType {
   std::string ComputeFingerprint() const override;
 };
 
-/// \brief Type class for array of list views
+/// Type class for array of list views
 class ARROW_EXPORT ListViewType : public BaseListType {
  public:
   static constexpr Type::type type_id = Type::LIST_VIEW;
@@ -1274,7 +1276,7 @@ class ARROW_EXPORT ListViewType : public BaseListType {
   std::string ComputeFingerprint() const override;
 };
 
-/// \brief Concrete type class for large list-view data
+/// Concrete type class for large list-view data
 ///
 /// LargeListViewType is like ListViewType but with 64-bit rather than 32-bit offsets and
 /// sizes.
@@ -1308,7 +1310,7 @@ class ARROW_EXPORT LargeListViewType : public BaseListType {
   std::string ComputeFingerprint() const override;
 };
 
-/// \brief Concrete type class for map data
+/// Concrete type class for map data
 ///
 /// Map data is nested data where each value is a variable number of
 /// key-item pairs.  Its physical representation is the same as
@@ -1354,7 +1356,7 @@ class ARROW_EXPORT MapType : public ListType {
   bool keys_sorted_;
 };
 
-/// \brief Concrete type class for fixed size list data
+/// Concrete type class for fixed size list data
 class ARROW_EXPORT FixedSizeListType : public BaseListType {
  public:
   static constexpr Type::type type_id = Type::FIXED_SIZE_LIST;
@@ -1390,7 +1392,7 @@ class ARROW_EXPORT FixedSizeListType : public BaseListType {
   int32_t list_size_;
 };
 
-/// \brief Concrete type class for struct data
+/// Concrete type class for struct data
 class ARROW_EXPORT StructType : public NestedType {
  public:
   static constexpr Type::type type_id = Type::STRUCT;
@@ -1418,15 +1420,15 @@ class ARROW_EXPORT StructType : public NestedType {
   /// same name
   int GetFieldIndex(const std::string& name) const;
 
-  /// \brief Return the indices of all fields having this name in sorted order
+  /// Return the indices of all fields having this name in sorted order
   std::vector<int> GetAllFieldIndices(const std::string& name) const;
 
-  /// \brief Create a new StructType with field added at given index
+  /// Create a new StructType with field added at given index
   Result<std::shared_ptr<StructType>> AddField(int i,
                                                const std::shared_ptr<Field>& field) const;
-  /// \brief Create a new StructType by removing the field at given index
+  /// Create a new StructType by removing the field at given index
   Result<std::shared_ptr<StructType>> RemoveField(int i) const;
-  /// \brief Create a new StructType by changing the field at given index
+  /// Create a new StructType by changing the field at given index
   Result<std::shared_ptr<StructType>> SetField(int i,
                                                const std::shared_ptr<Field>& field) const;
 
@@ -1437,7 +1439,7 @@ class ARROW_EXPORT StructType : public NestedType {
   std::unique_ptr<Impl> impl_;
 };
 
-/// \brief Base type class for union data
+/// Base type class for union data
 class ARROW_EXPORT UnionType : public NestedType {
  public:
   static constexpr int8_t kMaxTypeCode = 127;
@@ -1484,7 +1486,7 @@ class ARROW_EXPORT UnionType : public NestedType {
   std::vector<int> child_ids_;
 };
 
-/// \brief Concrete type class for sparse union data
+/// Concrete type class for sparse union data
 ///
 /// A sparse union is a nested type where each logical value is taken from
 /// a single child.  A buffer of 8-bit type ids indicates which child
@@ -1510,7 +1512,7 @@ class ARROW_EXPORT SparseUnionType : public UnionType {
   std::string name() const override { return "sparse_union"; }
 };
 
-/// \brief Concrete type class for dense union data
+/// Concrete type class for dense union data
 ///
 /// A dense union is a nested type where each logical value is taken from
 /// a single child, at a specific offset.  A buffer of 8-bit type ids
@@ -1539,7 +1541,7 @@ class ARROW_EXPORT DenseUnionType : public UnionType {
   std::string name() const override { return "dense_union"; }
 };
 
-/// \brief Type class for run-end encoded data
+/// Type class for run-end encoded data
 class ARROW_EXPORT RunEndEncodedType : public NestedType {
  public:
   static constexpr Type::type type_id = Type::RUN_END_ENCODED;
@@ -1577,7 +1579,7 @@ class ARROW_EXPORT RunEndEncodedType : public NestedType {
 ///
 /// @{
 
-/// \brief Base type for all date and time types
+/// Base type for all date and time types
 class ARROW_EXPORT TemporalType : public FixedWidthType {
  public:
   using FixedWidthType::FixedWidthType;
@@ -1591,7 +1593,7 @@ class ARROW_EXPORT TemporalType : public FixedWidthType {
   }
 };
 
-/// \brief Base type class for date data
+/// Base type class for date data
 class ARROW_EXPORT DateType : public TemporalType {
  public:
   virtual DateUnit unit() const = 0;
@@ -1699,7 +1701,7 @@ class ARROW_EXPORT Time64Type : public TimeType {
   std::string name() const override { return "time64"; }
 };
 
-/// \brief Concrete type class for datetime data (as number of seconds, milliseconds,
+/// Concrete type class for datetime data (as number of seconds, milliseconds,
 /// microseconds or nanoseconds since UNIX epoch)
 ///
 /// If supplied, the timezone string should take either the form (i) "Area/Location",
@@ -1775,7 +1777,7 @@ class ARROW_EXPORT IntervalType : public TemporalType, public ParametricType {
   std::string ComputeFingerprint() const override;
 };
 
-/// \brief Represents a number of months.
+/// Represents a number of months.
 ///
 /// Type representing a number of months.  Corresponds to YearMonth type
 /// in Schema.fbs (years are defined as 12 months).
@@ -1799,7 +1801,7 @@ class ARROW_EXPORT MonthIntervalType : public IntervalType {
   std::string name() const override { return "month_interval"; }
 };
 
-/// \brief Represents a number of days and milliseconds (fraction of day).
+/// Represents a number of days and milliseconds (fraction of day).
 class ARROW_EXPORT DayTimeIntervalType : public IntervalType {
  public:
   struct DayMilliseconds {
@@ -1840,7 +1842,7 @@ class ARROW_EXPORT DayTimeIntervalType : public IntervalType {
 ARROW_EXPORT
 std::ostream& operator<<(std::ostream& os, DayTimeIntervalType::DayMilliseconds interval);
 
-/// \brief Represents a number of months, days and nanoseconds between
+/// Represents a number of months, days and nanoseconds between
 /// two dates.
 ///
 /// All fields are independent from one another.
@@ -1883,7 +1885,7 @@ ARROW_EXPORT
 std::ostream& operator<<(std::ostream& os,
                          MonthDayNanoIntervalType::MonthDayNanos interval);
 
-/// \brief Represents an elapsed time without any relation to a calendar artifact.
+/// Represents an elapsed time without any relation to a calendar artifact.
 class ARROW_EXPORT DurationType : public TemporalType, public ParametricType {
  public:
   using Unit = TimeUnit;
@@ -1917,7 +1919,7 @@ class ARROW_EXPORT DurationType : public TemporalType, public ParametricType {
 // Dictionary type (for representing categorical or dictionary-encoded
 // in memory)
 
-/// \brief Dictionary-encoded value type with data-dependent
+/// Dictionary-encoded value type with data-dependent
 /// dictionary. Indices are represented by any integer types.
 class ARROW_EXPORT DictionaryType : public FixedWidthType {
  public:
@@ -1960,7 +1962,6 @@ class ARROW_EXPORT DictionaryType : public FixedWidthType {
 // ----------------------------------------------------------------------
 // FieldRef
 
-/// \class FieldPath
 ///
 /// Represents a path to a nested field using indices of child fields.
 /// For example, given indices {5, 9, 3} the field would be retrieved with
@@ -2001,7 +2002,7 @@ class ARROW_EXPORT FieldPath {
   std::vector<int>::const_iterator begin() const { return indices_.begin(); }
   std::vector<int>::const_iterator end() const { return indices_.end(); }
 
-  /// \brief Retrieve the referenced child Field from a Schema, Field, or DataType
+  /// Retrieve the referenced child Field from a Schema, Field, or DataType
   Result<std::shared_ptr<Field>> Get(const Schema& schema) const;
   Result<std::shared_ptr<Field>> Get(const Field& field) const;
   Result<std::shared_ptr<Field>> Get(const DataType& type) const;
@@ -2010,18 +2011,18 @@ class ARROW_EXPORT FieldPath {
   static Result<std::shared_ptr<Schema>> GetAll(const Schema& schema,
                                                 const std::vector<FieldPath>& paths);
 
-  /// \brief Retrieve the referenced column from a RecordBatch or Table
+  /// Retrieve the referenced column from a RecordBatch or Table
   Result<std::shared_ptr<Array>> Get(const RecordBatch& batch) const;
   Result<std::shared_ptr<ChunkedArray>> Get(const Table& table) const;
 
-  /// \brief Retrieve the referenced child from an Array or ArrayData
+  /// Retrieve the referenced child from an Array or ArrayData
   Result<std::shared_ptr<Array>> Get(const Array& array) const;
   Result<std::shared_ptr<ArrayData>> Get(const ArrayData& data) const;
 
-  /// \brief Retrieve the referenced child from a ChunkedArray
+  /// Retrieve the referenced child from a ChunkedArray
   Result<std::shared_ptr<ChunkedArray>> Get(const ChunkedArray& chunked_array) const;
 
-  /// \brief Retrieve the referenced child/column from an Array, ArrayData, ChunkedArray,
+  /// Retrieve the referenced child/column from an Array, ArrayData, ChunkedArray,
   /// RecordBatch, or Table
   ///
   /// Unlike `FieldPath::Get`, these variants are not zero-copy and the retrieved child's
@@ -2041,8 +2042,7 @@ class ARROW_EXPORT FieldPath {
   std::vector<int> indices_;
 };
 
-/// \class FieldRef
-/// \brief Descriptor of a (potentially nested) field within a schema.
+/// Descriptor of a (potentially nested) field within a schema.
 ///
 /// Unlike FieldPath (which exclusively uses indices of child fields), FieldRef may
 /// reference a field by name. It is intended to replace parameters like `int field_index`
@@ -2145,7 +2145,7 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
     return true;
   }
 
-  /// \brief Return true if this ref is a name or a nested sequence of only names
+  /// Return true if this ref is a name or a nested sequence of only names
   ///
   /// Useful for determining if iteration is possible without recursion or inner loops
   bool IsNameSequence() const {
@@ -2171,20 +2171,20 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
                : NULLPTR;
   }
 
-  /// \brief Retrieve FieldPath of every child field which matches this FieldRef.
+  /// Retrieve FieldPath of every child field which matches this FieldRef.
   std::vector<FieldPath> FindAll(const Schema& schema) const;
   std::vector<FieldPath> FindAll(const Field& field) const;
   std::vector<FieldPath> FindAll(const DataType& type) const;
   std::vector<FieldPath> FindAll(const FieldVector& fields) const;
 
-  /// \brief Convenience function which applies FindAll to arg's type or schema.
+  /// Convenience function which applies FindAll to arg's type or schema.
   std::vector<FieldPath> FindAll(const ArrayData& array) const;
   std::vector<FieldPath> FindAll(const Array& array) const;
   std::vector<FieldPath> FindAll(const ChunkedArray& chunked_array) const;
   std::vector<FieldPath> FindAll(const RecordBatch& batch) const;
   std::vector<FieldPath> FindAll(const Table& table) const;
 
-  /// \brief Convenience function: raise an error if matches is empty.
+  /// Convenience function: raise an error if matches is empty.
   template <typename T>
   Status CheckNonEmpty(const std::vector<FieldPath>& matches, const T& root) const {
     if (matches.empty()) {
@@ -2193,7 +2193,7 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
     return Status::OK();
   }
 
-  /// \brief Convenience function: raise an error if matches contains multiple FieldPaths.
+  /// Convenience function: raise an error if matches contains multiple FieldPaths.
   template <typename T>
   Status CheckNonMultiple(const std::vector<FieldPath>& matches, const T& root) const {
     if (matches.size() > 1) {
@@ -2203,7 +2203,7 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
     return Status::OK();
   }
 
-  /// \brief Retrieve FieldPath of a single child field which matches this
+  /// Retrieve FieldPath of a single child field which matches this
   /// FieldRef. Emit an error if none or multiple match.
   template <typename T>
   Result<FieldPath> FindOne(const T& root) const {
@@ -2213,7 +2213,7 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
     return std::move(matches[0]);
   }
 
-  /// \brief Retrieve FieldPath of a single child field which matches this
+  /// Retrieve FieldPath of a single child field which matches this
   /// FieldRef. Emit an error if multiple match. An empty (invalid) FieldPath
   /// will be returned if none match.
   template <typename T>
@@ -2229,7 +2229,7 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
   template <typename T>
   using GetType = decltype(std::declval<FieldPath>().Get(std::declval<T>()).ValueOrDie());
 
-  /// \brief Get all children matching this FieldRef.
+  /// Get all children matching this FieldRef.
   template <typename T>
   std::vector<GetType<T>> GetAll(const T& root) const {
     std::vector<GetType<T>> out;
@@ -2238,7 +2238,7 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
     }
     return out;
   }
-  /// \brief Get all children matching this FieldRef.
+  /// Get all children matching this FieldRef.
   ///
   /// Unlike `FieldRef::GetAll`, this variant is not zero-copy and the retrieved
   /// children's null bitmaps are ANDed with their ancestors'
@@ -2253,14 +2253,14 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
     return out;
   }
 
-  /// \brief Get the single child matching this FieldRef.
+  /// Get the single child matching this FieldRef.
   /// Emit an error if none or multiple match.
   template <typename T>
   Result<GetType<T>> GetOne(const T& root) const {
     ARROW_ASSIGN_OR_RAISE(auto match, FindOne(root));
     return match.Get(root).ValueOrDie();
   }
-  /// \brief Get the single child matching this FieldRef.
+  /// Get the single child matching this FieldRef.
   ///
   /// Unlike `FieldRef::GetOne`, this variant is not zero-copy and the retrieved
   /// child's null bitmap is ANDed with its ancestors'
@@ -2270,7 +2270,7 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
     return match.GetFlattened(root, pool);
   }
 
-  /// \brief Get the single child matching this FieldRef.
+  /// Get the single child matching this FieldRef.
   /// Return nullptr if none match, emit an error if multiple match.
   template <typename T>
   Result<GetType<T>> GetOneOrNone(const T& root) const {
@@ -2280,7 +2280,7 @@ class ARROW_EXPORT FieldRef : public util::EqualityComparable<FieldRef> {
     }
     return match.Get(root).ValueOrDie();
   }
-  /// \brief Get the single child matching this FieldRef.
+  /// Get the single child matching this FieldRef.
   ///
   /// Return nullptr if none match, emit an error if multiple match.
   /// Unlike `FieldRef::GetOneOrNone`, this variant is not zero-copy and the
@@ -2319,8 +2319,7 @@ enum class Endianness {
 #endif
 };
 
-/// \class Schema
-/// \brief Sequence of arrow::Field objects describing the columns of a record
+/// Sequence of arrow::Field objects describing the columns of a record
 /// batch or table data structure
 class ARROW_EXPORT Schema : public detail::Fingerprintable,
                             public util::EqualityComparable<Schema>,
@@ -2340,18 +2339,18 @@ class ARROW_EXPORT Schema : public detail::Fingerprintable,
   bool Equals(const Schema& other, bool check_metadata = false) const;
   bool Equals(const std::shared_ptr<Schema>& other, bool check_metadata = false) const;
 
-  /// \brief Set endianness in the schema
+  /// Set endianness in the schema
   ///
-  /// \return new Schema
+  /// :return: new Schema
   std::shared_ptr<Schema> WithEndianness(Endianness endianness) const;
 
-  /// \brief Return endianness in the schema
+  /// Return endianness in the schema
   Endianness endianness() const;
 
-  /// \brief Indicate if endianness is equal to platform-native endianness
+  /// Indicate if endianness is equal to platform-native endianness
   bool is_native_endian() const;
 
-  /// \brief Return the number of fields (columns) in the schema
+  /// Return the number of fields (columns) in the schema
   int num_fields() const;
 
   /// Return the ith schema element. Does not boundscheck
@@ -2364,7 +2363,7 @@ class ARROW_EXPORT Schema : public detail::Fingerprintable,
   /// Returns null if name not found
   std::shared_ptr<Field> GetFieldByName(const std::string& name) const;
 
-  /// \brief Return the indices of all fields having this name in sorted order
+  /// Return the indices of all fields having this name in sorted order
   FieldVector GetAllFieldsByName(const std::string& name) const;
 
   /// Returns -1 if name not found
@@ -2379,13 +2378,13 @@ class ARROW_EXPORT Schema : public detail::Fingerprintable,
   /// Indicate if fields named `names` can be found unambiguously in the schema.
   Status CanReferenceFieldsByNames(const std::vector<std::string>& names) const;
 
-  /// \brief The custom key-value metadata, if any
+  /// The custom key-value metadata, if any
   ///
-  /// \return metadata may be null
+  /// :return: metadata may be null
   const std::shared_ptr<const KeyValueMetadata>& metadata() const;
 
-  /// \brief Render a string representation of the schema suitable for debugging
-  /// \param[in] show_metadata when true, if KeyValueMetadata is non-empty,
+  /// Render a string representation of the schema suitable for debugging
+  /// :param show_metadata: when true, if KeyValueMetadata is non-empty,
   /// print keys and values in the output
   std::string ToString(bool show_metadata = false) const;
 
@@ -2395,26 +2394,26 @@ class ARROW_EXPORT Schema : public detail::Fingerprintable,
   Result<std::shared_ptr<Schema>> SetField(int i,
                                            const std::shared_ptr<Field>& field) const;
 
-  /// \brief Replace field names with new names
+  /// Replace field names with new names
   ///
-  /// \param[in] names new names
-  /// \return new Schema
+  /// :param names: new names
+  /// :return: new Schema
   Result<std::shared_ptr<Schema>> WithNames(const std::vector<std::string>& names) const;
 
-  /// \brief Replace key-value metadata with new metadata
+  /// Replace key-value metadata with new metadata
   ///
-  /// \param[in] metadata new KeyValueMetadata
-  /// \return new Schema
+  /// :param metadata: new KeyValueMetadata
+  /// :return: new Schema
   std::shared_ptr<Schema> WithMetadata(
       const std::shared_ptr<const KeyValueMetadata>& metadata) const;
 
-  /// \brief Return copy of Schema without the KeyValueMetadata
+  /// Return copy of Schema without the KeyValueMetadata
   std::shared_ptr<Schema> RemoveMetadata() const;
 
-  /// \brief Indicate that the Schema has non-empty KevValueMetadata
+  /// Indicate that the Schema has non-empty KevValueMetadata
   bool HasMetadata() const;
 
-  /// \brief Indicate that the Schema has distinct field names.
+  /// Indicate that the Schema has distinct field names.
   bool HasDistinctFieldNames() const;
 
  protected:
@@ -2433,7 +2432,7 @@ std::string EndiannessToString(Endianness endianness);
 
 // ----------------------------------------------------------------------
 
-/// \brief Convenience class to incrementally construct/merge schemas.
+/// Convenience class to incrementally construct/merge schemas.
 ///
 /// This class amortizes the cost of validating field name conflicts by
 /// maintaining the mapping. The caller also controls the conflict resolution
@@ -2458,73 +2457,73 @@ class ARROW_EXPORT SchemaBuilder {
     CONFLICT_ERROR
   };
 
-  /// \brief Construct an empty SchemaBuilder
+  /// Construct an empty SchemaBuilder
   /// `field_merge_options` is only effective when `conflict_policy` == `CONFLICT_MERGE`.
   SchemaBuilder(
       ConflictPolicy conflict_policy = CONFLICT_APPEND,
       Field::MergeOptions field_merge_options = Field::MergeOptions::Defaults());
-  /// \brief Construct a SchemaBuilder from a list of fields
+  /// Construct a SchemaBuilder from a list of fields
   /// `field_merge_options` is only effective when `conflict_policy` == `CONFLICT_MERGE`.
   SchemaBuilder(
       FieldVector fields, ConflictPolicy conflict_policy = CONFLICT_APPEND,
       Field::MergeOptions field_merge_options = Field::MergeOptions::Defaults());
-  /// \brief Construct a SchemaBuilder from a schema, preserving the metadata
+  /// Construct a SchemaBuilder from a schema, preserving the metadata
   /// `field_merge_options` is only effective when `conflict_policy` == `CONFLICT_MERGE`.
   SchemaBuilder(
       const std::shared_ptr<Schema>& schema,
       ConflictPolicy conflict_policy = CONFLICT_APPEND,
       Field::MergeOptions field_merge_options = Field::MergeOptions::Defaults());
 
-  /// \brief Return the conflict resolution method.
+  /// Return the conflict resolution method.
   ConflictPolicy policy() const;
 
-  /// \brief Set the conflict resolution method.
+  /// Set the conflict resolution method.
   void SetPolicy(ConflictPolicy resolution);
 
-  /// \brief Add a field to the constructed schema.
+  /// Add a field to the constructed schema.
   ///
-  /// \param[in] field to add to the constructed Schema.
-  /// \return A failure if encountered.
+  /// :param field: to add to the constructed Schema.
+  /// :return: A failure if encountered.
   Status AddField(const std::shared_ptr<Field>& field);
 
-  /// \brief Add multiple fields to the constructed schema.
+  /// Add multiple fields to the constructed schema.
   ///
-  /// \param[in] fields to add to the constructed Schema.
-  /// \return The first failure encountered, if any.
+  /// :param fields: to add to the constructed Schema.
+  /// :return: The first failure encountered, if any.
   Status AddFields(const FieldVector& fields);
 
-  /// \brief Add fields of a Schema to the constructed Schema.
+  /// Add fields of a Schema to the constructed Schema.
   ///
-  /// \param[in] schema to take fields to add to the constructed Schema.
-  /// \return The first failure encountered, if any.
+  /// :param schema: to take fields to add to the constructed Schema.
+  /// :return: The first failure encountered, if any.
   Status AddSchema(const std::shared_ptr<Schema>& schema);
 
-  /// \brief Add fields of multiple Schemas to the constructed Schema.
+  /// Add fields of multiple Schemas to the constructed Schema.
   ///
-  /// \param[in] schemas to take fields to add to the constructed Schema.
-  /// \return The first failure encountered, if any.
+  /// :param schemas: to take fields to add to the constructed Schema.
+  /// :return: The first failure encountered, if any.
   Status AddSchemas(const std::vector<std::shared_ptr<Schema>>& schemas);
 
   Status AddMetadata(const KeyValueMetadata& metadata);
 
-  /// \brief Return the constructed Schema.
+  /// Return the constructed Schema.
   ///
   /// The builder internal state is not affected by invoking this method, i.e.
   /// a single builder can yield multiple incrementally constructed schemas.
   ///
-  /// \return the constructed schema.
+  /// :return: the constructed schema.
   Result<std::shared_ptr<Schema>> Finish() const;
 
-  /// \brief Merge schemas in a unified schema according to policy.
+  /// Merge schemas in a unified schema according to policy.
   static Result<std::shared_ptr<Schema>> Merge(
       const std::vector<std::shared_ptr<Schema>>& schemas,
       ConflictPolicy policy = CONFLICT_MERGE);
 
-  /// \brief Indicate if schemas are compatible to merge according to policy.
+  /// Indicate if schemas are compatible to merge according to policy.
   static Status AreCompatible(const std::vector<std::shared_ptr<Schema>>& schemas,
                               ConflictPolicy policy = CONFLICT_MERGE);
 
-  /// \brief Reset internal state with an empty schema (and metadata).
+  /// Reset internal state with an empty schema (and metadata).
   void Reset();
 
   ~SchemaBuilder();
@@ -2536,7 +2535,7 @@ class ARROW_EXPORT SchemaBuilder {
   Status AppendField(const std::shared_ptr<Field>& field);
 };
 
-/// \brief Unifies schemas by merging fields by name.
+/// Unifies schemas by merging fields by name.
 ///
 /// The behavior of field merging can be controlled via `Field::MergeOptions`.
 ///
@@ -2586,43 +2585,43 @@ std::string ToString(TimeUnit::type unit);
 
 // Helpers to get instances of data types based on general categories
 
-/// \brief Signed integer types
+/// Signed integer types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& SignedIntTypes();
-/// \brief Unsigned integer types
+/// Unsigned integer types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& UnsignedIntTypes();
-/// \brief Signed and unsigned integer types
+/// Signed and unsigned integer types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& IntTypes();
-/// \brief Floating point types
+/// Floating point types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& FloatingPointTypes();
-/// \brief Number types without boolean - integer and floating point types
+/// Number types without boolean - integer and floating point types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& NumericTypes();
-/// \brief Binary and string-like types (except fixed-size binary)
+/// Binary and string-like types (except fixed-size binary)
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& BaseBinaryTypes();
-/// \brief Binary and large-binary types
+/// Binary and large-binary types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& BinaryTypes();
-/// \brief String and large-string types
+/// String and large-string types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& StringTypes();
-/// \brief String-view and Binary-view
+/// String-view and Binary-view
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& BinaryViewTypes();
-/// \brief Temporal types including date, time and timestamps for each unit
+/// Temporal types including date, time and timestamps for each unit
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& TemporalTypes();
-/// \brief Interval types
+/// Interval types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& IntervalTypes();
-/// \brief Duration types for each unit
+/// Duration types for each unit
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& DurationTypes();
-/// \brief Numeric, base binary, date, boolean and null types
+/// Numeric, base binary, date, boolean and null types
 ARROW_EXPORT
 const std::vector<std::shared_ptr<DataType>>& PrimitiveTypes();
 

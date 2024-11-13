@@ -34,7 +34,7 @@ class Forest {
  public:
   Forest() = default;
 
-  /// \brief Construct a Forest viewing the range [0, size).
+  /// Construct a Forest viewing the range [0, size).
   Forest(int size, std::function<bool(int, int)> is_ancestor) : size_(size) {
     std::vector<int> descendant_counts(size, 0);
 
@@ -61,7 +61,7 @@ class Forest {
     descendant_counts_ = std::make_shared<std::vector<int>>(std::move(descendant_counts));
   }
 
-  /// \brief Returns the number of nodes in this forest.
+  /// Returns the number of nodes in this forest.
   int size() const { return size_; }
 
   bool Equals(const Forest& other) const {
@@ -83,7 +83,7 @@ class Forest {
     int i;
   };
 
-  /// \brief Visit with eager pruning. Visitors must return Result<bool>, using
+  /// Visit with eager pruning. Visitors must return Result<bool>, using
   /// true to indicate a subtree should be visited and false to indicate that the
   /// subtree should be skipped.
   template <typename PreVisitor, typename PostVisitor>

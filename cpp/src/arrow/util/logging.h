@@ -198,14 +198,14 @@ class ARROW_EXPORT ArrowLog : public ArrowLogBase {
 
   /// Return whether or not current logging instance is enabled.
   ///
-  /// \return True if logging is enabled and false otherwise.
+  /// :return: True if logging is enabled and false otherwise.
   bool IsEnabled() const override;
 
   /// The init function of arrow log for a program which should be called only once.
   ///
-  /// \param appName The app name which starts the log.
-  /// \param severity_threshold Logging threshold for the program.
-  /// \param logDir Logging output file name. If empty, the log won't output to file.
+  /// :param appName: The app name which starts the log.
+  /// :param severity_threshold: Logging threshold for the program.
+  /// :param logDir: Logging output file name. If empty, the log won't output to file.
   static void StartArrowLog(const std::string& appName,
                             ArrowLogLevel severity_threshold = ArrowLogLevel::ARROW_INFO,
                             const std::string& logDir = "");
@@ -222,8 +222,8 @@ class ARROW_EXPORT ArrowLog : public ArrowLogBase {
 
   /// Return whether or not the log level is enabled in current setting.
   ///
-  /// \param log_level The input log level to test.
-  /// \return True if input log level is not lower than the threshold.
+  /// :param log_level: The input log level to test.
+  /// :return: True if input log level is not lower than the threshold.
   static bool IsLevelEnabled(ArrowLogLevel log_level);
 
  private:
@@ -253,7 +253,7 @@ class ARROW_EXPORT Voidify {
 
 namespace detail {
 
-/// @brief A helper for the nil log sink.
+/// A helper for the nil log sink.
 ///
 /// Using this helper is analogous to sending log messages to /dev/null:
 /// nothing gets logged.
@@ -261,9 +261,9 @@ class NullLog {
  public:
   /// The no-op output operator.
   ///
-  /// @param [in] t
+  /// :param t:
   ///   The object to send into the nil sink.
-  /// @return Reference to the updated object.
+  /// :return: Reference to the updated object.
   template <class T>
   NullLog& operator<<(const T& t) {
     return *this;

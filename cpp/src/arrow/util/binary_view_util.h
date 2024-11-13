@@ -99,7 +99,7 @@ bool EqualBinaryView(BinaryViewType::c_type l, BinaryViewType::c_type r,
                 l.size() - BinaryViewType::kPrefixSize) == 0;
 }
 
-/// \brief Compute the total size of a list of binary views including null
+/// Compute the total size of a list of binary views including null
 /// views.
 ///
 /// This is useful when calculating the necessary memory to store all the string

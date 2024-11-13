@@ -30,11 +30,11 @@
 namespace arrow {
 namespace flight {
 
-/// \brief Returns a ServerMiddlewareFactory that handles receiving OpenTelemetry spans.
+/// Returns a ServerMiddlewareFactory that handles receiving OpenTelemetry spans.
 ARROW_FLIGHT_EXPORT std::shared_ptr<ServerMiddlewareFactory>
 MakeTracingServerMiddlewareFactory();
 
-/// \brief A server middleware that provides access to the
+/// A server middleware that provides access to the
 ///   OpenTelemetry context, if present.
 ///
 /// Used to make the OpenTelemetry span available in Python.
@@ -53,7 +53,7 @@ class ARROW_FLIGHT_EXPORT TracingServerMiddleware : public ServerMiddleware {
     std::string key;
     std::string value;
   };
-  /// \brief Get the trace context.
+  /// Get the trace context.
   std::vector<TraceKey> GetTraceContext() const;
 
  private:

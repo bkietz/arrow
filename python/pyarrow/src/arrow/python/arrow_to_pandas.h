@@ -68,36 +68,36 @@ struct PandasOptions {
   /// after Arrow 2.0 release.
   bool ignore_timezone = false;
 
-  /// \brief If true, do not create duplicate PyObject versions of equal
+  /// If true, do not create duplicate PyObject versions of equal
   /// objects. This only applies to immutable objects like strings or datetime
   /// objects
   bool deduplicate_objects = false;
 
-  /// \brief For certain data types, a cast is needed in order to store the
+  /// For certain data types, a cast is needed in order to store the
   /// data in a pandas DataFrame or Series (e.g. timestamps are always stored
   /// as nanoseconds in pandas). This option controls whether it is a safe
   /// cast or not.
   bool safe_cast = true;
 
-  /// \brief If true, create one block per column rather than consolidated
+  /// If true, create one block per column rather than consolidated
   /// blocks (1 per data type). Do zero-copy wrapping when there are no
   /// nulls. pandas currently will consolidate the blocks on its own, causing
   /// increased memory use, so keep this in mind if you are working on a
   /// memory-constrained situation.
   bool split_blocks = false;
 
-  /// \brief If true, allow non-writable zero-copy views to be created for
+  /// If true, allow non-writable zero-copy views to be created for
   /// single column blocks. This option is also used to provide zero copy for
   /// Series data
   bool allow_zero_copy_blocks = false;
 
-  /// \brief If true, attempt to deallocate buffers in passed Arrow object if
+  /// If true, attempt to deallocate buffers in passed Arrow object if
   /// it is the only remaining shared_ptr copy of it. See ARROW-3789 for
   /// original context for this feature. Only currently implemented for Table
   /// conversions
   bool self_destruct = false;
 
-  /// \brief The default behavior (DEFAULT), is to convert Arrow Map arrays to
+  /// The default behavior (DEFAULT), is to convert Arrow Map arrays to
   /// Python association lists (list-of-tuples) in the same order as the Arrow
   /// Map, as in [(key1, value1), (key2, value2), ...]
   /// If LOSSY or STRICT, convert Arrow Map arrays to native Python dicts.

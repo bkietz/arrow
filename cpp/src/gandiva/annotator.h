@@ -30,7 +30,7 @@
 
 namespace gandiva {
 
-/// \brief annotate the arrow fields in an expression, and use that
+/// annotate the arrow fields in an expression, and use that
 /// to convert the incoming arrow-format row batch to an EvalBatch.
 class GANDIVA_EXPORT Annotator {
  public:

@@ -32,7 +32,7 @@ namespace arrow {
 namespace flight {
 namespace sql {
 
-/// \brief A factory for ServerSessionMiddleware, itself storing session data.
+/// A factory for ServerSessionMiddleware, itself storing session data.
 class ARROW_FLIGHT_SQL_EXPORT ServerSessionMiddlewareFactory
     : public ServerMiddlewareFactory {
  protected:
@@ -49,10 +49,10 @@ class ARROW_FLIGHT_SQL_EXPORT ServerSessionMiddlewareFactory
   Status StartCall(const CallInfo&, const CallHeaders& incoming_headers,
                    std::shared_ptr<ServerMiddleware>* middleware) override;
 
-  /// \brief Get a new, empty session option map and its id key.
+  /// Get a new, empty session option map and its id key.
   std::pair<std::string, std::shared_ptr<FlightSession>> CreateNewSession();
-  /// \brief Close the session identified by 'id'.
-  /// \param id The string id of the session to close.
+  /// Close the session identified by 'id'.
+  /// :param id: The string id of the session to close.
   Status CloseSession(std::string id);
 };
 

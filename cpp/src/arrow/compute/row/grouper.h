@@ -28,7 +28,7 @@
 namespace arrow {
 namespace compute {
 
-/// \brief A segment
+/// A segment
 /// A segment group is a chunk of continuous rows that have the same segment key. (For
 /// example, in ordered time series processing, segment key can be "date", and a segment
 /// group can be all the rows that belong to the same date.) A segment group can span
@@ -37,13 +37,13 @@ namespace compute {
 /// will have multiple segments. A segment never spans cross batches. The segment data
 /// structure only makes sense when used along with a exec batch.
 struct ARROW_EXPORT Segment {
-  /// \brief the offset into the batch where the segment starts
+  /// the offset into the batch where the segment starts
   int64_t offset;
-  /// \brief the length of the segment
+  /// the length of the segment
   int64_t length;
-  /// \brief whether the segment may be extended by a next one
+  /// whether the segment may be extended by a next one
   bool is_open;
-  /// \brief whether the segment extends a preceeding one
+  /// whether the segment extends a preceeding one
   bool extends;
 };
 
@@ -55,7 +55,7 @@ inline bool operator!=(const Segment& segment1, const Segment& segment2) {
   return !(segment1 == segment2);
 }
 
-/// \brief a helper class to divide a batch into segments of equal values
+/// a helper class to divide a batch into segments of equal values
 ///
 /// For example, given a batch with two columns specifed as segment keys:
 ///
@@ -78,30 +78,30 @@ class ARROW_EXPORT RowSegmenter {
  public:
   virtual ~RowSegmenter() = default;
 
-  /// \brief Construct a Segmenter which segments on the specified key types
+  /// Construct a Segmenter which segments on the specified key types
   ///
-  /// \param[in] key_types the specified key types
-  /// \param[in] nullable_keys whether values of the specified keys may be null
-  /// \param[in] ctx the execution context to use
+  /// :param key_types: the specified key types
+  /// :param nullable_keys: whether values of the specified keys may be null
+  /// :param ctx: the execution context to use
   static Result<std::unique_ptr<RowSegmenter>> Make(
       const std::vector<TypeHolder>& key_types, bool nullable_keys, ExecContext* ctx);
 
-  /// \brief Return the key types of this segmenter
+  /// Return the key types of this segmenter
   virtual const std::vector<TypeHolder>& key_types() const = 0;
 
-  /// \brief Reset this segmenter
+  /// Reset this segmenter
   ///
   /// A segmenter normally extends (see `Segment`) a segment from one batch to the next.
   /// If segment-extension is undesirable, for example when each batch is processed
   /// independently, then `Reset` should be invoked before processing the next batch.
   virtual Status Reset() = 0;
 
-  /// \brief Get the next segment for the given batch starting from the given offset
+  /// Get the next segment for the given batch starting from the given offset
   /// DEPRECATED: Due to its inefficiency, use GetSegments instead.
   ARROW_DEPRECATED("Deprecated in 18.0.0. Use GetSegments instead.")
   virtual Result<Segment> GetNextSegment(const ExecSpan& batch, int64_t offset) = 0;
 
-  /// \brief Get all segments for the given batch
+  /// Get all segments for the given batch
   virtual Result<std::vector<Segment>> GetSegments(const ExecSpan& batch) = 0;
 };
 
@@ -131,13 +131,13 @@ class ARROW_EXPORT Grouper {
   /// Get the current number of groups.
   virtual uint32_t num_groups() const = 0;
 
-  /// \brief Assemble lists of indices of identical elements.
+  /// Assemble lists of indices of identical elements.
   ///
-  /// \param[in] ids An unsigned, all-valid integral array which will be
+  /// :param ids: An unsigned, all-valid integral array which will be
   ///                used as grouping criteria.
-  /// \param[in] num_groups An upper bound for the elements of ids
-  /// \param[in] ctx Execution context to use during the operation
-  /// \return A num_groups-long ListArray where the slot at i contains a
+  /// :param num_groups: An upper bound for the elements of ids
+  /// :param ctx: Execution context to use during the operation
+  /// :return: A num_groups-long ListArray where the slot at i contains a
   ///         list of indices where i appears in ids.
   ///
   ///   MakeGroupings([
@@ -161,7 +161,7 @@ class ARROW_EXPORT Grouper {
       const UInt32Array& ids, uint32_t num_groups,
       ExecContext* ctx = default_exec_context());
 
-  /// \brief Produce a ListArray whose slots are selections of `array` which correspond to
+  /// Produce a ListArray whose slots are selections of `array` which correspond to
   /// the provided groupings.
   ///
   /// For example,

@@ -57,13 +57,13 @@ class ARROW_EXPORT DataBatch {
  public:
   explicit DataBatch(int32_t num_cols) : num_cols_(num_cols) {}
 
-  /// \brief Return the number of parsed rows (not skipped)
+  /// Return the number of parsed rows (not skipped)
   int32_t num_rows() const { return num_rows_; }
-  /// \brief Return the number of parsed columns
+  /// Return the number of parsed columns
   int32_t num_cols() const { return num_cols_; }
-  /// \brief Return the total size in bytes of parsed data
+  /// Return the total size in bytes of parsed data
   uint32_t num_bytes() const { return parsed_size_; }
-  /// \brief Return the number of skipped rows
+  /// Return the number of skipped rows
   int32_t num_skipped_rows() const { return static_cast<int32_t>(skipped_rows_.size()); }
 
   template <typename Visitor>
@@ -146,8 +146,7 @@ class ARROW_EXPORT DataBatch {
 
 constexpr int32_t kMaxParserNumRows = 100000;
 
-/// \class BlockParser
-/// \brief A reusable block-based parser for CSV data
+/// A reusable block-based parser for CSV data
 ///
 /// The parser takes a block of CSV data and delimits rows and fields,
 /// unquoting and unescaping them on the fly.  Parsed data is own by the
@@ -166,44 +165,44 @@ class ARROW_EXPORT BlockParser {
                        int64_t first_row = -1, int32_t max_num_rows = kMaxParserNumRows);
   ~BlockParser();
 
-  /// \brief Parse a block of data
+  /// Parse a block of data
   ///
   /// Parse a block of CSV data, ingesting up to max_num_rows rows.
   /// The number of bytes actually parsed is returned in out_size.
   Status Parse(std::string_view data, uint32_t* out_size);
 
-  /// \brief Parse sequential blocks of data
+  /// Parse sequential blocks of data
   ///
   /// Only the last block is allowed to be truncated.
   Status Parse(const std::vector<std::string_view>& data, uint32_t* out_size);
 
-  /// \brief Parse the final block of data
+  /// Parse the final block of data
   ///
   /// Like Parse(), but called with the final block in a file.
   /// The last row may lack a trailing line separator.
   Status ParseFinal(std::string_view data, uint32_t* out_size);
 
-  /// \brief Parse the final sequential blocks of data
+  /// Parse the final sequential blocks of data
   ///
   /// Only the last block is allowed to be truncated.
   Status ParseFinal(const std::vector<std::string_view>& data, uint32_t* out_size);
 
-  /// \brief Return the number of parsed rows
+  /// Return the number of parsed rows
   int32_t num_rows() const { return parsed_batch().num_rows(); }
-  /// \brief Return the number of parsed columns
+  /// Return the number of parsed columns
   int32_t num_cols() const { return parsed_batch().num_cols(); }
-  /// \brief Return the total size in bytes of parsed data
+  /// Return the total size in bytes of parsed data
   uint32_t num_bytes() const { return parsed_batch().num_bytes(); }
 
-  /// \brief Return the total number of rows including rows which were skipped
+  /// Return the total number of rows including rows which were skipped
   int32_t total_num_rows() const {
     return parsed_batch().num_rows() + parsed_batch().num_skipped_rows();
   }
 
-  /// \brief Return the row number of the first row in the block or -1 if unsupported
+  /// Return the row number of the first row in the block or -1 if unsupported
   int64_t first_row_num() const;
 
-  /// \brief Visit parsed values in a column
+  /// Visit parsed values in a column
   ///
   /// The signature of the visitor is
   /// Status(const uint8_t* data, uint32_t size, bool quoted)

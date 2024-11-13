@@ -62,36 +62,36 @@ class GenericBasicDecimal {
 
   using WordArray = std::array<uint64_t, NWORDS>;
 
-  /// \brief Empty constructor creates a decimal with a value of 0.
+  /// Empty constructor creates a decimal with a value of 0.
   constexpr GenericBasicDecimal() noexcept : array_({0}) {}
 
-  /// \brief Create a decimal from the two's complement representation.
+  /// Create a decimal from the two's complement representation.
   ///
   /// Input array is assumed to be in native endianness.
   explicit constexpr GenericBasicDecimal(const WordArray& array) noexcept
       : array_(array) {}
 
-  /// \brief Create a decimal from the two's complement representation.
+  /// Create a decimal from the two's complement representation.
   ///
   /// Input array is assumed to be in little endianness, with native endian elements.
   GenericBasicDecimal(LittleEndianArrayTag, const WordArray& array) noexcept
       : GenericBasicDecimal(bit_util::little_endian::ToNative(array)) {}
 
-  /// \brief Create a decimal from any integer not wider than 64 bits.
+  /// Create a decimal from any integer not wider than 64 bits.
   template <typename T,
             typename = typename std::enable_if<
                 std::is_integral<T>::value && (sizeof(T) <= sizeof(uint64_t)), T>::type>
   constexpr GenericBasicDecimal(T value) noexcept  // NOLINT(runtime/explicit)
       : array_(WordsFromLowBits(value)) {}
 
-  /// \brief Create a decimal from an array of bytes.
+  /// Create a decimal from an array of bytes.
   ///
   /// Bytes are assumed to be in native-endian byte order.
   explicit GenericBasicDecimal(const uint8_t* bytes) {
     memcpy(array_.data(), bytes, sizeof(array_));
   }
 
-  /// \brief Get the bits of the two's complement representation of the number.
+  /// Get the bits of the two's complement representation of the number.
   ///
   /// The elements are in native endian order. The bits within each uint64_t element
   /// are in native endian order. For example, on a little endian machine,
@@ -100,7 +100,7 @@ class GenericBasicDecimal {
   /// BasicDecimal128(123).native_endian_array() = {0, 123};
   constexpr const WordArray& native_endian_array() const { return array_; }
 
-  /// \brief Get the bits of the two's complement representation of the number.
+  /// Get the bits of the two's complement representation of the number.
   ///
   /// The elements are in little endian order. However, the bits within each
   /// uint64_t element are in native endian order.
@@ -117,14 +117,14 @@ class GenericBasicDecimal {
     return reinterpret_cast<uint8_t*>(array_.data());
   }
 
-  /// \brief Return the raw bytes of the value in native-endian byte order.
+  /// Return the raw bytes of the value in native-endian byte order.
   std::array<uint8_t, kByteWidth> ToBytes() const {
     std::array<uint8_t, kByteWidth> out{{0}};
     memcpy(out.data(), array_.data(), kByteWidth);
     return out;
   }
 
-  /// \brief Copy the raw bytes of the value in native-endian byte order.
+  /// Copy the raw bytes of the value in native-endian byte order.
   void ToBytes(uint8_t* out) const { memcpy(out, array_.data(), kByteWidth); }
 
   /// Return 1 if positive or zero, -1 if strictly negative.
@@ -181,17 +181,17 @@ class ARROW_EXPORT SmallBasicDecimal {
 
   using WordArray = std::array<std::make_unsigned_t<DigitType>, 1>;
 
-  /// \brief Empty constructor creates a decimal with a value of 0.
+  /// Empty constructor creates a decimal with a value of 0.
   constexpr SmallBasicDecimal() noexcept : value_(0) {}
 
-  /// \brief Create a decimal from any integer not wider than 64 bits.
+  /// Create a decimal from any integer not wider than 64 bits.
   template <typename T,
             typename = typename std::enable_if<
                 std::is_integral<T>::value && (sizeof(T) <= sizeof(int64_t)), T>::type>
   constexpr SmallBasicDecimal(T value) noexcept  // NOLINT(runtime/explicit)
       : value_(static_cast<DigitType>(value)) {}
 
-  /// \brief Create a decimal from an array of bytes.
+  /// Create a decimal from an array of bytes.
   ///
   /// Bytes are assumed to be in native-endian byte order.
   explicit SmallBasicDecimal(const uint8_t* bytes) {
@@ -213,17 +213,17 @@ class ARROW_EXPORT SmallBasicDecimal {
 
   uint8_t* mutable_native_endian_bytes() { return reinterpret_cast<uint8_t*>(&value_); }
 
-  /// \brief Return the raw bytes of the value in native-endian byte order.
+  /// Return the raw bytes of the value in native-endian byte order.
   std::array<uint8_t, kByteWidth> ToBytes() const {
     std::array<uint8_t, kByteWidth> out{{0}};
     memcpy(out.data(), &value_, kByteWidth);
     return out;
   }
 
-  /// \brief Copy the raw bytes of the value in native-endian byte order
+  /// Copy the raw bytes of the value in native-endian byte order
   void ToBytes(uint8_t* out) const { memcpy(out, &value_, kByteWidth); }
 
-  /// \brief Return 1 if positive or 0, -1 if strictly negative
+  /// Return 1 if positive or 0, -1 if strictly negative
   int64_t Sign() const { return 1 | (value_ >> (kBitWidth - 1)); }
 
   bool IsNegative() const { return value_ < 0; }
@@ -240,7 +240,7 @@ class ARROW_EXPORT SmallBasicDecimal {
 
   DigitType value() const { return value_; }
 
-  /// \brief count the number of leading binary zeroes.
+  /// count the number of leading binary zeroes.
   int32_t CountLeadingBinaryZeros() const;
 
   constexpr uint64_t low_bits() const { return static_cast<uint64_t>(value_); }
@@ -275,40 +275,40 @@ class ARROW_EXPORT BasicDecimal32 : public SmallBasicDecimal<int32_t> {
   using SmallBasicDecimal<int32_t>::SmallBasicDecimal;
   using ValueType = int32_t;
 
-  /// \brief Negate the current value (in-place)
+  /// Negate the current value (in-place)
   BasicDecimal32& Negate() {
     value_ = -value_;
     return *this;
   }
 
-  /// \brief Absolute value (in-place)
+  /// Absolute value (in-place)
   BasicDecimal32& Abs() { return *this < 0 ? Negate() : *this; }
 
-  /// \brief Absolute value
+  /// Absolute value
   static BasicDecimal32 Abs(const BasicDecimal32& in) {
     BasicDecimal32 result(in);
     return result.Abs();
   }
 
-  /// \brief Add a number to this one. The result is truncated to 32 bits.
+  /// Add a number to this one. The result is truncated to 32 bits.
   BasicDecimal32& operator+=(const BasicDecimal32& right) {
     value_ += right.value_;
     return *this;
   }
 
-  /// \brief Subtract a number from this one. The result is truncated to 32 bits.
+  /// Subtract a number from this one. The result is truncated to 32 bits.
   BasicDecimal32& operator-=(const BasicDecimal32& right) {
     value_ -= right.value_;
     return *this;
   }
 
-  /// \brief Multiply this number by another. The result is truncated to 32 bits.
+  /// Multiply this number by another. The result is truncated to 32 bits.
   BasicDecimal32& operator*=(const BasicDecimal32& right) {
     value_ *= static_cast<uint64_t>(right.value_);
     return *this;
   }
 
-  /// \brief Divide this number by the divisor and return the result.
+  /// Divide this number by the divisor and return the result.
   ///
   /// This operation is not destructive.
   /// The answer rounds to zero. Signs work like:
@@ -316,30 +316,30 @@ class ARROW_EXPORT BasicDecimal32 : public SmallBasicDecimal<int32_t> {
   ///  -21 /  5 -> -4, -1
   ///   21 / -5 -> -4,  1
   ///  -21 / -5 ->  4, -1
-  /// \param[in] divisor the number to divide by
-  /// \param[out] result the quotient
-  /// \param[out] remainder the remainder after the division
+  /// :param divisor: the number to divide by
+  /// :param result[out]: the quotient
+  /// :param remainder[out]: the remainder after the division
   DecimalStatus Divide(const BasicDecimal32& divisor, BasicDecimal32* result,
                        BasicDecimal32* remainder) const;
 
-  /// \brief In-place division
+  /// In-place division
   BasicDecimal32& operator/=(const BasicDecimal32& right) {
     value_ /= right.value_;
     return *this;
   }
 
-  /// \brief Bitwise "or" between two BasicDecimal32s
+  /// Bitwise "or" between two BasicDecimal32s
   BasicDecimal32& operator|=(const BasicDecimal32& right) {
     value_ |= right.value_;
     return *this;
   }
 
-  /// \brief Bitwise "and" between two BasicDecimal32s
+  /// Bitwise "and" between two BasicDecimal32s
   BasicDecimal32& operator&=(const BasicDecimal32& right) {
     value_ &= right.value_;
     return *this;
   }
-  /// \brief Shift left by the given number of bits.
+  /// Shift left by the given number of bits.
   BasicDecimal32& operator<<=(uint32_t bits);
 
   BasicDecimal32 operator<<(uint32_t bits) const {
@@ -348,7 +348,7 @@ class ARROW_EXPORT BasicDecimal32 : public SmallBasicDecimal<int32_t> {
     return res;
   }
 
-  /// \brief Shift right by the given number of bits.
+  /// Shift right by the given number of bits.
   ///
   /// Negative values will sign-extend
   BasicDecimal32& operator>>=(uint32_t bits);
@@ -359,17 +359,17 @@ class ARROW_EXPORT BasicDecimal32 : public SmallBasicDecimal<int32_t> {
     return res;
   }
 
-  /// \brief Convert BasicDecimal32 from one scale to another
+  /// Convert BasicDecimal32 from one scale to another
   DecimalStatus Rescale(int32_t original_scale, int32_t new_scale,
                         BasicDecimal32* out) const;
 
   void GetWholeAndFraction(int scale, BasicDecimal32* whole,
                            BasicDecimal32* fraction) const;
 
-  /// \brief Scale up.
+  /// Scale up.
   BasicDecimal32 IncreaseScaleBy(int32_t increase_by) const;
 
-  /// \brief Scale down.
+  /// Scale down.
   ///
   /// - If 'round' is true, the right-most digits are dropped and the result value is
   ///   rounded up (+1 for +ve, -1 for -ve) based on the value of the dropped digits
@@ -377,29 +377,29 @@ class ARROW_EXPORT BasicDecimal32 : public SmallBasicDecimal<int32_t> {
   /// - If 'round' is false, the right-most digits are simply dropped.
   BasicDecimal32 ReduceScaleBy(int32_t reduce_by, bool round = true) const;
 
-  /// \brief Whether this number fits in the given precision
+  /// Whether this number fits in the given precision
   ///
   /// Return true if the number of significant digits is less or equal to 'precision'.
   bool FitsInPrecision(int32_t precision) const;
 
-  /// \brief Get the maximum valid unscaled decimal value.
+  /// Get the maximum valid unscaled decimal value.
   static const BasicDecimal32& GetMaxValue();
-  /// \brief Get the maximum valid unscaled decimal value for the given precision.
+  /// Get the maximum valid unscaled decimal value for the given precision.
   static BasicDecimal32 GetMaxValue(int32_t precision);
 
-  /// \brief Get the maximum decimal value (is not a valid value).
+  /// Get the maximum decimal value (is not a valid value).
   static constexpr BasicDecimal32 GetMaxSentinel() {
     return BasicDecimal32(std::numeric_limits<int32_t>::max());
   }
 
-  /// \brief Get the minimum decimal value (is not a valid value).
+  /// Get the minimum decimal value (is not a valid value).
   static constexpr BasicDecimal32 GetMinSentinel() {
     return BasicDecimal32(std::numeric_limits<int32_t>::min());
   }
 
-  /// \brief Scale multiplier for a given scale value.
+  /// Scale multiplier for a given scale value.
   static const BasicDecimal32& GetScaleMultiplier(int32_t scale);
-  /// \brief Half-scale multiplier for a given scale value.
+  /// Half-scale multiplier for a given scale value.
   static const BasicDecimal32& GetHalfScaleMultiplier(int32_t scale);
 
   explicit operator BasicDecimal64() const;
@@ -428,40 +428,40 @@ class ARROW_EXPORT BasicDecimal64 : public SmallBasicDecimal<int64_t> {
   using SmallBasicDecimal<int64_t>::SmallBasicDecimal;
   using ValueType = int64_t;
 
-  /// \brief Negate the current value (in-place)
+  /// Negate the current value (in-place)
   BasicDecimal64& Negate() {
     value_ = -value_;
     return *this;
   }
 
-  /// \brief Absolute value (in-place)
+  /// Absolute value (in-place)
   BasicDecimal64& Abs() { return *this < 0 ? Negate() : *this; }
 
-  /// \brief Absolute value
+  /// Absolute value
   static BasicDecimal64 Abs(const BasicDecimal64& in) {
     BasicDecimal64 result(in);
     return result.Abs();
   }
 
-  /// \brief Add a number to this one. The result is truncated to 32 bits.
+  /// Add a number to this one. The result is truncated to 32 bits.
   BasicDecimal64& operator+=(const BasicDecimal64& right) {
     value_ += right.value_;
     return *this;
   }
 
-  /// \brief Subtract a number from this one. The result is truncated to 32 bits.
+  /// Subtract a number from this one. The result is truncated to 32 bits.
   BasicDecimal64& operator-=(const BasicDecimal64& right) {
     value_ -= right.value_;
     return *this;
   }
 
-  /// \brief Multiply this number by another. The result is truncated to 32 bits.
+  /// Multiply this number by another. The result is truncated to 32 bits.
   BasicDecimal64& operator*=(const BasicDecimal64& right) {
     value_ *= static_cast<uint64_t>(right.value_);
     return *this;
   }
 
-  /// \brief Divide this number by the divisor and return the result.
+  /// Divide this number by the divisor and return the result.
   ///
   /// This operation is not destructive.
   /// The answer rounds to zero. Signs work like:
@@ -469,31 +469,31 @@ class ARROW_EXPORT BasicDecimal64 : public SmallBasicDecimal<int64_t> {
   ///  -21 /  5 -> -4, -1
   ///   21 / -5 -> -4,  1
   ///  -21 / -5 ->  4, -1
-  /// \param[in] divisor the number to divide by
-  /// \param[out] result the quotient
-  /// \param[out] remainder the remainder after the division
+  /// :param divisor: the number to divide by
+  /// :param result[out]: the quotient
+  /// :param remainder[out]: the remainder after the division
   DecimalStatus Divide(const BasicDecimal64& divisor, BasicDecimal64* result,
                        BasicDecimal64* remainder) const;
 
-  /// \brief In-place division
+  /// In-place division
   BasicDecimal64& operator/=(const BasicDecimal64& right) {
     value_ /= right.value_;
     return *this;
   }
 
-  /// \brief Bitwise "or" between two BasicDecimal64s
+  /// Bitwise "or" between two BasicDecimal64s
   BasicDecimal64& operator|=(const BasicDecimal64& right) {
     value_ |= right.value_;
     return *this;
   }
 
-  /// \brief Bitwise "and" between two BasicDecimal64s
+  /// Bitwise "and" between two BasicDecimal64s
   BasicDecimal64& operator&=(const BasicDecimal64& right) {
     value_ &= right.value_;
     return *this;
   }
 
-  /// \brief Shift left by the given number of bits.
+  /// Shift left by the given number of bits.
   BasicDecimal64& operator<<=(uint32_t bits);
 
   BasicDecimal64 operator<<(uint32_t bits) const {
@@ -502,7 +502,7 @@ class ARROW_EXPORT BasicDecimal64 : public SmallBasicDecimal<int64_t> {
     return res;
   }
 
-  /// \brief Shift right by the given number of bits.
+  /// Shift right by the given number of bits.
   ///
   /// Negative values will sign-extend
   BasicDecimal64& operator>>=(uint32_t bits);
@@ -513,17 +513,17 @@ class ARROW_EXPORT BasicDecimal64 : public SmallBasicDecimal<int64_t> {
     return res;
   }
 
-  /// \brief Convert BasicDecimal32 from one scale to another
+  /// Convert BasicDecimal32 from one scale to another
   DecimalStatus Rescale(int32_t original_scale, int32_t new_scale,
                         BasicDecimal64* out) const;
 
   void GetWholeAndFraction(int scale, BasicDecimal64* whole,
                            BasicDecimal64* fraction) const;
 
-  /// \brief Scale up.
+  /// Scale up.
   BasicDecimal64 IncreaseScaleBy(int32_t increase_by) const;
 
-  /// \brief Scale down.
+  /// Scale down.
   ///
   /// - If 'round' is true, the right-most digits are dropped and the result value is
   ///   rounded up (+1 for +ve, -1 for -ve) based on the value of the dropped digits
@@ -531,29 +531,29 @@ class ARROW_EXPORT BasicDecimal64 : public SmallBasicDecimal<int64_t> {
   /// - If 'round' is false, the right-most digits are simply dropped.
   BasicDecimal64 ReduceScaleBy(int32_t reduce_by, bool round = true) const;
 
-  /// \brief Whether this number fits in the given precision
+  /// Whether this number fits in the given precision
   ///
   /// Return true if the number of significant digits is less or equal to 'precision'.
   bool FitsInPrecision(int32_t precision) const;
 
-  /// \brief Get the maximum valid unscaled decimal value.
+  /// Get the maximum valid unscaled decimal value.
   static const BasicDecimal64& GetMaxValue();
-  /// \brief Get the maximum valid unscaled decimal value for the given precision.
+  /// Get the maximum valid unscaled decimal value for the given precision.
   static BasicDecimal64 GetMaxValue(int32_t precision);
 
-  /// \brief Get the maximum decimal value (is not a valid value).
+  /// Get the maximum decimal value (is not a valid value).
   static constexpr BasicDecimal64 GetMaxSentinel() {
     return BasicDecimal64(std::numeric_limits<int32_t>::max());
   }
 
-  /// \brief Get the minimum decimal value (is not a valid value).
+  /// Get the minimum decimal value (is not a valid value).
   static constexpr BasicDecimal64 GetMinSentinel() {
     return BasicDecimal64(std::numeric_limits<int32_t>::min());
   }
 
-  /// \brief Scale multiplier for a given scale value.
+  /// Scale multiplier for a given scale value.
   static const BasicDecimal64& GetScaleMultiplier(int32_t scale);
-  /// \brief Half-scale multiplier for a given scale value.
+  /// Half-scale multiplier for a given scale value.
   static const BasicDecimal64& GetHalfScaleMultiplier(int32_t scale);
 };
 
@@ -570,7 +570,7 @@ class ARROW_EXPORT BasicDecimal128 : public GenericBasicDecimal<BasicDecimal128,
 
   constexpr BasicDecimal128() noexcept : GenericBasicDecimal() {}
 
-  /// \brief Create a BasicDecimal128 from the two's complement representation.
+  /// Create a BasicDecimal128 from the two's complement representation.
 #if ARROW_LITTLE_ENDIAN
   constexpr BasicDecimal128(int64_t high, uint64_t low) noexcept
       : BasicDecimal128(WordArray{low, static_cast<uint64_t>(high)}) {}
@@ -579,22 +579,22 @@ class ARROW_EXPORT BasicDecimal128 : public GenericBasicDecimal<BasicDecimal128,
       : BasicDecimal128(WordArray{static_cast<uint64_t>(high), low}) {}
 #endif
 
-  /// \brief Negate the current value (in-place)
+  /// Negate the current value (in-place)
   BasicDecimal128& Negate();
 
-  /// \brief Absolute value (in-place)
+  /// Absolute value (in-place)
   BasicDecimal128& Abs();
 
-  /// \brief Absolute value
+  /// Absolute value
   static BasicDecimal128 Abs(const BasicDecimal128& left);
 
-  /// \brief Add a number to this one. The result is truncated to 128 bits.
+  /// Add a number to this one. The result is truncated to 128 bits.
   BasicDecimal128& operator+=(const BasicDecimal128& right);
 
-  /// \brief Subtract a number from this one. The result is truncated to 128 bits.
+  /// Subtract a number from this one. The result is truncated to 128 bits.
   BasicDecimal128& operator-=(const BasicDecimal128& right);
 
-  /// \brief Multiply this number by another number. The result is truncated to 128 bits.
+  /// Multiply this number by another number. The result is truncated to 128 bits.
   BasicDecimal128& operator*=(const BasicDecimal128& right);
 
   /// Divide this number by right and return the result.
@@ -605,22 +605,22 @@ class ARROW_EXPORT BasicDecimal128 : public GenericBasicDecimal<BasicDecimal128,
   ///  -21 /  5 -> -4, -1
   ///   21 / -5 -> -4,  1
   ///  -21 / -5 ->  4, -1
-  /// \param[in] divisor the number to divide by
-  /// \param[out] result the quotient
-  /// \param[out] remainder the remainder after the division
+  /// :param divisor: the number to divide by
+  /// :param result[out]: the quotient
+  /// :param remainder[out]: the remainder after the division
   DecimalStatus Divide(const BasicDecimal128& divisor, BasicDecimal128* result,
                        BasicDecimal128* remainder) const;
 
-  /// \brief In-place division.
+  /// In-place division.
   BasicDecimal128& operator/=(const BasicDecimal128& right);
 
-  /// \brief Bitwise "or" between two BasicDecimal128.
+  /// Bitwise "or" between two BasicDecimal128.
   BasicDecimal128& operator|=(const BasicDecimal128& right);
 
-  /// \brief Bitwise "and" between two BasicDecimal128.
+  /// Bitwise "and" between two BasicDecimal128.
   BasicDecimal128& operator&=(const BasicDecimal128& right);
 
-  /// \brief Shift left by the given number of bits.
+  /// Shift left by the given number of bits.
   BasicDecimal128& operator<<=(uint32_t bits);
 
   BasicDecimal128 operator<<(uint32_t bits) const {
@@ -629,7 +629,7 @@ class ARROW_EXPORT BasicDecimal128 : public GenericBasicDecimal<BasicDecimal128,
     return res;
   }
 
-  /// \brief Shift right by the given number of bits.
+  /// Shift right by the given number of bits.
   ///
   /// Negative values will sign-extend.
   BasicDecimal128& operator>>=(uint32_t bits);
@@ -640,7 +640,7 @@ class ARROW_EXPORT BasicDecimal128 : public GenericBasicDecimal<BasicDecimal128,
     return res;
   }
 
-  /// \brief Get the high bits of the two's complement representation of the number.
+  /// Get the high bits of the two's complement representation of the number.
   constexpr int64_t high_bits() const {
 #if ARROW_LITTLE_ENDIAN
     return static_cast<int64_t>(array_[1]);
@@ -649,7 +649,7 @@ class ARROW_EXPORT BasicDecimal128 : public GenericBasicDecimal<BasicDecimal128,
 #endif
   }
 
-  /// \brief Get the low bits of the two's complement representation of the number.
+  /// Get the low bits of the two's complement representation of the number.
   constexpr uint64_t low_bits() const {
 #if ARROW_LITTLE_ENDIAN
     return array_[0];
@@ -658,49 +658,49 @@ class ARROW_EXPORT BasicDecimal128 : public GenericBasicDecimal<BasicDecimal128,
 #endif
   }
 
-  /// \brief separate the integer and fractional parts for the given scale.
+  /// separate the integer and fractional parts for the given scale.
   void GetWholeAndFraction(int32_t scale, BasicDecimal128* whole,
                            BasicDecimal128* fraction) const;
 
-  /// \brief Scale multiplier for given scale value.
+  /// Scale multiplier for given scale value.
   static const BasicDecimal128& GetScaleMultiplier(int32_t scale);
-  /// \brief Half-scale multiplier for given scale value.
+  /// Half-scale multiplier for given scale value.
   static const BasicDecimal128& GetHalfScaleMultiplier(int32_t scale);
 
-  /// \brief Convert BasicDecimal128 from one scale to another
+  /// Convert BasicDecimal128 from one scale to another
   DecimalStatus Rescale(int32_t original_scale, int32_t new_scale,
                         BasicDecimal128* out) const;
 
-  /// \brief Scale up.
+  /// Scale up.
   BasicDecimal128 IncreaseScaleBy(int32_t increase_by) const;
 
-  /// \brief Scale down.
+  /// Scale down.
   /// - If 'round' is true, the right-most digits are dropped and the result value is
   ///   rounded up (+1 for +ve, -1 for -ve) based on the value of the dropped digits
   ///   (>= 10^reduce_by / 2).
   /// - If 'round' is false, the right-most digits are simply dropped.
   BasicDecimal128 ReduceScaleBy(int32_t reduce_by, bool round = true) const;
 
-  /// \brief Whether this number fits in the given precision
+  /// Whether this number fits in the given precision
   ///
   /// Return true if the number of significant digits is less or equal to `precision`.
   bool FitsInPrecision(int32_t precision) const;
 
-  /// \brief count the number of leading binary zeroes.
+  /// count the number of leading binary zeroes.
   int32_t CountLeadingBinaryZeros() const;
 
-  /// \brief Get the maximum valid unscaled decimal value.
+  /// Get the maximum valid unscaled decimal value.
   static const BasicDecimal128& GetMaxValue();
 
-  /// \brief Get the maximum valid unscaled decimal value for the given precision.
+  /// Get the maximum valid unscaled decimal value for the given precision.
   static BasicDecimal128 GetMaxValue(int32_t precision);
 
-  /// \brief Get the maximum decimal value (is not a valid value).
+  /// Get the maximum decimal value (is not a valid value).
   static constexpr BasicDecimal128 GetMaxSentinel() {
     return BasicDecimal128(/*high=*/std::numeric_limits<int64_t>::max(),
                            /*low=*/std::numeric_limits<uint64_t>::max());
   }
-  /// \brief Get the minimum decimal value (is not a valid value).
+  /// Get the minimum decimal value (is not a valid value).
   static constexpr BasicDecimal128 GetMinSentinel() {
     return BasicDecimal128(/*high=*/std::numeric_limits<int64_t>::min(),
                            /*low=*/std::numeric_limits<uint64_t>::min());
@@ -739,53 +739,53 @@ class ARROW_EXPORT BasicDecimal256 : public GenericBasicDecimal<BasicDecimal256,
             {value.low_bits(), static_cast<uint64_t>(value.high_bits()),
              SignExtend(value.high_bits()), SignExtend(value.high_bits())})) {}
 
-  /// \brief Negate the current value (in-place)
+  /// Negate the current value (in-place)
   BasicDecimal256& Negate();
 
-  /// \brief Absolute value (in-place)
+  /// Absolute value (in-place)
   BasicDecimal256& Abs();
 
-  /// \brief Absolute value
+  /// Absolute value
   static BasicDecimal256 Abs(const BasicDecimal256& left);
 
-  /// \brief Add a number to this one. The result is truncated to 256 bits.
+  /// Add a number to this one. The result is truncated to 256 bits.
   BasicDecimal256& operator+=(const BasicDecimal256& right);
 
-  /// \brief Subtract a number from this one. The result is truncated to 256 bits.
+  /// Subtract a number from this one. The result is truncated to 256 bits.
   BasicDecimal256& operator-=(const BasicDecimal256& right);
 
-  /// \brief Get the lowest bits of the two's complement representation of the number.
+  /// Get the lowest bits of the two's complement representation of the number.
   uint64_t low_bits() const { return bit_util::little_endian::Make(array_)[0]; }
 
-  /// \brief separate the integer and fractional parts for the given scale.
+  /// separate the integer and fractional parts for the given scale.
   void GetWholeAndFraction(int32_t scale, BasicDecimal256* whole,
                            BasicDecimal256* fraction) const;
 
-  /// \brief Scale multiplier for given scale value.
+  /// Scale multiplier for given scale value.
   static const BasicDecimal256& GetScaleMultiplier(int32_t scale);
-  /// \brief Half-scale multiplier for given scale value.
+  /// Half-scale multiplier for given scale value.
   static const BasicDecimal256& GetHalfScaleMultiplier(int32_t scale);
 
-  /// \brief Convert BasicDecimal256 from one scale to another
+  /// Convert BasicDecimal256 from one scale to another
   DecimalStatus Rescale(int32_t original_scale, int32_t new_scale,
                         BasicDecimal256* out) const;
 
-  /// \brief Scale up.
+  /// Scale up.
   BasicDecimal256 IncreaseScaleBy(int32_t increase_by) const;
 
-  /// \brief Scale down.
+  /// Scale down.
   /// - If 'round' is true, the right-most digits are dropped and the result value is
   ///   rounded up (+1 for positive, -1 for negative) based on the value of the
   ///   dropped digits (>= 10^reduce_by / 2).
   /// - If 'round' is false, the right-most digits are simply dropped.
   BasicDecimal256 ReduceScaleBy(int32_t reduce_by, bool round = true) const;
 
-  /// \brief Whether this number fits in the given precision
+  /// Whether this number fits in the given precision
   ///
   /// Return true if the number of significant digits is less or equal to `precision`.
   bool FitsInPrecision(int32_t precision) const;
 
-  /// \brief Multiply this number by another number. The result is truncated to 256 bits.
+  /// Multiply this number by another number. The result is truncated to 256 bits.
   BasicDecimal256& operator*=(const BasicDecimal256& right);
 
   /// Divide this number by right and return the result.
@@ -796,13 +796,13 @@ class ARROW_EXPORT BasicDecimal256 : public GenericBasicDecimal<BasicDecimal256,
   ///  -21 /  5 -> -4, -1
   ///   21 / -5 -> -4,  1
   ///  -21 / -5 ->  4, -1
-  /// \param[in] divisor the number to divide by
-  /// \param[out] result the quotient
-  /// \param[out] remainder the remainder after the division
+  /// :param divisor: the number to divide by
+  /// :param result[out]: the quotient
+  /// :param remainder[out]: the remainder after the division
   DecimalStatus Divide(const BasicDecimal256& divisor, BasicDecimal256* result,
                        BasicDecimal256* remainder) const;
 
-  /// \brief Shift left by the given number of bits.
+  /// Shift left by the given number of bits.
   BasicDecimal256& operator<<=(uint32_t bits);
 
   BasicDecimal256 operator<<(uint32_t bits) const {
@@ -811,7 +811,7 @@ class ARROW_EXPORT BasicDecimal256 : public GenericBasicDecimal<BasicDecimal256,
     return res;
   }
 
-  /// \brief Shift right by the given number of bits.
+  /// Shift right by the given number of bits.
   ///
   /// Negative values will sign-extend.
   BasicDecimal256& operator>>=(uint32_t bits);
@@ -822,13 +822,13 @@ class ARROW_EXPORT BasicDecimal256 : public GenericBasicDecimal<BasicDecimal256,
     return res;
   }
 
-  /// \brief In-place division.
+  /// In-place division.
   BasicDecimal256& operator/=(const BasicDecimal256& right);
 
-  /// \brief Get the maximum valid unscaled decimal value for the given precision.
+  /// Get the maximum valid unscaled decimal value for the given precision.
   static BasicDecimal256 GetMaxValue(int32_t precision);
 
-  /// \brief Get the maximum decimal value (is not a valid value).
+  /// Get the maximum decimal value (is not a valid value).
   static constexpr BasicDecimal256 GetMaxSentinel() {
 #if ARROW_LITTLE_ENDIAN
     return BasicDecimal256({std::numeric_limits<uint64_t>::max(),
@@ -842,7 +842,7 @@ class ARROW_EXPORT BasicDecimal256 : public GenericBasicDecimal<BasicDecimal256,
                             std::numeric_limits<uint64_t>::max()});
 #endif
   }
-  /// \brief Get the minimum decimal value (is not a valid value).
+  /// Get the minimum decimal value (is not a valid value).
   static constexpr BasicDecimal256 GetMinSentinel() {
 #if ARROW_LITTLE_ENDIAN
     return BasicDecimal256(

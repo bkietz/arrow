@@ -59,8 +59,7 @@ constexpr int64_t kUnknownNullCount = -1;
 // ----------------------------------------------------------------------
 // Generic array data container
 
-/// \class ArrayData
-/// \brief Mutable container for generic Arrow array data
+/// Mutable container for generic Arrow array data
 ///
 /// This data structure is a self-contained representation of the memory and
 /// metadata inside an Arrow array data structure (called vectors in Java). The
@@ -196,14 +195,14 @@ struct ARROW_EXPORT ArrayData {
 
   std::shared_ptr<ArrayData> Copy() const { return std::make_shared<ArrayData>(*this); }
 
-  /// \brief Copy all buffers and children recursively to destination MemoryManager
+  /// Copy all buffers and children recursively to destination MemoryManager
   ///
   /// This utilizes MemoryManager::CopyBuffer to create a new ArrayData object
   /// recursively copying the buffers and all child buffers to the destination
   /// memory manager. This includes dictionaries if applicable.
   Result<std::shared_ptr<ArrayData>> CopyTo(
       const std::shared_ptr<MemoryManager>& to) const;
-  /// \brief View or Copy this ArrayData to destination memory manager.
+  /// View or Copy this ArrayData to destination memory manager.
   ///
   /// Tries to view the buffer contents on the given memory manager's device
   /// if possible (to avoid a copy) but falls back to copying if a no-copy view
@@ -276,7 +275,7 @@ struct ARROW_EXPORT ArrayData {
     return GetMutableValues<T>(i, offset);
   }
 
-  /// \brief Construct a zero-copy slice of the data with the given offset and length
+  /// Construct a zero-copy slice of the data with the given offset and length
   ///
   /// The associated `ArrayStatistics` is always discarded in a sliced
   /// `ArrayData`. Because `ArrayStatistics` in the original
@@ -291,7 +290,7 @@ struct ARROW_EXPORT ArrayData {
   /// in this case too. Use `Copy()` instead for the case.
   std::shared_ptr<ArrayData> Slice(int64_t offset, int64_t length) const;
 
-  /// \brief Input-checking variant of Slice
+  /// Input-checking variant of Slice
   ///
   /// An Invalid Status is returned if the requested slice falls out of bounds.
   /// Note that unlike Slice, `length` isn't clamped to the available buffer size.
@@ -299,28 +298,32 @@ struct ARROW_EXPORT ArrayData {
 
   void SetNullCount(int64_t v) { null_count.store(v); }
 
-  /// \brief Return physical null count, or compute and set it if it's not known
+  /// Return physical null count, or compute and set it if it's not known
   int64_t GetNullCount() const;
 
-  /// \brief Return true if the data has a validity bitmap and the physical null
+  /// Return true if the data has a validity bitmap and the physical null
   /// count is known to be non-zero or not yet known.
   ///
   /// Note that this is not the same as MayHaveLogicalNulls, which also checks
   /// for the presence of nulls in child data for types like unions and run-end
   /// encoded types.
   ///
-  /// \see HasValidityBitmap
-  /// \see MayHaveLogicalNulls
+  /// ```{seealso}
+  /// HasValidityBitmap
+  /// ```
+  /// ```{seealso}
+  /// MayHaveLogicalNulls
+  /// ```
   bool MayHaveNulls() const {
     // If an ArrayData is slightly malformed it may have kUnknownNullCount set
     // but no buffer
     return null_count.load() != 0 && buffers[0] != NULLPTR;
   }
 
-  /// \brief Return true if the data has a validity bitmap
+  /// Return true if the data has a validity bitmap
   bool HasValidityBitmap() const { return buffers[0] != NULLPTR; }
 
-  /// \brief Return true if the validity bitmap may have 0's in it, or if the
+  /// Return true if the validity bitmap may have 0's in it, or if the
   /// child arrays (in the case of types without a validity bitmap) may have
   /// nulls, or if the dictionary of dictionary array may have nulls.
   ///
@@ -373,7 +376,7 @@ struct ARROW_EXPORT ArrayData {
     return null_count.load() != 0;
   }
 
-  /// \brief Computes the logical null count for arrays of all types including
+  /// Computes the logical null count for arrays of all types including
   /// those that do not have a validity bitmap like union and run-end encoded
   /// arrays
   ///
@@ -381,17 +384,19 @@ struct ARROW_EXPORT ArrayData {
   /// GetNullCount. For types that have no validity bitmap, this function will
   /// recompute the null count every time it is called.
   ///
-  /// \see GetNullCount
+  /// ```{seealso}
+  /// GetNullCount
+  /// ```
   int64_t ComputeLogicalNullCount() const;
 
-  /// \brief Return the device_type of the underlying buffers and children
+  /// Return the device_type of the underlying buffers and children
   ///
   /// If there are no buffers in this ArrayData object, it just returns
   /// DeviceAllocationType::kCPU as a default. We also assume that all buffers
   /// should be allocated on the same device type and perform DCHECKs to confirm
   /// this in debug mode.
   ///
-  /// \return DeviceAllocationType
+  /// :return: DeviceAllocationType
   DeviceAllocationType device_type() const;
 
   std::shared_ptr<DataType> type;
@@ -410,7 +415,7 @@ struct ARROW_EXPORT ArrayData {
   std::shared_ptr<ArrayStatistics> statistics;
 };
 
-/// \brief A non-owning Buffer reference
+/// A non-owning Buffer reference
 struct ARROW_EXPORT BufferSpan {
   // It is the user of this class's responsibility to ensure that
   // buffers that were const originally are not written to
@@ -430,7 +435,7 @@ struct ARROW_EXPORT BufferSpan {
   }
 };
 
-/// \brief EXPERIMENTAL: A non-owning ArrayData reference that is cheaply
+/// EXPERIMENTAL: A non-owning ArrayData reference that is cheaply
 /// copyable and does not contain any shared_ptr objects. Do not use in public
 /// APIs aside from compute kernels for now
 struct ARROW_EXPORT ArraySpan {
@@ -452,7 +457,7 @@ struct ARROW_EXPORT ArraySpan {
   /// If dictionary-encoded, put dictionary in the first entry
   std::vector<ArraySpan> child_data;
 
-  /// \brief Populate ArraySpan to look like an array of length 1 pointing at
+  /// Populate ArraySpan to look like an array of length 1 pointing at
   /// the data members of a Scalar value
   void FillFromScalar(const Scalar& value);
 
@@ -466,7 +471,7 @@ struct ARROW_EXPORT ArraySpan {
 
   const ArraySpan& dictionary() const { return child_data[0]; }
 
-  /// \brief Return the number of buffers (out of 3) that are used to
+  /// Return the number of buffers (out of 3) that are used to
   /// constitute this array
   int num_buffers() const;
 
@@ -492,14 +497,14 @@ struct ARROW_EXPORT ArraySpan {
     return GetValues<T>(i, this->offset);
   }
 
-  /// \brief Access a buffer's data as a span
+  /// Access a buffer's data as a span
   ///
-  /// \param i The buffer index
-  /// \param length The required length (in number of typed values) of the requested span
-  /// \pre i > 0
-  /// \pre length <= the length of the buffer (in number of values) that's expected for
+  /// :param i: The buffer index
+  /// :param length: The required length (in number of typed values) of the requested span
+  /// :precondition: i > 0
+  /// :precondition: length <= the length of the buffer (in number of values) that's expected for
   /// this array type
-  /// \return A span<const T> of the requested length
+  /// :return: A span<const T> of the requested length
   template <typename T>
   util::span<const T> GetSpan(int i, int64_t length) const {
     const int64_t buffer_length = buffers[i].size / static_cast<int64_t>(sizeof(T));
@@ -508,14 +513,14 @@ struct ARROW_EXPORT ArraySpan {
     return util::span<const T>(buffers[i].data_as<T>() + this->offset, length);
   }
 
-  /// \brief Access a buffer's data as a span
+  /// Access a buffer's data as a span
   ///
-  /// \param i The buffer index
-  /// \param length The required length (in number of typed values) of the requested span
-  /// \pre i > 0
-  /// \pre length <= the length of the buffer (in number of values) that's expected for
+  /// :param i: The buffer index
+  /// :param length: The required length (in number of typed values) of the requested span
+  /// :precondition: i > 0
+  /// :precondition: length <= the length of the buffer (in number of values) that's expected for
   /// this array type
-  /// \return A span<T> of the requested length
+  /// :return: A span<T> of the requested length
   template <typename T>
   util::span<T> GetSpan(int i, int64_t length) {
     const int64_t buffer_length = buffers[i].size / static_cast<int64_t>(sizeof(T));
@@ -572,32 +577,38 @@ struct ARROW_EXPORT ArraySpan {
     }
   }
 
-  /// \brief Return physical null count, or compute and set it if it's not known
+  /// Return physical null count, or compute and set it if it's not known
   int64_t GetNullCount() const;
 
-  /// \brief Return true if the array has a validity bitmap and the physical null
+  /// Return true if the array has a validity bitmap and the physical null
   /// count is known to be non-zero or not yet known
   ///
   /// Note that this is not the same as MayHaveLogicalNulls, which also checks
   /// for the presence of nulls in child data for types like unions and run-end
   /// encoded types.
   ///
-  /// \see HasValidityBitmap
-  /// \see MayHaveLogicalNulls
+  /// ```{seealso}
+  /// HasValidityBitmap
+  /// ```
+  /// ```{seealso}
+  /// MayHaveLogicalNulls
+  /// ```
   bool MayHaveNulls() const {
     // If an ArrayData is slightly malformed it may have kUnknownNullCount set
     // but no buffer
     return null_count != 0 && buffers[0].data != NULLPTR;
   }
 
-  /// \brief Return true if the array has a validity bitmap
+  /// Return true if the array has a validity bitmap
   bool HasValidityBitmap() const { return buffers[0].data != NULLPTR; }
 
-  /// \brief Return true if the validity bitmap may have 0's in it, or if the
+  /// Return true if the validity bitmap may have 0's in it, or if the
   /// child arrays (in the case of types without a validity bitmap) may have
   /// nulls, or if the dictionary of dictionay array may have nulls.
   ///
-  /// \see ArrayData::MayHaveLogicalNulls
+  /// ```{seealso}
+  /// ArrayData::MayHaveLogicalNulls
+  /// ```
   bool MayHaveLogicalNulls() const {
     if (buffers[0].data != NULLPTR) {
       return null_count != 0;
@@ -615,7 +626,7 @@ struct ARROW_EXPORT ArraySpan {
     return null_count != 0;
   }
 
-  /// \brief Compute the logical null count for arrays of all types including
+  /// Compute the logical null count for arrays of all types including
   /// those that do not have a validity bitmap like union and run-end encoded
   /// arrays
   ///
@@ -623,7 +634,9 @@ struct ARROW_EXPORT ArraySpan {
   /// GetNullCount. For types that have no validity bitmap, this function will
   /// recompute the logical null count every time it is called.
   ///
-  /// \see GetNullCount
+  /// ```{seealso}
+  /// GetNullCount
+  /// ```
   int64_t ComputeLogicalNullCount() const;
 
   /// Some DataTypes (StringView, BinaryView) may have an arbitrary number of variadic
@@ -632,7 +645,9 @@ struct ARROW_EXPORT ArraySpan {
   /// variadic set and buffers[2].size is the number of variadic buffers times
   /// sizeof(shared_ptr<Buffer>).
   ///
-  /// \see HasVariadicBuffers
+  /// ```{seealso}
+  /// HasVariadicBuffers
+  /// ```
   util::span<const std::shared_ptr<Buffer>> GetVariadicBuffers() const;
   bool HasVariadicBuffers() const;
 
@@ -643,7 +658,7 @@ struct ARROW_EXPORT ArraySpan {
   bool IsNullSparseUnion(int64_t i) const;
   bool IsNullDenseUnion(int64_t i) const;
 
-  /// \brief Return true if the value at logical index i is null
+  /// Return true if the value at logical index i is null
   ///
   /// This function uses binary-search, so it has a O(log N) cost.
   /// Iterating over the whole array and calling IsNull is O(N log N), so

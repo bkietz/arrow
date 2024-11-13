@@ -66,9 +66,9 @@ class RunEndEncodingLoop {
     DCHECK_GT(input_array.length, 0);
   }
 
-  /// \brief Give a pass over the input data and count the number of runs
+  /// Give a pass over the input data and count the number of runs
   ///
-  /// \return a tuple with the number of non-null run values, the total number of runs,
+  /// :return: a tuple with the number of non-null run values, the total number of runs,
   /// and the data buffer size for string and binary types
   ARROW_NOINLINE std::tuple<int64_t, int64_t, int64_t> CountNumberOfRuns() const {
     int64_t read_offset = input_offset_;
@@ -287,7 +287,7 @@ struct RunEndEncodeExec {
     return Status::Invalid("Invalid run end type: ", *state->run_end_type);
   }
 
-  /// \brief The OutputType::Resolver of the "run_end_decode" function.
+  /// The OutputType::Resolver of the "run_end_decode" function.
   static Result<TypeHolder> ResolveOutputType(
       KernelContext* ctx, const std::vector<TypeHolder>& input_types) {
     auto state = checked_cast<const RunEndEncodingState*>(ctx->state());
@@ -328,7 +328,7 @@ class RunEndDecodingLoop {
       : RunEndDecodingLoop(input_array, arrow::ree_util::ValuesArray(input_array),
                            output_array_data) {}
 
-  /// \brief For variable-length types, calculate the total length of the data
+  /// For variable-length types, calculate the total length of the data
   /// buffer needed to store the expanded values.
   int64_t CalculateOutputDataBufferSize() const {
     auto& input_array_values = arrow::ree_util::ValuesArray(input_array_);
@@ -355,9 +355,9 @@ class RunEndDecodingLoop {
     return 0;
   }
 
-  /// \brief Expand all runs into the output array
+  /// Expand all runs into the output array
   ///
-  /// \return the number of non-null values written.
+  /// :return: the number of non-null values written.
   ARROW_NOINLINE int64_t ExpandAllRuns() {
     read_write_value_.ZeroValidityPadding(input_array_.length);
 
@@ -468,7 +468,7 @@ struct RunEndDecodeExec {
     return Status::Invalid("Invalid run end type: ", *ree_type->run_end_type());
   }
 
-  /// \brief The OutputType::Resolver of the "run_end_decode" function.
+  /// The OutputType::Resolver of the "run_end_decode" function.
   static Result<TypeHolder> ResolveOutputType(KernelContext*,
                                               const std::vector<TypeHolder>& in_types) {
     const auto* ree_type = checked_cast<const RunEndEncodedType*>(in_types[0].type);

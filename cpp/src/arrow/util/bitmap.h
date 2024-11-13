@@ -102,7 +102,7 @@ class ARROW_EXPORT Bitmap : public util::ToStringOstreamable<Bitmap>,
   void CopyFrom(const Bitmap& other);
   void CopyFromInverted(const Bitmap& other);
 
-  /// \brief Visit bits from each bitmap as bitset<N>
+  /// Visit bits from each bitmap as bitset<N>
   ///
   /// All bitmaps must have identical length.
   template <size_t N, typename Visitor>
@@ -117,7 +117,7 @@ class ARROW_EXPORT Bitmap : public util::ToStringOstreamable<Bitmap>,
     }
   }
 
-  /// \brief Visit bits from each bitmap as bitset<N>
+  /// Visit bits from each bitmap as bitset<N>
   ///
   /// All bitmaps must have identical length.
   template <size_t N, typename Visitor>
@@ -132,7 +132,7 @@ class ARROW_EXPORT Bitmap : public util::ToStringOstreamable<Bitmap>,
     }
   }
 
-  /// \brief Visit words of bits from each bitmap as array<Word, N>
+  /// Visit words of bits from each bitmap as array<Word, N>
   ///
   /// All bitmaps must have identical length. The first bit in a visited bitmap
   /// may be offset within the first visited word, but words will otherwise contain
@@ -311,7 +311,7 @@ class ARROW_EXPORT Bitmap : public util::ToStringOstreamable<Bitmap>,
     }
   }
 
-  /// \brief Visit words of bits from each input bitmap as array<Word, N> and collects
+  /// Visit words of bits from each input bitmap as array<Word, N> and collects
   /// outputs to an array<Word, M>, to be written into the output bitmaps accordingly.
   ///
   /// All bitmaps must have identical length. The first bit in a visited bitmap

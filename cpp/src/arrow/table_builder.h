@@ -33,58 +33,57 @@ namespace arrow {
 class MemoryPool;
 class RecordBatch;
 
-/// \class RecordBatchBuilder
-/// \brief Helper class for creating record batches iteratively given a known
+/// Helper class for creating record batches iteratively given a known
 /// schema
 class ARROW_EXPORT RecordBatchBuilder {
  public:
-  /// \brief Create and initialize a RecordBatchBuilder
-  /// \param[in] schema The schema for the record batch
-  /// \param[in] pool A MemoryPool to use for allocations
-  /// \return the created builder instance
+  /// Create and initialize a RecordBatchBuilder
+  /// :param schema: The schema for the record batch
+  /// :param pool: A MemoryPool to use for allocations
+  /// :return: the created builder instance
   static Result<std::unique_ptr<RecordBatchBuilder>> Make(
       const std::shared_ptr<Schema>& schema, MemoryPool* pool);
 
-  /// \brief Create and initialize a RecordBatchBuilder
-  /// \param[in] schema The schema for the record batch
-  /// \param[in] pool A MemoryPool to use for allocations
-  /// \param[in] initial_capacity The initial capacity for the builders
-  /// \return the created builder instance
+  /// Create and initialize a RecordBatchBuilder
+  /// :param schema: The schema for the record batch
+  /// :param pool: A MemoryPool to use for allocations
+  /// :param initial_capacity: The initial capacity for the builders
+  /// :return: the created builder instance
   static Result<std::unique_ptr<RecordBatchBuilder>> Make(
       const std::shared_ptr<Schema>& schema, MemoryPool* pool, int64_t initial_capacity);
 
-  /// \brief Get base pointer to field builder
-  /// \param i the field index
-  /// \return pointer to ArrayBuilder
+  /// Get base pointer to field builder
+  /// :param i: the field index
+  /// :return: pointer to ArrayBuilder
   ArrayBuilder* GetField(int i) { return raw_field_builders_[i]; }
 
-  /// \brief Return field builder casted to indicated specific builder type
-  /// \param i the field index
-  /// \return pointer to template type
+  /// Return field builder casted to indicated specific builder type
+  /// :param i: the field index
+  /// :return: pointer to template type
   template <typename T>
   T* GetFieldAs(int i) {
     return internal::checked_cast<T*>(raw_field_builders_[i]);
   }
 
-  /// \brief Finish current batch and optionally reset
-  /// \param[in] reset_builders the resulting RecordBatch
-  /// \return the resulting RecordBatch
+  /// Finish current batch and optionally reset
+  /// :param reset_builders: the resulting RecordBatch
+  /// :return: the resulting RecordBatch
   Result<std::shared_ptr<RecordBatch>> Flush(bool reset_builders);
 
-  /// \brief Finish current batch and reset
-  /// \return the resulting RecordBatch
+  /// Finish current batch and reset
+  /// :return: the resulting RecordBatch
   Result<std::shared_ptr<RecordBatch>> Flush();
 
-  /// \brief Set the initial capacity for new builders
+  /// Set the initial capacity for new builders
   void SetInitialCapacity(int64_t capacity);
 
-  /// \brief The initial capacity for builders
+  /// The initial capacity for builders
   int64_t initial_capacity() const { return initial_capacity_; }
 
-  /// \brief The number of fields in the schema
+  /// The number of fields in the schema
   int num_fields() const { return schema_->num_fields(); }
 
-  /// \brief The number of fields in the schema
+  /// The number of fields in the schema
   std::shared_ptr<Schema> schema() const { return schema_; }
 
  private:

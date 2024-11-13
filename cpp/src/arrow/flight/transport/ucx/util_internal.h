@@ -53,11 +53,11 @@ class ARROW_FLIGHT_EXPORT FlightUcxStatusDetail : public StatusDetail {
   ucs_status_t status_;
 };
 
-/// \brief Convert a UCS status to an Arrow Status.
+/// Convert a UCS status to an Arrow Status.
 ARROW_FLIGHT_EXPORT
 Status FromUcsStatus(const std::string& context, ucs_status_t ucs_status);
 
-/// \brief Check if a UCS error code can be ignored in the context of
+/// Check if a UCS error code can be ignored in the context of
 ///   a disconnect.
 static inline bool IsIgnorableDisconnectError(ucs_status_t ucs_status) {
   // Not connected, connection reset: we're already disconnected
@@ -66,10 +66,10 @@ static inline bool IsIgnorableDisconnectError(ucs_status_t ucs_status) {
          ucs_status == UCS_ERR_NOT_CONNECTED || ucs_status == UCS_ERR_CONNECTION_RESET;
 }
 
-/// \brief Helper to convert a Uri to a struct sockaddr (used in
+/// Helper to convert a Uri to a struct sockaddr (used in
 ///   ucp_listener_params_t)
 ///
-/// \return The length of the sockaddr
+/// :return: The length of the sockaddr
 ARROW_FLIGHT_EXPORT
 arrow::Result<size_t> UriToSockaddr(const arrow::util::Uri& uri,
                                     struct sockaddr_storage* addr);

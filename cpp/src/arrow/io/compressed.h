@@ -43,7 +43,7 @@ class ARROW_EXPORT CompressedOutputStream : public OutputStream {
  public:
   ~CompressedOutputStream() override;
 
-  /// \brief Create a compressed output stream wrapping the given output stream.
+  /// Create a compressed output stream wrapping the given output stream.
   ///
   /// The codec must be capable of streaming compression. Some codecs,
   /// like Snappy, are not able to do so.
@@ -53,7 +53,7 @@ class ARROW_EXPORT CompressedOutputStream : public OutputStream {
 
   // OutputStream interface
 
-  /// \brief Close the compressed output stream.  This implicitly closes the
+  /// Close the compressed output stream.  This implicitly closes the
   /// underlying raw output stream.
   Status Close() override;
   Status Abort() override;
@@ -62,12 +62,10 @@ class ARROW_EXPORT CompressedOutputStream : public OutputStream {
   Result<int64_t> Tell() const override;
 
   Status Write(const void* data, int64_t nbytes) override;
-  /// \cond FALSE
   using Writable::Write;
-  /// \endcond
   Status Flush() override;
 
-  /// \brief Return the underlying raw output stream.
+  /// Return the underlying raw output stream.
   std::shared_ptr<OutputStream> raw() const;
 
  private:
@@ -84,7 +82,7 @@ class ARROW_EXPORT CompressedInputStream
  public:
   ~CompressedInputStream() override;
 
-  /// \brief Create a compressed input stream wrapping the given input stream.
+  /// Create a compressed input stream wrapping the given input stream.
   ///
   /// The codec must be capable of streaming decompression. Some codecs,
   /// like Snappy, are not able to do so.
@@ -99,7 +97,7 @@ class ARROW_EXPORT CompressedInputStream
   Future<std::shared_ptr<const KeyValueMetadata>> ReadMetadataAsync(
       const IOContext& io_context) override;
 
-  /// \brief Return the underlying raw input stream.
+  /// Return the underlying raw input stream.
   std::shared_ptr<InputStream> raw() const;
 
  private:
@@ -108,7 +106,7 @@ class ARROW_EXPORT CompressedInputStream
 
   CompressedInputStream() = default;
 
-  /// \brief Close the compressed input stream.  This implicitly closes the
+  /// Close the compressed input stream.  This implicitly closes the
   /// underlying raw input stream.
   Status DoClose();
   Status DoAbort() override;

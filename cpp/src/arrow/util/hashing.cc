@@ -25,7 +25,7 @@ namespace internal {
 
 namespace {
 
-/// \brief A hash function for bitmaps that can handle offsets and lengths in
+/// A hash function for bitmaps that can handle offsets and lengths in
 /// terms of number of bits. The hash only depends on the bits actually hashed.
 ///
 /// This implementation is based on 64-bit versions of MurmurHash2 by Austin Appleby.
@@ -33,10 +33,10 @@ namespace {
 /// It's the caller's responsibility to ensure that bits_offset + num_bits are
 /// readable from the bitmap.
 ///
-/// \param key The pointer to the bitmap.
-/// \param seed The seed for the hash function (useful when chaining hash functions).
-/// \param bits_offset The offset in bits relative to the start of the bitmap.
-/// \param num_bits The number of bits after the offset to be hashed.
+/// :param key: The pointer to the bitmap.
+/// :param seed: The seed for the hash function (useful when chaining hash functions).
+/// :param bits_offset: The offset in bits relative to the start of the bitmap.
+/// :param num_bits: The number of bits after the offset to be hashed.
 uint64_t MurmurHashBitmap64(const uint8_t* key, uint64_t seed, uint64_t bits_offset,
                             uint64_t num_bits) {
   const uint64_t m = 0xc6a4a7935bd1e995LLU;

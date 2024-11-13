@@ -30,12 +30,12 @@ namespace arrow {
             array),                                                                      \
         std::forward<ARGS>(args)...);
 
-/// \brief Apply the visitors Visit() method specialized to the array type
+/// Apply the visitors Visit() method specialized to the array type
 ///
-/// \tparam VISITOR Visitor type that implements Visit() for all array types.
-/// \tparam ARGS Additional arguments, if any, will be passed to the Visit function after
+/// :param VISITOR: Visitor type that implements Visit() for all array types.
+/// :param ARGS: Additional arguments, if any, will be passed to the Visit function after
 /// the `arr` argument
-/// \return Status
+/// :return: Status
 ///
 /// A visitor is a type that implements specialized logic for each Arrow type.
 /// Example usage:

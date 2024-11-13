@@ -40,7 +40,7 @@
 
 namespace arrow {
 
-/// \brief A virtual string to timestamp parser
+/// A virtual string to timestamp parser
 class ARROW_EXPORT TimestampParser {
  public:
   virtual ~TimestampParser() = default;
@@ -53,17 +53,17 @@ class ARROW_EXPORT TimestampParser {
 
   virtual const char* format() const;
 
-  /// \brief Create a TimestampParser that recognizes strptime-like format strings
+  /// Create a TimestampParser that recognizes strptime-like format strings
   static std::shared_ptr<TimestampParser> MakeStrptime(std::string format);
 
-  /// \brief Create a TimestampParser that recognizes (locale-agnostic) ISO8601
+  /// Create a TimestampParser that recognizes (locale-agnostic) ISO8601
   /// timestamps
   static std::shared_ptr<TimestampParser> MakeISO8601();
 };
 
 namespace internal {
 
-/// \brief The entry point for conversion from strings.
+/// The entry point for conversion from strings.
 ///
 /// Specializations of StringConverter for `ARROW_TYPE` must define:
 /// - A default constructible member type `value_type` which will be yielded on a
@@ -794,7 +794,7 @@ static constexpr bool kStrptimeSupportsZone = false;
 static constexpr bool kStrptimeSupportsZone = true;
 #endif
 
-/// \brief Returns time since the UNIX epoch in the requested unit
+/// Returns time since the UNIX epoch in the requested unit
 static inline bool ParseTimestampStrptime(const char* buf, size_t length,
                                           const char* format, bool ignore_time_in_day,
                                           bool allow_trailing_chars, TimeUnit::type unit,
@@ -927,7 +927,7 @@ struct StringConverter<TIME_TYPE, enable_if_time<TIME_TYPE>> {
   }
 };
 
-/// \brief Convenience wrappers around internal::StringConverter.
+/// Convenience wrappers around internal::StringConverter.
 template <typename T>
 bool ParseValue(const T& type, const char* s, size_t length,
                 typename StringConverter<T>::value_type* out) {

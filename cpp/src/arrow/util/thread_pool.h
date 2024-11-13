@@ -41,7 +41,7 @@
 
 namespace arrow {
 
-/// \brief Get the capacity of the global thread pool
+/// Get the capacity of the global thread pool
 ///
 /// Return the number of worker threads in the thread pool to which
 /// Arrow dispatches various CPU-bound tasks.  This is an ideal number,
@@ -50,7 +50,7 @@ namespace arrow {
 /// You can change this number using SetCpuThreadPoolCapacity().
 ARROW_EXPORT int GetCpuThreadPoolCapacity();
 
-/// \brief Set the capacity of the global thread pool
+/// Set the capacity of the global thread pool
 ///
 /// Set the number of worker threads int the thread pool to which
 /// Arrow dispatches various CPU-bound tasks.
@@ -201,15 +201,17 @@ class ARROW_EXPORT Executor {
   // unless the threadpool is disabled
   virtual bool IsCurrentExecutor() { return OwnsThisThread(); }
 
-  /// \brief An interface to represent something with a custom destructor
+  /// An interface to represent something with a custom destructor
   ///
-  /// \see KeepAlive
+  /// ```{seealso}
+  /// KeepAlive
+  /// ```
   class ARROW_EXPORT Resource {
    public:
     virtual ~Resource() = default;
   };
 
-  /// \brief Keep a resource alive until all executor threads have terminated
+  /// Keep a resource alive until all executor threads have terminated
   ///
   /// Executors may have static storage duration.  In particular, the CPU and I/O
   /// executors are currently implemented this way.  These threads may access other
@@ -265,7 +267,7 @@ class ARROW_EXPORT Executor {
                            StopCallback&&) = 0;
 };
 
-/// \brief An executor implementation that runs all tasks on a single thread using an
+/// An executor implementation that runs all tasks on a single thread using an
 /// event loop.
 ///
 /// Note: Any sort of nested parallelism will deadlock this executor.  Blocking waits are
@@ -286,7 +288,7 @@ class ARROW_EXPORT SerialExecutor : public Executor {
   // Return the number of tasks either running or in the queue.
   int GetNumTasks();
 
-  /// \brief Runs the TopLevelTask and any scheduled tasks
+  /// Runs the TopLevelTask and any scheduled tasks
   ///
   /// The TopLevelTask (or one of the tasks it schedules) must either return an invalid
   /// status or call the finish signal. Failure to do this will result in a deadlock.  For
@@ -301,7 +303,7 @@ class ARROW_EXPORT SerialExecutor : public Executor {
     return FutureToSync(fut);
   }
 
-  /// \brief Transform an AsyncGenerator into an Iterator
+  /// Transform an AsyncGenerator into an Iterator
   ///
   /// An event loop will be created and each call to Next will power the event loop with
   /// the calling thread until the next item is ready to be delivered.
@@ -572,8 +574,10 @@ class ARROW_EXPORT ThreadPool : public SerialExecutor {
 // Return the process-global thread pool for CPU-bound tasks.
 ARROW_EXPORT ThreadPool* GetCpuThreadPool();
 
-/// \brief Potentially run an async operation serially (if use_threads is false)
-/// \see RunSerially
+/// Potentially run an async operation serially (if use_threads is false)
+/// ```{seealso}
+/// RunSerially
+/// ```
 ///
 /// If `use_threads` is true, the global CPU executor is used.
 /// If `use_threads` is false, a temporary SerialExecutor is used.
@@ -591,8 +595,10 @@ typename Fut::SyncType RunSynchronously(FnOnce<Fut(Executor*)> get_future,
   }
 }
 
-/// \brief Potentially iterate an async generator serially (if use_threads is false)
-/// \see IterateGenerator
+/// Potentially iterate an async generator serially (if use_threads is false)
+/// ```{seealso}
+/// IterateGenerator
+/// ```
 ///
 /// If `use_threads` is true, the global CPU executor will be used.  Each call to
 ///   the iterator will simply wait until the next item is available.  Tasks may run in

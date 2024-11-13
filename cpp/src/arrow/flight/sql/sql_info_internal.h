@@ -25,36 +25,36 @@ namespace flight {
 namespace sql {
 namespace internal {
 
-/// \brief Auxiliary class used to populate GetSqlInfo's DenseUnionArray with different
+/// Auxiliary class used to populate GetSqlInfo's DenseUnionArray with different
 /// data types.
 class ARROW_FLIGHT_SQL_EXPORT SqlInfoResultAppender {
  public:
-  /// \brief Append a string to the DenseUnionBuilder.
-  /// \param[in] value Value to be appended.
+  /// Append a string to the DenseUnionBuilder.
+  /// :param value: Value to be appended.
   Status operator()(const std::string& value);
 
-  /// \brief Append a bool to the DenseUnionBuilder.
-  /// \param[in] value Value to be appended.
+  /// Append a bool to the DenseUnionBuilder.
+  /// :param value: Value to be appended.
   Status operator()(bool value);
 
-  /// \brief Append a int64_t to the DenseUnionBuilder.
-  /// \param[in] value Value to be appended.
+  /// Append a int64_t to the DenseUnionBuilder.
+  /// :param value: Value to be appended.
   Status operator()(int64_t value);
 
-  /// \brief Append a int32_t to the DenseUnionBuilder.
-  /// \param[in] value Value to be appended.
+  /// Append a int32_t to the DenseUnionBuilder.
+  /// :param value: Value to be appended.
   Status operator()(int32_t value);
 
-  /// \brief Append a string list to the DenseUnionBuilder.
-  /// \param[in] value Value to be appended.
+  /// Append a string list to the DenseUnionBuilder.
+  /// :param value: Value to be appended.
   Status operator()(const std::vector<std::string>& value);
 
-  /// \brief Append a int32 to int32 list map to the DenseUnionBuilder.
-  /// \param[in] value Value to be appended.
+  /// Append a int32 to int32 list map to the DenseUnionBuilder.
+  /// :param value: Value to be appended.
   Status operator()(const std::unordered_map<int32_t, std::vector<int32_t>>& value);
 
-  /// \brief Create a Variant visitor that appends data to given
-  /// DenseUnionBuilder. \param[in] value_builder  DenseUnionBuilder to append data to.
+  /// Create a Variant visitor that appends data to given
+  /// DenseUnionBuilder. :param value_builder:  DenseUnionBuilder to append data to.
   explicit SqlInfoResultAppender(DenseUnionBuilder* value_builder);
 
   SqlInfoResultAppender(const SqlInfoResultAppender&) = delete;

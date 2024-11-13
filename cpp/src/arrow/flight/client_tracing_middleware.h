@@ -26,7 +26,7 @@
 namespace arrow {
 namespace flight {
 
-/// \brief Returns a ClientMiddlewareFactory that handles sending OpenTelemetry spans.
+/// Returns a ClientMiddlewareFactory that handles sending OpenTelemetry spans.
 ARROW_FLIGHT_EXPORT std::shared_ptr<ClientMiddlewareFactory>
 MakeTracingClientMiddlewareFactory();
 

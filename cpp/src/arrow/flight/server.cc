@@ -64,7 +64,7 @@ class ServerSignalHandler {
 
   /// Create the pipe and handler thread.
   ///
-  /// \return the fd of the write side of the pipe.
+  /// :return: the fd of the write side of the pipe.
   template <typename Fn>
   arrow::Result<std::shared_ptr<SelfPipe>> Init(Fn handler) {
     ARROW_ASSIGN_OR_RAISE(self_pipe_, SelfPipe::Make(/*signal_safe=*/true));

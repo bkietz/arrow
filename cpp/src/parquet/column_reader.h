@@ -262,19 +262,19 @@ class TypedColumnReader : public ColumnReader {
 
 namespace internal {
 
-/// \brief Stateful column reader that delimits semantic records for both flat
+/// Stateful column reader that delimits semantic records for both flat
 /// and nested columns
 ///
-/// \note API EXPERIMENTAL
-/// \since 1.3.0
+/// ```{note}
+/// API EXPERIMENTAL
 class PARQUET_EXPORT RecordReader {
  public:
-  /// \brief Creates a record reader.
-  /// @param descr Column descriptor
-  /// @param leaf_info Level info, used to determine if a column is nullable or not
-  /// @param pool Memory pool to use for buffering values and rep/def levels
-  /// @param read_dictionary True if reading directly as Arrow dictionary-encoded
-  /// @param read_dense_for_nullable True if reading dense and not leaving space for null
+  /// Creates a record reader.
+  /// :param descr: Column descriptor
+  /// :param leaf_info: Level info, used to determine if a column is nullable or not
+  /// :param pool: Memory pool to use for buffering values and rep/def levels
+  /// :param read_dictionary: True if reading directly as Arrow dictionary-encoded
+  /// :param read_dense_for_nullable: True if reading dense and not leaving space for null
   /// values
   static std::shared_ptr<RecordReader> Make(
       const ColumnDescriptor* descr, LevelInfo leaf_info,
@@ -283,149 +283,149 @@ class PARQUET_EXPORT RecordReader {
 
   virtual ~RecordReader() = default;
 
-  /// \brief Attempt to read indicated number of records from column chunk
+  /// Attempt to read indicated number of records from column chunk
   /// Note that for repeated fields, a record may have more than one value
   /// and all of them are read. If read_dense_for_nullable() it will
   /// not leave any space for null values. Otherwise, it will read spaced.
-  /// \return number of records read
+  /// :return: number of records read
   virtual int64_t ReadRecords(int64_t num_records) = 0;
 
-  /// \brief Attempt to skip indicated number of records from column chunk.
+  /// Attempt to skip indicated number of records from column chunk.
   /// Note that for repeated fields, a record may have more than one value
   /// and all of them are skipped.
-  /// \return number of records skipped
+  /// :return: number of records skipped
   virtual int64_t SkipRecords(int64_t num_records) = 0;
 
-  /// \brief Pre-allocate space for data. Results in better flat read performance
+  /// Pre-allocate space for data. Results in better flat read performance
   virtual void Reserve(int64_t num_values) = 0;
 
-  /// \brief Clear consumed values and repetition/definition levels as the
+  /// Clear consumed values and repetition/definition levels as the
   /// result of calling ReadRecords
   /// For FLBA and ByteArray types, call GetBuilderChunks() to reset them.
   virtual void Reset() = 0;
 
-  /// \brief Transfer filled values buffer to caller. A new one will be
+  /// Transfer filled values buffer to caller. A new one will be
   /// allocated in subsequent ReadRecords calls
   virtual std::shared_ptr<ResizableBuffer> ReleaseValues() = 0;
 
-  /// \brief Transfer filled validity bitmap buffer to caller. A new one will
+  /// Transfer filled validity bitmap buffer to caller. A new one will
   /// be allocated in subsequent ReadRecords calls
   virtual std::shared_ptr<ResizableBuffer> ReleaseIsValid() = 0;
 
-  /// \brief Return true if the record reader has more internal data yet to
+  /// Return true if the record reader has more internal data yet to
   /// process
   virtual bool HasMoreData() const = 0;
 
-  /// \brief Advance record reader to the next row group. Must be set before
+  /// Advance record reader to the next row group. Must be set before
   /// any records could be read/skipped.
-  /// \param[in] reader obtained from RowGroupReader::GetColumnPageReader
+  /// :param reader: obtained from RowGroupReader::GetColumnPageReader
   virtual void SetPageReader(std::unique_ptr<PageReader> reader) = 0;
 
-  /// \brief Returns the underlying column reader's descriptor.
+  /// Returns the underlying column reader's descriptor.
   virtual const ColumnDescriptor* descr() const = 0;
 
   virtual void DebugPrintState() = 0;
 
-  /// \brief Returns the dictionary owned by the current decoder. Throws an
+  /// Returns the dictionary owned by the current decoder. Throws an
   /// exception if the current decoder is not for dictionary encoding. The caller is
   /// responsible for casting the returned pointer to proper type depending on the
   /// column's physical type. An example:
   ///   const ByteArray* dict = reinterpret_cast<const ByteArray*>(ReadDictionary(&len));
   /// or:
   ///   const float* dict = reinterpret_cast<const float*>(ReadDictionary(&len));
-  /// \param[out] dictionary_length The number of dictionary entries.
+  /// :param dictionary_length[out]: The number of dictionary entries.
   virtual const void* ReadDictionary(int32_t* dictionary_length) = 0;
 
-  /// \brief Decoded definition levels
+  /// Decoded definition levels
   int16_t* def_levels() const {
     return reinterpret_cast<int16_t*>(def_levels_->mutable_data());
   }
 
-  /// \brief Decoded repetition levels
+  /// Decoded repetition levels
   int16_t* rep_levels() const {
     return reinterpret_cast<int16_t*>(rep_levels_->mutable_data());
   }
 
-  /// \brief Decoded values, including nulls, if any
+  /// Decoded values, including nulls, if any
   /// FLBA and ByteArray types do not use this array and read into their own
   /// builders.
   uint8_t* values() const { return values_->mutable_data(); }
 
-  /// \brief Number of values written, including space left for nulls if any.
+  /// Number of values written, including space left for nulls if any.
   /// If this Reader was constructed with read_dense_for_nullable(), there is no space for
   /// nulls and null_count() will be 0. There is no read-ahead/buffering for values. For
   /// FLBA and ByteArray types this value reflects the values written with the last
   /// ReadRecords call since those readers will reset the values after each call.
   int64_t values_written() const { return values_written_; }
 
-  /// \brief Number of definition / repetition levels (from those that have
+  /// Number of definition / repetition levels (from those that have
   /// been decoded) that have been consumed inside the reader.
   int64_t levels_position() const { return levels_position_; }
 
-  /// \brief Number of definition / repetition levels that have been written
+  /// Number of definition / repetition levels that have been written
   /// internally in the reader. This may be larger than values_written() because
   /// for repeated fields we need to look at the levels in advance to figure out
   /// the record boundaries.
   int64_t levels_written() const { return levels_written_; }
 
-  /// \brief Number of nulls in the leaf that we have read so far into the
+  /// Number of nulls in the leaf that we have read so far into the
   /// values vector. This is only valid when !read_dense_for_nullable(). When
   /// read_dense_for_nullable() it will always be 0.
   int64_t null_count() const { return null_count_; }
 
-  /// \brief True if the leaf values are nullable
+  /// True if the leaf values are nullable
   bool nullable_values() const { return nullable_values_; }
 
-  /// \brief True if reading directly as Arrow dictionary-encoded
+  /// True if reading directly as Arrow dictionary-encoded
   bool read_dictionary() const { return read_dictionary_; }
 
-  /// \brief True if reading dense for nullable columns.
+  /// True if reading dense for nullable columns.
   bool read_dense_for_nullable() const { return read_dense_for_nullable_; }
 
  protected:
-  /// \brief Indicates if we can have nullable values. Note that repeated fields
+  /// Indicates if we can have nullable values. Note that repeated fields
   /// may or may not be nullable.
   bool nullable_values_;
 
   bool at_record_start_;
   int64_t records_read_;
 
-  /// \brief Stores values. These values are populated based on each ReadRecords
+  /// Stores values. These values are populated based on each ReadRecords
   /// call. No extra values are buffered for the next call. SkipRecords will not
   /// add any value to this buffer.
   std::shared_ptr<::arrow::ResizableBuffer> values_;
-  /// \brief False for BYTE_ARRAY, in which case we don't allocate the values
+  /// False for BYTE_ARRAY, in which case we don't allocate the values
   /// buffer and we directly read into builder classes.
   bool uses_values_;
 
-  /// \brief Values that we have read into 'values_' + 'null_count_'.
+  /// Values that we have read into 'values_' + 'null_count_'.
   int64_t values_written_;
   int64_t values_capacity_;
   int64_t null_count_;
 
-  /// \brief Each bit corresponds to one element in 'values_' and specifies if it
+  /// Each bit corresponds to one element in 'values_' and specifies if it
   /// is null or not null.
   ///
   /// Not set if leaf type is not nullable or read_dense_for_nullable_ is true.
   std::shared_ptr<::arrow::ResizableBuffer> valid_bits_;
 
-  /// \brief Buffer for definition levels. May contain more levels than
+  /// Buffer for definition levels. May contain more levels than
   /// is actually read. This is because we read levels ahead to
   /// figure out record boundaries for repeated fields.
   /// For flat required fields, 'def_levels_' and 'rep_levels_' are not
   ///  populated. For non-repeated fields 'rep_levels_' is not populated.
   /// 'def_levels_' and 'rep_levels_' must be of the same size if present.
   std::shared_ptr<::arrow::ResizableBuffer> def_levels_;
-  /// \brief Buffer for repetition levels. Only populated for repeated
+  /// Buffer for repetition levels. Only populated for repeated
   /// fields.
   std::shared_ptr<::arrow::ResizableBuffer> rep_levels_;
 
-  /// \brief Number of definition / repetition levels that have been written
+  /// Number of definition / repetition levels that have been written
   /// internally in the reader. This may be larger than values_written() since
   /// for repeated fields we need to look at the levels in advance to figure out
   /// the record boundaries.
   int64_t levels_written_;
-  /// \brief Position of the next level that should be consumed.
+  /// Position of the next level that should be consumed.
   int64_t levels_position_;
   int64_t levels_capacity_;
 
@@ -443,7 +443,7 @@ class BinaryRecordReader : virtual public RecordReader {
   virtual std::vector<std::shared_ptr<::arrow::Array>> GetBuilderChunks() = 0;
 };
 
-/// \brief Read records directly to dictionary-encoded Arrow form (int32
+/// Read records directly to dictionary-encoded Arrow form (int32
 /// indices). Only valid for BYTE_ARRAY columns
 class DictionaryRecordReader : virtual public RecordReader {
  public:

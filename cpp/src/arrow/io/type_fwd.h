@@ -34,7 +34,7 @@ struct CacheOptions;
 ARROW_EXPORT
 const IOContext& default_io_context();
 
-/// \brief Get the capacity of the global I/O thread pool
+/// Get the capacity of the global I/O thread pool
 ///
 /// Return the number of worker threads in the thread pool to which
 /// Arrow dispatches various I/O-bound tasks.  This is an ideal number,
@@ -43,7 +43,7 @@ const IOContext& default_io_context();
 /// You can change this number using SetIOThreadPoolCapacity().
 ARROW_EXPORT int GetIOThreadPoolCapacity();
 
-/// \brief Set the capacity of the global I/O thread pool
+/// Set the capacity of the global I/O thread pool
 ///
 /// Set the number of worker threads in the thread pool to which
 /// Arrow dispatches various I/O-bound tasks.

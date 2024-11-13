@@ -87,7 +87,7 @@ struct BitBlockOrNot {
 
 }  // namespace detail
 
-/// \brief Return value from bit block counters: the total number of bits and
+/// Return value from bit block counters: the total number of bits and
 /// the number of set bits.
 struct BitBlockCount {
   int16_t length;
@@ -97,7 +97,7 @@ struct BitBlockCount {
   bool AllSet() const { return this->length == this->popcount; }
 };
 
-/// \brief A class that scans through a true/false bitmap to compute popcounts
+/// A class that scans through a true/false bitmap to compute popcounts
 /// 64 or 256 bits at a time. This is used to accelerate processing of
 /// mostly-not-null array data.
 class ARROW_EXPORT BitBlockCounter {
@@ -107,13 +107,13 @@ class ARROW_EXPORT BitBlockCounter {
         bits_remaining_(length),
         offset_(start_offset % 8) {}
 
-  /// \brief The bit size of each word run
+  /// The bit size of each word run
   static constexpr int64_t kWordBits = 64;
 
-  /// \brief The bit size of four words run
+  /// The bit size of four words run
   static constexpr int64_t kFourWordsBits = kWordBits * 4;
 
-  /// \brief Return the next run of available bits, usually 256. The returned
+  /// Return the next run of available bits, usually 256. The returned
   /// pair contains the size of run and the number of true values. The last
   /// block will have a length less than 256 if the bitmap length is not a
   /// multiple of 256, and will return 0-length blocks in subsequent
@@ -158,7 +158,7 @@ class ARROW_EXPORT BitBlockCounter {
     return {256, static_cast<int16_t>(total_popcount)};
   }
 
-  /// \brief Return the next run of available bits, usually 64. The returned
+  /// Return the next run of available bits, usually 64. The returned
   /// pair contains the size of run and the number of true values. The last
   /// block will have a length less than 64 if the bitmap length is not a
   /// multiple of 64, and will return 0-length blocks in subsequent
@@ -191,7 +191,7 @@ class ARROW_EXPORT BitBlockCounter {
   }
 
  private:
-  /// \brief Return block with the requested size when doing word-wise
+  /// Return block with the requested size when doing word-wise
   /// computation is not possible due to inadequate bits remaining.
   BitBlockCount GetBlockSlow(int64_t block_size) noexcept;
 
@@ -200,7 +200,7 @@ class ARROW_EXPORT BitBlockCounter {
   int64_t offset_;
 };
 
-/// \brief A tool to iterate through a possibly nonexistent validity bitmap,
+/// A tool to iterate through a possibly nonexistent validity bitmap,
 /// to allow us to write one code path for both the with-nulls and no-nulls
 /// cases without giving up a lot of performance.
 class ARROW_EXPORT OptionalBitBlockCounter {
@@ -253,7 +253,7 @@ class ARROW_EXPORT OptionalBitBlockCounter {
   BitBlockCounter counter_;
 };
 
-/// \brief A class that computes popcounts on the result of bitwise operations
+/// A class that computes popcounts on the result of bitwise operations
 /// between two bitmaps, 64 bits at a time. A 64-bit word is loaded from each
 /// bitmap, then the popcount is computed on e.g. the bitwise-and of the two
 /// words.
@@ -267,20 +267,20 @@ class ARROW_EXPORT BinaryBitBlockCounter {
         right_offset_(right_offset % 8),
         bits_remaining_(length) {}
 
-  /// \brief Return the popcount of the bitwise-and of the next run of
+  /// Return the popcount of the bitwise-and of the next run of
   /// available bits, up to 64. The returned pair contains the size of run and
   /// the number of true values. The last block will have a length less than 64
   /// if the bitmap length is not a multiple of 64, and will return 0-length
   /// blocks in subsequent invocations.
   BitBlockCount NextAndWord() { return NextWord<detail::BitBlockAnd>(); }
 
-  /// \brief Computes "x & ~y" block for each available run of bits.
+  /// Computes "x & ~y" block for each available run of bits.
   BitBlockCount NextAndNotWord() { return NextWord<detail::BitBlockAndNot>(); }
 
-  /// \brief Computes "x | y" block for each available run of bits.
+  /// Computes "x | y" block for each available run of bits.
   BitBlockCount NextOrWord() { return NextWord<detail::BitBlockOr>(); }
 
-  /// \brief Computes "x | ~y" block for each available run of bits.
+  /// Computes "x | ~y" block for each available run of bits.
   BitBlockCount NextOrNotWord() { return NextWord<detail::BitBlockOrNot>(); }
 
  private:

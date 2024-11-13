@@ -32,8 +32,7 @@ class Schema;
 class Status;
 class Table;
 
-/// \class PrettyPrintDelimiters
-/// \brief Options for controlling which delimiters to use when printing
+/// Options for controlling which delimiters to use when printing
 /// an Array or ChunkedArray.
 struct ARROW_EXPORT PrettyPrintDelimiters {
   /// Delimiter to use when opening an Array or ChunkedArray (e.g. "[")
@@ -50,8 +49,7 @@ struct ARROW_EXPORT PrettyPrintDelimiters {
   static PrettyPrintDelimiters Defaults() { return PrettyPrintDelimiters(); }
 };
 
-/// \class PrettyPrintOptions
-/// \brief Options for controlling how various Arrow types should be printed.
+/// Options for controlling how various Arrow types should be printed.
 struct ARROW_EXPORT PrettyPrintOptions {
   PrettyPrintOptions() = default;
 
@@ -106,7 +104,7 @@ struct ARROW_EXPORT PrettyPrintOptions {
   PrettyPrintDelimiters chunked_array_delimiters = PrettyPrintDelimiters::Defaults();
 };
 
-/// \brief Print human-readable representation of RecordBatch
+/// Print human-readable representation of RecordBatch
 ARROW_EXPORT
 Status PrettyPrint(const RecordBatch& batch, int indent, std::ostream* sink);
 
@@ -114,31 +112,31 @@ ARROW_EXPORT
 Status PrettyPrint(const RecordBatch& batch, const PrettyPrintOptions& options,
                    std::ostream* sink);
 
-/// \brief Print human-readable representation of Table
+/// Print human-readable representation of Table
 ARROW_EXPORT
 Status PrettyPrint(const Table& table, const PrettyPrintOptions& options,
                    std::ostream* sink);
 
-/// \brief Print human-readable representation of Array
+/// Print human-readable representation of Array
 ARROW_EXPORT
 Status PrettyPrint(const Array& arr, int indent, std::ostream* sink);
 
-/// \brief Print human-readable representation of Array
+/// Print human-readable representation of Array
 ARROW_EXPORT
 Status PrettyPrint(const Array& arr, const PrettyPrintOptions& options,
                    std::ostream* sink);
 
-/// \brief Print human-readable representation of Array
+/// Print human-readable representation of Array
 ARROW_EXPORT
 Status PrettyPrint(const Array& arr, const PrettyPrintOptions& options,
                    std::string* result);
 
-/// \brief Print human-readable representation of ChunkedArray
+/// Print human-readable representation of ChunkedArray
 ARROW_EXPORT
 Status PrettyPrint(const ChunkedArray& chunked_arr, const PrettyPrintOptions& options,
                    std::ostream* sink);
 
-/// \brief Print human-readable representation of ChunkedArray
+/// Print human-readable representation of ChunkedArray
 ARROW_EXPORT
 Status PrettyPrint(const ChunkedArray& chunked_arr, const PrettyPrintOptions& options,
                    std::string* result);

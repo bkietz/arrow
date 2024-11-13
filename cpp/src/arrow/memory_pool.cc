@@ -438,7 +438,7 @@ class MimallocAllocator {
 
 int64_t MemoryPool::max_memory() const { return -1; }
 
-///////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////
 // MemoryPool implementation that delegates its core duty
 // to an Allocator class.
 
@@ -700,7 +700,7 @@ Result<std::string> jemalloc_stats_string(const char* opts) {
 
 #endif
 
-///////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////
 // LoggingMemoryPool implementation
 
 LoggingMemoryPool::LoggingMemoryPool(MemoryPool* pool) : pool_(pool) {}
@@ -750,7 +750,7 @@ int64_t LoggingMemoryPool::num_allocations() const {
 
 std::string LoggingMemoryPool::backend_name() const { return pool_->backend_name(); }
 
-///////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////
 // ProxyMemoryPool implementation
 
 class ProxyMemoryPool::ProxyMemoryPoolImpl {

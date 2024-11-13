@@ -100,7 +100,7 @@ static UnitSlice GetView(const UnionArray& array, int64_t index) {
   return UnitSlice{&array, index};
 }
 
-/// \brief A simple virtual comparator interface for two arrays.
+/// A simple virtual comparator interface for two arrays.
 ///
 /// The base and target array ara bound at construction time. Then
 /// Equals(base_index, target_index) should return true if the values
@@ -108,23 +108,23 @@ static UnitSlice GetView(const UnionArray& array, int64_t index) {
 struct ValueComparator {
   virtual ~ValueComparator() = default;
 
-  /// \brief Compare the validity and values at the given indices in the base and target
+  /// Compare the validity and values at the given indices in the base and target
   /// arrays.
   ///
-  /// \param base_index The index in the base array.
-  /// \param target_index The index in the target array.
-  /// \return true if the values at the given indices are equal, false otherwise.
-  /// \pre base_index and target_index are valid indices in their respective arrays.
+  /// :param base_index: The index in the base array.
+  /// :param target_index: The index in the target array.
+  /// :return: true if the values at the given indices are equal, false otherwise.
+  /// :precondition: base_index and target_index are valid indices in their respective arrays.
   virtual bool Equals(int64_t base_index, int64_t target_index) = 0;
 
-  /// \brief Return the run length of equal values starting at the given indices in the
+  /// Return the run length of equal values starting at the given indices in the
   /// base and target arrays.
   ///
-  /// \param base_index The starting index in the base array.
-  /// \param base_length The length of the base array.
-  /// \param target_index The starting index in the target array.
-  /// \param target_length The length of the target array.
-  /// \return The run length of equal values starting at the given indices in the base
+  /// :param base_index: The starting index in the base array.
+  /// :param base_length: The length of the base array.
+  /// :param target_index: The starting index in the target array.
+  /// :param target_length: The length of the target array.
+  /// :return: The run length of equal values starting at the given indices in the base
   /// and target arrays.
   virtual int64_t RunLengthOfEqualsFrom(int64_t base_index, int64_t base_length,
                                         int64_t target_index, int64_t target_length) {
@@ -184,12 +184,12 @@ class REEValueComparator : public ValueComparator {
   ~REEValueComparator() override = default;
 
  private:
-  /// \pre 0 <= i < base_.length()
+  /// :precondition: 0 <= i < base_.length()
   inline int64_t FindPhysicalIndexOnBase(int64_t i) {
     return base_physical_index_finder_.FindPhysicalIndex(i);
   }
 
-  /// \pre 0 <= i < target_.length()
+  /// :precondition: 0 <= i < target_.length()
   inline int64_t FindPhysicalIndexOnTarget(int64_t i) {
     return target_physical_index_finder_.FindPhysicalIndex(i);
   }
